@@ -1,0 +1,25 @@
+{
+  "name": "bow-mark",
+  "version": "1.0.0",
+  "description": "A web application that allows foreman to submit daily reports from the job site",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Solitaire Design",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "lodash": "^4.17.0",
+    "mongodb": "^3.1.0-beta4",
+    "mongoose": "^5.1.0"
+  },
+  "devDependencies": {
+    "expect": "^22.4.3",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.17.5",
+    "supertest": "^3.1.0"
+  }
+}
