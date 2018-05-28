@@ -47,7 +47,9 @@ app.set('view engine', 'ejs');
 
 app.get('/', function(req, res, next) {
   if (req.session.user) {
-    res.write('<p>Hello you have a session</p>');
+    user = req.session.user;
+    
+    res.write(`<p>Hello ${user.name}, this is your session</p>`);
     res.write("<a href='/signout' method='post'>Log Out</a>");
     res.end();
   } else {
