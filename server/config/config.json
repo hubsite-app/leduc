@@ -1,0 +1,12 @@
+{
+  "test": {
+    "PORT": 3000,
+    "MONGODB_URI": "mongodb://localhost:27017/BowMarkAppTest",
+    "JWT_SECRET": "@&*#TGO78tBF#@87**O@&^T#f8obaft6382fbob6T*^B*FO"
+  },
+  "development": {
+    "PORT": 3000,
+    "MONGODB_URI": "mongodb://localhost:27017/BowMarkApp",
+    "JWT_SECRET": "awughefhasgfa23^&2g3rahfw3193r*(ghf(&@#&9g(&@#(FG"
+  }
+}
