@@ -12,6 +12,7 @@ var {mongoose} = require('./db/mongoose');
 var {User} = require('./models/user');
 var {Jobsite} = require('./models/jobsite');
 
+const port = process.env.PORT || 3000;
 var app = express();
 var sess = {
   secret: 'bow-marks-big-secret',
@@ -22,7 +23,6 @@ var sess = {
     mongooseConnection: mongoose.connection
   })
 };
-const port = process.env.PORT || 3000;
 
 if (app.get('env') === 'production') {
   app.set('trust proxy', 1);
@@ -80,7 +80,7 @@ app.get('/logout', (req, res) => {
 
   req.session.destroy((err) => {
     res.redirect('/');
-  })
+  });
 });
 
 // GET /signup
@@ -103,8 +103,8 @@ app.post('/signup', async (req, res) => {
     console.log('User is saved'); 
     req.session.regenerate(() => {
       req.session.user = user;
-      res.redirect('/');
     });
+    res.redirect('/');
   } catch (e) {
     console.log(e);
     res.redirect('/signup');
@@ -197,3 +197,5 @@ app.delete('/jobsite/:id', async (req, res) => {
 app.listen(port, () => {
   console.log(`Started on port ${port}`);
 });
+
+module.exports = {app}
