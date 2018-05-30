@@ -1,23 +1,24 @@
 <% var title = 'Authentication Example' %>
-<!-- <% include partials/head %> -->
+<% include partials/head %>
 
-<h1>Login</h1>
-<%- message %>
-Try accessing <a href="/restricted">/restricted</a>, then authenticate with "tj" and "foobar".
-<form method="post" action="/login">
-  <p>
-    <label>Email:</label>
-    <input type="email" name="email">
-  </p>
-  <p>
-    <label>Password:</label>
-    <input type="text" name="password">
-  </p>
-  <p>
-    <input type="submit" value="Login">
-  </p>
-</form>
+<div class="container">
+  <h1>Login</h1>
+  <form method="post" action="/login">
+    <p>
+      <label>Email:</label>
+      <input type="email" name="email">
+    </p>
+    <p>
+      <label>Password:</label>
+      <input type="text" name="password">
+    </p>
+    <p>
+      <input type="submit" value="Login">
+    </p>
+  </form>
 
-<span>Don't have an account? </span><a href="/signup">Signup Now</a>
+  <span>Don't have an account? </span><a href="/signup">Signup Now</a>
 
-<!-- <% include partials/foot %> -->
+</div>
+
+<% include partials/foot %>

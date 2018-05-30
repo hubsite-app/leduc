@@ -1,0 +1,21 @@
+<% var title = 'New Jobsite' %>
+<% include partials/head %>
+
+<div class="container">
+  <h1>Add new Jobsite</h1>
+  <form method="post" action="/jobsite/new">
+    <div class="input-field">
+      <input id="name" type="text" class="validate" name="name">
+      <label for="name">Job Name</label>
+    </div>
+    <div class="input-field col s12">
+      <textarea id="description" class="materialize-textarea" name="description"></textarea>
+      <label for="description">Description</label>
+    </div>
+    <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+      <i class="material-icons right">send</i>
+    </button>
+  </form>
+</div>
+
+<% include partials/foot %>

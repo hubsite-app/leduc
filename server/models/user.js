@@ -30,19 +30,15 @@ var UserSchema = new mongoose.Schema({
   admin: {
     tyle: Boolean,
     default: false
+  },
+  employee: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Employee'
   }
 });
 
 UserSchema.statics.authenticateUser = function (email, password) {
   var User = this;
-
-  // User.findOne({email}, (err, user) => {
-  //   if (err) return handleError(err);
-  //   if (user) {
-  //     console.log(user);
-  //   }
-  // });
-
 
   return User.findOne({email}).exec().then((user) => {
     if (!user) {

@@ -1,24 +1,25 @@
 <% var title = 'Signup Page' %>
 <% include partials/head %>
 
-<h1>Signup</h1>
-<%- message %>
-<form method="post" action="/signup">
-  <p>
-    <label>Name:</label>
-    <input type="text" name="name">
-  </p>
-  <p>
-    <label>Email:</label>
-    <input type="email" name="email">
-  </p>
-  <p>
-    <label>Password:</label>
-    <input type="text" name="password">
-  </p>
-  <p>
-    <input type="submit" value="Signup">
-  </p>
-</form>
+<div class="container">
+  <h1>Signup</h1>
+  <form method="post" action="/signup">
+    <div class="input-field col s12">
+      <input id="name" type="text" class="validate" name="name">
+      <label for="name">Full Name</label>
+    </div>
+    <div class="input-field col s12">
+      <input id="email" type="email" class="validate" name="email">
+      <label for="email">Email</label>
+    </div>
+    <div class="input-field col s12">
+      <input id="password" type="password" class="validate" name="password">
+      <label for="password">Password</label>
+    </div>
+    <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+      <i class="material-icons right">send</i>
+    </button>
+  </form>
+</div>
 
 <% include partials/foot %>
