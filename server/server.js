@@ -1,4 +1,5 @@
 require('./config/config');
+require('newrelic');
 
 const express = require('express');
 const _ = require('lodash');
@@ -112,8 +113,8 @@ app.post('/signup', async (req, res) => {
 });
 
 // GET /users
-app.get('/users', function (req, res) {
-  User.find({}, (err, users) => {
+app.get('/users', async (req, res) => {
+  await User.find({}, (err, users) => {
     var userMap = [];
     users.forEach((user) => {
       userMap[user._id] = user;
