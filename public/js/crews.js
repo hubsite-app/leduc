@@ -4,7 +4,7 @@ $(document).ready(function () {
     closeOnClick: false,
     coverTrigger: false
   });
-  $('.newEmployee').click(function () {
+  $('.newCrewMember').click(function () {
     var crewId = $(this).siblings('.id').val();
     var employeeId = $(this).val();
     if ($(this).is(':checked')) {
@@ -18,7 +18,7 @@ $(document).ready(function () {
         type: 'DELETE',
         url: `/crew/${crewId}/employee/${employeeId}`
       });
-      location.reload();
+      location.reload(true);
     }
   });
 });

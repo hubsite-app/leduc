@@ -6,43 +6,47 @@
   <h1>Crew List</h1>
   <% if (crewArray) { %>
     <% for (var result in crewArray) { %>
-      <div class="collection-item card-panel">
-        <% id = crewArray[result]._id %>
-        <a class="crew-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
-        <%= crewArray[result].name %>
-        <ul class="collection">
-          <% crewArray[result].employees.forEach((employee) => { %>
-            <li class="collection-item">
-              <h6><%= employeeArray[employee].name %></h6>
-              <span><%= employeeArray[employee].jobTitle %></span>
-            </li>
-          <% }); %>
-        </ul>
-
-        <div class="row">
-          <div class="col-12">
-            <a id="dropdown-crew-<%= crewArray[result]._id %>" class='employeeDropdown btn' href='' data-target='crew-<%= crewArray[result]._id %>-dropdown' style="width: 100%;">Select Employees</a>
-          </div>
-        </div>
-
-        <% if (employeeArray) { %>
-          <ul class="collection dropdown-content" id="crew-<%= crewArray[result]._id %>-dropdown">
-            <form id="crew-<%= crewArray[result]._id %>-employee-form">
-              <% for (var i in employeeArray) { %>
-                <li class="collection-item" id="crew-<%= crewArray[result]._id %>-item">
-                  <label>
-                    <input type="hidden" class="id" id="crew-<%= crewArray[result]._id %>" value="<%= crewArray[result]._id %>" />
-                    <input type="checkbox" class="newEmployee" id="employee-<%= employeeArray[i]._id %>" name="employee" value="<%= employeeArray[i]._id %>" <% crewArray[result].employees.forEach((employee) => {if (parseInt(employeeArray[i]._id) === parseInt(employee)) {%>checked="true"<%}});%> />
-                    <span>
-                      <%= employeeArray[i].name %> - <%= employeeArray[i].jobTitle %>
-                    </span>
-                  </label>
-                </li>
-                <% } %>
-            </form>
+      <div class="collection-item card-panel hoverable">
+        <div class="card-content">
+          <% id = crewArray[result]._id %>
+          <a class="crew-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
+          <h3 class="card-title" style="font-weight: bold;"><%= crewArray[result].name %></h3>
+          <ul class="collection">
+            <% crewArray[result].employees.forEach((employee) => { %>
+              <li class="collection-item">
+                <h6><%= employeeArray[employee].name %></h6>
+                <span><%= employeeArray[employee].jobTitle %></span>
+              </li>
+            <% }); %>
           </ul>
-        <% } %>
 
+          <div class="row">
+            <div class="col-12">
+              <a id="dropdown-crew-<%= crewArray[result]._id %>" class='employeeDropdown btn' href='' data-target='crew-<%= crewArray[result]._id %>-dropdown' style="width: 100%;">Select Employees</a>
+            </div>
+          </div>
+          <% if (employeeArray) { %>
+            <ul class="collection dropdown-content" id="crew-<%= crewArray[result]._id %>-dropdown">
+              <form id="crew-<%= crewArray[result]._id %>-employee-form">
+                <% for (var i in employeeArray) { %>
+                  <li class="collection-item" id="employee-<%= employeeArray[i]._id %>-item">
+                    <label>
+                      <input type="hidden" class="id" id="crew-<%= crewArray[result]._id %>-id" value="<%= crewArray[result]._id %>" />
+                      <input type="checkbox" class="newCrewMember" id="employee-<%= employeeArray[i]._id %>-checkbox" name="employee" value="<%= employeeArray[i]._id %>" 
+                        <% crewArray[result].employees.forEach((employee) => {
+                          if (employeeArray[i]._id.equals(employee)) {%>
+                            checked="true"
+                          <%}});%> />
+                      <span>
+                        <%= employeeArray[i].name %> - <%= employeeArray[i].jobTitle %>
+                      </span>
+                    </label>
+                  </li>
+                  <% } %>
+              </form>
+            </ul>
+          <% } %>
+        </div>
       </div>
     <% } %>
   <% } %>
