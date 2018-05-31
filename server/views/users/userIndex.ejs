@@ -9,7 +9,7 @@
         <% id = array[result]._id %>
         <div id="user-<%= id %>-container">
           <div id="user-<%= id %>-content">
-            <a class="user-delete secondary-content" onClick="deleteRequest('<%= id %>')" href=""><i class="material-icons">delete</i></a>
+            <a class="user-delete secondary-content" onClick="if (confirm('Are you sure?')) {deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
             <a class="user-edit secondary-content" onClick="editRequest('<%= id %>', '<%= array[result].name %>', '<%= array %>'); return false;" href=""><i class="material-icons">edit</i></a>
             <%= array[result].name %>
             <p><%= array[result].email %></p>

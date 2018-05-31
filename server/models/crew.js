@@ -12,15 +12,15 @@ var CrewSchema = new mongoose.Schema({
     unique: true
   },
   employees: [{
-    type: Schema.Types.ObjectID,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Employee'
   }],
   vehicles: [{
-    type: Schema.Types.ObjectID,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Vehicle'
   }],
   jobs: [{
-    type: Schema.Types.ObjectID,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Jobsite'
   }]
 });

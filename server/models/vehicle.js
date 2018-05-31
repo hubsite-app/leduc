@@ -9,7 +9,7 @@ var VehicleSchema = new mongoose.Schema({
     unique: true
   },
   vehicleCode: {
-    type: string,
+    type: String,
     trim: true,
     required: true
   },

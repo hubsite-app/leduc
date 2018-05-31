@@ -1,5 +1,6 @@
-<script src='/js/employeeForm.js'></script>
 <% include partials/head %>
+
+<script src="/js/employee.js"></script>
 
 <div class="container">
   <h1>Employee List</h1>
@@ -8,7 +9,7 @@
       <% for (var result in array) { %>
         <li class="collection-item">
           <% id = array[result]._id %>
-          <a class="employee-delete secondary-content" onClick="deleteRequest('<%= id %>')" href=""><i class="material-icons">delete</i></a>
+          <a class="employee-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
           <%= array[result].name %>
           <p><%= array[result].description %></p>
         </li>
@@ -27,24 +28,6 @@
 </div>
 
 <% include partials/foot %>
-
-<script>
-  function deleteRequest(id) {
-    $.ajax({
-      type: 'DELETE',
-      url: `http://localhost:3000/employee/${id}`
-    });
-    location.reload();
-  }
-</script> 
-
-<script>
-  function loadForm() {
-    var template = $('#employee-form-template').html();
-    $("#employee-form-div").append(template);
-    $('#add-employee').remove();
-  };
-</script>
 
 <script id='employee-form-template' type="text/template">
   <div class="row card-panel">

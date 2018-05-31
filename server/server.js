@@ -12,6 +12,7 @@ var {mongoose} = require('./db/mongoose');
 var {User} = require('./models/user');
 var {Jobsite} = require('./models/jobsite');
 var {Employee} = require('./models/employee');
+var {Crew} = require('./models/crew');
 
 const port = process.env.PORT || 3000;
 var app = express();
@@ -156,7 +157,6 @@ app.post('/user/update/:id', async (req, res) => {
     console.log(e);
     res.render('/');
   }
-  
 });
 
 // GET /jobsite/new
@@ -224,7 +224,6 @@ app.get('/employees', async (req, res) => {
 
 // POST /employees
 app.post('/employees', async (req, res) => {
-  console.log('POST /employees');
   var employee = new Employee(req.body);
   try {
     await employee.save((err) => {
@@ -256,6 +255,99 @@ app.delete('/employee/:id', async (req, res) => {
     }
   } catch (e) {
     res.status(400).send(e);
+  }
+});
+
+// POST /crew
+app.post('/crew', async (req, res) => {
+  var crew = new Crew(req.body);
+  try {
+    await crew.save((err) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+    });
+    res.redirect('back');
+  } catch (e) {
+    console.log(e);
+    res.redirect('/');
+  }
+});
+
+// GET /crews
+app.get('/crews', (req, res) => {
+  Crew.find({}, async (err, crews) => {
+    var crewMap = [];
+    crews.forEach((crew) => {
+      crewMap[crew._id] = crew;
+    });
+    await Employee.find({}, (err, employees) => {
+      var employeeMap = [];
+      employees.forEach((employee) => {
+        employeeMap[employee._id] = employee;
+      });
+      console.log(crewMap);
+      res.render('crews', {crewArray: crewMap, employeeArray: employeeMap});
+    });
+  });
+});
+
+// DELETE /crew/:id
+app.delete('/crew/:id', async (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send;
+  }
+  try {
+    const crew = await Crew.findOneAndRemove({
+      _id: id
+    });
+    if(!crew) {
+      return res.status(404).send();
+    }
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
+// POST /crew/:crewId/employee/:employeeId
+app.post('/crew/:crewId/employee/:employeeId', async (req, res) => {
+  var crewId = req.params.crewId;
+  var employeeId = req.params.employeeId;
+  if (!ObjectID.isValid(crewId) && !ObjectID.isValid(employeeId)) {
+    return res.status(404).send();
+  }
+  try {
+    await Crew.findById(crewId, async (err, crew) => {
+      await Employee.findById(employeeId, async (err, employee) => {
+        crew.employees.push(employee);
+        await crew.save((err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      });
+    });
+  } catch (e) {
+    console.log(e);
+    res.render('/');
+  }
+});
+
+// DELETE /crew/:crewId/employee/:employeeId
+app.delete('/crew/:crewId/employee/:employeeId', async (req, res) => {
+  var crewId = req.params.crewId;
+  var employeeId = req.params.employeeId;
+  if (!ObjectID.isValid(crewId) && !ObjectID.isValid(employeeId)) {
+    return res.status(404).send();
+  }
+  try {
+    await Crew.findByIdAndUpdate({_id: crewId}, {$pull: {employees: employeeId}},(err, crew) => {
+    })
+  } catch (e) {
+    return console.log(e);
   }
 });
 

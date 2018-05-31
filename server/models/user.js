@@ -34,10 +34,6 @@ var UserSchema = new mongoose.Schema({
   employee: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Employee'
-  },
-  crew: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Crew'
   }
 });
 
@@ -72,6 +68,10 @@ UserSchema.pre('save', function (next) {
   } else {
     next();
   }
+});
+
+UserSchema.pre('remove', function (next) {
+  // Remove from all relationships
 });
 
 var User = mongoose.model('User', UserSchema);
