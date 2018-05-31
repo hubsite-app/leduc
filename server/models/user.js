@@ -34,6 +34,10 @@ var UserSchema = new mongoose.Schema({
   employee: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Employee'
+  },
+  crew: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Crew'
   }
 });
 

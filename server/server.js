@@ -1,6 +1,5 @@
 require('./config/config');
 require('newrelic');
-
 const express = require('express');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
@@ -12,6 +11,7 @@ const path = require('path');
 var {mongoose} = require('./db/mongoose');
 var {User} = require('./models/user');
 var {Jobsite} = require('./models/jobsite');
+var {Employee} = require('./models/employee');
 
 const port = process.env.PORT || 3000;
 var app = express();
@@ -86,12 +86,11 @@ app.get('/logout', (req, res) => {
 
 // GET /signup
 app.get('/signup', (req, res) => {
-  res.render('signup');
+  res.render('users/signup');
 });
 
 // POST /signup
 app.post('/signup', async (req, res) => {
-  console.log('POST /signup');
   try {
     const user = new User(req.body);
     console.log('Before POST /signup save', req.body);
@@ -104,11 +103,11 @@ app.post('/signup', async (req, res) => {
     console.log('User is saved'); 
     req.session.regenerate(() => {
       req.session.user = user;
+      res.redirect('/');
     });
-    res.redirect('/');
   } catch (e) {
     console.log(e);
-    res.redirect('/signup');
+    res.redirect('users/signup');
   }
 });
 
@@ -119,7 +118,7 @@ app.get('/users', async (req, res) => {
     users.forEach((user) => {
       userMap[user._id] = user;
     });
-    res.render('userIndex', {array: userMap});
+    res.render('users/userIndex', {array: userMap});
   });
 });
 
@@ -141,6 +140,23 @@ app.delete('/user/:id', async (req, res) => {
   } catch (e) {
     res.status(400).send(e);
   }
+});
+
+// POST /user/update/:id
+app.post('/user/update/:id', async (req, res) => {
+  var id = req.params.id;
+  var body = _.pick(req.body, ['name']);
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+  try {
+    await User.findOneAndUpdate({_id: id}, {$set: body}, {new: true});
+    res.redirect('back');
+  } catch (e) {
+    console.log(e);
+    res.render('/');
+  }
+  
 });
 
 // GET /jobsite/new
@@ -188,6 +204,54 @@ app.delete('/jobsite/:id', async (req, res) => {
       _id: id
     });
     if(!jobsite) {
+      return res.status(404).send();
+    }
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
+// GET /employees
+app.get('/employees', async (req, res) => {
+  Employee.find({}, (err, employees) => {
+    var employeeMap = [];
+    employees.forEach((employee) => {
+      employeeMap[employee._id] = employee;
+    });
+    res.render('employeeIndex', {array: employeeMap});
+  });
+});
+
+// POST /employees
+app.post('/employees', async (req, res) => {
+  console.log('POST /employees');
+  var employee = new Employee(req.body);
+  try {
+    await employee.save((err) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    res.redirect('/');
+  }  
+  res.redirect('back');
+});
+
+// DELETE /employee/:id
+app.delete('/employee/:id', async (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send;
+  }
+  try {
+    const employee = await Employee.findOneAndRemove({
+      _id: id
+    });
+    if(!employee) {
       return res.status(404).send();
     }
   } catch (e) {

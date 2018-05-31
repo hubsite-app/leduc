@@ -14,10 +14,12 @@ var JobsiteSchema = new mongoose.Schema({
     type: String,
     trim: true,
     minlength: 1
+  },
+  jobcode: {
+    type: Number,
+    trim: true
   }
 });
-
-
 
 var Jobsite = mongoose.model('Jobsite', JobsiteSchema);
 
