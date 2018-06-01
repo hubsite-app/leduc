@@ -7,6 +7,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const {ObjectID} = require('mongodb');
 const path = require('path');
+const request = require('request');
 
 var {mongoose} = require('./db/mongoose');
 var {User} = require('./models/user');
@@ -32,6 +33,10 @@ if (app.get('env') === 'production') {
 }
 
 app.use(session(sess));
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
 app.use(bodyParser.urlencoded({
   extended: false
 }));
@@ -44,9 +49,12 @@ app.set('view engine', 'ejs');
 app.get('/', function(req, res, next) {
   if (req.session.user) {
     user = req.session.user;
+    // if (!user.employee) {
+    //   request.get(`http://${req.headers.host}/user/${user._id}`);
+    // }
     res.render('index', {serverMessage: `Hello ${user.name}, this is your session`});
   } else {
-    res.render('index', {serverMessage: 'You are not logged in'});
+    res.render('login', {dangerMessage: 'You must be logged in to use this site'});
   }
 })
 
@@ -129,18 +137,27 @@ app.get('/users', async (req, res) => {
 
 // GET /user/:id
 app.get('/user/:id', (req, res) => {
-  User.findById(req.params.id, (err, user) => {
-    if (err) {
-      return console.log(err);
-    }
-    employeeArray = [];
-    Employee.find({}, (err, employees) => {
-      employees.forEach((employee) => {
-        employeeArray[employee._id] = employee;
-      });
-      res.render('users/user', {user, employeeArray});
+  if (req.session.user) {
+    User.findById(req.params.id, (err, user) => {
+      if (err) {
+        return console.log(err);
+      }
+      if (req.session.user === user || req.session.user.admin === true) {
+        employeeArray = [];
+        Employee.find({}, (err, employees) => {
+          employees.forEach((employee) => {
+            employeeArray[employee._id] = employee;
+          });
+          res.render('users/user', {user, employeeArray});
+        });
+      } else {
+        res.render('userIndex');
+      }
     });
-  })
+  } else {
+    res.render('login', {dangerMessage: 'Must be logged in'});
+  }
+  
 });
 
 // DELETE /users/:id
@@ -308,7 +325,7 @@ app.get('/employees', (req, res) => {
         users.forEach((user) => {
           userArray[user._id] = user;
         });
-        res.render('employeeIndex', {employeeArray, crewArray, userArray});
+        res.render('employees/employeeIndex', {employeeArray, crewArray, userArray});
       });
     });
   });
@@ -328,7 +345,7 @@ app.get('/employee/:id', (req, res) => {
         crewArray[crew._id] = crew;
       })
       console.log(crewArray);
-      res.render('employee', {employee, crewArray});
+      res.render('employees/employee', {employee, crewArray});
     });
   })
 });

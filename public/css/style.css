@@ -1,3 +1,7 @@
 .nav-wrapper {
   background-color: #EF2E25 !important;
 }
+
+i.icon-white {
+  color: white;
+}

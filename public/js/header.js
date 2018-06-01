@@ -17,7 +17,7 @@ $(document).ready(function () {
       constrain_width: false, // Does not change width of dropdown to that of the activator
       hover: false, // Activate on hover
       gutter: 0, // Spacing from edge
-      belowOrigin: true, // Displays dropdown below the button
+      converTrigger: false, // Displays dropdown below the button
     });
   } else {
     $('.dropdown-trigger').dropdown({
@@ -26,8 +26,12 @@ $(document).ready(function () {
       constrain_width: false, // Does not change width of dropdown to that of the activator
       hover: true, // Activate on hover
       gutter: 0, // Spacing from edge
-      belowOrigin: true, // Displays dropdown below the button
+      coverTrigger: false, // Displays dropdown below the button
     });
   }
+  $('#alert-close').click(function () {
+    $("#alert-box").fadeOut("slow", function () {
+    });
+  });
 });
     

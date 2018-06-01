@@ -11,17 +11,21 @@
     <link type='text/css' rel="stylesheet" href="/css/materialize.min.css"  media="screen,projection"/>
     <link type='text/css' rel="stylesheet" href="/css/style.css" />
     <script src="/js/header.js"></script>
+    <style>.pointer {cursor: pointer;}</style>
   </head>
   <body>
     <ul id="dropdown1" class="dropdown-content">
-      <li><a href="/login">Login</a></li>
-      <li><a href="/logout">Logout</a></li>
-      <li><a href="/signup">Signup</a></li>
-      <li><a href="/users">Users</a></li>
-      <li><a href="/jobsite/new">New Jobsite</a></li>
-      <li><a href="/jobsites">Jobsites</a></li>
-      <li><a href="/employees">Employees</a></li>
-      <li><a href="/crews">Crews</a></li>
+      <% if (!session.user) {%>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/signup">Signup</a></li>
+      <% } else { %>
+        <li><a href="/logout">Logout</a></li>
+        <li><a href="/users">Users</a></li>
+        <li><a href="/jobsite/new">New Jobsite</a></li>
+        <li><a href="/jobsites">Jobsites</a></li>
+        <li><a href="/employees">Employees</a></li>
+        <li><a href="/crews">Crews</a></li>
+      <% } %>
     </ul>
     <nav>
       <div class="nav-wrapper">
@@ -31,3 +35,21 @@
         </ul>
       </div>
     </nav>
+    <% if (typeof dangerMessage != "undefined") { %>
+      <div class="row" id="alert-box">
+        <div class="col s12 m12">
+          <div class="card red darken-1">
+            <div class="row">
+              <div class="col s12 m10">
+                <div class="card-content white-text">
+                  <%= dangerMessage %>
+                </div>
+              </div>
+              <div class="col s12 m2">
+                <i class="material-icons right icon-white pointer" id="alert-close" aria-hidden="true">close</i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } %>

@@ -4,17 +4,17 @@
 <div class="container">
   <h1>Login</h1>
   <form method="post" action="/login">
-    <p>
-      <label>Email:</label>
+    <div class="input-field col s12">
+      <label>Email</label>
       <input type="email" name="email">
-    </p>
+    </div>
     <div class="input-field col s12">
       <input id="password" type="password" class="validate" name="password">
       <label for="password">Password</label>
     </div>
-    <p>
-      <input type="submit" value="Login">
-    </p>
+    <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+      <i class="material-icons right">send</i>
+    </button>
   </form>
 
   <span>Don't have an account? </span><a href="/signup">Signup Now</a>
