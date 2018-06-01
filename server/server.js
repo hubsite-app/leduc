@@ -35,6 +35,7 @@ if (app.get('env') === 'production') {
 app.use(session(sess));
 app.use((req, res, next) => {
   res.locals.session = req.session;
+  res.locals.baseUrl = req.headers.host;
   next();
 });
 app.use(bodyParser.urlencoded({
@@ -48,10 +49,8 @@ app.set('view engine', 'ejs');
 // root
 app.get('/', function(req, res, next) {
   if (req.session.user) {
+    console.log(req.session.user);
     user = req.session.user;
-    // if (!user.employee) {
-    //   request.get(`http://${req.headers.host}/user/${user._id}`);
-    // }
     res.render('index', {serverMessage: `Hello ${user.name}, this is your session`});
   } else {
     res.render('login', {dangerMessage: 'You must be logged in to use this site'});
@@ -204,9 +203,12 @@ app.post('/user/:id/employee', (req, res) => {
   User.findById(userId, (err, user) => {
     if(err) {return console.log(err);}
     user.employee = employeeId;
+    req.session.user.employee = employeeId;
     user.save((err) => {
       if(err) {console.log(err);}
     });
+    console.log('User:', user)
+    console.log('Session:', req.session.user);
     Employee.findById(employeeId, (err, employee) => {
       if(err) {return console.log(err);}
       employee.user = userId;
@@ -226,12 +228,13 @@ app.patch('/user/:id/employee', async (req, res) => {
     Employee.findById(user.employee, async (err, employee) => {
       if (err) {return console.log(err);}
       user.employee = undefined;
-      console.log('User:', user);
+      req.session.user.employee = undefined;
       employee.user = undefined;
-      console.log('Employee:', employee);
       await user.save((err) => {
         if (err) {return console.log(err);}
       });
+      console.log('User: ', user)
+      console.log('Session:', req.session.user);
       await employee.save((err) => {
         if (err) {return console.log(err);}
       });

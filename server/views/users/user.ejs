@@ -5,32 +5,33 @@
     <h1><%= user.name %></h1>
 
     <% if (user.employee === null) { %>
-      <div class="card-panel">
+      <div class="card-panel red">
+        <i class="material-icons medium right">warning</i>
         <h4 class="card-title">Link with an Employee</h4>
-        <div class="card-panel">
+        <div class="card-panel" style="padding-bottom: 4em;">
           <h5 class="card-title">Link with existing account</h5>
+          <form action="/user/<%=user._id%>/employee" method="post">
             <ul class="collection">
               <% if (employeeArray) { %>
-                <form action="/user/<%=user._id%>/employee" method="post">
-                  <% for (var i in employeeArray) { %>
-                    <label>
-                      <li class="collection-item">
-                        <input class="with-gap" type="radio" name="employee" value="<%=employeeArray[i]._id%>" 
-                          <% if (employeeArray[i].user !== undefined) { %>
-                            disabled="disabled"
-                          <% } %>/>
-                        <span><%= employeeArray[i].name %></span>
-                      </li>
-                    </label>
-                  <% } %>
-                  <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
-                    <i class="material-icons right">send</i>
-                  </button>
-                </form>
+                <% for (var i in employeeArray) { %>
+                  <label>
+                    <li class="collection-item">
+                      <input class="with-gap" type="radio" name="employee" value="<%=employeeArray[i]._id%>" 
+                        <% if (employeeArray[i].user !== undefined) { %>
+                          disabled="disabled"
+                        <% } %>/>
+                      <span><%= employeeArray[i].name %></span>
+                    </li>
+                  </label>
+                <% } %>      
               <% } %>
             </ul>
+            <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+              <i class="material-icons right">send</i>
+            </button>    
+          </form>
         </div>
-        <p class="center-align">or</p>
+        <p class="center-align" style="font-weight: bold;">or</p>
         <div class="row card-panel">
           <h5>Add yourself as an employee of Bow Mark</h5>
           <form method="post" action="/employee/user/<%=user._id%>">

@@ -1,6 +1,32 @@
-<% include partials/head %>
+<div class="page">
+  <% include partials/head %>
 
-<p>Hi</p>
-<%= serverMessage %>
+    <% if (session.user.employee == null) { %>
+      <input class="loadCheck" type="hidden" id="userId" value="<%=session.user._id%>" />
+      <input type="hidden" id="baseUrl" value="<%=baseUrl%>" />
+    <% } %>
+    
+    <div class="container">
+      <p>Hello! You're account is now setup!</p>
+    </div>
 
-<% include partials/foot %>
+  <% include partials/foot %>
+</div>
+
+<script>
+  $(document).ready(function () {
+    $('.loadCheck').ready(function () {
+      var userId = $('#userId').val();
+      var baseUrl = $('#baseUrl').val();
+      $.ajax({
+        type: 'GET',
+        url: `http://${baseUrl}/user/${userId}`,
+        success: function(data) {
+          $('.page').html(data);
+          window.location.url = `http://${baseUrl}/user/${userId}`;
+        }
+      });
+    });
+  });
+</script>
+
