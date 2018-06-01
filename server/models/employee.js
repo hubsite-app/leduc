@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {User} = require('./user');
 const {Crew} = require('./crew');
 
 var EmployeeSchema = new mongoose.Schema({
@@ -12,6 +13,10 @@ var EmployeeSchema = new mongoose.Schema({
   jobTitle: {
     type: String,
     trim: true
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
   crews: [{
     type: mongoose.Schema.Types.ObjectId,

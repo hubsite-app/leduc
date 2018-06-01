@@ -3,6 +3,7 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
+const {Employee} = require('./employee');
 
 var UserSchema = new mongoose.Schema({
   name: {
@@ -33,7 +34,8 @@ var UserSchema = new mongoose.Schema({
   },
   employee: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Employee'
+    ref: 'Employee',
+    default: null
   }
 });
 

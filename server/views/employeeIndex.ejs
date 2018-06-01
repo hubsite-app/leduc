@@ -12,6 +12,9 @@
           <a class="employee-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
           <h5><a href="/employee/<%=employeeArray[result]._id%>"><%= employeeArray[result].name %></a></h5>
           <p><%= employeeArray[result].jobTitle %></p>
+          <% if (employeeArray[result].user !== undefined) { %>
+            <span>User: </span><%= userArray[employeeArray[result].user].name %>
+          <% } %>
           <% if (employeeArray[result].crews.length > 0) { %>
             <h5>Crews</h5>
             <ul class="collection">
@@ -46,7 +49,7 @@
 <script id='employee-form-template' type="text/template">
   <div class="row card-panel">
     <h3>Add an employee</h3>
-    <form method="post" action="/employees">
+    <form method="post" action="/employee">
       <div class="input-field">
         <input id="name" type="text" class="validate" name="name">
         <label for="name">Employee Name</label>

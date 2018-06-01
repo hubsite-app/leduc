@@ -114,13 +114,33 @@ app.post('/signup', async (req, res) => {
 
 // GET /users
 app.get('/users', async (req, res) => {
-  await User.find({}, (err, users) => {
-    var userMap = [];
-    users.forEach((user) => {
-      userMap[user._id] = user;
+  try {
+    await User.find({}, (err, users) => {
+      var userMap = [];
+      users.forEach((user) => {
+        userMap[user._id] = user;
+      });
+      res.render('users/userIndex', {array: userMap});
     });
-    res.render('users/userIndex', {array: userMap});
-  });
+  } catch (e) {
+    return console.log(e);
+  }
+});
+
+// GET /user/:id
+app.get('/user/:id', (req, res) => {
+  User.findById(req.params.id, (err, user) => {
+    if (err) {
+      return console.log(err);
+    }
+    employeeArray = [];
+    Employee.find({}, (err, employees) => {
+      employees.forEach((employee) => {
+        employeeArray[employee._id] = employee;
+      });
+      res.render('users/user', {user, employeeArray});
+    });
+  })
 });
 
 // DELETE /users/:id
@@ -157,6 +177,50 @@ app.post('/user/update/:id', async (req, res) => {
     console.log(e);
     res.render('/');
   }
+});
+
+// POST /user/:userId/employee/
+app.post('/user/:id/employee', (req, res) => {
+  var userId = req.params.id;
+  var employeeId = req.body.employee;
+  console.log(req.body);
+  User.findById(userId, (err, user) => {
+    if(err) {return console.log(err);}
+    user.employee = employeeId;
+    user.save((err) => {
+      if(err) {console.log(err);}
+    });
+    Employee.findById(employeeId, (err, employee) => {
+      if(err) {return console.log(err);}
+      employee.user = userId;
+      employee.save((err) => {
+        if(err) {return console.log(err);}
+      });
+      res.redirect('back');
+    });
+  });
+});
+
+// PATCH /user/:id/employee
+app.patch('/user/:id/employee', async (req, res) => {
+  var userId = req.params.id;
+  User.findById(userId, (err, user) => {
+    if (err) {return console.log(err);}
+    Employee.findById(user.employee, async (err, employee) => {
+      if (err) {return console.log(err);}
+      user.employee = undefined;
+      console.log('User:', user);
+      employee.user = undefined;
+      console.log('Employee:', employee);
+      await user.save((err) => {
+        if (err) {return console.log(err);}
+      });
+      await employee.save((err) => {
+        if (err) {return console.log(err);}
+      });
+      res.redirect('back');
+    });
+  });
 });
 
 // GET /jobsite/new
@@ -222,6 +286,7 @@ app.delete('/jobsite/:id', async (req, res) => {
 app.get('/employees', (req, res) => {
   var employeeArray = [];
   var crewArray = [];
+  var userArray = [];
   Employee.find({}, (err, employees) => {
     if (err) {
       console.log(err);
@@ -238,7 +303,13 @@ app.get('/employees', (req, res) => {
       crews.forEach((crew) => {
         crewArray[crew._id] = crew;
       });
-      res.render('employeeIndex', {employeeArray, crewArray});
+      User.find({}, (err, users) => {
+        if (err) {return console.log(err);}
+        users.forEach((user) => {
+          userArray[user._id] = user;
+        });
+        res.render('employeeIndex', {employeeArray, crewArray, userArray});
+      });
     });
   });
 });
@@ -262,8 +333,8 @@ app.get('/employee/:id', (req, res) => {
   })
 });
 
-// POST /employees
-app.post('/employees', async (req, res) => {
+// POST /employee
+app.post('/employee', async (req, res) => {
   var employee = new Employee(req.body);
   try {
     await employee.save((err) => {
@@ -277,6 +348,31 @@ app.post('/employees', async (req, res) => {
     res.redirect('/');
   }  
   res.redirect('back');
+});
+
+// POST /employee/user/:id
+app.post('/employee/user/:id', async (req, res) => {
+  var employee = new Employee(req.body);
+  try {
+    await employee.save((err) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+    });
+    await User.findById(employee.user, (err, user) => {
+      if (err) {return console.log(err);}
+      user.employee = employee._id;
+      user.save((err) => {
+        if (err) {return console.log(err);}
+      })
+    });
+    res.redirect('back');
+  } catch (e) {
+    console.log(e);
+    res.redirect('/');
+  }  
+  
 });
 
 // DELETE /employee/:id

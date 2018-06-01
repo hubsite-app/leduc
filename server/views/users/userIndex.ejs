@@ -11,7 +11,7 @@
           <div id="user-<%= id %>-content">
             <a class="user-delete secondary-content" onClick="if (confirm('Are you sure?')) {deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
             <a class="user-edit secondary-content" onClick="editRequest('<%= id %>', '<%= array[result].name %>', '<%= array %>'); return false;" href=""><i class="material-icons">edit</i></a>
-            <%= array[result].name %>
+            <h3><a href="/user/<%=id%>"><%= array[result].name %></a></h3>
             <p><%= array[result].email %></p>
           </div>
         </div>

@@ -29,8 +29,8 @@
             <ul class="collection dropdown-content" id="crew-<%= crewArray[result]._id %>-dropdown">
               <form id="crew-<%= crewArray[result]._id %>-employee-form">
                 <% for (var i in employeeArray) { %>
-                  <li class="collection-item" id="employee-<%= employeeArray[i]._id %>-item">
-                    <label>
+                  <label>
+                    <li class="collection-item" id="employee-<%= employeeArray[i]._id %>-item">
                       <input type="hidden" class="id" id="crew-<%= crewArray[result]._id %>-id" value="<%= crewArray[result]._id %>" />
                       <input type="checkbox" class="newCrewMember" id="employee-<%= employeeArray[i]._id %>-checkbox" name="employee" value="<%= employeeArray[i]._id %>" 
                         <% crewArray[result].employees.forEach((employee) => {
@@ -40,8 +40,8 @@
                       <span>
                         <%= employeeArray[i].name %> - <%= employeeArray[i].jobTitle %>
                       </span>
-                    </label>
-                  </li>
+                    </li>
+                  </label>
                   <% } %>
               </form>
             </ul>
