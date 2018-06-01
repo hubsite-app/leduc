@@ -19,7 +19,7 @@ var CrewSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Vehicle'
   }],
-  jobs: [{
+  jobsites: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Jobsite'
   }]

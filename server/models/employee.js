@@ -13,10 +13,10 @@ var EmployeeSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-  crew: {
+  crews: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Crew'
-  }
+  }]
 });
 
 var Employee = mongoose.model('Employee', EmployeeSchema);

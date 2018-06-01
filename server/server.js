@@ -192,6 +192,13 @@ app.get('/jobsites', (req, res) => {
   });
 });
 
+// GET /jobsite/:id
+app.get('/jobsite/:id', (req, res) => {
+  Jobsite.findById(req.params.id, (err, jobsite) => {
+    res.render('jobsite', {jobsite});
+  });
+});
+
 // DELETE /jobsite/:id
 app.delete('/jobsite/:id', async (req, res) => {
   var id = req.params.id;
@@ -212,14 +219,47 @@ app.delete('/jobsite/:id', async (req, res) => {
 });
 
 // GET /employees
-app.get('/employees', async (req, res) => {
+app.get('/employees', (req, res) => {
+  var employeeArray = [];
+  var crewArray = [];
   Employee.find({}, (err, employees) => {
-    var employeeMap = [];
+    if (err) {
+      console.log(err);
+      return;
+    }
     employees.forEach((employee) => {
-      employeeMap[employee._id] = employee;
+      employeeArray[employee._id] = employee;
     });
-    res.render('employeeIndex', {array: employeeMap});
+    Crew.find({}, (err, crews) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      crews.forEach((crew) => {
+        crewArray[crew._id] = crew;
+      });
+      res.render('employeeIndex', {employeeArray, crewArray});
+    });
   });
+});
+
+// GET /employee/:id
+app.get('/employee/:id', (req, res) => {
+  Employee.findById(req.params.id, (err, employee) => {
+    crewArray = [];
+    Crew.find({
+      '_id': {$in: employee.crews}
+    }, (err, crews) => {
+      if (err) {
+        return console.log(err);
+      }
+      crews.forEach((crew) => {
+        crewArray[crew._id] = crew;
+      })
+      console.log(crewArray);
+      res.render('employee', {employee, crewArray});
+    });
+  })
 });
 
 // POST /employees
@@ -287,7 +327,6 @@ app.get('/crews', (req, res) => {
       employees.forEach((employee) => {
         employeeMap[employee._id] = employee;
       });
-      console.log(crewMap);
       res.render('crews', {crewArray: crewMap, employeeArray: employeeMap});
     });
   });
@@ -327,6 +366,12 @@ app.post('/crew/:crewId/employee/:employeeId', async (req, res) => {
             console.log(err);
           }
         });
+        employee.crews.push(crew);
+        await employee.save((err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
       });
     });
   } catch (e) {
@@ -343,7 +388,15 @@ app.delete('/crew/:crewId/employee/:employeeId', async (req, res) => {
     return res.status(404).send();
   }
   try {
-    await Crew.findByIdAndUpdate({_id: crewId}, {$pull: {employees: employeeId}},(err, crew) => {
+    await Crew.findByIdAndUpdate({_id: crewId}, {$pull: {employees: employeeId}}, (err, crew) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+    await Employee.findByIdAndUpdate({_id: employeeId}, {$pull: {crews: crewId}}, (err, crew) => {
+      if (err) {
+        console.log(err);
+      }
     })
   } catch (e) {
     return console.log(e);

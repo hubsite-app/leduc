@@ -18,7 +18,11 @@ var JobsiteSchema = new mongoose.Schema({
   jobcode: {
     type: Number,
     trim: true
-  }
+  },
+  crews: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Crew'
+  }]
 });
 
 var Jobsite = mongoose.model('Jobsite', JobsiteSchema);

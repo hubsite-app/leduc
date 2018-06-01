@@ -1,0 +1,17 @@
+<% include ./partials/head %>
+
+<div class="container">
+  <h1><%= employee.name %></h1>
+  <% if (typeof crewArray !== 'undefined') { %>
+    <h3>Crews</h3>
+    <ul class="collection">
+      <% for (var i in crewArray) { %>
+        <li class="collection-item">
+          <%= crewArray[i].name %>
+        </li>
+      <% } %>
+    </ul>
+  <% } %>
+</div>
+
+<% include ./partials/foot %>

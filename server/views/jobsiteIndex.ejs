@@ -6,7 +6,7 @@
       <li class="collection-item">
       <% id = array[result]._id %>
       <a class="jobsite-delete secondary-content" onClick="if(confirm('Are you sure?')) {deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
-        <%= array[result].name %>
+        <h3><a href="/jobsite/<%=id%>"><%= array[result].name %></a></h3>
         <p><%= array[result].description %></p>
       </li>
     <% } %>
