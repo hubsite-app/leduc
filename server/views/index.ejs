@@ -14,7 +14,10 @@
             <% for (var i in crewArray) { %>
               <li class="collection-item">
                 <label>
-                  <input class="with-gap crew-selection" type="radio" name="crew" value="<%=crewArray[i]._id%>" />
+                  <input class="with-gap crew-selection" type="radio" name="crew" value="<%=crewArray[i]._id%>" 
+                    <% if (crewArray[i]._id.equals(stuff.query.crew)) { %>
+                      checked="true"
+                    <% } %> />
                   <span><%= crewArray[i].name %></span>
                 </label>
               </li>
@@ -28,7 +31,7 @@
           </div>
         <% } else { %>
           <div class="row">
-              <h3>You must join a crew to pick a job</h3>
+              <h3>You must be added to a crew in order to pick a job</h3>
           </div>
         <% } %>
       </div>
@@ -36,9 +39,11 @@
       <% if (jobArray) { %>
         <div class="row">
           <% for (var i in jobArray) { %>
-            <div class="card panel">
-              <a class="report-link" href="" id="<%=jobArray[i]._id%>"><%= jobArray[i].name %></a>
-            </div>
+            <% if (jobArray[i].crews.toString().includes(stuff.query.crew)) { %>
+              <div class="card panel">
+                <a class="report-link" href="" id="<%=jobArray[i]._id%>"><%= jobArray[i].name %></a>
+              </div>
+            <% } %>
           <% } %>
        </div>
       <% } %>

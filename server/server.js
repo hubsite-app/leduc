@@ -41,6 +41,9 @@ app.use(session(sess));
 app.use((req, res, next) => {
   res.locals.session = req.session;
   res.locals.baseUrl = req.headers.host;
+  res.locals.stuff = {
+    query: req.query
+  }
   next();
 });
 app.use(bodyParser.urlencoded({
@@ -53,12 +56,12 @@ app.set('view engine', 'ejs');
 
 // root
 app.get('/', async (req, res, next) => {
-  if (req.session.user) {
+  const user = req.session.user;
+  if (user) {
     if(!req.session.user.employee) {
       var dangerMessage = encodeURIComponent('Please link your account with a Bow Mark employee');
       res.redirect(`/user/${req.session.user._id}/?dangerMessage=${dangerMessage}`);
     }
-    user = req.session.user;
     var crewArray = [];
     var jobArray = [];
     var crewArray = await Crew.find({employees: user.employee}, (err, crews) => {
@@ -79,7 +82,11 @@ app.get('/', async (req, res, next) => {
 
 // GET /login
 app.get('/login', (req, res) => {
-  res.render('login');
+  if (!req.session.user) {
+    res.render('login');
+  } else {
+    res.redirect('/');
+  }
 });
 
 // POST /login
@@ -95,10 +102,7 @@ app.post('/login', async (req, res) => {
     });
   } catch (e) {
     console.log(e);
-    req.session.error = 'Authentication failed, please check your '
-        + ' username and password.'
-        + ` (use "${req.body.email}" and "foobar")`;
-    res.redirect('/login');
+    res.render('login', {dangerMessage: e});
     res.status(400).send();
   }
 });
@@ -615,16 +619,23 @@ app.get('/jobreport/:jobId/crew/:crewId/report?', async (req, res) => {
     await report.save((err) => {
       if(err) {return console.log(err);}
     })
-    res.redirect(`/report/${report[0]._id}`);
+    res.redirect(`/report/${report._id}`);
   }
 });
 
 // GET /report/:reportId
-app.get('/report/:reportId', async (req, res) => {
+app.get('/report/:reportId', (req, res) => {
   const reportId = req.params.reportId;
-  DailyReport.findById(reportId, (err, report) => {
+  DailyReport.findById(reportId, async (err, report) => {
     if(err){console.log(err);}
-    res.render('dailyReport', {report});
+    try {
+      var crew = await Crew.findById(report.crew);
+      var job = await Jobsite.findById(report.jobsite);
+      res.render('dailyReport', {report, crew, job});
+    } catch (e) {
+      console.log(e);
+      res.redirect('/');
+    }
   });  
 });
 

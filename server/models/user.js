@@ -44,14 +44,14 @@ UserSchema.statics.authenticateUser = function (email, password) {
 
   return User.findOne({email}).exec().then((user) => {
     if (!user) {
-      return Promise.reject();
+      return Promise.reject('Email not found!');
     }
     return new Promise((resolve, reject) => {
       bcrypt.compare(password, user.password, (err, res) => {
         if (res) {
           resolve(user);
         } else {
-          reject(user);
+          reject('Incorrect Password!');
         }
       });
     });
