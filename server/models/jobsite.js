@@ -13,10 +13,9 @@ var JobsiteSchema = new mongoose.Schema({
   description: {
     type: String,
     trim: true,
-    minlength: 1
   },
   jobcode: {
-    type: Number,
+    type: String,
     trim: true
   },
   crews: [{

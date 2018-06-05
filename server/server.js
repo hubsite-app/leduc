@@ -8,14 +8,19 @@ const MongoStore = require('connect-mongo')(session);
 const {ObjectID} = require('mongodb');
 const path = require('path');
 const request = require('request');
+const {mongoose} = require('./db/mongoose');
 
-var {mongoose} = require('./db/mongoose');
-var {User} = require('./models/user');
-var {Jobsite} = require('./models/jobsite');
-var {Employee} = require('./models/employee');
-var {Crew} = require('./models/crew');
+const {User} = require('./models/user');
+const {Jobsite} = require('./models/jobsite');
+const {Employee} = require('./models/employee');
+const {Crew} = require('./models/crew');
+const {DailyReport} = require('./models/dailyReport');
+const {EmployeeWork} = require('./models/employeeWork');
+const {VehicleWork} = require('./models/vehicleWork');
+const {Production} = require('./models/production');
+const {MaterialShipment} = require('./models/materialShipment');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 300;
 var app = express();
 var sess = {
   secret: 'bow-marks-big-secret',
@@ -47,11 +52,26 @@ app.set('views', `${__dirname}/views`);
 app.set('view engine', 'ejs');
 
 // root
-app.get('/', function(req, res, next) {
+app.get('/', async (req, res, next) => {
   if (req.session.user) {
-    console.log(req.session.user);
+    if(!req.session.user.employee) {
+      var dangerMessage = encodeURIComponent('Please link your account with a Bow Mark employee');
+      res.redirect(`/user/${req.session.user._id}/?dangerMessage=${dangerMessage}`);
+    }
     user = req.session.user;
-    res.render('index', {serverMessage: `Hello ${user.name}, this is your session`});
+    var crewArray = [];
+    var jobArray = [];
+    var crewArray = await Crew.find({employees: user.employee}, (err, crews) => {
+      if(err) {return console.log(err);}
+    });
+    Jobsite.find({}, async (err, jobsites) => {
+      if(err) {return console.log(err);}
+      await jobsites.forEach((jobsite) => {
+        jobArray[jobsite._id] = jobsite;
+      });
+      res.render('index', {jobArray, crewArray});
+    });
+    
   } else {
     res.render('login', {dangerMessage: 'You must be logged in to use this site'});
   }
@@ -101,14 +121,12 @@ app.get('/signup', (req, res) => {
 app.post('/signup', async (req, res) => {
   try {
     const user = new User(req.body);
-    console.log('Before POST /signup save', req.body);
     await user.save((err) => {
       if (err) {
         console.log(err);
         return;
       }
     });
-    console.log('User is saved'); 
     req.session.regenerate(() => {
       req.session.user = user;
       res.redirect('/');
@@ -136,6 +154,7 @@ app.get('/users', async (req, res) => {
 
 // GET /user/:id
 app.get('/user/:id', (req, res) => {
+  var dangerMessage = req.query.dangerMessage;
   if (req.session.user) {
     User.findById(req.params.id, (err, user) => {
       if (err) {
@@ -147,7 +166,7 @@ app.get('/user/:id', (req, res) => {
           employees.forEach((employee) => {
             employeeArray[employee._id] = employee;
           });
-          res.render('users/user', {user, employeeArray});
+          res.render('users/user', {user, employeeArray, dangerMessage});
         });
       } else {
         res.render('userIndex');
@@ -206,9 +225,7 @@ app.post('/user/:id/employee', (req, res) => {
     req.session.user.employee = employeeId;
     user.save((err) => {
       if(err) {console.log(err);}
-    });
-    console.log('User:', user)
-    console.log('Session:', req.session.user);
+    })
     Employee.findById(employeeId, (err, employee) => {
       if(err) {return console.log(err);}
       employee.user = userId;
@@ -233,8 +250,6 @@ app.patch('/user/:id/employee', async (req, res) => {
       await user.save((err) => {
         if (err) {return console.log(err);}
       });
-      console.log('User: ', user)
-      console.log('Session:', req.session.user);
       await employee.save((err) => {
         if (err) {return console.log(err);}
       });
@@ -243,14 +258,8 @@ app.patch('/user/:id/employee', async (req, res) => {
   });
 });
 
-// GET /jobsite/new
-app.get('/jobsite/new', async (req, res) => {
-  res.render('newJobsite');
-});
-
 // POST /jobsite/new
 app.post('/jobsite/new', async (req, res) => {
-  console.log('POST /jobsite/new');
   var jobsite = new Jobsite(req.body);
   try {
     await jobsite.save((err) => {
@@ -262,17 +271,23 @@ app.post('/jobsite/new', async (req, res) => {
   } catch (e) {
     console.log(e);
   }  
-  res.redirect('/');
+  res.redirect('/jobsites');
 });
 
 // GET /jobsites
 app.get('/jobsites', (req, res) => {
+  var jobArray = [];
+  var crewArray = [];
   Jobsite.find({}, (err, jobsites) => {
-    var jobsiteMap = [];
     jobsites.forEach((jobsite) => {
-      jobsiteMap[jobsite._id] = jobsite;
+      jobArray[jobsite._id] = jobsite;
     });
-    res.render('jobsiteIndex', {array: jobsiteMap});
+    Crew.find({}, (err, crews) => {
+      crews.forEach((crew) => {
+        crewArray[crew._id] = crew;
+      });
+      res.render('jobsiteIndex', {jobArray, crewArray});
+    });
   });
 });
 
@@ -299,6 +314,59 @@ app.delete('/jobsite/:id', async (req, res) => {
     }
   } catch (e) {
     res.status(400).send(e);
+  }
+});
+
+// POST /jobsite/:jobId/crew/:crewId
+app.post('/jobsite/:jobId/crew/:crewId', async (req, res) => {
+  var crewId = req.params.crewId;
+  var jobId = req.params.jobId;
+  if (!ObjectID.isValid(crewId) && !ObjectID.isValid(jobId)) {
+    return res.status(404).send();
+  }
+  try {
+    await Crew.findById(crewId, async (err, crew) => {
+      await Jobsite.findById(jobId, async (err, jobsite) => {
+        crew.jobsites.push(jobsite);
+        await crew.save((err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+        jobsite.crews.push(crew);
+        await jobsite.save((err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      });
+    });
+  } catch (e) {
+    console.log(e);
+    res.render('/');
+  }
+});
+
+// DELETE /jobsite/:jobId/crew/:crewId
+app.delete('/jobsite/:jobId/crew/:crewId', async (req, res) => {
+  var crewId = req.params.crewId;
+  var jobId = req.params.jobId;
+  if (!ObjectID.isValid(crewId) && !ObjectID.isValid(jobId)) {
+    return res.status(404).send();
+  }
+  try {
+    await Crew.findByIdAndUpdate({_id: crewId}, {$pull: {jobsites: jobId}}, (err, crew) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+    await Jobsite.findByIdAndUpdate({_id: jobId}, {$pull: {crews: crewId}}, (err, jobsite) => {
+      if (err) {
+        console.log(err);
+      }
+    })
+  } catch (e) {
+    return console.log(e);
   }
 });
 
@@ -347,7 +415,6 @@ app.get('/employee/:id', (req, res) => {
       crews.forEach((crew) => {
         crewArray[crew._id] = crew;
       })
-      console.log(crewArray);
       res.render('employees/employee', {employee, crewArray});
     });
   })
@@ -433,17 +500,24 @@ app.post('/crew', async (req, res) => {
 
 // GET /crews
 app.get('/crews', (req, res) => {
-  Crew.find({}, async (err, crews) => {
+  Crew.find({}, (err, crews) => {
     var crewMap = [];
     crews.forEach((crew) => {
       crewMap[crew._id] = crew;
     });
-    await Employee.find({}, (err, employees) => {
+    Employee.find({}, (err, employees) => {
       var employeeMap = [];
       employees.forEach((employee) => {
         employeeMap[employee._id] = employee;
       });
-      res.render('crews', {crewArray: crewMap, employeeArray: employeeMap});
+      Jobsite.find({}, (err, jobsites) => {
+        var jobArray = [];
+        if(err){return console.log(err);}
+        jobsites.forEach((jobsite) => {
+          jobArray[jobsite._id] = jobsite;
+        })
+        res.render('crews', {crewArray: crewMap, employeeArray: employeeMap, jobArray});
+      });
     });
   });
 });
@@ -517,6 +591,41 @@ app.delete('/crew/:crewId/employee/:employeeId', async (req, res) => {
   } catch (e) {
     return console.log(e);
   }
+});
+
+// GET /jobreport/:jobId/crew/:crewId/report?date=date
+app.get('/jobreport/:jobId/crew/:crewId/report?', async (req, res) => {
+  const jobId = req.params.jobId;
+  const crewId = req.params.crewId;
+  if (!ObjectID.isValid(crewId) && !ObjectID.isValid(jobId)) {
+    return res.status(404).send();
+  }
+  const date = new Date(decodeURI(req.query.date));
+  var report = await DailyReport.find({jobsite: jobId, crew: crewId, date: {$gte: date.setHours(0,0,0,0), $lte: date.setHours(23,59,59,999)}});
+  if (!_.isEmpty(report[0])) {
+    console.log('going to existing report');
+    res.redirect(`/report/${report[0]._id}`);
+  } else {
+    console.log('creating report');
+    var report = new DailyReport({
+      date: new Date(),
+      jobsite: jobId,
+      crew: crewId
+    });
+    await report.save((err) => {
+      if(err) {return console.log(err);}
+    })
+    res.redirect(`/report/${report[0]._id}`);
+  }
+});
+
+// GET /report/:reportId
+app.get('/report/:reportId', async (req, res) => {
+  const reportId = req.params.reportId;
+  DailyReport.findById(reportId, (err, report) => {
+    if(err){console.log(err);}
+    res.render('dailyReport', {report});
+  });  
 });
 
 app.listen(port, () => {

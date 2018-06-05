@@ -1,22 +1,23 @@
 $(document).ready(function () {
-  $('.employeeDropdown').dropdown({
+  $('.crewDropdown').dropdown({
     hover: false,
     closeOnClick: false,
     coverTrigger: false
   });
-  $('.newCrewMember').click(function () {
-    var crewId = $(this).siblings('.id').val();
-    var employeeId = $(this).val();
+
+  $('.newCrew').click(function () {
+    var jobId = $(this).siblings('.id').val();
+    var crewId = $(this).val();
     if ($(this).is(':checked')) {
       $.ajax({
         type: 'POST',
-        url: `/crew/${crewId}/employee/${employeeId}`
+        url: `/jobsite/${jobId}/crew/${crewId}`
       });
       location.reload(true);
     } else {
       $.ajax({
         type: 'DELETE',
-        url: `/crew/${crewId}/employee/${employeeId}`
+        url: `/jobsite/${jobId}/crew/${crewId}`
       });
       location.reload(true);
     }
@@ -26,12 +27,12 @@ $(document).ready(function () {
 function deleteRequest(id) {
   $.ajax({
     type: 'DELETE',
-    url: `/crew/${id}`
+    url: `http://localhost:3000/jobsite/${id}`
   });
   location.reload();
 };
 function loadForm() {
-  var template = $('#crew-form-template').html();
-  $("#crew-form-div").append(template);
-  $('#add-crew').remove();
+  var template = $('#jobsite-form-template').html();
+  $("#jobsite-form-div").append(template);
+  $('#add-jobsite').remove();
 };

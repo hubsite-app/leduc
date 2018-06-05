@@ -21,7 +21,6 @@
       <% } else { %>
         <li><a href="/logout">Logout</a></li>
         <li><a href="/users">Users</a></li>
-        <li><a href="/jobsite/new">New Jobsite</a></li>
         <li><a href="/jobsites">Jobsites</a></li>
         <li><a href="/employees">Employees</a></li>
         <li><a href="/crews">Crews</a></li>
@@ -44,7 +43,7 @@
             <div class="row">
               <div class="col s12 m10">
                 <div class="card-content white-text">
-                  <%= dangerMessage %>
+                  <%= session.dangerMessage %>
                 </div>
               </div>
               <div class="col s12 m2">

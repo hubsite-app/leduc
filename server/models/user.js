@@ -72,10 +72,6 @@ UserSchema.pre('save', function (next) {
   }
 });
 
-UserSchema.pre('remove', function (next) {
-  // Remove from all relationships
-});
-
 var User = mongoose.model('User', UserSchema);
 
 module.exports = {User};

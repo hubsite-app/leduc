@@ -18,6 +18,11 @@ var VehicleSchema = new mongoose.Schema({
     trim: true,
     required: true
   },
+  rental: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
   sourceCompany: {
     type: String,
     trim: true,

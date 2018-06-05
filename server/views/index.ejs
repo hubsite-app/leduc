@@ -1,32 +1,50 @@
 <div class="page">
   <% include partials/head %>
+  <script src="/js/index.js"></script>
 
-    <% if (session.user.employee == null) { %>
-      <input class="loadCheck" type="hidden" id="userId" value="<%=session.user._id%>" />
-      <input type="hidden" id="baseUrl" value="<%=baseUrl%>" />
-    <% } %>
-    
     <div class="container">
-      <p>Hello! You're account is now setup!</p>
+
+      <div class="row">
+        <div class="col s8"><span class="flow-text">Choose a Job</span></div>
+        <% if(crewArray.length > 1) { %>
+          <div class="col s4">
+            <a class='crew-dropdown-toggle btn right' href='' data-target='crew-dropdown'>Select Crew</a>
+          </div>
+          <ul id="crew-dropdown" class="collection dropdown-content">
+            <% for (var i in crewArray) { %>
+              <li class="collection-item">
+                <label>
+                  <input class="with-gap crew-selection" type="radio" name="crew" value="<%=crewArray[i]._id%>" />
+                  <span><%= crewArray[i].name %></span>
+                </label>
+              </li>
+            <% } %>
+          </ul>
+        <% } else if (crewArray.length == 1) { %>
+          <div class="col s4">
+            <% for (var i in crewArray) { %>
+              <input class="singleCrewSelection" name="crew" type="hidden" value="<%= crewArray[i]._id %>" />
+            <% } %>
+          </div>
+        <% } else { %>
+          <div class="row">
+              <h3>You must join a crew to pick a job</h3>
+          </div>
+        <% } %>
+      </div>
+
+      <% if (jobArray) { %>
+        <div class="row">
+          <% for (var i in jobArray) { %>
+            <div class="card panel">
+              <a class="report-link" href="" id="<%=jobArray[i]._id%>"><%= jobArray[i].name %></a>
+            </div>
+          <% } %>
+       </div>
+      <% } %>
+      
     </div>
 
   <% include partials/foot %>
 </div>
-
-<script>
-  $(document).ready(function () {
-    $('.loadCheck').ready(function () {
-      var userId = $('#userId').val();
-      var baseUrl = $('#baseUrl').val();
-      $.ajax({
-        type: 'GET',
-        url: `http://${baseUrl}/user/${userId}`,
-        success: function(data) {
-          $('.page').html(data);
-          window.location.url = `http://${baseUrl}/user/${userId}`;
-        }
-      });
-    });
-  });
-</script>
 

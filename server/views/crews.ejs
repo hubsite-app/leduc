@@ -11,21 +11,35 @@
           <% id = crewArray[result]._id %>
           <a class="crew-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
           <h3 class="card-title" style="font-weight: bold;"><%= crewArray[result].name %></h3>
-          <ul class="collection">
-            <% crewArray[result].employees.forEach((employee) => { %>
-              <li class="collection-item">
-                <h6><%= employeeArray[employee].name %></h6>
-                <span><%= employeeArray[employee].jobTitle %></span>
-              </li>
-            <% }); %>
-          </ul>
+          <% if (crewArray[result].employees.length > 0) { %>
+            <h5>Employees: </h5>
+            <ul class="collection">
+              <% crewArray[result].employees.forEach((employee) => { %>
+                <li class="collection-item">
+                  <h6><%= employeeArray[employee].name %></h6>
+                  <span><%= employeeArray[employee].jobTitle %></span>
+                </li>
+              <% }); %>
+            </ul>
+          <% } %>
+          <% if (crewArray[result].jobsites.length > 0) { %>
+            <h5>Jobsites: </h5>
+            <ul class="collection">
+              <% crewArray[result].jobsites.forEach((jobsite) => { %>
+                <li class="collection-item">
+                  <h6><%= jobArray[jobsite].name %></h6>
+                </li>
+              <% }); %>
+            </ul>
+          <% } %>
+          
 
-          <div class="row">
-            <div class="col-12">
-              <a id="dropdown-crew-<%= crewArray[result]._id %>" class='employeeDropdown btn' href='' data-target='crew-<%= crewArray[result]._id %>-dropdown' style="width: 100%;">Select Employees</a>
-            </div>
-          </div>
           <% if (employeeArray) { %>
+            <div class="row">
+              <div class="col-12">
+                <a id="dropdown-crew-<%= crewArray[result]._id %>" class='employeeDropdown btn' href='' data-target='crew-<%= crewArray[result]._id %>-dropdown' style="width: 100%;">Select Employees</a>
+              </div>
+            </div>
             <ul class="collection dropdown-content" id="crew-<%= crewArray[result]._id %>-dropdown">
               <form id="crew-<%= crewArray[result]._id %>-employee-form">
                 <% for (var i in employeeArray) { %>
