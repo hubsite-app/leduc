@@ -1,7 +1,147 @@
 <% include partials/head %>
-
-  <h2><%= job.name %></h2>
-  <h3><%= crew.name %></h3>
-  <h4><%= report.date %></h4>
+  <script src="/js/dailyReport.js"></script>
   
+  <div class="container">
+
+    <h2><%= job.name %></h2>
+    <h3><%= crew.name %></h3>
+    <h4><%= report.date %></h4>
+    
+    <% if (Object.keys(employeeArray).length > 0) { %>
+      <div class="card-panel" style="padding-bottom: 3em;">
+        <h5 class="card-title">Employee Hours</h5>
+        <% if (employeeHourArray) { %>
+          <ul class="collection">
+            <% for (var i in employeeHourArray) { %>
+              <li class="collection-item">
+                <a class="employee-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteEmployeeWorkRequest('<%= employeeHourArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
+                <%= employeeHourArray[i].jobTitle %> - <%= employeeHourArray[i].hours %>
+                  <% if (employeeHourArray[i].hours <= 1) { %> hour <% } else { %> hours <% } %></br>
+                <span><%= employeeArray[employeeHourArray[i].employee].name %></span>
+              </li>
+            <% } %>
+          </ul>
+        <% } %>
+        <div id="employee-work-form-div"></div>
+        <div id="employee-work-button-div">
+          <div id="add-employee-work">
+            <button class="btn waves-effect waves-light right" id="crew-form" onClick="loadEmployeeForm()">Add Work
+              <i class="material-icons right">add</i>
+            </button>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+    <% if (Object.keys(vehicleArray).length > 0) { %>
+      <div class="card-panel" style="padding-bottom: 3em;">
+        <h5 class="card-title">Vehicle Hours</h5>
+        <% if (vehicleHourArray) { %>
+          <ul class="collection">
+            <% for (var i in vehicleHourArray) { %>
+              <li class="collection-item">
+                <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteVehicleWorkRequest('<%= vehicleHourArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
+                <%= vehicleHourArray[i].jobTitle %> - <%= vehicleHourArray[i].hours %>
+                  <% if (vehicleHourArray[i].hours <= 1) { %> hour <% } else { %> hours <% } %></br>
+                <span><%= vehicleArray[vehicleHourArray[i].vehicle].name %></span>
+              </li>
+            <% } %>
+          </ul>
+        <% } %>
+        <div id="vehicle-work-form-div"></div>
+        <div id="vehicle-work-button-div">
+          <div id="add-vehicle-work">
+            <button class="btn waves-effect waves-light right" id="crew-form" onClick="loadVehicleForm()">Add Work
+              <i class="material-icons right">add</i>
+            </button>
+          </div>
+        </div>
+      </div>
+    <% } %>
+    
+
+  </div>
+
 <% include partials/foot %>
+
+<script id='employee-work-form-template' type="text/template">
+  <div id="employee-work-form">
+    <div class="row card-panel">
+      <i class="material-icons right pointer" onclick="removeEmployeeForm()" id="employee-form-close" aria-hidden="true">close</i>
+      <h3>Add Employee Work</h3>
+      <form method="post" action="/employeehour/report/<%= report._id %>" id="employee-form">
+        <div class="input-field col s12">
+          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
+          <label for="autocomplete-input">Work Done</label>
+        </div>
+        <div class="input-field col s12">
+          <input name="hours" type="number" step="0.01">
+          <label for="hours">Hours</label>
+        </div>
+        <h6>Employees: </h6>
+        <% crew.employees.forEach((employeeId) => { %>
+          <div class="input-field col s6">
+            <label>
+              <input type="checkbox" value="<%= employeeArray[employeeId]._id %>" name="employee" />
+              <span><%= employeeArray[employeeId].name %></span>
+            </label>
+          </div>
+        <% }); %>
+        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button>
+      </form>
+    </div>
+  </div>
+</script>
+
+<script id="employee-work-form-add-button" type="text/template">
+  <div id="employee-work-button-div">
+    <div id="add-employee-work">
+      <button class="btn waves-effect waves-light right" id="crew-employee-form" onClick="loadEmployeeForm()">Add Work
+        <i class="material-icons right">add</i>
+      </button>
+    </div>
+  </div>
+</script>
+
+<script id='vehicle-work-form-template' type="text/template">
+  <div id="vehicle-work-form">
+    <div class="row card-panel">
+      <i class="material-icons right pointer" onclick="removeVehicleForm()" id="vehicle-form-close" aria-hidden="true">close</i>
+      <h3>Add Vehicle Work</h3>
+      <form method="post" action="/vehiclehour/report/<%= report._id %>" id="vehicle-form">
+        <div class="input-field col s12">
+          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
+          <label for="autocomplete-input">Work Done</label>
+        </div>
+        <div class="input-field col s12">
+          <input name="hours" type="number" step="0.01">
+          <label for="hours">Hours</label>
+        </div>
+        <h6>Vehicles: </h6>
+        <% crew.vehicles.forEach((vehicleId) => { %>
+          <div class="input-field col s6">
+            <label>
+              <input type="checkbox" value="<%= vehicleArray[vehicleId]._id %>" name="vehicle" />
+              <span><%= vehicleArray[vehicleId].name %></span>
+            </label>
+          </div>
+        <% }); %>
+        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button>
+      </form>
+    </div>
+  </div>
+</script>
+
+<script id="vehicle-work-form-add-button" type="text/template">
+  <div id="vehicle-work-button-div">
+    <div id="add-vehicle-work">
+      <button class="btn waves-effect waves-light right" id="crew-vehicle-form" onClick="loadVehicleForm()">Add Work
+        <i class="material-icons right">add</i>
+      </button>
+    </div>
+  </div>
+</script>

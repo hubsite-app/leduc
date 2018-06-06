@@ -9,15 +9,17 @@ var EmployeeWorkSchema = new mongoose.Schema({
   },
   jobTitle: {
     type: String,
-    require: true
+    required: true
   },
   employee: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Employee'
+    ref: 'Employee',
+    required: true
   },
   dailyReport: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'DailyReport'
+    ref: 'DailyReport',
+    require: true
   }
 });
 

@@ -5,33 +5,31 @@
 <div class="container">
   <h1>Employee List</h1>
   <% if (employeeArray) { %>
-    <ul class="collection">
-      <% for (var result in employeeArray) { %>
-        <li class="collection-item">
-          <% id = employeeArray[result]._id %>
-          <a class="employee-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
-          <h5><a href="/employee/<%=employeeArray[result]._id%>"><%= employeeArray[result].name %></a></h5>
-          <p><%= employeeArray[result].jobTitle %></p>
-          <% if (employeeArray[result].user !== undefined) { %>
-            <span>User: </span><%= userArray[employeeArray[result].user].name %>
-          <% } %>
-          <% if (employeeArray[result].crews.length > 0) { %>
-            <h5>Crews</h5>
-            <ul class="collection">
-              <% for (var i in crewArray) { %>
-                <% employeeArray[result].crews.forEach((crewId) => { %>
-                  <% if (crewArray[i]._id.equals(crewId)) { %>
-                    <li class="collection-item">
-                      <%= crewArray[i].name %>
-                    </li>
-                  <%}%>
-                <% }); %>
-              <% } %>
-            </ul>
-          <% } %>
-        </li>
-      <% } %>
-    </ul>
+    <% for (var result in employeeArray) { %>
+      <div class="card-panel hoverable">
+        <% id = employeeArray[result]._id %>
+        <a class="employee-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
+        <h5><a href="/employee/<%=employeeArray[result]._id%>"><%= employeeArray[result].name %></a></h5>
+        <p><%= employeeArray[result].jobTitle %></p>
+        <% if (employeeArray[result].user !== undefined) { %>
+          <span>User: </span><%= userArray[employeeArray[result].user].name %>
+        <% } %>
+        <% if (employeeArray[result].crews.length > 0) { %>
+          <h5>Crews</h5>
+          <ul class="collection">
+            <% for (var i in crewArray) { %>
+              <% employeeArray[result].crews.forEach((crewId) => { %>
+                <% if (crewArray[i]._id.equals(crewId)) { %>
+                  <li class="collection-item">
+                    <%= crewArray[i].name %>
+                  </li>
+                <%}%>
+              <% }); %>
+            <% } %>
+          </ul>
+        <% } %>
+        </div>
+    <% } %>
   <% } %>
 
   <div id="employee-form-div"></div>

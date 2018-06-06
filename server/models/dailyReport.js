@@ -21,6 +21,11 @@ var DailyReportSchema = new mongoose.Schema({
     ref: 'Crew',
     required: true
   },
+  approved: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
   employeeWork: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'EmployeeWork'

@@ -13,6 +13,7 @@ const {mongoose} = require('./db/mongoose');
 const {User} = require('./models/user');
 const {Jobsite} = require('./models/jobsite');
 const {Employee} = require('./models/employee');
+const {Vehicle} = require('./models/vehicle');
 const {Crew} = require('./models/crew');
 const {DailyReport} = require('./models/dailyReport');
 const {EmployeeWork} = require('./models/employeeWork');
@@ -471,7 +472,7 @@ app.delete('/employee/:id', async (req, res) => {
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {
-    return res.status(404).send;
+    return res.status(404).send();
   }
   try {
     const employee = await Employee.findOneAndRemove({
@@ -482,6 +483,44 @@ app.delete('/employee/:id', async (req, res) => {
     }
   } catch (e) {
     res.status(400).send(e);
+  }
+});
+
+// GET /vehicles
+app.get('/vehicles', async (req, res) => {
+  try {
+    var vehicleArray = await Vehicle.getAll();
+    res.render('vehicles/vehicleIndex', {vehicleArray});
+  } catch (e) {
+    console.log(e);
+    res.redirect('back');
+  }
+});
+
+// POST /vehicle
+app.post('/vehicle', async (req, res) => {
+  try {
+    var vehicle = await new Vehicle(req.body);
+    await vehicle.save((err) => {
+      if (err) {return console.log(err);}
+    });
+    res.redirect('back');
+  } catch (e) {
+    console.log(e);
+    res.redirect('/');
+  }
+}); 
+
+// DELETE /vehicle/:id
+app.delete('/vehicle/:id', async (req, res) => {
+  var id = req.params.id;
+  if (!ObjectID.isValid(id)) {return res.status(404).send();}
+  try {
+    const vehicle = await Vehicle.findOneAndRemove({_id: id});
+    if (!vehicle) {return res.status(404).send();}
+    res.redirect('back');
+  } catch (e) {
+    return console.log(e);
   }
 });
 
@@ -514,13 +553,14 @@ app.get('/crews', (req, res) => {
       employees.forEach((employee) => {
         employeeMap[employee._id] = employee;
       });
-      Jobsite.find({}, (err, jobsites) => {
+      Jobsite.find({}, async (err, jobsites) => {
         var jobArray = [];
         if(err){return console.log(err);}
         jobsites.forEach((jobsite) => {
           jobArray[jobsite._id] = jobsite;
-        })
-        res.render('crews', {crewArray: crewMap, employeeArray: employeeMap, jobArray});
+        });
+        var vehicleArray = await Vehicle.getAll();
+        res.render('crews', {crewArray: crewMap, employeeArray: employeeMap, jobArray, vehicleArray});
       });
     });
   });
@@ -554,14 +594,14 @@ app.post('/crew/:crewId/employee/:employeeId', async (req, res) => {
   try {
     await Crew.findById(crewId, async (err, crew) => {
       await Employee.findById(employeeId, async (err, employee) => {
-        crew.employees.push(employee);
-        await crew.save((err) => {
+        employee.crews.push(crew);
+        await employee.save((err) => {
           if (err) {
             console.log(err);
           }
         });
-        employee.crews.push(crew);
-        await employee.save((err) => {
+        crew.employees.push(employee);
+        await crew.save((err) => {
           if (err) {
             console.log(err);
           }
@@ -591,9 +631,55 @@ app.delete('/crew/:crewId/employee/:employeeId', async (req, res) => {
       if (err) {
         console.log(err);
       }
-    })
+    });
   } catch (e) {
     return console.log(e);
+  }
+});
+
+// POST /crew/:crewId/vehicle/:vehicleId
+app.post('/crew/:crewId/vehicle/:vehicleId', async (req, res) => {
+  var crewId = req.params.crewId;
+  var vehicleId = req.params.vehicleId;
+  if (!ObjectID.isValid(crewId) && !ObjectID.isValid(vehicleId)) {
+    return console.log('ID is invalid');
+  }
+  try {
+    var crew = await Crew.findById(crewId, (err) => err && console.log(err));
+    var vehicle = await Vehicle.findById(vehicleId, (err) => err && console.log(err));
+    vehicle.crews.push(crew);
+    await vehicle.save((err) => err && console.log(err));
+    crew.vehicles.push(vehicle);
+    await crew.save((err) => err && console.log(err));
+  } catch (e) { 
+    console.log(e);
+    var dangerMessage = encodeURIComponent("Unable to add vehicle to crew");
+    res.redirect(`/?dangermessage=${dangerMessage}`);
+  }
+});
+
+// DELETE /crew/:crewId/vehicle/:vehicleId
+app.delete('/crew/:crewId/vehicle/:vehicleId', async (req, res) => {
+  var crewId = req.params.crewId;
+  var vehicleId = req.params.vehicleId;
+  if (!ObjectID.isValid(crewId) && !ObjectID.isValid(vehicleId)) {
+    return console.log('ID is invalid');
+  }
+  try {
+    await Crew.findByIdAndUpdate({_id: crewId}, {$pull: {vehicles: vehicleId}}, (err, crew) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+    await Vehicle.findByIdAndUpdate({_id: vehicleId}, {$pull: {crews: crewId}}, (err, vehicle) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    var dangerMessage = encodeURIComponent("Unable to remove vehicle from crew");
+    res.redirect(`/?dangermessage=${dangerMessage}`);
   }
 });
 
@@ -631,12 +717,112 @@ app.get('/report/:reportId', (req, res) => {
     try {
       var crew = await Crew.findById(report.crew);
       var job = await Jobsite.findById(report.jobsite);
-      res.render('dailyReport', {report, crew, job});
+      var employeeArray = await Employee.getAll();
+      var employeeHourArray = await EmployeeWork.find({dailyReport: report});
+      var vehicleArray = await Vehicle.getAll();
+      var vehicleHourArray = await VehicleWork.find({dailyReport: report});
+      res.render('dailyReport', {report, crew, job, employeeArray, employeeHourArray, vehicleArray, vehicleHourArray});
     } catch (e) {
       console.log(e);
       res.redirect('/');
     }
   });  
+});
+
+// POST /employeehour/report/:reportId
+app.post('/employeehour/report/:reportId', async (req, res) => {
+  var reportId = req.params.reportId;
+  if (!ObjectID.isValid(reportId)) {return res.status(404).send();}
+  try {
+    if (typeof req.body.employee == 'object') {
+      req.body.employee.forEach((employee) => {
+        var employeeWork = new EmployeeWork({
+          hours: req.body.hours,
+          jobTitle: req.body.jobTitle,
+          employee: employee,
+          dailyReport: reportId
+        });
+        employeeWork.save((err) => {
+          if(err){return console.log(err);}
+        });
+      });
+      res.redirect('back');
+    } else {
+      var employeeWork = new EmployeeWork({
+        hours: req.body.hours,
+        jobTitle: req.body.jobTitle,
+        employee: req.body.employee,
+        dailyReport: reportId
+      });
+      employeeWork.save((err) => {
+        if(err){return console.log(err);}
+      });
+      res.redirect('back');
+    }
+  } catch (e) {
+    console.log(e);
+    var dangerMessage = encodeURIComponent('You must choose an employee');
+    res.redirect(`/report/${reportId}/?dangerMessage=${dangerMessage}`);
+  }
+});
+
+// DELETE /employeework/:id
+app.delete('/employeework/:id', async (req, res) => {
+  var id = req.params.id;
+  try {
+    await EmployeeWork.findByIdAndRemove({_id: id}, (err) => err && console.log(err));
+  } catch (e) {
+    console.log(e);
+    var dangerMessage = encodeURIComponent('Unable to delete Employee Work');
+    res.redirect(`/report/${reportId}/?dangerMessage=${dangerMessage}`);
+  }
+});
+
+// POST /employeehour/report/:reportId
+app.post('/vehiclehour/report/:reportId', async (req, res) => {
+  var reportId = req.params.reportId;
+  if (!ObjectID.isValid(reportId)) {return res.status(404).send();}
+  try {
+    if (typeof req.body.vehicle == 'object') {
+      req.body.vehicle.forEach((vehicle) => {
+        var vehicleWork = new vehicleWork({
+          hours: req.body.hours,
+          jobTitle: req.body.jobTitle,
+          vehicle: vehicle,
+          dailyReport: reportId
+        });
+        vehicleWork.save((err) => {
+          if(err){return console.log(err);}
+        });
+      });
+      res.redirect('back');
+    } else {
+      var vehicleWork = new VehicleWork({
+        hours: req.body.hours,
+        jobTitle: req.body.jobTitle,
+        vehicle: req.body.vehicle,
+        dailyReport: reportId
+      });
+      vehicleWork.save((err) => {
+        if(err){return console.log(err);}
+      });
+      res.redirect('back');
+    }
+  } catch (e) {
+    console.log(e);
+    res.redirect('back');
+  }
+});
+
+// DELETE /vehiclework/:id
+app.delete('/vehiclework/:id', async (req, res) => {
+  var id = req.params.id;
+  try {
+    await VehicleWork.findByIdAndRemove({_id: id}, (err) => err && console.log(err));
+  } catch (e) {
+    console.log(e);
+    res.redirect('back');
+  }
 });
 
 app.listen(port, () => {

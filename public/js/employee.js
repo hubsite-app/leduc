@@ -1,7 +1,7 @@
 function deleteRequest(id) {
   $.ajax({
     type: 'DELETE',
-    url: `http://localhost:3000/employee/${id}`
+    url: `/employee/${id}`
   });
   location.reload();
 };

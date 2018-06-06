@@ -21,6 +21,28 @@ $(document).ready(function () {
       location.reload(true);
     }
   });
+  $('.vehicleDropdown').dropdown({
+    hover: false,
+    closeOnClick: false,
+    coverTrigger: false
+  });
+  $('.newCrewVehicle').click(function () {
+    var crewId = $(this).siblings('.id').val();
+    var vehicleId = $(this).val();
+    if ($(this).is(':checked')) {
+      $.ajax({
+        type: 'POST',
+        url: `/crew/${crewId}/vehicle/${vehicleId}`
+      });
+      location.reload(true);
+    } else {
+      $.ajax({
+        type: 'DELETE',
+        url: `/crew/${crewId}/vehicle/${vehicleId}`
+      });
+      location.reload(true);
+    }
+  });
 });
 
 function deleteRequest(id) {

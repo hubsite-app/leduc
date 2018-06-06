@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const {Crew} = require('./crew');
+const {DailyReport} = require('./dailyReport');
 
 var JobsiteSchema = new mongoose.Schema({
   name: {
@@ -21,6 +23,10 @@ var JobsiteSchema = new mongoose.Schema({
   crews: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Crew'
+  }],
+  dailyReports: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'DailyReport'
   }]
 });
 

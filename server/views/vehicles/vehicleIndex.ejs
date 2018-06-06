@@ -1,0 +1,65 @@
+<% include ../partials/head %>
+  <script src="/js/vehicle.js"></script>
+
+  <div class="container">
+
+    <h1>Vehicles</h1>
+    <% if (vehicleArray) { %>
+      <% for (var i in vehicleArray) { %>
+        <div class="card-panel hoverable">
+          <a class="vehicle-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteRequest('<%= vehicleArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
+          <h4 class="card-title"><%= vehicleArray[i].name %></h4>
+          <p class="card-content"><%= vehicleArray[i].vehicleType %></p>
+          <p class="card-content"><%= vehicleArray[i].sourceCompany %></p>
+        </div>
+      <% } %>
+    <% } %>
+
+    <div id="vehicle-form-div"></div>
+
+    <div id="add-vehicle">
+      <button class="btn waves-effect waves-light right" id="vehicle-form" onClick="loadForm()">Add Vehicle
+        <i class="material-icons right">add</i>
+      </button>
+    </div>
+
+  </div>
+
+<% include ../partials/foot %>
+
+<script id='vehicle-form-template' type="text/template">
+  <div class="row card-panel">
+    <h3>Add a Vehicle</h3>
+    <form method="post" action="/vehicle">
+      <div class="input-field">
+        <input id="name" type="text" class="validate" name="name">
+        <label for="name">Vehicle Name</label>
+      </div>
+      <div class="input-field">
+        <input id="vehicleCode" type="text" class="validate" name="vehicleCode">
+        <label for="vehicleCode">Vehicle Code</label>
+      </div>
+      <div class="input-field">
+        <input id="vehicleType" type="text" class="validate" name="vehicleType">
+        <label for="vehicleType">Vehicle Code</label>
+      </div>
+      <div id="rental-div">
+        <label>
+          <input type="checkbox" id="rental-toggle" />
+          <span>Rental?</span>
+        </label>
+      </div>
+      <div id="source-company-div"></div>
+      <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+        <i class="material-icons right">send</i>
+      </button>
+    </form>
+  </div>
+</script>
+
+<script id="source-company-form-template" type="text/template">
+  <div id="source-company-form">
+    <input id="sourceCompany" type="text" class="validate" name="sourceCompany">
+    <label for="sourceCompany">Source Company</label>
+  </div>
+</script>

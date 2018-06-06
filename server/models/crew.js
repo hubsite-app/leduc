@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const {EmployeeSchema} = require('./employee');
-const {VehicleSchema} = require('./vehicle');
-const {JobsiteSchema} = require('./jobsite');
+const {Employee} = require('./employee');
+const {Vehicle} = require('./vehicle');
+const {Jobsite} = require('./jobsite');
 
 var CrewSchema = new mongoose.Schema({
   name: {

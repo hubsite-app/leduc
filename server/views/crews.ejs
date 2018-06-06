@@ -11,6 +11,7 @@
           <% id = crewArray[result]._id %>
           <a class="crew-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
           <h3 class="card-title" style="font-weight: bold;"><%= crewArray[result].name %></h3>
+
           <% if (crewArray[result].employees.length > 0) { %>
             <h5>Employees: </h5>
             <ul class="collection">
@@ -22,6 +23,19 @@
               <% }); %>
             </ul>
           <% } %>
+
+          <% if (crewArray[result].vehicles.length > 0) { %>
+            <h5>Vehicles: </h5>
+            <ul class="collection">
+              <% crewArray[result].vehicles.forEach((vehicle) => { %>
+                <li class="collection-item">
+                  <h6><%= vehicleArray[vehicle].name %></h6>
+                  <span><%= vehicleArray[vehicle].vehicleType %></span>
+                </li>
+              <% }); %>
+            </ul>
+          <% } %>
+
           <% if (crewArray[result].jobsites.length > 0) { %>
             <h5>Jobsites: </h5>
             <ul class="collection">
@@ -32,15 +46,14 @@
               <% }); %>
             </ul>
           <% } %>
-          
 
           <% if (employeeArray) { %>
             <div class="row">
               <div class="col-12">
-                <a id="dropdown-crew-<%= crewArray[result]._id %>" class='employeeDropdown btn' href='' data-target='crew-<%= crewArray[result]._id %>-dropdown' style="width: 100%;">Select Employees</a>
+                <a id="dropdown-employee-crew-<%= crewArray[result]._id %>" class='employeeDropdown btn' href='' data-target='crew-<%= crewArray[result]._id %>-employee-dropdown' style="width: 100%;">Select Employees</a>
               </div>
             </div>
-            <ul class="collection dropdown-content" id="crew-<%= crewArray[result]._id %>-dropdown">
+            <ul class="collection dropdown-content" id="crew-<%= crewArray[result]._id %>-employee-dropdown">
               <form id="crew-<%= crewArray[result]._id %>-employee-form">
                 <% for (var i in employeeArray) { %>
                   <label>
@@ -60,6 +73,34 @@
               </form>
             </ul>
           <% } %>
+
+          <% if (vehicleArray) { %>
+            <div class="row">
+              <div class="col-12">
+                <a id="dropdown-vehicle-crew-<%= crewArray[result]._id %>" class='vehicleDropdown btn' href='' data-target='crew-<%= crewArray[result]._id %>-vehicle-dropdown' style="width: 100%;">Select Vehicles</a>
+              </div>
+            </div>
+            <ul class="collection dropdown-content" id="crew-<%= crewArray[result]._id %>-vehicle-dropdown">
+              <form id="crew-<%= crewArray[result]._id %>-vehicle-form">
+                <% for (var i in vehicleArray) { %>
+                  <label>
+                    <li class="collection-item" id="vehicle-<%= vehicleArray[i]._id %>-item">
+                      <input type="hidden" class="id" id="crew-<%= crewArray[result]._id %>-id" value="<%= crewArray[result]._id %>" />
+                      <input type="checkbox" class="newCrewVehicle" id="vehicle-<%= vehicleArray[i]._id %>-checkbox" name="vehicle" value="<%= vehicleArray[i]._id %>" 
+                        <% crewArray[result].vehicles.forEach((vehicle) => {
+                          if (vehicleArray[i]._id.equals(vehicle)) {%>
+                            checked="true"
+                          <%}});%> />
+                      <span>
+                        <%= vehicleArray[i].name %> - <%= vehicleArray[i].vehicleType %>
+                      </span>
+                    </li>
+                  </label>
+                  <% } %>
+              </form>
+            </ul>
+          <% } %>
+
         </div>
       </div>
     <% } %>
