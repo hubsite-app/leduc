@@ -65,3 +65,39 @@ function deleteVehicleWorkRequest(id) {
   });
   location.reload(true);
 };
+
+function loadProductionForm() {
+  var template = $('#production-form-template').html();
+  $("#production-form-div").append(template);
+  $('#add-production').remove();
+};
+function removeProductionForm() {
+  var template = $('#production-form-add-button').html();
+  $('#production-button-div').append(template);
+  $('#production-form').remove();
+};
+function deleteProductionRequest(id) {
+  $.ajax({
+    type: 'DELETE',
+    url: `/production/${id}`
+  });
+  location.reload(true);
+};
+
+function loadMaterialForm() {
+  var template = $('#material-form-template').html();
+  $("#material-form-div").append(template);
+  $('#add-material').remove();
+};
+function removeMaterialForm() {
+  var template = $('#material-form-add-button').html();
+  $('#material-button-div').append(template);
+  $('#material-form').remove();
+};
+function deleteMaterialRequest(id) {
+  $.ajax({
+    type: 'DELETE',
+    url: `/material/${id}`
+  });
+  location.reload(true);
+};

@@ -721,7 +721,9 @@ app.get('/report/:reportId', (req, res) => {
       var employeeHourArray = await EmployeeWork.find({dailyReport: report});
       var vehicleArray = await Vehicle.getAll();
       var vehicleHourArray = await VehicleWork.find({dailyReport: report});
-      res.render('dailyReport', {report, crew, job, employeeArray, employeeHourArray, vehicleArray, vehicleHourArray});
+      var productionArray = await Production.find({dailyReport: report});
+      var materialArray = await MaterialShipment.find({dailyReport: report});
+      res.render('dailyReport', {report, crew, job, employeeArray, employeeHourArray, vehicleArray, vehicleHourArray, productionArray, materialArray});
     } catch (e) {
       console.log(e);
       res.redirect('/');
@@ -729,34 +731,28 @@ app.get('/report/:reportId', (req, res) => {
   });  
 });
 
-// POST /employeehour/report/:reportId
-app.post('/employeehour/report/:reportId', async (req, res) => {
-  var reportId = req.params.reportId;
-  if (!ObjectID.isValid(reportId)) {return res.status(404).send();}
+// POST /employeehour
+app.post('/employeehour', async (req, res) => {
   try {
     if (typeof req.body.employee == 'object') {
-      req.body.employee.forEach((employee) => {
-        var employeeWork = new EmployeeWork({
-          hours: req.body.hours,
-          jobTitle: req.body.jobTitle,
-          employee: employee,
-          dailyReport: reportId
-        });
+      req.body.employee.forEach(async (employee) => {
+        var employeeWork = new EmployeeWork(req.body);
         employeeWork.save((err) => {
           if(err){return console.log(err);}
         });
+        var report = await DailyReport.findById(req.body.dailyReport);
+        await report.employeeWork.push(employeeWork);
+        await report.save((err) => err && console.log(err));
       });
       res.redirect('back');
     } else {
-      var employeeWork = new EmployeeWork({
-        hours: req.body.hours,
-        jobTitle: req.body.jobTitle,
-        employee: req.body.employee,
-        dailyReport: reportId
-      });
+      var employeeWork = new EmployeeWork(req.body);
       employeeWork.save((err) => {
         if(err){return console.log(err);}
       });
+      var report = await DailyReport.findById(req.body.dailyReport);
+      await report.employeeWork.push(employeeWork);
+      await report.save((err) => err && console.log(err));
       res.redirect('back');
     }
   } catch (e) {
@@ -770,7 +766,10 @@ app.post('/employeehour/report/:reportId', async (req, res) => {
 app.delete('/employeework/:id', async (req, res) => {
   var id = req.params.id;
   try {
-    await EmployeeWork.findByIdAndRemove({_id: id}, (err) => err && console.log(err));
+    await EmployeeWork.findByIdAndRemove({_id: id}, async (err, employeeWork) => {
+      err && console.log(err);
+      var report = DailyReport.findByIdAndUpdate(employeeWork.dailyReport, {$pull: {employeeWork: employeeWork._id}}, (err) => err && console.log(err));
+    });
   } catch (e) {
     console.log(e);
     var dangerMessage = encodeURIComponent('Unable to delete Employee Work');
@@ -778,34 +777,28 @@ app.delete('/employeework/:id', async (req, res) => {
   }
 });
 
-// POST /employeehour/report/:reportId
-app.post('/vehiclehour/report/:reportId', async (req, res) => {
-  var reportId = req.params.reportId;
-  if (!ObjectID.isValid(reportId)) {return res.status(404).send();}
+// POST /vehiclehour
+app.post('/vehiclehour', async (req, res) => {
   try {
     if (typeof req.body.vehicle == 'object') {
-      req.body.vehicle.forEach((vehicle) => {
-        var vehicleWork = new vehicleWork({
-          hours: req.body.hours,
-          jobTitle: req.body.jobTitle,
-          vehicle: vehicle,
-          dailyReport: reportId
-        });
+      req.body.vehicle.forEach(async (vehicle) => {
+        var vehicleWork = new vehicleWork(req.body);
         vehicleWork.save((err) => {
           if(err){return console.log(err);}
         });
+        var report = await DailyReport.findById(req.body.dailyReport);
+        await report.vehicleWork.push(vehicleWork);
+        await report.save((err) => err && console.log(err));
       });
       res.redirect('back');
     } else {
-      var vehicleWork = new VehicleWork({
-        hours: req.body.hours,
-        jobTitle: req.body.jobTitle,
-        vehicle: req.body.vehicle,
-        dailyReport: reportId
-      });
+      var vehicleWork = new VehicleWork(req.body);
       vehicleWork.save((err) => {
         if(err){return console.log(err);}
       });
+      var report = await DailyReport.findById(req.body.dailyReport);
+      await report.vehicleWork.push(vehicleWork);
+      await report.save((err) => err && console.log(err));
       res.redirect('back');
     }
   } catch (e) {
@@ -818,7 +811,68 @@ app.post('/vehiclehour/report/:reportId', async (req, res) => {
 app.delete('/vehiclework/:id', async (req, res) => {
   var id = req.params.id;
   try {
-    await VehicleWork.findByIdAndRemove({_id: id}, (err) => err && console.log(err));
+    await VehicleWork.findByIdAndRemove({_id: id}, async (err, vehicleWork) => {
+      err && console.log(err);
+      var report = DailyReport.findByIdAndUpdate(vehicleWork.dailyReport, {$pull: {vehicleWork: vehicleWork._id}}, (err) => err && console.log(err));
+    });
+  } catch (e) {
+    console.log(e);
+    res.redirect('back');
+  }
+});
+
+// POST /production
+app.post('/production', async (req, res) => {
+  try {
+    var production = await new Production(req.body);
+    production.save((err) => err && console.log(err));
+    var report = await DailyReport.findById(req.body.dailyReport);
+    await report.production.push(production);
+    await report.save((err) => err && console.log(err));
+    res.redirect('back');
+  } catch (e) {
+    console.log(e);
+    res.redirect('back');
+  }
+});
+
+// DELETE /production/:id
+app.delete('/production/:id', async (req, res) => {
+  var id = req.params.id;
+  try {
+    await Production.findByIdAndRemove({_id: id}, async (err, production) => {
+      err && console.log(err);
+      var report = DailyReport.findByIdAndUpdate(production.dailyReport, {$pull: {production: production._id}}, (err) => err && console.log(err));
+    });
+  } catch (e) {
+    console.log(e);
+    res.redirect('back');
+  }
+});
+
+// POST /material
+app.post('/material', async (req, res) => {
+  try {
+    var material = await new MaterialShipment(req.body);
+    material.save((err) => err && console.log(err));
+    var report = await DailyReport.findById(req.body.dailyReport);
+    await report.materialShipment.push(material);
+    await report.save((err) => err && console.log(err));
+    res.redirect('back');
+  } catch (e) {
+    console.log(e);
+    res.redirect('back');
+  }
+});
+
+// DELETE /material/:id
+app.delete('/material/:id', async (req, res) => {
+  var id = req.params.id;
+  try {
+    await MaterialShipment.findByIdAndRemove({_id: id}, async (err, material) => {
+      err && console.log(err);
+      var report = DailyReport.findByIdAndUpdate(material.dailyReport, {$pull: {materialShipment: material._id}}, (err) => err && console.log(err));
+    });
   } catch (e) {
     console.log(e);
     res.redirect('back');

@@ -16,7 +16,8 @@ var MaterialShipmentSchema = new mongoose.Schema({
   },
   vehicle: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Vehicle'
+    ref: 'Vehicle',
+    required: true
   },
   dailyReport: {
     type: mongoose.Schema.Types.ObjectId,

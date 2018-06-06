@@ -4,8 +4,8 @@
   <div class="container">
 
     <h2><%= job.name %></h2>
-    <h3><%= crew.name %></h3>
-    <h4><%= report.date %></h4>
+    <h5><%= crew.name %></h5>
+    <h6><%= report.date.toDateString(); %></h6>
     
     <% if (Object.keys(employeeArray).length > 0) { %>
       <div class="card-panel" style="padding-bottom: 3em;">
@@ -58,8 +58,54 @@
         </div>
       </div>
     <% } %>
-    
 
+    <div class="card-panel" style="padding-bottom: 3em;">
+      <h5 class="card-title">Production</h5>
+      <% if (productionArray) { %>
+        <ul class="collection">
+          <% for (var i in productionArray) { %>
+            <li class="collection-item">
+              <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteProductionRequest('<%= productionArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
+              <%= productionArray[i].jobTitle %> - <%= productionArray[i].quantity %> <%= productionArray[i].unit %></br>
+              <span><%= productionArray[i].hours %></span>
+                <% if (productionArray[i].hours <= 1) { %> hour <% } else { %> hours <% } %>
+            </li>
+          <% } %>
+        </ul>
+      <% } %>
+      <div id="production-form-div"></div>
+      <div id="production-button-div">
+        <div id="add-production">
+          <button class="btn waves-effect waves-light right" id="production-form" onClick="loadProductionForm()">Add Work
+            <i class="material-icons right">add</i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-panel" style="padding-bottom: 3em;">
+      <h5 class="card-title">Material Shipments</h5>
+      <% if (materialArray) { %>
+        <ul class="collection">
+          <% for (var i in materialArray) { %>
+            <li class="collection-item">
+              <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteMaterialRequest('<%= materialArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
+              <%= materialArray[i].shipmentType %> - <%= materialArray[i].quantity %> <%= materialArray[i].unit %></br>
+              <%= vehicleArray[materialArray[i].vehicle].name %>
+            </li>
+          <% } %>
+        </ul>
+      <% } %>
+      <div id="material-form-div"></div>
+      <div id="material-button-div">
+        <div id="add-material">
+          <button class="btn waves-effect waves-light right" id="material-form" onClick="loadMaterialForm()">Add Shipment
+            <i class="material-icons right">add</i>
+          </button>
+        </div>
+      </div>
+    </div>
+    
   </div>
 
 <% include partials/foot %>
@@ -69,7 +115,7 @@
     <div class="row card-panel">
       <i class="material-icons right pointer" onclick="removeEmployeeForm()" id="employee-form-close" aria-hidden="true">close</i>
       <h3>Add Employee Work</h3>
-      <form method="post" action="/employeehour/report/<%= report._id %>" id="employee-form">
+      <form method="post" action="/employeehour" id="employee-form">
         <div class="input-field col s12">
           <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
           <label for="autocomplete-input">Work Done</label>
@@ -87,6 +133,7 @@
             </label>
           </div>
         <% }); %>
+        <input type="hidden" name="dailyReport" value="<%= report._id %>" />
         <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
           <i class="material-icons right">send</i>
         </button>
@@ -110,7 +157,7 @@
     <div class="row card-panel">
       <i class="material-icons right pointer" onclick="removeVehicleForm()" id="vehicle-form-close" aria-hidden="true">close</i>
       <h3>Add Vehicle Work</h3>
-      <form method="post" action="/vehiclehour/report/<%= report._id %>" id="vehicle-form">
+      <form method="post" action="/vehiclehour" id="vehicle-form">
         <div class="input-field col s12">
           <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
           <label for="autocomplete-input">Work Done</label>
@@ -128,6 +175,7 @@
             </label>
           </div>
         <% }); %>
+        <input type="hidden" name="dailyReport" value="<%= report._id %>" />
         <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
           <i class="material-icons right">send</i>
         </button>
@@ -140,6 +188,97 @@
   <div id="vehicle-work-button-div">
     <div id="add-vehicle-work">
       <button class="btn waves-effect waves-light right" id="crew-vehicle-form" onClick="loadVehicleForm()">Add Work
+        <i class="material-icons right">add</i>
+      </button>
+    </div>
+  </div>
+</script>
+
+<script id='production-form-template' type="text/template">
+  <div id="production-form">
+    <div class="row card-panel">
+      <i class="material-icons right pointer" onclick="removeProductionForm()" id="production-form-close" aria-hidden="true">close</i>
+      <h3>Add Production</h3>
+      <form method="post" action="/production" id="production-form">
+        <div class="input-field col s12">
+          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
+          <label for="autocomplete-input">Work Completed</label>
+        </div>
+        <div class="input-field col s8">
+          <input name="quantity" type="number" step="0.01">
+          <label for="quantity">Quantity</label>
+        </div>
+        <div class="input-field col s4">
+          <input name="unit" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
+          <label for="autocomplete-input">Unit</label>
+        </div>
+        <div class="input-field col s12">
+          <input name="hours" type="number" step="0.01">
+          <label for="hours">Hours</label>
+        </div>
+        <div class="input-field col s12">
+          <textarea id="description" class="materialize-textarea" name="description"></textarea>
+          <label for="description">Description</label>
+        </div>
+        <input type="hidden" name="dailyReport" value="<%= report._id %>" />
+        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button>
+      </form>
+    </div>
+  </div>
+</script>
+
+<script id="production-form-add-button" type="text/template">
+  <div id="production-button-div">
+    <div id="add-production">
+      <button class="btn waves-effect waves-light right" id="crew-production-form" onClick="loadProductionForm()">Add Work
+        <i class="material-icons right">add</i>
+      </button>
+    </div>
+  </div>
+</script>
+
+<script id='material-form-template' type="text/template">
+  <div id="material-form">
+    <div class="row card-panel">
+      <i class="material-icons right pointer" onclick="removeMaterialForm()" id="material-form-close" aria-hidden="true">close</i>
+      <h3>Add Material Shipment</h3>
+      <form method="post" action="/material" id="material-form">
+        <div class="input-field col s12">
+          <input name="shipmentType" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
+          <label for="autocomplete-input">Shipment Type</label>
+        </div>
+        <div class="input-field col s8">
+          <input name="quantity" type="number" step="0.01">
+          <label for="quantity">Quantity</label>
+        </div>
+        <div class="input-field col s4">
+          <input name="unit" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
+          <label for="autocomplete-input">Unit</label>
+        </div>
+        <h6>Vehicles: </h6>
+        <% crew.vehicles.forEach((vehicleId) => { %>
+          <div class="input-field col s6">
+            <label>
+              <input type="radio" value="<%= vehicleArray[vehicleId]._id %>" name="vehicle" />
+              <span><%= vehicleArray[vehicleId].name %></span>
+            </label>
+          </div>
+        <% }); %>
+        <input type="hidden" name="dailyReport" value="<%= report._id %>" />
+        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button>
+      </form>
+    </div>
+  </div>
+</script>
+
+<script id="material-form-add-button" type="text/template">
+  <div id="material-button-div">
+    <div id="add-material">
+      <button class="btn waves-effect waves-light right" id="crew-vehicle-form" onClick="loadMaterialForm()">Add Shipment
         <i class="material-icons right">add</i>
       </button>
     </div>
