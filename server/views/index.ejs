@@ -26,7 +26,11 @@
         <% } else if (crewArray.length == 1) { %>
           <div class="col s4">
             <% for (var i in crewArray) { %>
-              <input class="singleCrewSelection" name="crew" type="hidden" value="<%= crewArray[i]._id %>" />
+              <body onload="loadURL()"></body>
+              <input id="singleCrewSelection" name="crew" type="hidden" value="<%= crewArray[i]._id %>" />
+              <% if (stuff.query.crew) { %>
+                <input id="crewIdCheck" value="<%= stuff.query.crew %>" type="hidden" />
+              <% } %>
             <% } %>
           </div>
         <% } else { %>

@@ -1,20 +1,23 @@
 $(document).ready(function () {
+  $('#singleCrewSelection').ready(function () {
+    if ($('#singleCrewSelection').length) {
+      if (history.pushState) {
+        var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname + `?crew=${$('#singleCrewSelection').val()}`;
+        window.history.pushState({path: newURL}, '', newURL);
+        if(!$('#crewIdCheck').length) {
+          location.reload();
+        }
+      }
+      $.each($('.report-link'), function (i, obj) {
+        $(obj).attr('href', `/jobreport/${$(obj).attr('id')}/crew/${$('#singleCrewSelection').val()}/report?date=${new Date()}`);
+      });
+    }
+  });
   $('.crew-dropdown-toggle').dropdown({
     hover: false,
     closeOnClick: false,
     coverTrigger: false,
     constrainWidth: false
-  });
-  $('.singleCrewSelection').ready(function () {
-    if ($('.singleCrewSelection').length) {
-      if (history.pushState) {
-        var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname + `?crew=${$('.singleCrewSelection').val()}`;
-        window.history.pushState({path: newURL}, '', newURL);
-      }
-      $.each($('.report-link'), function (i, obj) {
-        $(obj).attr('href', `/jobreport/${$(obj).attr('id')}/crew/${$('.singleCrewSelection').val()}/report?date=${new Date()}`);
-      });
-    }
   });
   $('.crew-dropdown-toggle').ready(function () {
     if ($('.crew-dropdown-toggle').length) {
@@ -32,9 +35,9 @@ $(document).ready(function () {
         }
         location.reload();
       }
+      $.each($('.report-link'), function (i, obj) {
+        $(obj).attr('href', `/jobreport/${$(obj).attr('id')}/crew/${$('input[name="crew"]:checked', '#crew-dropdown').val()}/report?date=${new Date()}`);
+      });
     }
-    $.each($('.report-link'), function (i, obj) {
-      $(obj).attr('href', `/jobreport/${$(obj).attr('id')}/crew/${$('input[name="crew"]:checked', '#crew-dropdown').val()}/report?date=${new Date()}`);
-    });
   });
 });
