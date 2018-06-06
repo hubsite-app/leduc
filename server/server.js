@@ -174,7 +174,7 @@ app.get('/user/:id', (req, res) => {
           res.render('users/user', {user, employeeArray, dangerMessage});
         });
       } else {
-        res.render('userIndex');
+        res.render('users/userIndex');
       }
     });
   } else {
