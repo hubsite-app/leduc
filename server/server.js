@@ -560,8 +560,13 @@ app.get('/crews', (req, res) => {
         jobsites.forEach((jobsite) => {
           jobArray[jobsite._id] = jobsite;
         });
-        var vehicleArray = await Vehicle.getAll();
-        res.render('crews', {crewArray: crewMap, employeeArray: employeeMap, jobArray, vehicleArray});
+        try {
+          var vehicleArray = await Vehicle.getAll();
+          res.render('crews', {crewArray: crewMap, employeeArray: employeeMap, jobArray, vehicleArray});
+        } catch (e) {
+          console.log(e);
+          res.render('crews', {crewArray: crewMap, employeeArray: employeeMap, jobArray, vehicleArray});
+        }
       });
     });
   });
