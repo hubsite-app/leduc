@@ -494,7 +494,7 @@ app.get('/vehicles', async (req, res) => {
     res.render('vehicles/vehicleIndex', {vehicleArray});
   } catch (e) {
     console.log(e);
-    res.render('vehicles/vehicleIndex');
+    res.render('vehicles/vehicleIndex', {vehicleArray});
   }
 });
 
