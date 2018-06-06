@@ -174,7 +174,14 @@ app.get('/user/:id', (req, res) => {
           res.render('users/user', {user, employeeArray, dangerMessage});
         });
       } else {
-        res.render('users/userIndex');
+        User.find({}, (err, users) => {
+          err && console.log(err);
+          var userMap = [];
+          users.forEach((user) => {
+            userMap[user._id] = user;
+          });
+          res.render('users/userIndex', {array: userMap});
+        });
       }
     });
   } else {
