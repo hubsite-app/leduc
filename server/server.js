@@ -165,7 +165,7 @@ app.get('/user/:id', (req, res) => {
       if (err) {
         return console.log(err);
       }
-      if (req.session.user === user || req.session.user.admin === true) {
+      if (req.session.user._id == user._id || req.session.user.admin == true) {
         employeeArray = [];
         Employee.find({}, (err, employees) => {
           employees.forEach((employee) => {
@@ -174,14 +174,8 @@ app.get('/user/:id', (req, res) => {
           res.render('users/user', {user, employeeArray, dangerMessage});
         });
       } else {
-        User.find({}, (err, users) => {
-          err && console.log(err);
-          var userMap = [];
-          users.forEach((user) => {
-            userMap[user._id] = user;
-          });
-          res.render('users/userIndex', {array: userMap});
-        });
+        var dangerMessage = encodeURIComponent("You are not authorized to view this account");
+        res.redirect(`/users/?dangerMessage=${dangerMessage}`);
       }
     });
   } else {
