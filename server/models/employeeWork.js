@@ -3,8 +3,12 @@ const {Employee} = require('./employee');
 const {DailyReport} = require('./dailyReport');
 
 var EmployeeWorkSchema = new mongoose.Schema({
-  hours: {
-    type: Number,
+  startTime: {
+    type: Date,
+    required: true
+  },
+  endTime: {
+    type: Date,
     required: true
   },
   jobTitle: {

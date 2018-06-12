@@ -1,10 +1,11 @@
 <% include partials/head %>
   <script src="/js/dailyReport.js"></script>
+  <script src="/js/libs/mustache.js"></script>
   
   <div class="container">
 
-    <h2><%= job.name %></h2>
-    <h5><%= crew.name %></h5>
+    <h2><a href="/jobsite/<%= job._id %>"><%= job.name %></a></h2>
+    <h5><%= crew.name %><a href="/crew/<%= crew._id %>">    <i class="tiny material-icons">edit</i></a></h5>
     <h6><%= report.date.toDateString(); %></h6>
     
     <% if (Object.keys(employeeArray).length > 0) { %>
@@ -13,11 +14,19 @@
         <% if (employeeHourArray) { %>
           <ul class="collection">
             <% for (var i in employeeHourArray) { %>
+              <% var hour = Math.round(Math.abs(employeeHourArray[i].endTime - employeeHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
               <li class="collection-item">
+                <div id="employee-work-<%=employeeHourArray[i]._id%>-div">
+                  <a class="employee-work-edit secondary-content" id="employee-work-<%=employeeHourArray[i]._id%>-edit-button"
+                    onClick="loadEmployeeEditForm('<%= employeeHourArray[i]._id %>', '<%= employeeHourArray[i].jobTitle %>', '<%= employeeHourArray[i].startTime %>', '<%= employeeHourArray[i].endTime %>', '<%=employeeHourArray[i].employee%>'); return false;" href="">
+                    <i class="material-icons">edit</i>
+                  </a>
+                </div>
                 <a class="employee-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteEmployeeWorkRequest('<%= employeeHourArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
-                <%= employeeHourArray[i].jobTitle %> - <%= employeeHourArray[i].hours %>
-                  <% if (employeeHourArray[i].hours <= 1) { %> hour <% } else { %> hours <% } %></br>
+                <%= employeeHourArray[i].jobTitle %> - <%= hour %>
+                  <% if (hour <= 1) { %> hour <% } else { %> hours <% } %></br>
                 <span><%= employeeArray[employeeHourArray[i].employee].name %></span>
+                <div id="employee-<%=employeeHourArray[i]._id%>-work-edit-form-div"></div>
               </li>
             <% } %>
           </ul>
@@ -39,11 +48,19 @@
         <% if (vehicleHourArray) { %>
           <ul class="collection">
             <% for (var i in vehicleHourArray) { %>
+              <% var hour = Math.round(Math.abs(vehicleHourArray[i].endTime - vehicleHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
               <li class="collection-item">
+                <div id="vehicle-work-<%=vehicleHourArray[i]._id%>-div">
+                  <a class="vehicle-work-edit secondary-content" id="vehicle-work-<%=vehicleHourArray[i]._id%>-edit-button"
+                    onClick="loadVehicleEditForm('<%= vehicleHourArray[i]._id %>', '<%= vehicleHourArray[i].jobTitle %>', '<%= vehicleHourArray[i].startTime %>', '<%= vehicleHourArray[i].endTime %>', '<%=vehicleHourArray[i].vehicle%>'); return false;" href="">
+                    <i class="material-icons">edit</i>
+                  </a>
+                </div>
                 <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteVehicleWorkRequest('<%= vehicleHourArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
-                <%= vehicleHourArray[i].jobTitle %> - <%= vehicleHourArray[i].hours %>
-                  <% if (vehicleHourArray[i].hours <= 1) { %> hour <% } else { %> hours <% } %></br>
+                <%= vehicleHourArray[i].jobTitle %> - <%= hour %>
+                  <% if (hour <= 1) { %> hour <% } else { %> hours <% } %></br>
                 <span><%= vehicleArray[vehicleHourArray[i].vehicle].name %></span>
+                <div id="vehicle-<%=vehicleHourArray[i]._id%>-work-edit-form-div"></div>
               </li>
             <% } %>
           </ul>
@@ -64,11 +81,19 @@
       <% if (productionArray) { %>
         <ul class="collection">
           <% for (var i in productionArray) { %>
+            <% var hour = Math.round(Math.abs(productionArray[i].endTime - productionArray[i].startTime) / 3.6e6 * 100) / 100 %>
             <li class="collection-item">
+              <div id="production-edit-<%=productionArray[i]._id%>-div">
+                <a class="production-edit secondary-content" id="production-<%=productionArray[i]._id%>-edit-button"
+                  onClick="loadProductionEditForm('<%= productionArray[i]._id %>', '<%= productionArray[i].jobTitle %>', '<%= productionArray[i].quantity %>', '<%= productionArray[i].unit %>', '<%= productionArray[i].startTime %>', '<%= productionArray[i].endTime %>', '<%=productionArray[i].description%>'); return false;" href="">
+                  <i class="material-icons">edit</i>
+                </a>
+              </div>
               <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteProductionRequest('<%= productionArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
               <%= productionArray[i].jobTitle %> - <%= productionArray[i].quantity %> <%= productionArray[i].unit %></br>
-              <span><%= productionArray[i].hours %></span>
-                <% if (productionArray[i].hours <= 1) { %> hour <% } else { %> hours <% } %>
+              <span><%= hour %></span>
+                <% if (hour <= 1) { %> hour <% } else { %> hours <% } %>
+              <div id="production-<%=productionArray[i]._id%>-edit-form-div"></div>
             </li>
           <% } %>
         </ul>
@@ -89,9 +114,16 @@
         <ul class="collection">
           <% for (var i in materialArray) { %>
             <li class="collection-item">
+              <div id="material-edit-<%=materialArray[i]._id%>-div">
+                <a class="material-edit secondary-content" id="material-<%=materialArray[i]._id%>-edit-button"
+                  onClick="loadMaterialEditForm('<%= materialArray[i]._id %>', '<%= materialArray[i].shipmentType %>', '<%= materialArray[i].quantity %>', '<%= materialArray[i].unit %>', '<%= materialArray[i].vehicle %>'); return false;" href="">
+                  <i class="material-icons">edit</i>
+                </a>
+              </div>
               <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteMaterialRequest('<%= materialArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
               <%= materialArray[i].shipmentType %> - <%= materialArray[i].quantity %> <%= materialArray[i].unit %></br>
               <%= vehicleArray[materialArray[i].vehicle].name %>
+              <div id="material-<%=materialArray[i]._id%>-edit-form-div"></div>
             </li>
           <% } %>
         </ul>
@@ -105,6 +137,19 @@
         </div>
       </div>
     </div>
+
+    <div class="card-panel" style="padding-bottom: 4em;">
+      <form class="col s12" method="post" action="/reportnote">
+        <div class="input-field col s12">
+          <textarea name="note" id="reportnote" class="materialize-textarea"><% if(reportNote){%><%= reportNote.note %><%}%></textarea>
+          <label for="reportnote">General Notes</label>
+        </div>
+        <input type="hidden" name="dailyReport" value="<%= report._id %>" />
+        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button>
+      </form>
+    </div>
     
   </div>
 
@@ -117,22 +162,40 @@
       <h3>Add Employee Work</h3>
       <form method="post" action="/employeehour" id="employee-form">
         <div class="input-field col s12">
-          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
+          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete-work" autocomplete="off" />
           <label for="autocomplete-input">Work Done</label>
         </div>
-        <div class="input-field col s12">
-          <input name="hours" type="number" step="0.01">
-          <label for="hours">Hours</label>
+        <div class="input-field col s6">
+          <input name="startTime" type="text" class="timepicker" autocomplete="off" />
+          <label for="startTime">Start Time</label>
         </div>
-        <h6>Employees: </h6>
-        <% crew.employees.forEach((employeeId) => { %>
+        <div class="input-field col s6">
+          <input name="endTime" type="text" class="timepicker" autocomplete="off" />
+          <label for="endTime">End Time</label>
+        </div>
+        <div class="hide-on-med-and-up">
           <div class="input-field col s6">
-            <label>
-              <input type="checkbox" value="<%= employeeArray[employeeId]._id %>" name="employee" />
-              <span><%= employeeArray[employeeId].name %></span>
-            </label>
+            <select multiple name="employee">
+              <% crew.employees.forEach((employeeId) => { %>
+                <option value="<%= employeeArray[employeeId]._id %>">
+                  <%= employeeArray[employeeId].name %>
+                </option>
+              <% }); %>
+            </select>
+            <label>Employee Select</label>
           </div>
-        <% }); %>
+        </div>    
+        <div class="hide-on-small-only">
+          <h6>Employees: </h6>
+          <% crew.employees.forEach((employeeId) => { %>
+            <div class="input-field col s6">
+              <label>
+                <input type="checkbox" value="<%= employeeArray[employeeId]._id %>" name="employee" />
+                <span><%= employeeArray[employeeId].name %></span>
+              </label>
+            </div>
+          <% }); %>
+        </div>
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
         <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
           <i class="material-icons right">send</i>
@@ -152,6 +215,41 @@
   </div>
 </script>
 
+<script id='employee-work-edit-form-template' type="text/template">
+  <div id="employee-work-edit-form">
+    <div class="row card-panel">
+      <i class="material-icons right pointer" onClick="removeEmployeeEditForm('{{id}}', '{{work}}', '{{start}}', '{{end}}', '{{employeeId}}'); return false;" id="employee-edit-form-close" aria-hidden="true">close</i>
+      <h3>Edit Work</h3>
+      <form method="post" action="/employeework/{{id}}/update" id="employee-form">
+        <div class="input-field col s12">
+          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete-work" autocomplete="off" value="{{work}}" />
+          <span class="helper-text">Work Done</span>
+        </div>
+        <div class="input-field col s6">
+          <input name="startTime" type="text" class="timepicker" autocomplete="off" value="{{start}}" />
+          <span class="helper-text">Start Time</span>
+        </div>
+        <div class="input-field col s6">
+          <input name="endTime" type="text" class="timepicker" autocomplete="off" value="{{end}}" />
+          <span class="helper-text">End Time</span>
+        </div>
+        <input type="hidden" name="employee" value="{{employeeId}}" />
+        <input type="hidden" name="dailyReport" value="<%= report._id %>" />
+        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button>
+      </form>
+    </div>
+  </div>
+</script>
+
+<script id='employee-edit-form-button' type='text/template'>
+  <a class="employee-work-edit secondary-content" id="employee-work-{{id}}-edit-button"
+    onClick="loadEmployeeEditForm('{{id}}', '{{jobTitle}}', '{{startTime}}', '{{endTime}}', '{{employeeId}}'); return false;" href="">
+    <i class="material-icons">edit</i>
+  </a>
+</script>
+
 <script id='vehicle-work-form-template' type="text/template">
   <div id="vehicle-work-form">
     <div class="row card-panel">
@@ -159,22 +257,40 @@
       <h3>Add Vehicle Work</h3>
       <form method="post" action="/vehiclehour" id="vehicle-form">
         <div class="input-field col s12">
-          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
+          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete-work" autocomplete="off" />
           <label for="autocomplete-input">Work Done</label>
         </div>
-        <div class="input-field col s12">
-          <input name="hours" type="number" step="0.01">
-          <label for="hours">Hours</label>
+        <div class="input-field col s6">
+          <input name="startTime" type="text" class="timepicker" autocomplete="off" />
+          <label for="startTime">Start Time</label>
         </div>
-        <h6>Vehicles: </h6>
-        <% crew.vehicles.forEach((vehicleId) => { %>
+        <div class="input-field col s6">
+          <input name="endTime" type="text" class="timepicker" autocomplete="off" />
+          <label for="endTime">End Time</label>
+        </div>
+        <div class="hide-on-med-and-up">
           <div class="input-field col s6">
-            <label>
-              <input type="checkbox" value="<%= vehicleArray[vehicleId]._id %>" name="vehicle" />
-              <span><%= vehicleArray[vehicleId].name %></span>
-            </label>
+            <select multiple name="vehicle">
+              <% crew.vehicles.forEach((vehicleId) => { %>
+                <option value="<%= vehicleArray[vehicleId]._id %>">
+                  <%= vehicleArray[vehicleId].name %>
+                </option>
+              <% }); %>
+            </select>
+            <label>Vehicle Select</label>
           </div>
-        <% }); %>
+        </div>    
+        <div class="hide-on-small-only">
+          <h6>Vehicles: </h6>
+          <% crew.vehicles.forEach((vehicleId) => { %>
+            <div class="input-field col s6">
+              <label>
+                <input type="checkbox" value="<%= vehicleArray[vehicleId]._id %>" name="vehicle" />
+                <span><%= vehicleArray[vehicleId].name %></span>
+              </label>
+            </div>
+          <% }); %>
+        </div>
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
         <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
           <i class="material-icons right">send</i>
@@ -194,6 +310,41 @@
   </div>
 </script>
 
+<script id='vehicle-work-edit-form-template' type="text/template">
+  <div id="vehicle-work-edit-form">
+    <div class="row card-panel">
+      <i class="material-icons right pointer" onClick="removeVehicleEditForm('{{id}}', '{{work}}', '{{start}}', '{{end}}', '{{vehicleId}}'); return false;" id="vehicle-edit-form-close" aria-hidden="true">close</i>
+      <h3>Edit Work</h3>
+      <form method="post" action="/vehiclework/{{id}}/update" id="vehicle-form">
+        <div class="input-field col s12">
+          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete-work" autocomplete="off" value="{{work}}" />
+          <span class="helper-text">Work Done</span>
+        </div>
+        <div class="input-field col s6">
+          <input name="startTime" type="text" class="timepicker" autocomplete="off" value="{{start}}" />
+          <span class="helper-text">Start Time</span>
+        </div>
+        <div class="input-field col s6">
+          <input name="endTime" type="text" class="timepicker" autocomplete="off" value="{{end}}" />
+          <span class="helper-text">End Time</span>
+        </div>
+        <input type="hidden" name="vehicle" value="{{vehicleId}}" />
+        <input type="hidden" name="dailyReport" value="<%= report._id %>" />
+        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button>
+      </form>
+    </div>
+  </div>
+</script>
+
+<script id='vehicle-edit-form-button' type='text/template'>
+  <a class="vehicle-work-edit secondary-content" id="vehicle-work-{{id}}-edit-button"
+    onClick="loadVehicleEditForm('{{id}}', '{{jobTitle}}', '{{startTime}}', '{{endTime}}', '{{vehicleId}}'); return false;" href="">
+    <i class="material-icons">edit</i>
+  </a>
+</script>
+
 <script id='production-form-template' type="text/template">
   <div id="production-form">
     <div class="row card-panel">
@@ -201,7 +352,7 @@
       <h3>Add Production</h3>
       <form method="post" action="/production" id="production-form">
         <div class="input-field col s12">
-          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
+          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete-production" autocomplete="off" />
           <label for="autocomplete-input">Work Completed</label>
         </div>
         <div class="input-field col s8">
@@ -209,12 +360,16 @@
           <label for="quantity">Quantity</label>
         </div>
         <div class="input-field col s4">
-          <input name="unit" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
+          <input name="unit" type="text" id="autocomplete-input" class="autocomplete-units" autocomplete="off" />
           <label for="autocomplete-input">Unit</label>
         </div>
-        <div class="input-field col s12">
-          <input name="hours" type="number" step="0.01">
-          <label for="hours">Hours</label>
+        <div class="input-field col s6">
+          <input name="startTime" type="text" class="timepicker" autocomplete="off" />
+          <label for="startTime">Start Time</label>
+        </div>
+        <div class="input-field col s6">
+          <input name="endTime" type="text" class="timepicker" autocomplete="off" />
+          <label for="endTime">End Time</label>
         </div>
         <div class="input-field col s12">
           <textarea id="description" class="materialize-textarea" name="description"></textarea>
@@ -239,6 +394,52 @@
   </div>
 </script>
 
+<script id='production-edit-form-template' type="text/template">
+  <div id="production-edit-form">
+    <div class="row card-panel">
+      <i class="material-icons right pointer" onClick="removeProductionEditForm('{{id}}', '{{work}}', '{{quantity}}', '{{unit}}', '{{start}}', '{{end}}', '{{description}}'); return false;" id="vehicle-edit-form-close" aria-hidden="true">close</i>
+      <h3>Edit Work</h3>
+      <form method="post" action="/production/{{id}}/update" id="production-form">
+        <div class="input-field col s12">
+          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete-work" autocomplete="off" value="{{work}}" />
+          <span class="helper-text">Work Done</span>
+        </div>
+        <div class="input-field col s8">
+          <input name="quantity" type="number" step="0.01" value="{{quantity}}">
+          <span class="helper-text">Quantity</span>
+        </div>
+        <div class="input-field col s4">
+          <input name="unit" type="text" id="autocomplete-input" class="autocomplete-units" autocomplete="off" value="{{unit}}"/>
+          <span class="helper-text">Unit</span>
+        </div>
+        <div class="input-field col s6">
+          <input name="startTime" type="text" class="timepicker" autocomplete="off" value="{{start}}" />
+          <span class="helper-text">Start Time</span>
+        </div>
+        <div class="input-field col s6">
+          <input name="endTime" type="text" class="timepicker" autocomplete="off" value="{{end}}" />
+          <span class="helper-text">End Time</span>
+        </div>
+        <div class="input-field col s12">
+          <textarea id="description" class="materialize-textarea" name="description">{{description}}</textarea>
+          <span class="helper-text">Description</span>
+        </div>
+        <input type="hidden" name="dailyReport" value="<%= report._id %>" />
+        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button>
+      </form>
+    </div>
+  </div>
+</script>
+
+<script id='production-edit-form-button' type='text/template'>
+  <a class="production-edit secondary-content" id="production-{{id}}-edit-button"
+    onClick="loadProductionEditForm('{{id}}', '{{jobTitle}}', '{{quantity}}', '{{unit}}', '{{startTime}}', '{{endTime}}', '{{description}}'); return false;" href="">
+    <i class="material-icons">edit</i>
+  </a>
+</script>
+
 <script id='material-form-template' type="text/template">
   <div id="material-form">
     <div class="row card-panel">
@@ -246,7 +447,7 @@
       <h3>Add Material Shipment</h3>
       <form method="post" action="/material" id="material-form">
         <div class="input-field col s12">
-          <input name="shipmentType" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
+          <input name="shipmentType" type="text" id="autocomplete-input" class="autocomplete-shipment" autocomplete="off" />
           <label for="autocomplete-input">Shipment Type</label>
         </div>
         <div class="input-field col s8">
@@ -254,8 +455,13 @@
           <label for="quantity">Quantity</label>
         </div>
         <div class="input-field col s4">
-          <input name="unit" type="text" id="autocomplete-input" class="autocomplete" autocomplete="off" />
+          <input name="unit" type="text" id="autocomplete-input" class="autocomplete-units" autocomplete="off" />
           <label for="autocomplete-input">Unit</label>
+        </div>
+        <div class="input-field col s12">
+          <input name="source" type="text" id="autocomplete-input" class="autocomplete-units" />
+          <label for="autocomplete-input">Source</label>
+          <span class="helper-text">Only select if shipment is not from a crew truck</span>
         </div>
         <h6>Vehicles: </h6>
         <% crew.vehicles.forEach((vehicleId) => { %>
@@ -283,4 +489,39 @@
       </button>
     </div>
   </div>
+</script>
+
+<script id='material-edit-form-template' type="text/template">
+  <div id="material-edit-form">
+    <div class="row card-panel">
+      <i class="material-icons right pointer" onClick="removeMaterialEditForm('{{id}}', '{{shipment}}', '{{quantity}}', '{{unit}}', '{{vehicleId}}'); return false;" id="vehicle-edit-form-close" aria-hidden="true">close</i>
+      <h3>Edit Shipment</h3>
+      <form method="post" action="/material/{{id}}/update" id="material-form">
+        <div class="input-field col s12">
+          <input name="shipmentType" type="text" id="autocomplete-input" class="autocomplete-work" autocomplete="off" value="{{shipment}}" />
+          <span class="helper-text">Shipment Type</span>
+        </div>
+        <div class="input-field col s8">
+          <input name="quantity" type="number" step="0.01" value="{{quantity}}">
+          <span class="helper-text">Quantity</span>
+        </div>
+        <div class="input-field col s4">
+          <input name="unit" type="text" id="autocomplete-input" class="autocomplete-units" autocomplete="off" value="{{unit}}"/>
+          <span class="helper-text">Unit</span>
+        </div>
+        <input type="hidden" name="vehicle" value="{{vehicleId}}" />
+        <input type="hidden" name="dailyReport" value="<%= report._id %>" />
+        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button>
+      </form>
+    </div>
+  </div>
+</script>
+
+<script id='material-edit-form-button' type='text/template'>
+  <a class="material-edit secondary-content" id="material-{{id}}-edit-button"
+    onClick="loadMaterialEditForm('{{id}}', '{{shipment}}', '{{quantity}}', '{{unit}}', '{{vehicleId}}'); return false;" href="">
+    <i class="material-icons">edit</i>
+  </a>
 </script>

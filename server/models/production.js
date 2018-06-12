@@ -14,8 +14,13 @@ var ProductionSchema = new mongoose.Schema({
     type: String,
     require: true
   },
-  hours: {
-    type: Number
+  startTime: {
+    type: Date,
+    required: true
+  },
+  endTime: {
+    type: Date,
+    required: true
   },
   description: {
     type: String,

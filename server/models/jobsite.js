@@ -30,6 +30,24 @@ var JobsiteSchema = new mongoose.Schema({
   }]
 });
 
+JobsiteSchema.statics.getAll = function() {
+  var Job = this
+  var jobArray = [];
+  return Job.find({}).then((jobs) => {
+    if (!jobs) {return Promise.reject();}
+    return new Promise(async (resolve, reject) => {
+      await jobs.forEach((job) => {
+        jobArray[job._id] = job;
+      });
+      if (Object.keys(jobArray).length > 0) {
+        resolve(jobArray);
+      } else {
+        reject('Error: Unable to create Job array (check to ensure there are jobs created)');
+      }
+    });
+  });
+}
+
 var Jobsite = mongoose.model('Jobsite', JobsiteSchema);
 
 module.exports = {Jobsite};

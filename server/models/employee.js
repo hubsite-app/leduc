@@ -40,7 +40,7 @@ EmployeeSchema.statics.getAll = function() {
       }
     });
   });
-}
+};
 
 var Employee = mongoose.model('Employee', EmployeeSchema);
 

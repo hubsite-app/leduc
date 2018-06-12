@@ -20,6 +20,7 @@ const {EmployeeWork} = require('./models/employeeWork');
 const {VehicleWork} = require('./models/vehicleWork');
 const {Production} = require('./models/production');
 const {MaterialShipment} = require('./models/materialShipment');
+const {ReportNote} = require('./models/reportNote');
 
 const port = process.env.PORT || 300;
 var app = express();
@@ -299,8 +300,19 @@ app.get('/jobsites', (req, res) => {
 
 // GET /jobsite/:id
 app.get('/jobsite/:id', (req, res) => {
-  Jobsite.findById(req.params.id, (err, jobsite) => {
-    res.render('jobsite', {jobsite});
+  var reportArray = [];
+  Jobsite.findById(req.params.id, async (err, jobsite) => {
+    await DailyReport.find({jobsite}, (err, reports) => {
+      reports.reverse().forEach((report) => {
+        reportArray[report._id] = report;
+      });
+    });
+    reportArray.slice().reverse().forEach((report) => {
+      console.log(report);
+    })
+    
+    var crewArray = await Crew.getAll();
+    res.render('jobsite', {jobsite, reportArray, crewArray});
   });
 });
 
@@ -572,6 +584,27 @@ app.get('/crews', (req, res) => {
   });
 });
 
+// GET crew/:id
+app.get('/crew/:id', (req, res) => {
+  Crew.findById(req.params.id, async (err, crew) => {
+    err && console.log(err);
+    try {
+      var jobArray = [];
+      var employeeArray = await Employee.getAll();
+      var vehicleArray = await Vehicle.getAll();
+      await Jobsite.find({crews: crew._id}, (err, jobs) => {
+        err && console.log(err);
+        jobs.forEach((job) => {
+          jobArray[job._id] = job;
+        });
+      });
+      res.render('crew', {crew, employeeArray, vehicleArray, jobArray});
+    } catch (e) {
+      return console.log(e);
+    }
+  });
+});
+
 // DELETE /crew/:id
 app.delete('/crew/:id', async (req, res) => {
   var id = req.params.id;
@@ -585,6 +618,7 @@ app.delete('/crew/:id', async (req, res) => {
     if(!crew) {
       return res.status(404).send();
     }
+    res.end();
   } catch (e) {
     res.status(400).send(e);
   }
@@ -598,8 +632,8 @@ app.post('/crew/:crewId/employee/:employeeId', async (req, res) => {
     return res.status(404).send();
   }
   try {
-    await Crew.findById(crewId, async (err, crew) => {
-      await Employee.findById(employeeId, async (err, employee) => {
+    Crew.findById(crewId, (err, crew) => {
+      Employee.findById(employeeId, async (err, employee) => {
         employee.crews.push(crew);
         await employee.save((err) => {
           if (err) {
@@ -612,8 +646,10 @@ app.post('/crew/:crewId/employee/:employeeId', async (req, res) => {
             console.log(err);
           }
         });
+        res.end();
       });
     });
+
   } catch (e) {
     console.log(e);
     res.render('/');
@@ -638,6 +674,7 @@ app.delete('/crew/:crewId/employee/:employeeId', async (req, res) => {
         console.log(err);
       }
     });
+    res.end();
   } catch (e) {
     return console.log(e);
   }
@@ -657,6 +694,7 @@ app.post('/crew/:crewId/vehicle/:vehicleId', async (req, res) => {
     await vehicle.save((err) => err && console.log(err));
     crew.vehicles.push(vehicle);
     await crew.save((err) => err && console.log(err));
+    res.end();
   } catch (e) { 
     console.log(e);
     var dangerMessage = encodeURIComponent("Unable to add vehicle to crew");
@@ -682,6 +720,7 @@ app.delete('/crew/:crewId/vehicle/:vehicleId', async (req, res) => {
         console.log(err);
       }
     });
+    res.end();
   } catch (e) {
     console.log(e);
     var dangerMessage = encodeURIComponent("Unable to remove vehicle from crew");
@@ -729,7 +768,8 @@ app.get('/report/:reportId', (req, res) => {
       var vehicleHourArray = await VehicleWork.find({dailyReport: report});
       var productionArray = await Production.find({dailyReport: report});
       var materialArray = await MaterialShipment.find({dailyReport: report});
-      res.render('dailyReport', {report, crew, job, employeeArray, employeeHourArray, vehicleArray, vehicleHourArray, productionArray, materialArray});
+      var reportNote = await ReportNote.find({dailyReport: report});
+      res.render('dailyReport', {report, crew, job, employeeArray, employeeHourArray, vehicleArray, vehicleHourArray, productionArray, materialArray, reportNote: reportNote[0]});
     } catch (e) {
       console.log(e);
       res.redirect('/');
@@ -739,10 +779,33 @@ app.get('/report/:reportId', (req, res) => {
 
 // POST /employeehour
 app.post('/employeehour', async (req, res) => {
+  var report = await DailyReport.findById(req.body.dailyReport);
+  var today = new Date(report.date);
+  if (req.body.startTime.split(':')[1].split(' ')[1] == 'AM') {
+    var startHour = parseInt(req.body.startTime.split(':')[0]);
+  } else {
+    var startHour = parseInt(req.body.startTime.split(':')[0]) + 12;
+  }
+  var startMinute = parseInt(req.body.startTime.split(':')[1].split(' ')[0]);
+  var startTime = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), startHour, startMinute));
+  if (req.body.endTime.split(':')[1].split(' ')[1] == 'AM') {
+    var endHour = parseInt(req.body.endTime.split(':')[0]);
+  } else {
+    var endHour = parseInt(req.body.endTime.split(':')[0]) + 12;
+  }
+  var endMinute = parseInt(req.body.endTime.split(':')[1].split(' ')[0]);
+  var endTime = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), endHour, endMinute));
+  startTime.setHours(startTime.getHours() + 6);
+  endTime.setHours(endTime.getHours() + 6);
   try {
     if (typeof req.body.employee == 'object') {
       req.body.employee.forEach(async (employee) => {
-        var employeeWork = new EmployeeWork(req.body);
+        var employeeWork = new EmployeeWork({
+          startTime, endTime,
+          jobTitle: req.body.jobTitle,
+          employee,
+          dailyReport: req.body.dailyReport
+        });
         employeeWork.save((err) => {
           if(err){return console.log(err);}
         });
@@ -752,7 +815,12 @@ app.post('/employeehour', async (req, res) => {
       });
       res.redirect('back');
     } else {
-      var employeeWork = new EmployeeWork(req.body);
+      var employeeWork = new EmployeeWork({
+        startTime, endTime,
+        jobTitle: req.body.jobTitle,
+        employee: req.body.employee,
+        dailyReport: req.body.dailyReport
+      });
       employeeWork.save((err) => {
         if(err){return console.log(err);}
       });
@@ -768,6 +836,37 @@ app.post('/employeehour', async (req, res) => {
   }
 });
 
+// POST /employeework/:id/update
+app.post('/employeework/:id/update', async (req, res) => {
+  var report = await DailyReport.findById(req.body.dailyReport);
+  var today = new Date(report.date);
+  if (req.body.startTime.split(':')[1].split(' ')[1] == 'AM' || req.body.startTime.split(':')[1].split(' ')[1] == undefined) {
+    var startHour = parseInt(req.body.startTime.split(':')[0]);
+  } else {
+    var startHour = parseInt(req.body.startTime.split(':')[0]) + 12;
+  }
+  var startMinute = parseInt(req.body.startTime.split(':')[1].split(' ')[0]);
+  var startTime = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), startHour, startMinute));
+  if (req.body.endTime.split(':')[1].split(' ')[1] == 'AM' || req.body.endTime.split(':')[1].split(' ')[1] == undefined) {
+    var endHour = parseInt(req.body.endTime.split(':')[0]);
+  } else {
+    var endHour = parseInt(req.body.endTime.split(':')[0]) + 12;
+  }
+  var endMinute = parseInt(req.body.endTime.split(':')[1].split(' ')[0]);
+  var endTime = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), endHour, endMinute));
+  startTime.setHours(startTime.getHours() + 6);
+  endTime.setHours(endTime.getHours() + 6);
+  EmployeeWork.findByIdAndUpdate(req.params.id, {$set: {
+    startTime, endTime,
+    jobTitle: req.body.jobTitle,
+    employee: req.body.employee,
+    dailyReport: report
+  }}, {new: true}, (err, employeework) => {
+    err && console.log(err);
+    res.redirect('back');
+  });
+});
+
 // DELETE /employeework/:id
 app.delete('/employeework/:id', async (req, res) => {
   var id = req.params.id;
@@ -776,6 +875,7 @@ app.delete('/employeework/:id', async (req, res) => {
       err && console.log(err);
       var report = DailyReport.findByIdAndUpdate(employeeWork.dailyReport, {$pull: {employeeWork: employeeWork._id}}, (err) => err && console.log(err));
     });
+    res.end();
   } catch (e) {
     console.log(e);
     var dangerMessage = encodeURIComponent('Unable to delete Employee Work');
@@ -785,10 +885,33 @@ app.delete('/employeework/:id', async (req, res) => {
 
 // POST /vehiclehour
 app.post('/vehiclehour', async (req, res) => {
+  var report = await DailyReport.findById(req.body.dailyReport);
+  var today = new Date(report.date);
+  if (req.body.startTime.split(':')[1].split(' ')[1] == 'AM') {
+    var startHour = parseInt(req.body.startTime.split(':')[0]);
+  } else {
+    var startHour = parseInt(req.body.startTime.split(':')[0]) + 12;
+  }
+  var startMinute = parseInt(req.body.startTime.split(':')[1].split(' ')[0]);
+  var startTime = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), startHour, startMinute));
+  if (req.body.endTime.split(':')[1].split(' ')[1] == 'AM') {
+    var endHour = parseInt(req.body.endTime.split(':')[0]);
+  } else {
+    var endHour = parseInt(req.body.endTime.split(':')[0]) + 12;
+  }
+  var endMinute = parseInt(req.body.endTime.split(':')[1].split(' ')[0]);
+  var endTime = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), endHour, endMinute));
+  startTime.setHours(startTime.getHours() + 6);
+  endTime.setHours(endTime.getHours() + 6);
   try {
     if (typeof req.body.vehicle == 'object') {
       req.body.vehicle.forEach(async (vehicle) => {
-        var vehicleWork = new vehicleWork(req.body);
+        var vehicleWork = new vehicleWork({
+          startTime, endTime,
+          jobTitle: req.body.jobTitle,
+          vehicle,
+          dailyReport: req.body.dailyReport
+        });
         vehicleWork.save((err) => {
           if(err){return console.log(err);}
         });
@@ -798,7 +921,12 @@ app.post('/vehiclehour', async (req, res) => {
       });
       res.redirect('back');
     } else {
-      var vehicleWork = new VehicleWork(req.body);
+      var vehicleWork = new VehicleWork({
+        startTime, endTime,
+        jobTitle: req.body.jobTitle,
+        vehicle: req.body.vehicle,
+        dailyReport: req.body.dailyReport
+      });
       vehicleWork.save((err) => {
         if(err){return console.log(err);}
       });
@@ -813,6 +941,37 @@ app.post('/vehiclehour', async (req, res) => {
   }
 });
 
+// POST /vehiclework/:id/update
+app.post('/vehiclework/:id/update', async (req, res) => {
+  var report = await DailyReport.findById(req.body.dailyReport);
+  var today = new Date(report.date);
+  if (req.body.startTime.split(':')[1].split(' ')[1] == 'AM' || req.body.startTime.split(':')[1].split(' ')[1] == undefined) {
+    var startHour = parseInt(req.body.startTime.split(':')[0]);
+  } else {
+    var startHour = parseInt(req.body.startTime.split(':')[0]) + 12;
+  }
+  var startMinute = parseInt(req.body.startTime.split(':')[1].split(' ')[0]);
+  var startTime = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), startHour, startMinute));
+  if (req.body.endTime.split(':')[1].split(' ')[1] == 'AM' || req.body.endTime.split(':')[1].split(' ')[1] == undefined) {
+    var endHour = parseInt(req.body.endTime.split(':')[0]);
+  } else {
+    var endHour = parseInt(req.body.endTime.split(':')[0]) + 12;
+  }
+  var endMinute = parseInt(req.body.endTime.split(':')[1].split(' ')[0]);
+  var endTime = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), endHour, endMinute));
+  startTime.setHours(startTime.getHours() + 6);
+  endTime.setHours(endTime.getHours() + 6);
+  VehicleWork.findByIdAndUpdate(req.params.id, {$set: {
+    startTime, endTime,
+    jobTitle: req.body.jobTitle,
+    vehicle: req.body.vehicle,
+    dailyReport: report
+  }}, {new: true}, (err, vehiclework) => {
+    err && console.log(err);
+    res.redirect('back');
+  });
+});
+
 // DELETE /vehiclework/:id
 app.delete('/vehiclework/:id', async (req, res) => {
   var id = req.params.id;
@@ -821,6 +980,7 @@ app.delete('/vehiclework/:id', async (req, res) => {
       err && console.log(err);
       var report = DailyReport.findByIdAndUpdate(vehicleWork.dailyReport, {$pull: {vehicleWork: vehicleWork._id}}, (err) => err && console.log(err));
     });
+    res.end();
   } catch (e) {
     console.log(e);
     res.redirect('back');
@@ -829,8 +989,33 @@ app.delete('/vehiclework/:id', async (req, res) => {
 
 // POST /production
 app.post('/production', async (req, res) => {
+  var report = await DailyReport.findById(req.body.dailyReport);
+  var today = new Date(report.date);
+  if (req.body.startTime.split(':')[1].split(' ')[1] == 'AM') {
+    var startHour = parseInt(req.body.startTime.split(':')[0]);
+  } else {
+    var startHour = parseInt(req.body.startTime.split(':')[0]) + 12;
+  }
+  var startMinute = parseInt(req.body.startTime.split(':')[1].split(' ')[0]);
+  var startTime = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), startHour, startMinute));
+  if (req.body.endTime.split(':')[1].split(' ')[1] == 'AM') {
+    var endHour = parseInt(req.body.endTime.split(':')[0]);
+  } else {
+    var endHour = parseInt(req.body.endTime.split(':')[0]) + 12;
+  }
+  var endMinute = parseInt(req.body.endTime.split(':')[1].split(' ')[0]);
+  var endTime = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), endHour, endMinute));
+  startTime.setHours(startTime.getHours() + 6);
+  endTime.setHours(endTime.getHours() + 6);
   try {
-    var production = await new Production(req.body);
+    var production = await new Production({
+      jobTitle: req.body.jobTitle,
+      quantity: req.body.quantity,
+      unit: req.body.unit,
+      startTime, endTime,
+      description: req.body.description,
+      dailyReport: req.body.dailyReport
+    });
     production.save((err) => err && console.log(err));
     var report = await DailyReport.findById(req.body.dailyReport);
     await report.production.push(production);
@@ -842,6 +1027,39 @@ app.post('/production', async (req, res) => {
   }
 });
 
+// POST /production/:id/update
+app.post('/production/:id/update', async (req, res) => {
+  var report = await DailyReport.findById(req.body.dailyReport);
+  var today = new Date(report.date);
+  if (req.body.startTime.split(':')[1].split(' ')[1] == 'AM' || req.body.startTime.split(':')[1].split(' ')[1] == undefined) {
+    var startHour = parseInt(req.body.startTime.split(':')[0]);
+  } else {
+    var startHour = parseInt(req.body.startTime.split(':')[0]) + 12;
+  }
+  var startMinute = parseInt(req.body.startTime.split(':')[1].split(' ')[0]);
+  var startTime = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), startHour, startMinute));
+  if (req.body.endTime.split(':')[1].split(' ')[1] == 'AM' || req.body.endTime.split(':')[1].split(' ')[1] == undefined) {
+    var endHour = parseInt(req.body.endTime.split(':')[0]);
+  } else {
+    var endHour = parseInt(req.body.endTime.split(':')[0]) + 12;
+  }
+  var endMinute = parseInt(req.body.endTime.split(':')[1].split(' ')[0]);
+  var endTime = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), endHour, endMinute));
+  startTime.setHours(startTime.getHours() + 6);
+  endTime.setHours(endTime.getHours() + 6);
+  Production.findByIdAndUpdate(req.params.id, {$set: {
+    startTime, endTime,
+    jobTitle: req.body.jobTitle,
+    quantity: req.body.quantity,
+    unit: req.body.unit,
+    description: req.body.description, 
+    dailyReport: report
+  }}, {new: true}, (err, production) => {
+    err && console.log(err);
+    res.redirect('back');
+  });
+});
+
 // DELETE /production/:id
 app.delete('/production/:id', async (req, res) => {
   var id = req.params.id;
@@ -850,6 +1068,7 @@ app.delete('/production/:id', async (req, res) => {
       err && console.log(err);
       var report = DailyReport.findByIdAndUpdate(production.dailyReport, {$pull: {production: production._id}}, (err) => err && console.log(err));
     });
+    res.end();
   } catch (e) {
     console.log(e);
     res.redirect('back');
@@ -859,7 +1078,41 @@ app.delete('/production/:id', async (req, res) => {
 // POST /material
 app.post('/material', async (req, res) => {
   try {
-    var material = await new MaterialShipment(req.body);
+    if (req.body.source) {
+      var material;
+      var vehicle = await Vehicle.find({name: req.body.source + " Truck"});
+      if (_.isEmpty(vehicle)) {
+        vehicle = new Vehicle({
+          name: req.body.source.trim() + " Truck",
+          vehicleType: "Dump Truck",
+          rental: true,
+          sourceCompany: req.body.source.trim()
+        });
+        await vehicle.save((err) => {
+          if (err) {console.log(err); res.redirect('back');}
+        });
+        material = await new MaterialShipment({
+          shipmentType: req.body.shipmentType,
+          quantity: req.body.quantity,
+          unit: req.body.unit,
+          source: req.body.source,
+          vehicle: vehicle._id,
+          dailyReport: req.body.dailyReport
+        });
+      } else {
+        console.log(vehicle);
+        material = await new MaterialShipment({
+          shipmentType: req.body.shipmentType,
+          quantity: req.body.quantity,
+          unit: req.body.unit,
+          source: req.body.source,
+          vehicle: vehicle[0]._id,
+          dailyReport: req.body.dailyReport
+        });
+      }
+    } else {
+      material = await new MaterialShipment(req.body);
+    }
     material.save((err) => err && console.log(err));
     var report = await DailyReport.findById(req.body.dailyReport);
     await report.materialShipment.push(material);
@@ -871,6 +1124,21 @@ app.post('/material', async (req, res) => {
   }
 });
 
+// POST /material/:id/update
+app.post('/material/:id/update', async (req, res) => {
+  var report = await DailyReport.findById(req.body.dailyReport);
+  MaterialShipment.findByIdAndUpdate(req.params.id, {$set: {
+    shipmentType: req.body.shipmentType,
+    quantity: req.body.quantity,
+    unit: req.body.unit,
+    vehicle: req.body.vehicle, 
+    dailyReport: report
+  }}, {new: true}, (err, materialShipment) => {
+    err && console.log(err);
+    res.redirect('back');
+  });
+});
+
 // DELETE /material/:id
 app.delete('/material/:id', async (req, res) => {
   var id = req.params.id;
@@ -879,6 +1147,49 @@ app.delete('/material/:id', async (req, res) => {
       err && console.log(err);
       var report = DailyReport.findByIdAndUpdate(material.dailyReport, {$pull: {materialShipment: material._id}}, (err) => err && console.log(err));
     });
+    res.end();
+  } catch (e) {
+    console.log(e);
+    res.redirect('back');
+  }
+});
+
+// POST /reportnote
+app.post('/reportnote', async (req, res) => {
+  try {
+    var report = await DailyReport.findById(req.body.dailyReport);
+    if (report.reportNote) {
+      ReportNote.findByIdAndUpdate(report.reportNote, {note: req.body.note}, (err, note) => {
+        err && console.log(err);
+        report.save((err) => {
+          if (err) {
+            console.log('POST /reportnote save error:', err);
+          }
+          res.redirect('back');
+        })
+      });
+    } else {
+      var note = await new ReportNote(req.body);
+      await note.save((err) => err && console.log(err));
+      var report = await DailyReport.findById(req.body.dailyReport);
+      report.reportNote = note._id;
+      await report.save((err) => err && console.log(err));
+      console.log(report);
+      res.redirect('back');
+    }
+  } catch (e) {
+    console.log('POST /reportnote catch error:', e);
+    res.redirect('back');
+  }
+});
+
+// GET /reports
+app.get('/reports', async (req, res) => {
+  try {
+    var reportArray = await DailyReport.getAll();
+    var crewArray = await Crew.getAll();
+    var jobArray = await Jobsite.getAll();
+    res.render('reportIndex', {reportArray, crewArray, jobArray});
   } catch (e) {
     console.log(e);
     res.redirect('back');

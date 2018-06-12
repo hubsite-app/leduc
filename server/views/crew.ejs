@@ -1,0 +1,104 @@
+<% include partials/head %>
+
+<script src="/js/crews.js"></script>
+
+<div class="container">
+  
+    <div class="card-content">
+      <% id = crew._id %>
+      <h3 class="card-title" style="font-weight: bold;"><%= crew.name %></h3>
+
+      <% if (crew.employees.length > 0) { %>
+        <h5>Employees: </h5>
+        <ul class="collection">
+          <% crew.employees.forEach((employee) => { %>
+            <li class="collection-item">
+              <h6><%= employeeArray[employee].name %></h6>
+              <span><%= employeeArray[employee].jobTitle %></span>
+            </li>
+          <% }); %>
+        </ul>
+      <% } %>
+
+      <% if (crew.vehicles.length > 0) { %>
+        <h5>Vehicles: </h5>
+        <ul class="collection">
+          <% crew.vehicles.forEach((vehicle) => { %>
+            <li class="collection-item">
+              <h6><%= vehicleArray[vehicle].name %></h6>
+              <span><%= vehicleArray[vehicle].vehicleType %></span>
+            </li>
+          <% }); %>
+        </ul>
+      <% } %>
+
+      <% if (crew.jobsites.length > 0) { %>
+        <h5>Jobsites: </h5>
+        <ul class="collection">
+          <% crew.jobsites.forEach((jobsite) => { %>
+            <li class="collection-item">
+              <h6><%= jobArray[jobsite].name %></h6>
+            </li>
+          <% }); %>
+        </ul>
+      <% } %>
+
+      <% if (employeeArray) { %>
+        <div class="row">
+          <div class="col-12">
+            <a id="dropdown-employee-crew-<%= crew._id %>" class='employeeDropdown btn' href='' data-target='crew-<%= crew._id %>-employee-dropdown' style="width: 100%;">Select Employees</a>
+          </div>
+        </div>
+        <ul class="collection dropdown-content" id="crew-<%= crew._id %>-employee-dropdown">
+          <form id="crew-<%= crew._id %>-employee-form">
+            <% for (var i in employeeArray) { %>
+              <label>
+                <li class="collection-item" id="employee-<%= employeeArray[i]._id %>-item">
+                  <input type="hidden" class="id" id="crew-<%= crew._id %>-id" value="<%= crew._id %>" />
+                  <input type="checkbox" class="newCrewMember" id="employee-<%= employeeArray[i]._id %>-checkbox" name="employee" value="<%= employeeArray[i]._id %>" 
+                    <% crew.employees.forEach((employee) => {
+                      if (employeeArray[i]._id.equals(employee)) {%>
+                        checked="true"
+                      <%}});%> />
+                  <span>
+                    <%= employeeArray[i].name %> - <%= employeeArray[i].jobTitle %>
+                  </span>
+                </li>
+              </label>
+              <% } %>
+          </form>
+        </ul>
+      <% } %>
+
+      <% if (vehicleArray) { %>
+        <div class="row">
+          <div class="col-12">
+            <a id="dropdown-vehicle-crew-<%= crew._id %>" class='vehicleDropdown btn' href='' data-target='crew-<%= crew._id %>-vehicle-dropdown' style="width: 100%;">Select Vehicles</a>
+          </div>
+        </div>
+        <ul class="collection dropdown-content" id="crew-<%= crew._id %>-vehicle-dropdown">
+          <form id="crew-<%= crew._id %>-vehicle-form">
+            <% for (var i in vehicleArray) { %>
+              <label>
+                <li class="collection-item" id="vehicle-<%= vehicleArray[i]._id %>-item">
+                  <input type="hidden" class="id" id="crew-<%= crew._id %>-id" value="<%= crew._id %>" />
+                  <input type="checkbox" class="newCrewVehicle" id="vehicle-<%= vehicleArray[i]._id %>-checkbox" name="vehicle" value="<%= vehicleArray[i]._id %>" 
+                    <% crew.vehicles.forEach((vehicle) => {
+                      if (vehicleArray[i]._id.equals(vehicle)) {%>
+                        checked="true"
+                      <%}});%> />
+                  <span>
+                    <%= vehicleArray[i].name %> - <%= vehicleArray[i].vehicleType %>
+                  </span>
+                </li>
+              </label>
+              <% } %>
+          </form>
+        </ul>
+      <% } %>
+
+    </div>
+ 
+</div>
+
+<% include partials/foot %>

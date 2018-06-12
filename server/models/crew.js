@@ -25,6 +25,24 @@ var CrewSchema = new mongoose.Schema({
   }]
 });
 
+CrewSchema.statics.getAll = function() {
+  var Crew = this
+  var crewArray = [];
+  return Crew.find({}).then((crews) => {
+    if (!crews) {return Promise.reject();}
+    return new Promise(async (resolve, reject) => {
+      await crews.forEach((crew) => {
+        crewArray[crew._id] = crew;
+      });
+      if (Object.keys(crewArray).length > 0) {
+        resolve(crewArray);
+      } else {
+        reject('Error: Unable to create Crew array (check to ensure Crews have been created)');
+      }
+    });
+  });
+};
+
 var Crew = mongoose.model('Crew', CrewSchema);
 
 module.exports = {Crew};

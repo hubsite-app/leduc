@@ -3,8 +3,13 @@ const {Vehicle} = require('./vehicle');
 const {DailyReport} = require('./dailyReport');
 
 var VehicleWorkSchema = new mongoose.Schema({
-  hours: {
-    type: Number
+  startTime: {
+    type: Date,
+    required: true
+  },
+  endTime: {
+    type: Date,
+    required: true
   },
   jobTitle: {
     type: String,

@@ -24,7 +24,7 @@
   function deleteRequest(id) {
     $.ajax({
       type: 'DELETE',
-      url: `http://localhost:3000/user/${id}`
+      url: `/user/${id}`
     });
     location.reload();
     alert('User Deleted');
@@ -35,32 +35,10 @@
     $(`#user-${id}-content`).remove();
     $(`#user-${id}-container`).append(html);
   }
-
-  // function restore(id, array) {
-  //   for (var i=0; i < array.length; i++) {
-  //     if (array[i]._id === id) {
-  //         user = array[i];
-  //     }
-  //   }
-  //   if(user !== undefined) {
-  //     var id = user.id;
-  //     var name = user.name;
-  //     var email = user.email;
-  //     var template = $('#user-list-item').html();
-  //     var html = Mustache.render(template, {id, name, email});
-  //     $(`#user-${id}-content`).remove();
-  //     $(`#user-${id}-container`).append(html);
-  //   } else {
-  //     alert('Something went wrong');
-  //   }
-  // }
 </script> 
 
 <script id='user-edit-form-template' type="text/template">
   <div class="row card-panel user-{{id}}-content">
-    <!--<button class="right" onclick="restore('{{id}}', '{{array}}')" name="action" style="background: rgba(0,0,0,0); border: none;">
-      <i class="material-icons">close</i>
-    </button>-->
     <form method="post" action="/user/update/{{id}}">
       <div class="input-field">
         <input id="name" type="text" class="validate" name="name" value="{{name}}">
@@ -72,17 +50,5 @@
     </form>
   </div>
 </script>
-
-<!--
-<script id="user-list-item" type="text/template">
-  <div id="user-{{id}}-container">
-    <div id="user-{{id}}-content">
-      <a class="user-delete secondary-content" onClick="deleteRequest('{{id}}')" href=""><i class="material-icons">delete</i></a>
-      <a class="user-edit secondary-content" onClick="editRequest('{{id}}', '{{name}}'); return false;" href=""><i class="material-icons">edit</i></a>
-      {{name}}}
-      <p>{{email}}}</p>
-    </div>
-  </div>
-</script> -->
 
 <% include ../partials/foot %>

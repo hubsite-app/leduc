@@ -1,0 +1,28 @@
+<% include partials/head %>
+  
+  <div class="container">
+    <table class="striped">
+      <thead>
+        <tr>
+          <th>Jobsite</th>
+          <th>Crew</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (var i in reportArray) { %>
+          <tr>
+            <td><a href="/report/<%= reportArray[i]._id %>"><%=jobArray[reportArray[i].jobsite].name%></a></td>
+            <td><%= crewArray[reportArray[i].crew].name %></td>
+            <% dateArray = reportArray[i].date.toString().split(' ') %>
+            <td><%= dateArray[0] %>, <%= dateArray[1] %> <%= dateArray[2] %></td>
+          </tr>
+        <% } %> 
+      </tbody>
+
+        
+  
+    </table>
+  </div>
+
+<% include partials/foot %>
