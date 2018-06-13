@@ -10,7 +10,8 @@ var JobsiteSchema = new mongoose.Schema({
     trim: true
   },
   location_url: {
-    type: String
+    type: String,
+    trim: true
   },
   description: {
     type: String,

@@ -339,12 +339,18 @@ function toggleApproval(id) {
   if ($('#report-'+ id + '-approval').is(':checked')) {
     $.ajax({
       type: 'POST',
-      url: '/report/' + id + '/approve'
+      url: '/report/' + id + '/approve',
+      success: function() {
+        location.reload();
+      }
     });
   } else {
     $.ajax({
       type: 'POST',
-      url: '/report/' + id + '/disapprove'
+      url: '/report/' + id + '/disapprove',
+      success: function() {
+        location.reload();
+      }
     });
   }
 };

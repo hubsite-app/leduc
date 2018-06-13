@@ -293,7 +293,7 @@ app.post('/reset/:token', function(req, res) {
 
 // GET /users
 app.get('/users', async (req, res) => {
-  if (req.user.admin == 'true') {
+  if (req.user.admin == true) {
     try {
       await User.find({}, (err, users) => {
         var userMap = [];
@@ -320,7 +320,7 @@ app.get('/user/:id', (req, res) => {
         req.flash('error', err.message);
         res.redirect('back');
       }
-      if (req.user._id.equals(user._id) || req.user.admin == 'true') {
+      if (req.user._id.equals(user._id) || req.user.admin == true) {
         employeeArray = [];
         Employee.find({}, (err, employees) => {
           employees.forEach((employee) => {
@@ -362,18 +362,19 @@ app.delete('/user/:id', async (req, res) => {
   }
 });
 
-// POST /user/update/:id
-app.post('/user/update/:id', async (req, res) => {
-  var id = req.params.id;
-  var body = _.pick(req.body, ['name']);
-  if (!ObjectID.isValid(id)) {
-    req.flash('error', 'ID used in the request was wrong, that\'s odd');
-    res.redirect('back');
-  }
+// POST /user/:id/update
+app.post('/user/:id/update', async (req, res) => {
   try {
-    await User.findOneAndUpdate({_id: id}, {$set: body}, {new: true});
+    var id = req.params.id;
+    var body = _.pick(req.body, ['name', 'admin']);
+    if (!ObjectID.isValid(id)) {
+      req.flash('error', 'ID used in the request was wrong, that\'s odd');
+      res.redirect('back');
+    }
+    var user = await User.findOneAndUpdate({_id: id}, {$set: body}, {new: true});
     req.flash('success', 'User successfully updated! Isn\'t that just fantastic?!');
     res.redirect('back');
+    res.end();
   } catch (e) {
     req.flash('error', 'There was a weird error, maybe try again with your fingers crossed?');
     res.redirect('back');
@@ -744,7 +745,7 @@ app.post('/crew', async (req, res) => {
 
 // GET /crews
 app.get('/crews', (req, res) => {
-  if (req.user.admin == 'true') {
+  if (req.user.admin == true) {
     Crew.find({}, (err, crews) => {
       var crewMap = [];
       crews.forEach((crew) => {
@@ -786,12 +787,10 @@ app.get('/crew/:id', (req, res) => {
       var jobArray = [];
       var employeeArray = await Employee.getAll();
       var vehicleArray = await Vehicle.getAll();
-      await Jobsite.find({crews: crew._id}, (err, jobs) => {
-        err && console.log(err);
-        jobs.forEach((job) => {
-          jobArray[job._id] = job;
-        });
-      });
+      var jobs = await Jobsite.find({crews: crew._id});
+      for (var i in jobs) {
+        jobArray[jobs[i]._id] = jobs[i];
+      } 
       res.render('crew', {crew, employeeArray, vehicleArray, jobArray});
     } catch (e) {
       console.log(e);
@@ -966,7 +965,12 @@ app.get('/report/:reportId', async (req, res) => {
     var productionArray = await Production.find({dailyReport: report});
     var materialArray = await MaterialShipment.find({dailyReport: report});
     var reportNote = await ReportNote.find({dailyReport: report});
-    res.render('dailyReport', {report, crew, job, employeeArray, employeeHourArray, vehicleArray, vehicleHourArray, productionArray, materialArray, reportNote: reportNote[0]});
+    if (crew.employees.some((employee) => employee.equals(req.user.employee)) || req.user.admin == true) {
+      res.render('dailyReport', {report, crew, job, employeeArray, employeeHourArray, vehicleArray, vehicleHourArray, productionArray, materialArray, reportNote: reportNote[0]});
+    } else {
+      req.flash('error', 'You are not authorized to view this page');
+      res.redirect('back');
+    }
   } catch (e) {
     console.log(e);
     req.flash('error', e.message);
@@ -977,7 +981,7 @@ app.get('/report/:reportId', async (req, res) => {
 // POST /report/:reportId/approve
 app.post('/report/:reportId/approve', async (req, res) => {
   try {
-    DailyReport.findByIdAndUpdate(req.params.reportId, {$set: {approved: true}}, {new: true});
+    await DailyReport.findByIdAndUpdate(req.params.reportId, {$set: {approved: true}}, {new: true});
     req.flash('success', 'Report has been approved, it will now sync to Excel! (once that feature is implemented...)');
     res.end();
   } catch (e) {
@@ -990,7 +994,7 @@ app.post('/report/:reportId/approve', async (req, res) => {
 // POST /report/:reportId/disapprove
 app.post('/report/:reportId/disapprove', async (req, res) => {
   try {
-    DailyReport.findByIdAndUpdate(req.params.reportId, {$set: {approved: false}}, {new: true});
+    await DailyReport.findByIdAndUpdate(req.params.reportId, {$set: {approved: false}}, {new: true});
     req.flash('success', 'Report is no longer approved, it will not sync to Excel (once that feature is implemented...)');
     res.end()
   } catch (e) {

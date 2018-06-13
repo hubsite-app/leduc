@@ -44,8 +44,13 @@
         <div class="row">
           <% for (var i in jobArray) { %>
             <% if (jobArray[i].crews.toString().includes(stuff.query.crew)) { %>
-              <div class="card panel">
-                <a class="report-link" href="" id="<%=jobArray[i]._id%>"><%= jobArray[i].name %></a>
+              <div class="col s12 m6">
+                <div class="card" style"padding: 2em;">
+                  <span class="card-title"><a class="report-link" href="" id="<%=jobArray[i]._id%>"><%= jobArray[i].name %></a>
+                  <div class="card-content">
+                    <p><%= jobArray[i].description %></p>
+                  </div>
+                </div>
               </div>
             <% } %>
           <% } %>

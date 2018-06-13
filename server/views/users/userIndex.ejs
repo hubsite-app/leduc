@@ -13,6 +13,13 @@
             <a class="user-edit secondary-content" onClick="editRequest('<%= id %>', '<%= array[result].name %>', '<%= array %>'); return false;" href=""><i class="material-icons">edit</i></a>
             <h3><a href="/user/<%=id%>"><%= array[result].name %></a></h3>
             <p><%= array[result].email %></p>
+            <% if (!array[result]._id.equals(locals.user._id)) { %>
+              <label>
+                <input id="user-admin-toggle" onclick="adminToggle('<%= array[result]._id %>', this)" type="checkbox" class="validate" name="admin" 
+                  <% if (array[result].admin == true) { %> checked="checked" <%}%> />
+                <span>Admin</span>
+              </label>
+            <% } %>
           </div>
         </div>
       </li>
@@ -24,10 +31,9 @@
   function deleteRequest(id) {
     $.ajax({
       type: 'DELETE',
-      url: `/user/${id}`
+      url: `/user/${id}`,
     });
     location.reload();
-    alert('User Deleted');
   }
   function editRequest(id, name, array) {
     var template = $('#user-edit-form-template').html();
@@ -35,11 +41,23 @@
     $(`#user-${id}-content`).remove();
     $(`#user-${id}-container`).append(html);
   }
+  function adminToggle(id, cb) {
+    $.ajax({
+      contentType: 'application/json',
+      dataType: 'json',
+      type: 'POST',
+      url: `/user/${id}/update`,
+      data: JSON.stringify({admin: cb.checked}),
+      success: function() {
+        location.reload();
+      }
+    });
+  }
 </script> 
 
 <script id='user-edit-form-template' type="text/template">
   <div class="row card-panel user-{{id}}-content">
-    <form method="post" action="/user/update/{{id}}">
+    <form method="post" action="/user/{{id}}/update">
       <div class="input-field">
         <input id="name" type="text" class="validate" name="name" value="{{name}}">
         <label class="active" for="name">Name</label>
