@@ -6,6 +6,13 @@
 
     <h2><a href="/jobsite/<%= job._id %>"><%= job.name %></a></h2>
     <h5><%= crew.name %><a href="/crew/<%= crew._id %>">    <i class="tiny material-icons">edit</i></a></h5>
+    <% if (locals.user.admin == 'true') { %>
+      <label>
+        <input type="checkbox" onClick="toggleApproval('<%=report._id%>')" id="report-<%= report._id %>-approval" 
+          <% if (report.approved == true) { %> checked="checked" <%}%> />
+        <span>Approved</span>
+      </label>
+    <% } %>
     <h6><%= report.date.toDateString(); %></h6>
     
     <% if (Object.keys(employeeArray).length > 0) { %>
@@ -498,7 +505,7 @@
       <h3>Edit Shipment</h3>
       <form method="post" action="/material/{{id}}/update" id="material-form">
         <div class="input-field col s12">
-          <input name="shipmentType" type="text" id="autocomplete-input" class="autocomplete-work" autocomplete="off" value="{{shipment}}" />
+          <input name="shipmentType" type="text" id="autocomplete-input" class="autocomplete-shipment" autocomplete="off" value="{{shipment}}" />
           <span class="helper-text">Shipment Type</span>
         </div>
         <div class="input-field col s8">

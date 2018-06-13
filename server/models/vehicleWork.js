@@ -13,7 +13,7 @@ var VehicleWorkSchema = new mongoose.Schema({
   },
   jobTitle: {
     type: String,
-    require: true
+    required: true
   },
   vehicle: {
     type: mongoose.Schema.Types.ObjectId,

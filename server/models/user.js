@@ -28,6 +28,8 @@ var UserSchema = new mongoose.Schema({
     required: true,
     minlength: 6
   },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
   admin: {
     tyle: Boolean,
     default: false
@@ -39,22 +41,10 @@ var UserSchema = new mongoose.Schema({
   }
 });
 
-UserSchema.statics.authenticateUser = function (email, password) {
-  var User = this;
-
-  return User.findOne({email}).exec().then((user) => {
-    if (!user) {
-      return Promise.reject('Email not found!');
-    }
-    return new Promise((resolve, reject) => {
-      bcrypt.compare(password, user.password, (err, res) => {
-        if (res) {
-          resolve(user);
-        } else {
-          reject('Incorrect Password!');
-        }
-      });
-    });
+UserSchema.methods.comparePassword = function(candidatePassword, cb) {
+  bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+    if (err) return cb(err);
+    cb(null, isMatch);
   });
 };
 

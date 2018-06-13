@@ -1,16 +1,62 @@
 <% include ./partials/head %>
 
-<div class="container">
-  <h1><%= jobsite.name %></h1>
-  <ul class="collection">
-    <% for (var i in reportArray) { %>
-      <li class="collection-item">
-        <a href="/report/<%= reportArray[i]._id %>">
-          <%= crewArray[reportArray[i].crew].name %> - <%= reportArray[i].date %>
-        </a>
-      </li>
+  <script src="/js/jobsite.js"></script>
+
+  <div class="container">
+
+    <h1><%= jobsite.name %></h1>
+    <p><%= jobsite.description %></p>
+    <% if (Object.keys(reportArray).length > 0) { %>
+      <h4>Reports</h4>
+      <ul class="collection">
+        <% for (var i in reportArray) { %>
+          <li class="collection-item">
+            <a href="/report/<%= reportArray[i]._id %>">
+              <%= crewArray[reportArray[i].crew].name %> - <%= reportArray[i].date %>
+            </a>
+          </li>
+        <% } %> 
+      </ul>
+    <%}%>
+
+    <% if (jobsite.crews.length > 0) { %>
+      <h5>Crews: </h5>
+      <ul class="collection">
+        <% jobsite.crews.forEach((crew) => { %>
+          <li class="collection-item">
+            <h6><%= crewArray[crew].name %></h6>
+          </li>
+        <% }); %>
+      </ul>
+    <% } %>
+
+    <% if (crewArray) { %>
+      <div class="row">
+        <div class="col-12">
+          <a id="dropdown-crew" class='crewDropdown btn' href='' data-target='job-dropdown' style="width: 100%;">Select Crew</a>
+        </div>
+      </div>
+      <ul class="collection dropdown-content" id="job-dropdown">
+        <form id="job-crew-form">
+          <% for (var index in crewArray) { %>
+            <label>
+              <li class="collection-item" id="crew-<%= crewArray[index]._id %>-item">
+                <input type="hidden" class="id" id="job" value="<%= jobsite._id %>" />
+                <input type="checkbox" class="newCrew" id="crew-<%= crewArray[index]._id %>-checkbox" name="crew" value="<%= crewArray[index]._id %>" 
+                  <% jobsite.crews.forEach((crew) => {
+                    if (crewArray[index]._id.equals(crew)) {%>
+                      checked="true"
+                    <%}});%> />
+                <span>
+                  <%= crewArray[index].name %>
+                </span>
+              </li>
+            </label>
+          <% } %>
+        </form>
+      </ul>
     <% } %> 
-  </ul>
-</div>
+    
+  </div>
 
 <% include ./partials/foot %>

@@ -231,7 +231,7 @@ function loadProductionEditForm(id, work, quantity, unit, start, end, descriptio
   var html = Mustache.render(template, {id, work, quantity, unit, start, end, description})
   $("#production-"+ id +"-edit-form-div").append(html);
   $('#production-'+ id +'-edit-button').remove();
-  $('input.autocomplete-work').autocomplete({
+  $('input.autocomplete-shipment').autocomplete({
     data: {
       "Subgrade Prep": null,
       "Pit-run": null,
@@ -275,7 +275,7 @@ function loadMaterialForm() {
   var template = $('#material-form-template').html();
   $("#material-form-div").append(template);
   $('#add-material').remove();
-  $('input.autocomplete').autocomplete({
+  $('input.autocomplete-shipment').autocomplete({
     data: {
       "80mm Crushed Gravel": null,
       "50mm Crushed Gravel": null,
@@ -333,4 +333,18 @@ function deleteMaterialRequest(id) {
       location.reload(true);
     }
   });
+};
+
+function toggleApproval(id) {
+  if ($('#report-'+ id + '-approval').is(':checked')) {
+    $.ajax({
+      type: 'POST',
+      url: '/report/' + id + '/approve'
+    });
+  } else {
+    $.ajax({
+      type: 'POST',
+      url: '/report/' + id + '/disapprove'
+    });
+  }
 };

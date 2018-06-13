@@ -2,16 +2,22 @@
   
   <div class="container">
     <table class="striped">
+
       <thead>
         <tr>
+          <th>Approval</th>
           <th>Jobsite</th>
           <th>Crew</th>
           <th>Date</th>
         </tr>
       </thead>
+
       <tbody>
         <% for (var i in reportArray) { %>
           <tr>
+            <td><label><input type="checkbox" onClick="toggleApproval('<%=reportArray[i]._id%>')" id="report-<%= reportArray[i]._id %>-approval" 
+              <% if (reportArray[i].approved == true) { %> checked="checked" <%}%> /><span></span></label>
+            </td>
             <td><a href="/report/<%= reportArray[i]._id %>"><%=jobArray[reportArray[i].jobsite].name%></a></td>
             <td><%= crewArray[reportArray[i].crew].name %></td>
             <% dateArray = reportArray[i].date.toString().split(' ') %>
@@ -19,10 +25,30 @@
           </tr>
         <% } %> 
       </tbody>
-
-        
-  
+ 
     </table>
   </div>
 
 <% include partials/foot %>
+
+<script>
+  function toggleApproval(id) {
+    if ($('#report-'+ id + '-approval').is(':checked')) {
+      $.ajax({
+        type: 'POST',
+        url: '/report/' + id + '/approve',
+        success: function() {
+          location.reload();
+        }
+      });
+    } else {
+      $.ajax({
+        type: 'POST',
+        url: '/report/' + id + '/disapprove',
+        success: function() {
+          location.reload();
+        }
+      });
+    }
+  };
+</script>
