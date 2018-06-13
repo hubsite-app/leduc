@@ -69,3 +69,23 @@ function loadForm() {
   $("#crew-form-div").append(template);
   $('#add-crew').remove();
 };
+function loadEmployeeForm() {
+  var template = $('#employee-form-template').html();
+  $("#employee-form-div").append(template);
+  $('#add-employee').remove();
+};
+function loadVehicleForm() {
+  var template = $('#vehicle-form-template').html();
+  $("#vehicle-form-div").append(template);
+  $('#add-vehicle').remove();
+  $(document).ready(function() {
+    $('#rental-toggle').click(function () {
+      var template = $('#source-company-form-template').html();
+      if ($(this).is(':checked')) {
+        $('#source-company-div').append(template);
+      } else  {
+        $('#source-company-form').remove();
+      }
+    });
+  });
+};

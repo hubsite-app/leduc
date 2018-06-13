@@ -30,9 +30,11 @@
                   </a>
                 </div>
                 <a class="employee-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteEmployeeWorkRequest('<%= employeeHourArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
-                <%= employeeHourArray[i].jobTitle %> - <%= hour %>
-                  <% if (hour <= 1) { %> hour <% } else { %> hours <% } %></br>
-                <span><%= employeeArray[employeeHourArray[i].employee].name %></span>
+                <b><%= employeeHourArray[i].jobTitle %></b> - <%= employeeArray[employeeHourArray[i].employee].name %></br>
+                <%= employeeHourArray[i].startTime.getHours() %>:<%= employeeHourArray[i].startTime.getMinutes()<10?'0':''%><%= employeeHourArray[i].startTime.getMinutes() %> - 
+                   <%= employeeHourArray[i].endTime.getHours() %>:<%= employeeHourArray[i].endTime.getMinutes()<10?'0':''%><%= employeeHourArray[i].endTime.getMinutes() %>
+                <span>(<%= hour %></span>
+                  <% if (hour <= 1) { %> hour<% } else { %> hours<% } %>)
                 <div id="employee-<%=employeeHourArray[i]._id%>-work-edit-form-div"></div>
               </li>
             <% } %>
@@ -64,9 +66,11 @@
                   </a>
                 </div>
                 <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteVehicleWorkRequest('<%= vehicleHourArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
-                <%= vehicleHourArray[i].jobTitle %> - <%= hour %>
-                  <% if (hour <= 1) { %> hour <% } else { %> hours <% } %></br>
-                <span><%= vehicleArray[vehicleHourArray[i].vehicle].name %></span>
+                <b><%= vehicleHourArray[i].jobTitle %></b> - <%= vehicleArray[vehicleHourArray[i].vehicle].name %></br>
+                <%= vehicleHourArray[i].startTime.getHours() %>:<%= vehicleHourArray[i].startTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].startTime.getMinutes() %> - 
+                  <%= vehicleHourArray[i].endTime.getHours() %>:<%= vehicleHourArray[i].endTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].endTime.getMinutes() %>
+                <span>(<%= hour %></span>
+                  <% if (hour <= 1) { %> hour<% } else { %> hours<% } %>)
                 <div id="vehicle-<%=vehicleHourArray[i]._id%>-work-edit-form-div"></div>
               </li>
             <% } %>
@@ -97,9 +101,11 @@
                 </a>
               </div>
               <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteProductionRequest('<%= productionArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
-              <%= productionArray[i].jobTitle %> - <%= productionArray[i].quantity %> <%= productionArray[i].unit %></br>
-              <span><%= hour %></span>
-                <% if (hour <= 1) { %> hour <% } else { %> hours <% } %>
+              <b><%= productionArray[i].jobTitle %></b> - <%= productionArray[i].quantity %> <%= productionArray[i].unit %></br>
+              <%= productionArray[i].startTime.getHours() %>:<%= productionArray[i].startTime.getMinutes()<10?'0':''%><%= productionArray[i].startTime.getMinutes() %> - 
+                <%= productionArray[i].endTime.getHours() %>:<%= productionArray[i].endTime.getMinutes()<10?'0':''%><%= productionArray[i].endTime.getMinutes() %>
+              <span>(<%= hour %></span>
+                <% if (hour <= 1) { %> hour)<% } else { %> hours)<% } %>)
               <div id="production-<%=productionArray[i]._id%>-edit-form-div"></div>
             </li>
           <% } %>

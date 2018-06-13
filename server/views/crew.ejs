@@ -45,8 +45,13 @@
 
       <% if (employeeArray) { %>
         <div class="row">
-          <div class="col-12">
+          <div class="col s8">
             <a id="dropdown-employee-crew-<%= crew._id %>" class='employeeDropdown btn' href='' data-target='crew-<%= crew._id %>-employee-dropdown' style="width: 100%;">Select Employees</a>
+          </div>
+          <div class="col s4" id="add-employee">
+            <button class="btn waves-effect waves-light right" id="employee-form" onClick="loadEmployeeForm()">Add Employee
+              <i class="material-icons right">add</i>
+            </button>
           </div>
         </div>
         <ul class="collection dropdown-content" id="crew-<%= crew._id %>-employee-dropdown">
@@ -72,8 +77,13 @@
 
       <% if (vehicleArray) { %>
         <div class="row">
-          <div class="col-12">
+          <div class="col s8">
             <a id="dropdown-vehicle-crew-<%= crew._id %>" class='vehicleDropdown btn' href='' data-target='crew-<%= crew._id %>-vehicle-dropdown' style="width: 100%;">Select Vehicles</a>
+          </div>
+          <div class="col s4" id="add-vehicle">
+            <button class="btn waves-effect waves-light right" id="vehicle-form" onClick="loadVehicleForm()">Add Vehicle
+              <i class="material-icons right">add</i>
+            </button>
           </div>
         </div>
         <ul class="collection dropdown-content" id="crew-<%= crew._id %>-vehicle-dropdown">
@@ -96,9 +106,67 @@
           </form>
         </ul>
       <% } %>
+      <div id="employee-form-div"></div>
+      <div id="vehicle-form-div"></div>
 
     </div>
  
 </div>
 
 <% include partials/foot %>
+
+<script id='employee-form-template' type="text/template">
+  <div class="row card-panel">
+    <h3>Add an employee</h3>
+    <form method="post" action="/employee">
+      <div class="input-field">
+        <input id="name" type="text" class="validate" name="name">
+        <label for="name">Employee Name</label>
+      </div>
+      <div class="input-field">
+        <input id="jobTitle" type="text" class="validate" name="jobTitle">
+        <label for="jobTitle">Job Title</label>
+      </div>
+      <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+        <i class="material-icons right">send</i>
+      </button>
+    </form>
+  </div>
+</script>
+
+<script id='vehicle-form-template' type="text/template">
+  <div class="row card-panel">
+    <h3>Add a Vehicle</h3>
+    <form method="post" action="/vehicle">
+      <div class="input-field">
+        <input id="name" type="text" class="validate" name="name">
+        <label for="name">Vehicle Name</label>
+      </div>
+      <div class="input-field">
+        <input id="vehicleCode" type="text" class="validate" name="vehicleCode">
+        <label for="vehicleCode">Vehicle Code</label>
+      </div>
+      <div class="input-field">
+        <input id="vehicleType" type="text" class="validate" name="vehicleType">
+        <label for="vehicleType">Vehicle Type</label>
+      </div>
+      <div id="rental-div">
+        <label>
+          <input type="checkbox" id="rental-toggle" />
+          <span>Rental?</span>
+        </label>
+      </div>
+      <div id="source-company-div"></div>
+      <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+        <i class="material-icons right">send</i>
+      </button>
+    </form>
+  </div>
+</script>
+
+<script id="source-company-form-template" type="text/template">
+  <div id="source-company-form">
+    <input id="sourceCompany" type="text" class="validate" name="sourceCompany">
+    <label for="sourceCompany">Source Company</label>
+  </div>
+</script>
