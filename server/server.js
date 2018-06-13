@@ -33,7 +33,7 @@ const {ReportNote} = require('./models/reportNote');
 const port = process.env.PORT || 3000;
 var app = express();
 var sess = {
-  secret: 'bow-marks-big-secret',
+  secret: "bow-marks-big-secret",
   cookie: {},
   resave: false,
   saveUninitialized: false,
@@ -41,11 +41,6 @@ var sess = {
     mongooseConnection: mongoose.connection
   })
 };
-
-if (app.get('env') === 'production') {
-  app.set('trust proxy', 1);
-  sess.cookie.secure = true;
-}
 
 passport.use(new LocalStrategy({
   usernameField: 'email'
@@ -73,9 +68,10 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
+app.set('views', `${__dirname}/views`);
+app.set('view engine', 'ejs');
+
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(session(sess));
@@ -83,9 +79,6 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, '../public')));
-
-app.set('views', `${__dirname}/views`);
-app.set('view engine', 'ejs');
 app.use((req, res, next) => {
   res.locals.session = req.session;
   res.locals.baseUrl = req.headers.host;
@@ -134,10 +127,15 @@ app.get('/login', (req, res) => {
 // POST /login
 app.post('/login', function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
-    if (err) return next(err);
+    if (err) {
+      console.log(err)
+      req.flash('error', err.message);
+      res.redirect('back');
+    };
     if (!user) {
       req.flash('error', 'User was not authenticated')
       res.redirect('/login');
+      return;
     }
     req.logIn(user, function(err) {
       if (err) return next(err);
