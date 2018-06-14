@@ -15,7 +15,7 @@
               <li class="collection-item">
                 <label>
                   <input class="with-gap crew-selection" type="radio" name="crew" value="<%=crewArray[i]._id%>" 
-                    <% if (crewArray[i]._id.equals(stuff.query.crew)) { %>
+                    <% if (crewArray[i]._id.equals(locals.query.crew)) { %>
                       checked="true"
                     <% } %> />
                   <span><%= crewArray[i].name %></span>
@@ -28,8 +28,8 @@
             <% for (var i in crewArray) { %>
               <body onload="loadURL()"></body>
               <input id="singleCrewSelection" name="crew" type="hidden" value="<%= crewArray[i]._id %>" />
-              <% if (stuff.query.crew) { %>
-                <input id="crewIdCheck" value="<%= stuff.query.crew %>" type="hidden" />
+              <% if (locals.query.crew) { %>
+                <input id="crewIdCheck" value="<%= locals.query.crew %>" type="hidden" />
               <% } %>
             <% } %>
           </div>
@@ -43,7 +43,7 @@
       <% if (jobArray) { %>
         <div class="row">
           <% for (var i in jobArray) { %>
-            <% if (jobArray[i].crews.toString().includes(stuff.query.crew)) { %>
+            <% if (jobArray[i].crews.toString().includes(locals.query.crew)) { %>
               <div class="col s12 m6">
                 <div class="card" style"padding: 2em;">
                   <span class="card-title"><a class="report-link" href="" id="<%=jobArray[i]._id%>"><%= jobArray[i].name %></a>

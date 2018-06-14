@@ -8,11 +8,11 @@ var ProductionSchema = new mongoose.Schema({
   },
   quantity: {
     type: Number,
-    require: true,
+    required: true,
   },
   unit: {
     type: String,
-    require: true
+    required: true
   },
   startTime: {
     type: Date,

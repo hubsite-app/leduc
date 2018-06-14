@@ -17,6 +17,7 @@ const bcrypt = require('bcrypt-nodejs');
 const async = require('async');
 const crypto = require('crypto');
 const flash = require('express-flash');
+const querystring = require('querystring');
 
 const {User} = require('./models/user');
 const {Jobsite} = require('./models/jobsite');
@@ -83,9 +84,7 @@ app.use((req, res, next) => {
   res.locals.session = req.session;
   res.locals.baseUrl = req.headers.host;
   res.locals.user = req.user;
-  res.locals.stuff = {
-    query: req.query
-  }
+  res.locals.query = req.query;
   next();
 });
 
@@ -676,6 +675,10 @@ app.delete('/employee/:id', async (req, res) => {
     if(!employee) {
       throw new Error('Could not remove employee for whatever reason, maybe try again?');
     }
+    var crews = await Crew.find({employees: employee._id});
+    for (var i in crews) {
+      await Crew.findByIdAndUpdate({_id: crews[i]._id}, {$pull: {employees: employee._id}}, {new: true});
+    }
     req.flash('success', 'Employee deleted... that\'s too bad');
   } catch (e) {
     console.log(e);
@@ -716,7 +719,11 @@ app.delete('/vehicle/:id', async (req, res) => {
     if (!ObjectID.isValid(id)) {return res.status(404).send();}
     const vehicle = await Vehicle.findOneAndRemove({_id: id});
     if (!vehicle) {return res.status(404).send();}
-    req.flash('success', 'Kelly can\'t fix em all hey?')
+    var crews = await Crew.find({vehicles: vehicle._id});
+    for (var i in crews) {
+      await Crew.findByIdAndUpdate({_id: crews[i]._id}, {$pull: {vehicles: vehicle._id}}, {new: true});
+    }
+    req.flash('success', 'Vehicle successfully deleted');
     res.redirect('back');
   } catch (e) {
     console.log(e);
@@ -1027,7 +1034,7 @@ app.post('/employeehour', async (req, res) => {
         });
       });
       req.flash('success', `Work added, that is a combined ${netEmployeeHours} hours on this job today!`);
-      res.redirect('back');
+      res.redirect(`/report/${report._id}`);
     } else {
       var employeeWork = await new EmployeeWork({
         startTime, endTime,
@@ -1044,12 +1051,35 @@ app.post('/employeehour', async (req, res) => {
         });
       });
       req.flash('success', `Work added, that is a combined ${netEmployeeHours} employee hours on this job today!`);
-      res.redirect('back');
+      res.redirect(`/report/${report._id}`);
     }
   } catch (e) {
-    console.log(e);
-    req.flash('error', e.message);
-    res.redirect('back');
+    try {
+      if(req.body.startTime) {
+        var startTime = await timeHandling(req.body.startTime, report.date);
+        var start = new Date(startTime);
+        startTime = `${start.getHours().toString()}:${start.getMinutes().toString()<10?'0':''}${start.getMinutes().toString()}`;
+      } 
+      if (req.body.endTime) {
+        var endTime = await timeHandling(req.body.endTime, report.date);
+        var end = new Date(endTime);
+        endTime = `${end.getHours().toString()}:${end.getMinutes().toString()<10?'0':''}${end.getMinutes().toString()}`;
+      }
+      var query = querystring.stringify({
+        item: 'employee',
+        message: e.message,
+        startTime, endTime,
+        jobTitle: req.body.jobTitle,
+        employee: req.body.employee,
+        dailyReport: report._id
+      });
+      console.log(e);
+      res.redirect(`/report/${report._id}/?` + query);
+    } catch (e) {
+      console.log(e);
+      req.flash('error', e.message);
+      res.redirect('back');
+    }
   }
 });
 
@@ -1140,9 +1170,32 @@ app.post('/vehiclehour', async (req, res) => {
       res.redirect('back');
     }
   } catch (e) {
-    console.log(e);
-    req.flash('error', e.message);
-    res.redirect('back');
+    try {
+      if(req.body.startTime) {
+        var startTime = await timeHandling(req.body.startTime, report.date);
+        var start = new Date(startTime);
+        startTime = `${start.getHours().toString()}:${start.getMinutes().toString()<10?'0':''}${start.getMinutes().toString()}`;
+      } 
+      if (req.body.endTime) {
+        var endTime = await timeHandling(req.body.endTime, report.date);
+        var end = new Date(endTime);
+        endTime = `${end.getHours().toString()}:${end.getMinutes().toString()<10?'0':''}${end.getMinutes().toString()}`;
+      }
+      var query = querystring.stringify({
+        item: 'vehicle',
+        message: e.message,
+        startTime, endTime,
+        jobTitle: req.body.jobTitle,
+        vehicle: req.body.vehicle,
+        dailyReport: report._id
+      });
+      console.log(e);
+      res.redirect(`/report/${report._id}/?` + query);
+    } catch (e) {
+      console.log(e);
+      req.flash('error', e.message);
+      res.redirect('back');
+    }
   }
 });
 
@@ -1212,11 +1265,36 @@ app.post('/production', async (req, res) => {
       });
     });
     req.flash('success', `Production has been added! That is ${netProductionHours} hours of production today!`)
-    res.redirect('back');
+    res.redirect(`/report/${report._id}`);
   } catch (e) {
-    console.log(e);
-    req.flash('error', e.message);
-    res.redirect('back');
+    try {
+      if(req.body.startTime) {
+        var startTime = await timeHandling(req.body.startTime, report.date);
+        var start = new Date(startTime);
+        startTime = `${start.getHours().toString()}:${start.getMinutes().toString()<10?'0':''}${start.getMinutes().toString()}`;
+      } 
+      if (req.body.endTime) {
+        var endTime = await timeHandling(req.body.endTime, report.date);
+        var end = new Date(endTime);
+        endTime = `${end.getHours().toString()}:${end.getMinutes().toString()<10?'0':''}${end.getMinutes().toString()}`;
+      }
+      var query = querystring.stringify({
+        item: 'production',
+        message: e.message,
+        startTime, endTime,
+        jobTitle: req.body.jobTitle,
+        quantity: req.body.quantity,
+        unit: req.body.unit,
+        description: req.body.description,
+        dailyReport: report._id
+      });
+      console.log(e);
+      res.redirect(`/report/${report._id}/?` + query);
+    } catch (e) {
+      console.log(e);
+      req.flash('error', e.message);
+      res.redirect('back');
+    }
   }
 });
 
@@ -1267,48 +1345,95 @@ app.delete('/production/:id', async (req, res) => {
 // POST /material
 app.post('/material', async (req, res) => {
   try {
-    if (req.body.source) {
+    var report = await DailyReport.findById(req.body.dailyReport);
+    if(req.body.startTime) {var startTime = await timeHandling(req.body.startTime, report.date)};
+    if(req.body.endTime) {var endTime = await timeHandling(req.body.endTime, report.date)};
+    if (req.body.source && !req.body.vehicle) {
       var material;
-      var vehicle = await Vehicle.find({name: req.body.source + " Truck"});
+      var vehicle = await Vehicle.find({name: req.body.source.trim() + " Truck - " + req.body.sourceTruckCode.trim()});
+      console.log(req.body);
       if (_.isEmpty(vehicle)) {
+        if (!req.body.sourceTruckCode) {
+          throw new Error('Must include truck code');
+        }
         vehicle = await new Vehicle({
-          name: req.body.source.trim() + " Truck",
+          name: req.body.source.trim() + " Truck - " + req.body.sourceTruckCode.trim(),
           vehicleType: "Dump Truck",
           rental: true,
           sourceCompany: req.body.source.trim()
         });
+        var crew = await Crew.findById(report.crew);
+        vehicle.crews.push(crew);
         await vehicle.save();
+        crew.vehicles.push(vehicle);
+        await crew.save();
         material = await new MaterialShipment({
+          startTime, endTime,
           shipmentType: req.body.shipmentType,
           quantity: req.body.quantity,
           unit: req.body.unit,
           source: req.body.source,
           vehicle: vehicle._id,
-          dailyReport: req.body.dailyReport
+          dailyReport: report._id
         });
       } else {
         material = await new MaterialShipment({
+          startTime, endTime,
           shipmentType: req.body.shipmentType,
           quantity: req.body.quantity,
           unit: req.body.unit,
           source: req.body.source,
           vehicle: vehicle[0]._id,
-          dailyReport: req.body.dailyReport
+          dailyReport: report._id
         });
       }
     } else {
-      material = await new MaterialShipment(req.body);
+      material = await new MaterialShipment({
+        startTime, endTime,
+        shipmentType: req.body.shipmentType,
+        quantity: req.body.quantity,
+        unit: req.body.unit,
+        source: req.body.source,
+        vehicle: req.body.vehicle,
+        dailyReport: report._id
+      });
     }
     await material.save();
-    var report = await DailyReport.findById(req.body.dailyReport);
     await report.materialShipment.push(material);
     await report.save();
     req.flash('success', 'The shipment has successfully been added');
-    res.redirect('back');
+    res.redirect(`/report/${report._id}`);
   } catch (e) {
     console.log(e);
-    req.flash('error', e.message);
-    res.redirect('back');
+    try {
+      if(req.body.startTime) {
+        var startTime = await timeHandling(req.body.startTime, report.date);
+        var start = new Date(startTime);
+        startTime = `${start.getHours().toString()}:${start.getMinutes().toString()<10?'0':''}${start.getMinutes().toString()}`;
+      } 
+      if (req.body.endTime) {
+        var endTime = await timeHandling(req.body.endTime, report.date);
+        var end = new Date(endTime);
+        endTime = `${end.getHours().toString()}:${end.getMinutes().toString()<10?'0':''}${end.getMinutes().toString()}`;
+      }
+      var query = querystring.stringify({
+        item: 'shipment',
+        message: e.message,
+        startTime, endTime,
+        shipmentType: req.body.shipmentType,
+        quantity: req.body.quantity,
+        unit: req.body.unit,
+        source: req.body.source,
+        sourceTruckCode: req.body.sourceTruckCode,
+        vehicle: req.body.vehicle,
+        dailyReport: report._id
+      });
+      res.redirect(`/report/${report._id}/?` + query);
+    } catch (e) {
+      console.log(e);
+      req.flash('error', e.message);
+      res.redirect('back');
+    }
   }
 });
 

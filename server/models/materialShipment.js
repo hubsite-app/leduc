@@ -14,6 +14,12 @@ var MaterialShipmentSchema = new mongoose.Schema({
     type: String,
     require: true
   },
+  startTime: {
+    type: Date,
+  },
+  endTime: {
+    type: Date,
+  },
   source: {
     type: String,
     trim: true

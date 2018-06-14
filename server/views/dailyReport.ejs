@@ -1,7 +1,7 @@
 <% include partials/head %>
   <script src="/js/dailyReport.js"></script>
   <script src="/js/libs/mustache.js"></script>
-  
+
   <div class="container">
 
     <h2><a href="/jobsite/<%= job._id %>"><%= job.name %></a></h2>
@@ -14,7 +14,7 @@
       </label>
     <% } %>
     <h6><%= report.date.toDateString(); %></h6>
-    
+
     <% if (Object.keys(employeeArray).length > 0) { %>
       <div class="card-panel" style="padding-bottom: 3em;">
         <h5 class="card-title">Employee Hours</h5>
@@ -43,7 +43,7 @@
         <div id="employee-work-form-div"></div>
         <div id="employee-work-button-div">
           <div id="add-employee-work">
-            <button class="btn waves-effect waves-light right" id="crew-form" onClick="loadEmployeeForm()">Add Work
+            <button class="btn waves-effect waves-light right" id="crew-form" onClick="loadEmployeeForm()">Add Employee Work
               <i class="material-icons right">add</i>
             </button>
           </div>
@@ -79,7 +79,7 @@
         <div id="vehicle-work-form-div"></div>
         <div id="vehicle-work-button-div">
           <div id="add-vehicle-work">
-            <button class="btn waves-effect waves-light right" id="crew-form" onClick="loadVehicleForm()">Add Work
+            <button class="btn waves-effect waves-light right" id="crew-form" onClick="loadVehicleForm()">Add Vehicle Work
               <i class="material-icons right">add</i>
             </button>
           </div>
@@ -105,7 +105,7 @@
               <%= productionArray[i].startTime.getHours() %>:<%= productionArray[i].startTime.getMinutes()<10?'0':''%><%= productionArray[i].startTime.getMinutes() %> - 
                 <%= productionArray[i].endTime.getHours() %>:<%= productionArray[i].endTime.getMinutes()<10?'0':''%><%= productionArray[i].endTime.getMinutes() %>
               <span>(<%= hour %></span>
-                <% if (hour <= 1) { %> hour)<% } else { %> hours)<% } %>)
+                <% if (hour <= 1) { %> hour)<% } else { %> hours)<% } %>
               <div id="production-<%=productionArray[i]._id%>-edit-form-div"></div>
             </li>
           <% } %>
@@ -114,7 +114,7 @@
       <div id="production-form-div"></div>
       <div id="production-button-div">
         <div id="add-production">
-          <button class="btn waves-effect waves-light right" id="production-form" onClick="loadProductionForm()">Add Work
+          <button class="btn waves-effect waves-light right" id="production-form" onClick="loadProductionForm()">Add Production
             <i class="material-icons right">add</i>
           </button>
         </div>
@@ -158,7 +158,7 @@
           <label for="reportnote">General Notes</label>
         </div>
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
-        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit Notes
           <i class="material-icons right">send</i>
         </button>
       </form>
@@ -173,18 +173,26 @@
     <div class="row card-panel">
       <i class="material-icons right pointer" onclick="removeEmployeeForm()" id="employee-form-close" aria-hidden="true">close</i>
       <h3>Add Employee Work</h3>
+      <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.message != '') { %>
+        <div class="card red">
+          <p class="white-text"><%=locals.query.message%></p>
+        </div>
+      <% } %>
       <form method="post" action="/employeehour" id="employee-form">
         <div class="input-field col s12">
-          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete-work" autocomplete="off" />
-          <label for="autocomplete-input">Work Done</label>
+          <input name="jobTitle" type="text" id="employee-autocomplete-job-title" class="autocomplete-work" autocomplete="off" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.jobTitle != '') {%> value="<%=locals.query.jobTitle%>" <%}%>/>
+          <label for="employee-autocomplete-job-title">Work Done</label>
         </div>
         <div class="input-field col s6">
-          <input name="startTime" type="text" class="timepicker" autocomplete="off" />
-          <label for="startTime">Start Time</label>
+          <input name="startTime" id="employee-start-time" type="text" class="timepicker" autocomplete="off" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.startTime != '') {%> value="<%=locals.query.startTime%>" <%}%>/>
+          <label for="employee-start-time">Start Time</label>
         </div>
         <div class="input-field col s6">
-          <input name="endTime" type="text" class="timepicker" autocomplete="off" />
-          <label for="endTime">End Time</label>
+          <input name="endTime" id="employee-end-time" type="text" class="timepicker" autocomplete="off" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.endTime != '') {%> value="<%=locals.query.endTime%>" <%}%>/>
+          <label for="employee-end-time">End Time</label>
         </div>
         <div class="hide-on-med-and-up">
           <div class="input-field col s6">
@@ -203,7 +211,14 @@
           <% crew.employees.forEach((employeeId) => { %>
             <div class="input-field col s6">
               <label>
-                <input type="checkbox" value="<%= employeeArray[employeeId]._id %>" name="employee" />
+                <input type="checkbox" value="<%= employeeArray[employeeId]._id %>" name="employee" 
+                  <% if (Object.keys(locals.query).length !== 0 && typeof locals.query.employee != null && locals.query.item == 'employee') {%> 
+                    <% if (typeof locals.query.employee == 'object' && locals.query.employee.some((employee) => employee == employeeArray[employeeId]._id.toString())) { %>
+                      checked="checked"
+                    <% } else if (typeof locals.query.employee == 'string' && locals.query.employee == employeeArray[employeeId]._id.toString()) { %>
+                      checked="checked"
+                    <% } %> />
+                  <%} else { %>/><%}%> 
                 <span><%= employeeArray[employeeId].name %></span>
               </label>
             </div>
@@ -221,7 +236,7 @@
 <script id="employee-work-form-add-button" type="text/template">
   <div id="employee-work-button-div">
     <div id="add-employee-work">
-      <button class="btn waves-effect waves-light right" id="crew-employee-form" onClick="loadEmployeeForm()">Add Work
+      <button class="btn waves-effect waves-light right" id="crew-employee-form" onClick="loadEmployeeForm()">Add Employee Work
         <i class="material-icons right">add</i>
       </button>
     </div>
@@ -268,18 +283,26 @@
     <div class="row card-panel">
       <i class="material-icons right pointer" onclick="removeVehicleForm()" id="vehicle-form-close" aria-hidden="true">close</i>
       <h3>Add Vehicle Work</h3>
+      <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.message != '') { %>
+        <div class="card red">
+          <p class="white-text"><%=locals.query.message%></p>
+        </div>
+      <% } %>
       <form method="post" action="/vehiclehour" id="vehicle-form">
         <div class="input-field col s12">
-          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete-work" autocomplete="off" />
-          <label for="autocomplete-input">Work Done</label>
+          <input name="jobTitle" type="text" id="vehicle-autocomplete-job-title" class="autocomplete-work" autocomplete="off" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.jobTitle != '') {%> value="<%=locals.query.jobTitle%>" <%}%>/>
+          <label for="vehicle-autocomplete-job-title">Work Done</label>
         </div>
         <div class="input-field col s6">
-          <input name="startTime" type="text" class="timepicker" autocomplete="off" />
-          <label for="startTime">Start Time</label>
+          <input name="startTime" id="vehicle-start-time" type="text" class="timepicker" autocomplete="off" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.startTime != '') {%> value="<%=locals.query.startTime%>" <%}%>/>
+          <label for="vehicle-start-time">Start Time</label>
         </div>
         <div class="input-field col s6">
-          <input name="endTime" type="text" class="timepicker" autocomplete="off" />
-          <label for="endTime">End Time</label>
+          <input name="endTime" id="vehicle-end-time" type="text" class="timepicker" autocomplete="off" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.endTime != '') {%> value="<%=locals.query.endTime%>" <%}%>/>
+          <label for="vehicle-end-time">End Time</label>
         </div>
         <div class="hide-on-med-and-up">
           <div class="input-field col s6">
@@ -298,7 +321,14 @@
           <% crew.vehicles.forEach((vehicleId) => { %>
             <div class="input-field col s6">
               <label>
-                <input type="checkbox" value="<%= vehicleArray[vehicleId]._id %>" name="vehicle" />
+                <input type="checkbox" value="<%= vehicleArray[vehicleId]._id %>" name="vehicle"
+                  <% if (Object.keys(locals.query).length !== 0 && typeof locals.query.vehicle != null && locals.query.item == 'vehicle') {%> 
+                    <% if (typeof locals.query.vehicle == 'object' && locals.query.vehicle.some((vehicle) => vehicle == vehicleArray[vehicleId]._id.toString())) { %>
+                      checked="checked"
+                    <% } else if (typeof locals.query.vehicle == 'string' && locals.query.vehicle == vehicleArray[vehicleId]._id.toString()) { %>
+                      checked="checked"
+                    <% } %> />
+                  <%} else { %>/><%}%> 
                 <span><%= vehicleArray[vehicleId].name %></span>
               </label>
             </div>
@@ -316,7 +346,7 @@
 <script id="vehicle-work-form-add-button" type="text/template">
   <div id="vehicle-work-button-div">
     <div id="add-vehicle-work">
-      <button class="btn waves-effect waves-light right" id="crew-vehicle-form" onClick="loadVehicleForm()">Add Work
+      <button class="btn waves-effect waves-light right" id="crew-vehicle-form" onClick="loadVehicleForm()">Add Vehicle Work
         <i class="material-icons right">add</i>
       </button>
     </div>
@@ -363,30 +393,40 @@
     <div class="row card-panel">
       <i class="material-icons right pointer" onclick="removeProductionForm()" id="production-form-close" aria-hidden="true">close</i>
       <h3>Add Production</h3>
+      <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'production' && locals.query.message != '') { %>
+        <div class="card red">
+          <p class="white-text"><%=locals.query.message%></p>
+        </div>
+      <% } %>
       <form method="post" action="/production" id="production-form">
         <div class="input-field col s12">
-          <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete-production" autocomplete="off" />
-          <label for="autocomplete-input">Work Completed</label>
+          <input name="jobTitle" type="text" id="autocomplete-job-title-production" class="autocomplete-production" autocomplete="off" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'production' && locals.query.jobTitle != '') {%> value="<%=locals.query.jobTitle%>" <%}%>/>
+          <label for="autocomplete-job-title-production">Work Completed</label>
         </div>
         <div class="input-field col s8">
-          <input name="quantity" type="number" step="0.01">
-          <label for="quantity">Quantity</label>
+          <input name="quantity" id="quantity-production" type="number" step="0.01"
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'production' && locals.query.quantity != '') {%> value="<%=locals.query.quantity%>" <%}%>/>
+          <label for="quantity-production">Quantity</label>
         </div>
         <div class="input-field col s4">
-          <input name="unit" type="text" id="autocomplete-input" class="autocomplete-units" autocomplete="off" />
-          <label for="autocomplete-input">Unit</label>
+          <input name="unit" type="text" id="autocomplete-unit-production" class="autocomplete-units" autocomplete="off" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'production' && locals.query.unit != '') {%> value="<%=locals.query.unit%>" <%}%>/>
+          <label for="autocomplete-unit-production">Unit</label>
         </div>
         <div class="input-field col s6">
-          <input name="startTime" type="text" class="timepicker" autocomplete="off" />
-          <label for="startTime">Start Time</label>
+          <input name="startTime" id="start-time-production" type="text" class="timepicker" autocomplete="off" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'production' && locals.query.startTime != '') {%> value="<%=locals.query.startTime%>" <%}%>/>
+          <label for="start-time-production">Start Time</label>
         </div>
         <div class="input-field col s6">
-          <input name="endTime" type="text" class="timepicker" autocomplete="off" />
-          <label for="endTime">End Time</label>
+          <input name="endTime" id="end-time-production" type="text" class="timepicker" autocomplete="off" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'production' && locals.query.endTime != '') {%> value="<%=locals.query.endTime%>" <%}%>/>
+          <label for="end-time-production">End Time</label>
         </div>
         <div class="input-field col s12">
-          <textarea id="description" class="materialize-textarea" name="description"></textarea>
-          <label for="description">Description</label>
+          <textarea id="description-production" class="materialize-textarea" name="description"><% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'production' && locals.query.description != '') {%><%=locals.query.description%><%}%></textarea>
+          <label for="description-production">Description</label>
         </div>
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
         <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
@@ -400,7 +440,7 @@
 <script id="production-form-add-button" type="text/template">
   <div id="production-button-div">
     <div id="add-production">
-      <button class="btn waves-effect waves-light right" id="crew-production-form" onClick="loadProductionForm()">Add Work
+      <button class="btn waves-effect waves-light right" id="crew-production-form" onClick="loadProductionForm()">Add Production
         <i class="material-icons right">add</i>
       </button>
     </div>
@@ -458,25 +498,51 @@
     <div class="row card-panel">
       <i class="material-icons right pointer" onclick="removeMaterialForm()" id="material-form-close" aria-hidden="true">close</i>
       <h3>Add Material Shipment</h3>
+      <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.message != '') { %>
+        <div class="card red">
+          <p class="white-text"><%=locals.query.message%></p>
+        </div>
+      <% } %>
       <form method="post" action="/material" id="material-form">
         <div class="input-field col s12">
-          <input name="shipmentType" type="text" id="autocomplete-input" class="autocomplete-shipment" autocomplete="off" />
-          <label for="autocomplete-input">Shipment Type</label>
+          <input name="shipmentType" type="text" id="autocomplete-shipment-type" class="autocomplete-shipment" autocomplete="off" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.shipmentType != '') {%> value="<%=locals.query.shipmentType%>" <%}%>/>
+          <label for="autocomplete-shipment-type">Shipment Type</label>
         </div>
         <div class="input-field col s8">
-          <input name="quantity" type="number" step="0.01">
-          <label for="quantity">Quantity</label>
+          <input name="quantity" type="number" id="shipment-quantity" step="0.01"
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.quantity != '') {%> value="<%=locals.query.quantity%>" <%}%>/>
+          <label for="shipment-quantity">Quantity</label>
         </div>
         <div class="input-field col s4">
-          <input name="unit" type="text" id="autocomplete-input" class="autocomplete-units" autocomplete="off" />
-          <label for="autocomplete-input">Unit</label>
+          <input name="unit" type="text" id="shipment-unit" class="autocomplete-units" autocomplete="off"
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.unit != '') {%> value="<%=locals.query.unit%>" <%}%>/>
+          <label for="shipment-unit">Unit</label>
         </div>
-        <div class="input-field col s12">
-          <input name="source" type="text" id="autocomplete-input" class="autocomplete-units" />
-          <label for="autocomplete-input">Source</label>
-          <span class="helper-text">Only select if shipment is not from a crew truck</span>
+        <div class="input-field col s6">
+          <input name="startTime" id="shipment-start-time" type="text" class="timepicker" autocomplete="off" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.startTime != '') {%> value="<%=locals.query.startTime%>" <%}%>/>
+          <label for="shipment-start-time">Start Time</label>
         </div>
-        <h6>Vehicles: </h6>
+        <div class="input-field col s6">
+          <input name="endTime" id="shipment-end-time" type="text" class="timepicker" autocomplete="off" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.endTime != '') {%> value="<%=locals.query.endTime%>" <%}%>/>
+          <label for="shipment-end-time">End Time</label>
+        </div>
+        <div class="input-field col s8">
+          <input name="source" type="text" id="shipment-source" class="autocomplete-units"
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.source != '') {%> value="<%=locals.query.source%>" <%}%>/>
+          <label for="shipment-source">Source Company</label>
+          <span class="helper-text">Enter 'Source Company' OR pick vehicle from below</span>
+        </div>
+        <div class="input-field col s4">
+          <input name="sourceTruckCode" type="text" id="shipment-source-truck-code" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.sourceTruckCode != '') {%> value="<%=locals.query.sourceTruckCode%>" <%}%>/>
+          <label for="shipment-source-truck-code">Vehicle Code</label>
+        </div>
+        <div class="col s12">
+          <h6>Vehicles: </h6>
+        </div>
         <% crew.vehicles.forEach((vehicleId) => { %>
           <div class="input-field col s6">
             <label>
@@ -522,6 +588,14 @@
           <input name="unit" type="text" id="autocomplete-input" class="autocomplete-units" autocomplete="off" value="{{unit}}"/>
           <span class="helper-text">Unit</span>
         </div>
+        <div class="input-field col s6">
+          <input name="startTime" type="text" class="timepicker" autocomplete="off" />
+          <label for="startTime">Start Time</label>
+        </div>
+        <div class="input-field col s6">
+          <input name="endTime" type="text" class="timepicker" autocomplete="off" />
+          <label for="endTime">End Time</label>
+        </div>
         <input type="hidden" name="vehicle" value="{{vehicleId}}" />
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
         <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
@@ -538,3 +612,15 @@
     <i class="material-icons">edit</i>
   </a>
 </script>
+
+<% if (Object.keys(locals.query).length !== 0 ) { %>
+  <% if (locals.query.item == 'employee') { %>
+    <script>loadEmployeeForm();</script>
+  <% } else if (locals.query.item == 'vehicle') { %> 
+    <script>loadVehicleForm();</script>
+  <% } else if (locals.query.item == 'production') { %>
+    <script>loadProductionForm();</script>
+  <% } else if (locals.query.item == 'shipment') { %>
+    <script>loadMaterialForm();</script>
+  <% } %>
+<% } %>

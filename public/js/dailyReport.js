@@ -291,6 +291,7 @@ function loadMaterialForm() {
       "tonnes": null
     }
   });
+  $('.timepicker').timepicker();
 };
 function removeMaterialForm() {
   var template = $('#material-form-add-button').html();
@@ -318,6 +319,7 @@ function loadMaterialEditForm(id, shipment, quantity, unit, vehicleId) {
       "tonnes": null
     }
   });
+  $('.timepicker').timepicker();
 };
 function removeMaterialEditForm(id, shipment, quantity, unit, vehicleId) {
   var template = $('#material-edit-form-button').html();
