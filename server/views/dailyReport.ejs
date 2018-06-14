@@ -6,19 +6,20 @@
 
     <h2><a href="/jobsite/<%= job._id %>"><%= job.name %></a></h2>
     <h5><%= crew.name %><a href="/crew/<%= crew._id %>">    <i class="tiny material-icons">edit</i></a></h5>
-    <% if (locals.user.admin == 'true') { %>
+    <% if (locals.user.admin == true) { %>
       <label>
         <input type="checkbox" onClick="toggleApproval('<%=report._id%>')" id="report-<%= report._id %>-approval" 
           <% if (report.approved == true) { %> checked="checked" <%}%> />
         <span>Approved</span>
-      </label>
+      </label></br>
+      <a href="/report/<%=report._id%>/pdf">Report</a>
     <% } %>
     <h6><%= report.date.toDateString(); %></h6>
 
     <% if (Object.keys(employeeArray).length > 0) { %>
       <div class="card-panel" style="padding-bottom: 3em;">
         <h5 class="card-title">Employee Hours</h5>
-        <% if (employeeHourArray) { %>
+        <% if (Object.keys(employeeHourArray).length > 0) { %>
           <ul class="collection">
             <% for (var i in employeeHourArray) { %>
               <% var hour = Math.round(Math.abs(employeeHourArray[i].endTime - employeeHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
@@ -30,7 +31,7 @@
                   </a>
                 </div>
                 <a class="employee-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteEmployeeWorkRequest('<%= employeeHourArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
-                <b><%= employeeHourArray[i].jobTitle %></b> - <%= employeeArray[employeeHourArray[i].employee].name %></br>
+                <b><%= employeeHourArray[i].jobTitle %></b> - <% if (employeeArray[employeeHourArray[i].employee]){%><%= employeeArray[employeeHourArray[i].employee].name %><%}else{%>'Employee was removed'<%}%></br>
                 <%= employeeHourArray[i].startTime.getHours() %>:<%= employeeHourArray[i].startTime.getMinutes()<10?'0':''%><%= employeeHourArray[i].startTime.getMinutes() %> - 
                    <%= employeeHourArray[i].endTime.getHours() %>:<%= employeeHourArray[i].endTime.getMinutes()<10?'0':''%><%= employeeHourArray[i].endTime.getMinutes() %>
                 <span>(<%= hour %></span>
@@ -54,7 +55,7 @@
     <% if (Object.keys(vehicleArray).length > 0) { %>
       <div class="card-panel" style="padding-bottom: 3em;">
         <h5 class="card-title">Vehicle Hours</h5>
-        <% if (vehicleHourArray) { %>
+        <% if (Object.keys(vehicleHourArray).length > 0) { %>
           <ul class="collection">
             <% for (var i in vehicleHourArray) { %>
               <% var hour = Math.round(Math.abs(vehicleHourArray[i].endTime - vehicleHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
@@ -66,7 +67,7 @@
                   </a>
                 </div>
                 <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteVehicleWorkRequest('<%= vehicleHourArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
-                <b><%= vehicleHourArray[i].jobTitle %></b> - <%= vehicleArray[vehicleHourArray[i].vehicle].name %></br>
+                <b><%= vehicleHourArray[i].jobTitle %></b> - <% if (vehicleArray[vehicleHourArray[i].vehicle]){%><%= vehicleArray[vehicleHourArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%></br>
                 <%= vehicleHourArray[i].startTime.getHours() %>:<%= vehicleHourArray[i].startTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].startTime.getMinutes() %> - 
                   <%= vehicleHourArray[i].endTime.getHours() %>:<%= vehicleHourArray[i].endTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].endTime.getMinutes() %>
                 <span>(<%= hour %></span>
@@ -89,7 +90,7 @@
 
     <div class="card-panel" style="padding-bottom: 3em;">
       <h5 class="card-title">Production</h5>
-      <% if (productionArray) { %>
+      <% if (Object.keys(productionArray).length > 0) { %>
         <ul class="collection">
           <% for (var i in productionArray) { %>
             <% var hour = Math.round(Math.abs(productionArray[i].endTime - productionArray[i].startTime) / 3.6e6 * 100) / 100 %>
@@ -123,7 +124,7 @@
 
     <div class="card-panel" style="padding-bottom: 3em;">
       <h5 class="card-title">Material Shipments</h5>
-      <% if (materialArray) { %>
+      <% if (Object.keys(materialArray).length > 0) { %>
         <ul class="collection">
           <% for (var i in materialArray) { %>
             <li class="collection-item">
@@ -134,8 +135,8 @@
                 </a>
               </div>
               <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteMaterialRequest('<%= materialArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
-              <%= materialArray[i].shipmentType %> - <%= materialArray[i].quantity %> <%= materialArray[i].unit %></br>
-              <%= vehicleArray[materialArray[i].vehicle].name %>
+              <b><%= materialArray[i].shipmentType %></b> - <%= materialArray[i].quantity %> <%= materialArray[i].unit %></br>
+              <% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%>
               <div id="material-<%=materialArray[i]._id%>-edit-form-div"></div>
             </li>
           <% } %>
@@ -522,12 +523,12 @@
         <div class="input-field col s6">
           <input name="startTime" id="shipment-start-time" type="text" class="timepicker" autocomplete="off" 
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.startTime != '') {%> value="<%=locals.query.startTime%>" <%}%>/>
-          <label for="shipment-start-time">Start Time</label>
+          <label for="shipment-start-time">Start Time (Optional)</label>
         </div>
         <div class="input-field col s6">
           <input name="endTime" id="shipment-end-time" type="text" class="timepicker" autocomplete="off" 
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.endTime != '') {%> value="<%=locals.query.endTime%>" <%}%>/>
-          <label for="shipment-end-time">End Time</label>
+          <label for="shipment-end-time">End Time (Optional)</label>
         </div>
         <div class="input-field col s8">
           <input name="source" type="text" id="shipment-source" class="autocomplete-units"
@@ -540,17 +541,31 @@
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.sourceTruckCode != '') {%> value="<%=locals.query.sourceTruckCode%>" <%}%>/>
           <label for="shipment-source-truck-code">Vehicle Code</label>
         </div>
-        <div class="col s12">
-          <h6>Vehicles: </h6>
-        </div>
-        <% crew.vehicles.forEach((vehicleId) => { %>
+        <div class="hide-on-med-and-up">
           <div class="input-field col s6">
-            <label>
-              <input type="radio" value="<%= vehicleArray[vehicleId]._id %>" name="vehicle" />
-              <span><%= vehicleArray[vehicleId].name %></span>
-            </label>
+            <select multiple name="vehicle">
+              <% crew.vehicles.forEach((vehicleId) => { %>
+                <option value="<%= vehicleArray[vehicleId]._id %>">
+                  <%= vehicleArray[vehicleId].name %>
+                </option>
+              <% }); %>
+            </select>
+            <label>Vehicle Select</label>
           </div>
-        <% }); %>
+        </div>  
+        <div class="hide-on-small-only">
+          <div class="col s12">
+            <h6>Vehicles: </h6>
+          </div>
+          <% crew.vehicles.forEach((vehicleId) => { %>
+            <div class="input-field col s6">
+              <label>
+                <input type="radio" value="<%= vehicleArray[vehicleId]._id %>" name="vehicle" />
+                <span><%= vehicleArray[vehicleId].name %></span>
+              </label>
+            </div>
+          <% }); %>
+        </div>
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
         <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
           <i class="material-icons right">send</i>
@@ -590,11 +605,11 @@
         </div>
         <div class="input-field col s6">
           <input name="startTime" type="text" class="timepicker" autocomplete="off" />
-          <label for="startTime">Start Time</label>
+          <label for="startTime">Start Time (Optional)</label>
         </div>
         <div class="input-field col s6">
           <input name="endTime" type="text" class="timepicker" autocomplete="off" />
-          <label for="endTime">End Time</label>
+          <label for="endTime">End Time (Optional)</label>
         </div>
         <input type="hidden" name="vehicle" value="{{vehicleId}}" />
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />

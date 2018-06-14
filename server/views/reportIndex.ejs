@@ -1,7 +1,7 @@
 <% include partials/head %>
   
   <div class="container">
-    <table class="striped">
+    <table class="highlight">
 
       <thead>
         <tr>
@@ -9,6 +9,7 @@
           <th>Jobsite</th>
           <th>Crew</th>
           <th>Date</th>
+          <th>Report</th>
         </tr>
       </thead>
 
@@ -22,6 +23,7 @@
             <td><%= crewArray[reportArray[i].crew].name %></td>
             <% dateArray = reportArray[i].date.toString().split(' ') %>
             <td><%= dateArray[0] %>, <%= dateArray[1] %> <%= dateArray[2] %></td>
+            <td><a href="/report/<%= reportArray[i]._id %>/pdf">Report</a></td>
           </tr>
         <% } %> 
       </tbody>

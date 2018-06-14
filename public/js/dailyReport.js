@@ -35,7 +35,9 @@ function loadEmployeeForm() {
     }
   });
   $('.timepicker').timepicker();
-  $('select').formSelect();
+  $('select').formSelect({dropdownOptions: {
+    constrainWidth: false
+  }});
 };
 function removeEmployeeForm() {
   var template = $('#employee-work-form-add-button').html();
@@ -120,7 +122,9 @@ function loadVehicleForm() {
     }
   });
   $('.timepicker').timepicker();
-  $('select').formSelect();
+  $('select').formSelect({dropdownOptions: {
+    constrainWidth: false
+  }});
 };
 function removeVehicleForm() {
   var template = $('#vehicle-work-form-add-button').html();
@@ -292,6 +296,9 @@ function loadMaterialForm() {
     }
   });
   $('.timepicker').timepicker();
+  $('select').formSelect({dropdownOptions: {
+    constrainWidth: false
+  }});
 };
 function removeMaterialForm() {
   var template = $('#material-form-add-button').html();

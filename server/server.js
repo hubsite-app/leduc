@@ -18,6 +18,7 @@ const async = require('async');
 const crypto = require('crypto');
 const flash = require('express-flash');
 const querystring = require('querystring');
+const pdf = require('html-pdf');
 
 const {User} = require('./models/user');
 const {Jobsite} = require('./models/jobsite');
@@ -503,12 +504,14 @@ app.delete('/jobsite/:id', async (req, res) => {
       req.flash('error', 'Your browser seems to have given me (the server) the wrong jobsite ID');
       return res.status(404).send;
     }
-    const jobsite = await Jobsite.findOneAndRemove({
-      _id: id
-    });
+    const jobsite = await Jobsite.findOneAndRemove({_id: id});
     if(!jobsite) {
       req.flash('error', 'Unable to find jobsite to be deleted, it gets to live a bit longer');
       res.status(404).send();
+    }
+    var crews = await Crew.find({jobsites: jobsite._id});
+    for (var i in crews) {
+      await Crew.findByIdAndUpdate({_id: crews[i]._id}, {$pull: {jobsites: jobsite._id}}, {new: true});
     }
   } catch (e) {
     console.log(e);
@@ -812,12 +815,22 @@ app.delete('/crew/:id', async (req, res) => {
     if (!ObjectID.isValid(id)) {
       return res.status(404).send;
     }
-    const crew = await Crew.findOneAndRemove({
-      _id: id
-    });
+    const crew = await Crew.findOneAndRemove({_id: id});
     if(!crew) {
       req.flash('error', 'Crew has been spared from deletion for some reason');
       res.redirect('back');
+    }
+    var vehicles = await Vehicle.find({crews: crew._id});
+    for (var i in vehicles) {
+      await Vehicle.findByIdAndUpdate({_id: vehicles[i]._id}, {$pull: {crews: crew._id}}, {new: true});
+    }
+    var employees = await Employee.find({crews: crew._id});
+    for (var i in employees) {
+      await Employee.findByIdAndUpdate({_id: employees[i]._id}, {$pull: {crews: crew._id}}, {new: true});
+    }
+    var jobsites = await Jobsite.find({crews: crew._id});
+    for (var i in jobsites) {
+      await Jobsite.findByIdAndUpdate({_id: jobsites[i]._id}, {$pull: {crews: crew._id}}, {new: true});
     }
     req.flash('success', 'Crew has been deleted from this site, but will remain in our hearts');
     res.end();
@@ -948,7 +961,8 @@ app.get('/reports', async (req, res) => {
     var reportArray = await DailyReport.getAll();
     var crewArray = await Crew.getAll();
     var jobArray = await Jobsite.getAll();
-    res.render('reportIndex', {reportArray, crewArray, jobArray});
+    var html = await res.render('reportIndex', {reportArray, crewArray, jobArray});
+    console.log(html);
   } catch (e) {
     console.log(e);
     req.flash('error', e.message);
@@ -972,6 +986,47 @@ app.get('/report/:reportId', async (req, res) => {
     var reportNote = await ReportNote.find({dailyReport: report});
     if (crew.employees.some((employee) => employee.equals(req.user.employee)) || req.user.admin == true) {
       res.render('dailyReport', {report, crew, job, employeeArray, employeeHourArray, vehicleArray, vehicleHourArray, productionArray, materialArray, reportNote: reportNote[0]});
+    } else {
+      req.flash('error', 'You are not authorized to view this page');
+      res.redirect('back');
+    }
+  } catch (e) {
+    console.log(e);
+    req.flash('error', e.message);
+    res.redirect('back');
+  } 
+});
+
+// GET /report/:reportId/pdf
+app.get('/report/:reportId/pdf', async (req, res) => {
+  try {
+    const reportId = req.params.reportId;
+    var report = await DailyReport.findById(reportId);
+    var crew = await Crew.findById(report.crew);
+    var job = await Jobsite.findById(report.jobsite);
+    var employeeArray = await Employee.getAll();
+    var employeeHourArray = await EmployeeWork.find({dailyReport: report});
+    var vehicleArray = await Vehicle.getAll();
+    var vehicleHourArray = await VehicleWork.find({dailyReport: report});
+    var productionArray = await Production.find({dailyReport: report});
+    var materialArray = await MaterialShipment.find({dailyReport: report});
+    var reportNote = await ReportNote.find({dailyReport: report});
+    if (crew.employees.some((employee) => employee.equals(req.user.employee)) || req.user.admin == true) {
+      res.render('reportPDF', {report, crew, job, employeeArray, employeeHourArray, vehicleArray, vehicleHourArray, productionArray, materialArray, reportNote: reportNote[0]}, (err, html) => {
+        if(err) {throw new Error(err);}
+        pdf.create(html, {orientation: "landscape"}).toStream((err, pdfStream) => {
+          if (err) {   
+            console.log(err);
+            return res.sendStatus(500);
+          } else {
+            res.statusCode = 200;             
+            pdfStream.on('end', () => {
+              return res.end();
+            });
+            pdfStream.pipe(res);
+          }
+        });
+      });
     } else {
       req.flash('error', 'You are not authorized to view this page');
       res.redirect('back');

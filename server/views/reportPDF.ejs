@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link type='text/css' rel="stylesheet" href="<% if (locals.session.cookie.httpOnly == true){%>http<%}else{%>https<%}%>://<%=locals.baseUrl%>/css/materialize.min.css"/>
+    <link type='text/css' rel="stylesheet" href="<% if (locals.session.cookie.httpOnly == true){%>http<%}else{%>https<%}%>://<%=locals.baseUrl%>/css/style.css" />
+  </head>
+  <body>
+    
+    <div class="row" style="margin-bottom: 0em;">
+      <div class="col s10">
+        <a href="/report/<%=report._id%>"><h5 style="display: inline;"><%= job.name %></h5></a> - 
+        <span><%= crew.name %><a href="/crew/<%= crew._id %>"></a></span> - 
+        <span><%= report.date.toDateString(); %></span>
+      </div>
+      
+      <div class="col s2">
+        <p>-Work in Progress-</p>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top: 0em;">
+      <div class="col s6">
+        <% if (Object.keys(employeeHourArray).length > 0) { %>
+          <u><h6>Employee Hours</h6></u>
+          <table class="striped">
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Job</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Hours</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (var i in employeeHourArray) { %>
+                <tr style="line-height: 0.1em;">
+                  <td><% if (employeeArray[employeeHourArray[i].employee]){%><%= employeeArray[employeeHourArray[i].employee].name %><%}else{%>'Employee was removed'<%}%></td>
+                  <td><%= employeeHourArray[i].jobTitle.substring(0, 13) %></td>
+                  <td><%= employeeHourArray[i].startTime.getHours() %>:<%= employeeHourArray[i].startTime.getMinutes()<10?'0':''%><%= employeeHourArray[i].startTime.getMinutes() %></td>
+                  <td><%= employeeHourArray[i].endTime.getHours() %>:<%= employeeHourArray[i].endTime.getMinutes()<10?'0':''%><%= employeeHourArray[i].endTime.getMinutes() %></td>
+                  <td><%= Math.round(Math.abs(employeeHourArray[i].endTime - employeeHourArray[i].startTime) / 3.6e6 * 100) / 100 %></td>
+                </tr>
+              <% } %> 
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+
+      <div class="col s6">
+        <% if (Object.keys(vehicleHourArray).length > 0) { %>
+          <u><h6>Vehicle Hours</h6></u>
+          <table class="striped">
+            <thead>
+              <tr>
+                <th>Vehicle</th>
+                <th>Job</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Hours</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (var i in vehicleHourArray) { %>
+                <tr style="line-height: 0.1em;">
+                  <td><% if (vehicleArray[vehicleHourArray[i].vehicle]){%><%= vehicleArray[vehicleHourArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%></td>
+                  <td><%= vehicleHourArray[i].jobTitle.substring(0, 13) %></td>
+                  <td><%= vehicleHourArray[i].startTime.getHours() %>:<%= vehicleHourArray[i].startTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].startTime.getMinutes() %></td>
+                  <td><%= vehicleHourArray[i].endTime.getHours() %>:<%= vehicleHourArray[i].endTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].endTime.getMinutes() %></td>
+                  <td><%= Math.round(Math.abs(vehicleHourArray[i].endTime - vehicleHourArray[i].startTime) / 3.6e6 * 100) / 100 %></td>
+                </tr>
+              <% } %> 
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+    </div> 
+
+    <div class="row" style="margin-top: 0em;">
+      <div class="col s6">
+          <% if (Object.keys(productionArray).length > 0) { %>
+            <u><h6>Production</h6></u>
+            <table class="striped">
+              <thead>
+                <tr>
+                  <th>Job</th>
+                  <th>Quantity</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Hours</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (var i in productionArray) { %>
+                  <tr style="line-height: 0.1em;">
+                    <td><%= productionArray[i].jobTitle.substring(0, 13) %></td>
+                    <td><%= productionArray[i].quantity %> <%= productionArray[i].unit %></td>
+                    <td><%= productionArray[i].startTime.getHours() %>:<%= productionArray[i].startTime.getMinutes()<10?'0':''%><%= productionArray[i].startTime.getMinutes() %></td>
+                    <td><%= productionArray[i].endTime.getHours() %>:<%= productionArray[i].endTime.getMinutes()<10?'0':''%><%= productionArray[i].endTime.getMinutes() %></td>
+                    <td><%= Math.round(Math.abs(productionArray[i].endTime - productionArray[i].startTime) / 3.6e6 * 100) / 100 %></td>
+                  </tr>
+                <% } %> 
+              </tbody>
+            </table>
+          <% } %>
+      </div>
+
+      <div class="col s6">
+        <% if (Object.keys(materialArray).length > 0) { %>
+          <u><h6>Material Shipments</h6></u>
+          <table class="striped">
+            <thead>
+              <tr>
+                <th>Shipment</th>
+                <th>Quantity</th>
+                <th>Vehicle</th>
+                <th>Hours</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (var i in materialArray) { %>
+                <tr style="line-height: 0.1em;">
+                  <td><%= materialArray[i].shipmentType.substring(0, 13) %></td>
+                  <td><%= materialArray[i].quantity %> <%= materialArray[i].unit %></td>
+                  <td><% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%></td>
+                  <td><%= Math.round(Math.abs(materialArray[i].endTime - materialArray[i].startTime) / 3.6e6 * 100) / 100 %></td>
+                </tr>
+              <% } %> 
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+    </div>
+
+    <% if (reportNote) { %>
+      <div class="row">
+        <h6>General Notes:</h6>
+        <p><%= reportNote.note %></p>
+      </div>
+    <% } %>
+  </body>
+</html>
