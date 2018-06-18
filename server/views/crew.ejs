@@ -13,7 +13,7 @@
         <ul class="collection">
           <% crew.employees.forEach((employee) => { %>
             <li class="collection-item">
-              <h6><a href="employee/<%= employeeArray[employee]._id %>"><%= employeeArray[employee].name %></a></h6>
+              <h6><a href="/employee/<%= employeeArray[employee]._id %>"><%= employeeArray[employee].name %></a></h6>
               <span><%= employeeArray[employee].jobTitle %></span>
             </li>
           <% }); %>
