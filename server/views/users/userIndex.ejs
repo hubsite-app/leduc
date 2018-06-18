@@ -10,7 +10,7 @@
         <div id="user-<%= id %>-container">
           <div id="user-<%= id %>-content">
             <a class="user-delete secondary-content" onClick="if (confirm('Are you sure?')) {deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
-            <a class="user-edit secondary-content" onClick="editRequest('<%= id %>', '<%= array[result].name %>', '<%= array %>'); return false;" href=""><i class="material-icons">edit</i></a>
+            <a class="user-edit secondary-content" onClick="editRequest('<%= id %>', '<%= array[result].name %>'); return false;" href=""><i class="material-icons">edit</i></a>
             <h3><a href="/user/<%=id%>"><%= array[result].name %></a></h3>
             <p><%= array[result].email %></p>
             <% if (!array[result]._id.equals(locals.user._id)) { %>
@@ -35,9 +35,9 @@
     });
     location.reload();
   }
-  function editRequest(id, name, array) {
+  function editRequest(id, name) {
     var template = $('#user-edit-form-template').html();
-    var html = Mustache.render(template, {id, name, array});
+    var html = Mustache.render(template, {id, name});
     $(`#user-${id}-content`).remove();
     $(`#user-${id}-container`).append(html);
   }

@@ -622,7 +622,7 @@ app.get('/employee/:id', (req, res) => {
       })
       res.render('employees/employee', {employee, crewArray});
     });
-  })
+  });
 });
 
 // POST /employee
@@ -637,6 +637,26 @@ app.post('/employee', async (req, res) => {
     req.flash('error', e.message);
     res.redirect('back');
   } 
+});
+
+// POST /employee/:id/update
+app.post('/employee/:id/update', async (req, res) => {
+  try {
+    var id = req.params.id;
+    var body = _.pick(req.body, ['name', 'jobTitle']);
+    if (!ObjectID.isValid(id)) {
+      req.flash('error', 'ID used in the request was wrong, that\'s odd');
+      res.redirect('back');
+    }
+    var employee = await Employee.findOneAndUpdate({_id: id}, {$set: body}, {new: true});
+    req.flash('success', 'Employee successfully updated! Isn\'t that just fantastic?!');
+    res.redirect('back');
+    res.end();
+  } catch (e) {
+    console.log(e);
+    req.flash('error', e.message);
+    res.redirect('back');
+  }
 });
 
 // POST /employee/user/:id
@@ -714,6 +734,25 @@ app.post('/vehicle', async (req, res) => {
     res.redirect('back');
   }
 }); 
+
+// GET /vehicle/:id
+app.get('/vehicle/:id', async (req, res) => {
+  Vehicle.findById(req.params.id, (err, vehicle) => {
+    crewArray = [];
+    Crew.find({
+      '_id': {$in: vehicle.crews}
+    }, (err, crews) => {
+      if (err) {
+        req.flash('error', err.message);
+        return console.log(err);
+      }
+      crews.forEach((crew) => {
+        crewArray[crew._id] = crew;
+      })
+      res.render('vehicles/vehicle', {vehicle, crewArray});
+    });
+  });
+});
 
 // DELETE /vehicle/:id
 app.delete('/vehicle/:id', async (req, res) => {

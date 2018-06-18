@@ -38,6 +38,12 @@ function loadEmployeeForm() {
   $('select').formSelect({dropdownOptions: {
     constrainWidth: false
   }});
+  var elem = document.querySelector('.autocomplete-work');
+  var instance = M.Autocomplete.getInstance(elem);
+  $('input.autocomplete-work').on('click', function () {
+    instance.open();
+  });
+  
 };
 function removeEmployeeForm() {
   var template = $('#employee-work-form-add-button').html();
@@ -190,7 +196,8 @@ function loadProductionForm() {
     data: {
       "Subgrade Prep": null,
       "Pit-run": null,
-      "Base Gravel": null,
+      "Base Gravel - 20mm": null,
+      "Subbase Material - 80mm": null,
       "Prime/Tack": null,
       "Paving": null,
       "Utilities": null,
@@ -239,7 +246,8 @@ function loadProductionEditForm(id, work, quantity, unit, start, end, descriptio
     data: {
       "Subgrade Prep": null,
       "Pit-run": null,
-      "Base Gravel": null,
+      "Base Gravel - 20mm": null,
+      "Subbase Material - 80mm": null,
       "Prime/Tack": null,
       "Paving": null,
       "Utilities": null,

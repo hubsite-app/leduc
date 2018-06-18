@@ -1,3 +1,9 @@
+function editRequest(id, name, jobTitle) {
+  var template = $('#employee-edit-form-template').html();
+  var html = Mustache.render(template, {id, name, jobTitle});
+  $(`#employee-${id}-content`).remove();
+  $(`#employee-${id}-container`).append(html);
+};
 function deleteRequest(id) {
   $.ajax({
     type: 'DELETE',

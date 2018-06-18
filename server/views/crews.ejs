@@ -10,14 +10,14 @@
         <div class="card-content">
           <% id = crewArray[result]._id %>
           <a class="crew-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
-          <h3 class="card-title" style="font-weight: bold;"><%= crewArray[result].name %></h3>
+          <h3 class="card-title" style="font-weight: bold;"><a href="/crew/<%=id%>"><%= crewArray[result].name %></a></h3>
 
           <% if (crewArray[result].employees.length > 0) { %>
             <h5>Employees: </h5>
             <ul class="collection">
               <% crewArray[result].employees.forEach((employee) => { %>
                 <li class="collection-item">
-                  <h6><%= employeeArray[employee].name %></h6>
+                  <h6><a href="employee/<%= employeeArray[employee]._id %>"><%= employeeArray[employee].name %></a></h6>
                   <span><%= employeeArray[employee].jobTitle %></span>
                 </li>
               <% }); %>
@@ -29,7 +29,7 @@
             <ul class="collection">
               <% crewArray[result].vehicles.forEach((vehicle) => { %>
                 <li class="collection-item">
-                  <h6><%= vehicleArray[vehicle].name %></h6>
+                  <h6><a href="/vehicle/<%= vehicleArray[vehicle]._id %>"><%= vehicleArray[vehicle].name %></a></h6>
                   <span><%= vehicleArray[vehicle].vehicleType %></span>
                 </li>
               <% }); %>
@@ -41,7 +41,7 @@
             <ul class="collection">
               <% crewArray[result].jobsites.forEach((jobsite) => { %>
                 <li class="collection-item">
-                  <h6><%= jobArray[jobsite].name %></h6>
+                  <h6><a href="/jobsite/<%= jobArray[jobsite]._id %>"><%= jobArray[jobsite].name %></a></h6>
                 </li>
               <% }); %>
             </ul>

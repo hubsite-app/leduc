@@ -181,7 +181,7 @@
       <% } %>
       <form method="post" action="/employeehour" id="employee-form">
         <div class="input-field col s12">
-          <input name="jobTitle" type="text" id="employee-autocomplete-job-title" class="autocomplete-work" autocomplete="off" 
+          <input name="jobTitle" type="text" id="employee-autocomplete-job-title" class="autocomplete-work" autocomplete="off" autofocus
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.jobTitle != '') {%> value="<%=locals.query.jobTitle%>" <%}%>/>
           <label for="employee-autocomplete-job-title">Work Done</label>
         </div>
@@ -291,7 +291,7 @@
       <% } %>
       <form method="post" action="/vehiclehour" id="vehicle-form">
         <div class="input-field col s12">
-          <input name="jobTitle" type="text" id="vehicle-autocomplete-job-title" class="autocomplete-work" autocomplete="off" 
+          <input name="jobTitle" type="text" id="vehicle-autocomplete-job-title" class="autocomplete-work" autocomplete="off" autofocus
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.jobTitle != '') {%> value="<%=locals.query.jobTitle%>" <%}%>/>
           <label for="vehicle-autocomplete-job-title">Work Done</label>
         </div>
@@ -401,7 +401,7 @@
       <% } %>
       <form method="post" action="/production" id="production-form">
         <div class="input-field col s12">
-          <input name="jobTitle" type="text" id="autocomplete-job-title-production" class="autocomplete-production" autocomplete="off" 
+          <input name="jobTitle" type="text" id="autocomplete-job-title-production" class="autocomplete-production" autocomplete="off" autofocus
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'production' && locals.query.jobTitle != '') {%> value="<%=locals.query.jobTitle%>" <%}%>/>
           <label for="autocomplete-job-title-production">Work Completed</label>
         </div>
@@ -506,7 +506,7 @@
       <% } %>
       <form method="post" action="/material" id="material-form">
         <div class="input-field col s12">
-          <input name="shipmentType" type="text" id="autocomplete-shipment-type" class="autocomplete-shipment" autocomplete="off" 
+          <input name="shipmentType" type="text" id="autocomplete-shipment-type" class="autocomplete-shipment" autocomplete="off" autofocus
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.shipmentType != '') {%> value="<%=locals.query.shipmentType%>" <%}%>/>
           <label for="autocomplete-shipment-type">Shipment Type</label>
         </div>

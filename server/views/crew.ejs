@@ -13,7 +13,7 @@
         <ul class="collection">
           <% crew.employees.forEach((employee) => { %>
             <li class="collection-item">
-              <h6><%= employeeArray[employee].name %></h6>
+              <h6><a href="employee/<%= employeeArray[employee]._id %>"><%= employeeArray[employee].name %></a></h6>
               <span><%= employeeArray[employee].jobTitle %></span>
             </li>
           <% }); %>
@@ -25,7 +25,7 @@
         <ul class="collection">
           <% crew.vehicles.forEach((vehicle) => { %>
             <li class="collection-item">
-              <h6><%= vehicleArray[vehicle].name %></h6>
+              <h6><a href="/vehicle/<%= vehicleArray[vehicle]._id %>"><%= vehicleArray[vehicle].name %></a></h6>
               <span><%= vehicleArray[vehicle].vehicleType %></span>
             </li>
           <% }); %>
@@ -37,7 +37,7 @@
         <ul class="collection">
           <% crew.jobsites.forEach((jobsite) => { %>
             <li class="collection-item">
-              <h6><%= jobArray[jobsite].name %></h6>
+              <h6><a href="/jobsite/<%= jobArray[jobsite]._id %>"><%= jobArray[jobsite].name %></a></h6>
             </li>
           <% }); %>
         </ul>
