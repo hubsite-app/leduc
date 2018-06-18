@@ -774,6 +774,26 @@ app.delete('/vehicle/:id', async (req, res) => {
   }
 });
 
+// POST /vehicle/:id/update
+app.post('/vehicle/:id/update', async (req, res) => {
+  try {
+    var id = req.params.id;
+    var body = _.pick(req.body, ['name', 'vehicleCode', 'vehicleType']);
+    if (!ObjectID.isValid(id)) {
+      req.flash('error', 'ID used in the request was wrong, that\'s odd');
+      res.redirect('back');
+    }
+    var vehicle = await Vehicle.findOneAndUpdate({_id: id}, {$set: body}, {new: true});
+    req.flash('success', 'Vehicle successfully updated! Isn\'t that just fantastic?!');
+    res.redirect('back');
+    res.end();
+  } catch (e) {
+    console.log(e);
+    req.flash('error', e.message);
+    res.redirect('back');
+  }
+});
+
 // POST /crew
 app.post('/crew', async (req, res) => {
   try {

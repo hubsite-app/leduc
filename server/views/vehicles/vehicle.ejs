@@ -1,7 +1,11 @@
 <% include ../partials/head %>
 
+<script src="/js/libs/mustache.js"></script>
+
 <div class="container">
   <h1><%= vehicle.name %></h1>
+  <a class="vehicle-edit secondary-content" onClick="editRequest('<%= vehicle._id %>', '<%= vehicle.name %>', '<%= vehicle.vehicleCode %>', '<%= vehicle.vehicleType %>'); return false;" href=""><i class="material-icons">edit</i></a>
+  <div id="vehicle-edit-container"></div>
   <% if (typeof crewArray !== 'undefined') { %>
     <h3>Crews</h3>
     <ul class="collection">
@@ -15,3 +19,34 @@
 </div>
 
 <% include ../partials/foot %>
+
+<script>
+  function editRequest(id, name, vehicleCode, vehicleType) {
+    var template = $('#vehicle-edit-form-template').html();
+    var html = Mustache.render(template, {id, name, vehicleCode, vehicleType});
+    $(`.vehicle-edit`).remove();
+    $(`#vehicle-edit-container`).append(html);
+  };
+</script>
+
+<script id='vehicle-edit-form-template' type="text/template">
+  <div class="row card-panel employee-{{id}}-content">
+    <form method="post" action="/vehicle/{{id}}/update">
+      <div class="input-field">
+        <input id="name" type="text" class="validate" name="name" value="{{name}}">
+        <label class="active" for="name">Name</label>
+      </div>
+      <div class="input-field">
+        <input id="vehicle-code" type="text" class="validate" name="vehicleCode" value="{{vehicleCode}}">
+        <label class="active" for="vehicle-code">Vehicle Code</label>
+      </div>
+      <div class="input-field">
+        <input id="vehicle-type" type="text" class="validate" name="vehicleType" value="{{vehicleType}}">
+        <label class="active" for="vehicle-type">Vehicle Type</label>
+      </div>
+      <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+        <i class="material-icons right">send</i>
+      </button>
+    </form>
+  </div>
+</script>
