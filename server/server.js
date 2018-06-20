@@ -19,6 +19,7 @@ const crypto = require('crypto');
 const flash = require('express-flash');
 const querystring = require('querystring');
 const pdf = require('html-pdf');
+const util = require('util');
 
 const {User} = require('./models/user');
 const {Jobsite} = require('./models/jobsite');
@@ -113,7 +114,7 @@ app.get('/', async (req, res, next) => {
     req.flash('info', 'You must be logged in to use this site');
     res.render('login');
   }
-})
+});
 
 // GET /login
 app.get('/login', (req, res) => {
@@ -473,6 +474,239 @@ app.get('/jobsites', (req, res) => {
   });
 });
 
+// GET /api/jobsites
+app.get('/api/jobsites', async (req, res) => {
+  try {
+    var jobArray = [];
+    var jobsites = await Jobsite.find({}).then((jobsite) => {
+      res.send(jobsite);
+    });
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
+app.get('/api/jobsite/:code', async (req, res) => {
+  try {
+    var w;
+    var fullResponse;
+    var response = {};
+    var employee = {};
+    var employeeWorkArray = [];
+    var employeeWork;
+    var employeeArray = await Employee.getAll();
+    var vehicleArray = await Vehicle.getAll();
+    var job = await Jobsite.find({jobcode: req.params.code});
+    var reports = await DailyReport.find({jobsite: job[0]._id});
+    for (var r in reports) {
+      if(reports[r].employeeWork.length > 0 || reports[r].vehicleWork.length > 0 || reports[r].materialShipment.length > 0) {
+        var date = await dateHandling(reports[r].date);
+        var crew = await Crew.findById(reports[r].crew);
+        response[date] = {};
+        if (crew.type.toLowerCase() == 'base') {
+          response[date].base = {};
+          // Base Employees
+          if(reports[r].employeeWork.length > 0) {
+            response[date].base.employees = [];
+            var work = reports[r].employeeWork;
+            for (w = 0; w < work.length; w++) {
+              if (mongoose.Types.ObjectId.isValid(work[w])){
+                employeeWork = await EmployeeWork.findById({_id: work[w]});
+              } else {
+                throw new Error('Employee Work ID is invalid');
+              }
+              if (employeeWork) {
+                if (employeeArray[employeeWork.employee].name) {
+                  if (searchObjectArray(response[date].base.employees, employeeArray[employeeWork.employee].name || 'User Removed')) {
+                    response[date].base.employees[searchObjectArray(response[date].base.employees, employeeArray[employeeWork.employee].name || 'User Removed')].hours += Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100;
+                  } else {
+                    employee = {
+                      name: employeeArray[employeeWork.employee].name || 'User Removed',
+                      hours: Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100
+                    }
+                    response[date].base.employees.push(employee);
+                  }
+                } else {
+                  if (searchObjectArray(response[date].base.employees, 'User Removed')) {
+                    response[date].base.employees[searchObjectArray(response[date].base.employees, 'User Removed')].hours += Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100;
+                  } else {
+                    employee = {
+                      name: 'User Removed',
+                      hours: Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100
+                    }
+                    response[date].base.employees.push(employee);
+                  }
+                }
+              }
+            }
+          }
+          // Base Vehicles
+          if (reports[r].vehicleWork.length > 0) {
+            response[date].base.vehicles = [];
+            work = reports[r].vehicleWork;
+            for (w = 0; w < work.length; w++) {
+              if (mongoose.Types.ObjectId.isValid(work[w])){
+                vehicleWork = await VehicleWork.findById({_id: work[w]});
+              } else {
+                throw new Error('Vehicle Work ID is invalid');
+              }
+              if (vehicleWork) {
+                if (vehicleArray[vehicleWork.vehicle]) {
+                  if (searchObjectArray(response[date].base.vehicles, vehicleArray[vehicleWork.vehicle].name || 'Vehicle Removed')) {
+                    response[date].base.vehicles[searchObjectArray(response[date].base.vehicles, vehicleArray[vehicleWork.vehicle].name || 'Vehicle Removed')].hours += Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                  } else {
+                    vehicle = {
+                      name: vehicleArray[vehicleWork.vehicle].name || 'Vehicle Removed',
+                      hours: Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                    }
+                    response[date].base.vehicles.push(vehicle);
+                  }
+                } else {
+                  if (searchObjectArray(response[date].base.vehicles, 'Vehicle Removed')) {
+                    response[date].base.vehicles[searchObjectArray(response[date].base.vehicles, 'Vehicle Removed')].hours += Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                  } else {
+                    vehicle = {
+                      name: 'Vehicle Removed',
+                      hours: Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                    }
+                    response[date].base.vehicles.push(vehicle);
+                  }
+                }
+              }
+            }
+          }
+          // Base Materials
+          if (reports[r].materialShipment.length > 0) {
+            response[date].base.materials = [];
+            work = reports[r].materialShipment;
+            for (w = 0; w < work.length; w++) {
+              if (mongoose.Types.ObjectId.isValid(work[w])){
+                materialShipment = await MaterialShipment.findById({_id: work[w]});
+              } else {
+                throw new Error('Material Shipment ID is invalid');
+              }
+              if (materialShipment) {
+                if (searchObjectArray(response[date].base.materials, materialShipment.shipmentType)) {
+                  response[date].base.materials[searchObjectArray(response[date].base.materials, materialShipment.shipmentType)].quantity += materialShipment.quantity;
+                } else {
+                  material = {
+                    shipmentType: materialShipment.shipmentType,
+                    quantity: materialShipment.quantity
+                  }
+                  response[date].base.materials.push(material);
+                }
+              }
+            }
+          }
+        } else if (crew.type.toLowerCase() == 'paving') {
+          response[date].paving = {};
+          // Paving Employees
+          if(reports[r].employeeWork.length > 0) {
+            response[date].paving.employees = [];
+            var work = reports[r].employeeWork;
+            for (w = 0; w < work.length; w++) {
+              if (mongoose.Types.ObjectId.isValid(work[w])){
+                employeeWork = await EmployeeWork.findById({_id: work[w]});
+              } else {
+                throw new Error('Employee Work ID is invalid');
+              }
+              if (employeeWork) {
+                if (employeeArray[employeeWork.employee].name) {
+                  if (searchObjectArray(response[date].paving.employees, employeeArray[employeeWork.employee].name || 'User Removed')) {
+                    response[date].paving.employees[searchObjectArray(response[date].paving.employees, employeeArray[employeeWork.employee].name || 'User Removed')].hours += Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100;
+                  } else {
+                    employee = {
+                      name: employeeArray[employeeWork.employee].name || 'User Removed',
+                      hours: Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100
+                    }
+                    response[date].paving.employees.push(employee);
+                  }
+                } else {
+                  if (searchObjectArray(response[date].paving.employees, 'User Removed')) {
+                    response[date].paving.employees[searchObjectArray(response[date].paving.employees, 'User Removed')].hours += Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100;
+                  } else {
+                    employee = {
+                      name: 'User Removed',
+                      hours: Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100
+                    }
+                    response[date].paving.employees.push(employee);
+                  }
+                }
+              }
+            }
+          }
+          // Paving Vehicles
+          if (reports[r].vehicleWork.length > 0) {
+            response[date].paving.vehicles = [];
+            work = reports[r].vehicleWork;
+            for (w = 0; w < work.length; w++) {
+              if (mongoose.Types.ObjectId.isValid(work[w])){
+                vehicleWork = await VehicleWork.findById({_id: work[w]});
+              } else {
+                throw new Error('Vehicle Work ID is invalid');
+              }
+              if (vehicleWork) {
+                if (vehicleArray[vehicleWork.vehicle]) {
+                  if (searchObjectArray(response[date].paving.vehicles, vehicleArray[vehicleWork.vehicle].name || 'Vehicle Removed')) {
+                    response[date].paving.vehicles[searchObjectArray(response[date].paving.vehicles, vehicleArray[vehicleWork.vehicle].name || 'Vehicle Removed')].hours += Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                  } else {
+                    vehicle = {
+                      name: vehicleArray[vehicleWork.vehicle].name || 'Vehicle Removed',
+                      hours: Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                    }
+                    response[date].paving.vehicles.push(vehicle);
+                  }
+                } else {
+                  if (searchObjectArray(response[date].paving.vehicles, 'Vehicle Removed')) {
+                    response[date].paving.vehicles[searchObjectArray(response[date].paving.vehicles, 'Vehicle Removed')].hours += Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                  } else {
+                    vehicle = {
+                      name: 'Vehicle Removed',
+                      hours: Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                    }
+                    response[date].paving.vehicles.push(vehicle);
+                  }
+                }
+              }
+            }
+          }
+          // Paving Materials
+          if (reports[r].materialShipment.length > 0) {
+            response[date].paving.materials = [];
+            work = reports[r].materialShipment;
+            for (w = 0; w < work.length; w++) {
+              if (mongoose.Types.ObjectId.isValid(work[w])){
+                materialShipment = await MaterialShipment.findById({_id: work[w]});
+              } else {
+                throw new Error('Material Shipment ID is invalid');
+              }
+              if (materialShipment) {
+                if (searchObjectArray(response[date].paving.materials, materialShipment.shipmentType)) {
+                  response[date].paving.materials[searchObjectArray(response[date].paving.materials, materialShipment.shipmentType)].quantity += materialShipment.quantity;
+                } else {
+                  material = {
+                    shipmentType: materialShipment.shipmentType,
+                    quantity: materialShipment.quantity
+                  }
+                  response[date].paving.materials.push(material);
+                }
+              }
+            }
+          }
+        } else if (crew.type.toLowerCase() == 'concrete') {
+          throw new Error("Concrete is not supported on this page");
+        } else {
+          throw new Error("There was a crew that is not categorized into a 'base', 'paving', or 'concrete' category. Please go to the website and find the crew that is causing this error");
+        }
+      }
+    }
+    res.send(response);
+  } catch (e) {
+    console.log(e);
+    res.send(e.message);
+  }
+});
+
 // GET /jobsite/:id
 app.get('/jobsite/:id', (req, res) => {
   try {
@@ -513,6 +747,26 @@ app.delete('/jobsite/:id', async (req, res) => {
     for (var i in crews) {
       await Crew.findByIdAndUpdate({_id: crews[i]._id}, {$pull: {jobsites: jobsite._id}}, {new: true});
     }
+  } catch (e) {
+    console.log(e);
+    req.flash('error', e.message);
+    res.redirect('back');
+  }
+});
+
+// POST /jobsite/:id/update
+app.post('/jobsite/:id/update', async (req, res) => {
+  try {
+    var id = req.params.id;
+    var body = _.pick(req.body, ['name', 'description', 'jobcode']);
+    if (!ObjectID.isValid(id)) {
+      req.flash('error', 'ID used in the request was wrong, that\'s odd');
+      res.redirect('back');
+    }
+    var jobsite = await Jobsite.findOneAndUpdate({_id: id}, {$set: body}, {new: true});
+    req.flash('success', 'Jobsite successfully updated! Isn\'t that just fantastic?!');
+    res.redirect('back');
+    res.end();
   } catch (e) {
     console.log(e);
     req.flash('error', e.message);
@@ -900,6 +1154,26 @@ app.delete('/crew/:id', async (req, res) => {
   }
 });
 
+// POST /crew/:id/update
+app.post('/crew/:id/update', async (req, res) => {
+  try {
+    var id = req.params.id;
+    var body = _.pick(req.body, ['name', 'type']);
+    if (!ObjectID.isValid(id)) {
+      req.flash('error', 'ID used in the request was wrong, that\'s odd');
+      res.redirect('back');
+    }
+    var crew = await Crew.findOneAndUpdate({_id: id}, {$set: body}, {new: true});
+    req.flash('success', 'Crew successfully updated! Isn\'t that just fantastic?!');
+    res.redirect('back');
+    res.end();
+  } catch (e) {
+    console.log(e);
+    req.flash('error', e.message);
+    res.redirect('back');
+  }
+});
+
 // POST /crew/:crewId/employee/:employeeId
 app.post('/crew/:crewId/employee/:employeeId', async (req, res) => {
   try {
@@ -1005,6 +1279,9 @@ app.get('/jobreport/:jobId/crew/:crewId/report?', async (req, res) => {
         crew: crewId
       });
       await report.save();
+      var job = await Jobsite.findById(jobId);
+      job.dailyReports.push(report);
+      await job.save();
       res.redirect(`/report/${report._id}`);
     }
   } catch (e) {
@@ -1021,7 +1298,6 @@ app.get('/reports', async (req, res) => {
     var crewArray = await Crew.getAll();
     var jobArray = await Jobsite.getAll();
     var html = await res.render('reportIndex', {reportArray, crewArray, jobArray});
-    console.log(html);
   } catch (e) {
     console.log(e);
     req.flash('error', e.message);
@@ -1629,6 +1905,22 @@ async function timeHandling(time, date) {
     return time.setHours(time.getHours() + 6);
   } catch (err) {
     throw Error('Time info given was invalid');
+  }
+}
+
+async function dateHandling(date) {
+  try {
+    return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+  } catch (e) {
+    throw Error('Date info given was invalid')
+  }
+}
+
+function searchObjectArray(array, string) {
+  for(var i in array) {
+    if (array[i].name == string) {
+      return i;
+    }
   }
 }
 

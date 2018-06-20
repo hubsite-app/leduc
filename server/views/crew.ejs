@@ -7,6 +7,7 @@
     <div class="card-content">
       <% id = crew._id %>
       <h3 class="card-title" style="font-weight: bold;"><%= crew.name %></h3>
+      <span><%= crew.type %></span>
 
       <% if (crew.employees.length > 0) { %>
         <h5>Employees: </h5>

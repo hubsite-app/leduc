@@ -24,6 +24,12 @@ $(document).ready(function () {
   });
 });
 
+function editRequest(id, name, description, jobcode) {
+  var template = $('#jobsite-edit-form-template').html();
+  var html = Mustache.render(template, {id, name, description, jobcode});
+  $(`#job-${id}-content`).remove();
+  $(`#job-${id}-container`).append(html);
+};
 function deleteRequest(id) {
   $.ajax({
     type: 'DELETE',

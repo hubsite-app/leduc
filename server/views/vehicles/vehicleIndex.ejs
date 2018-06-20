@@ -8,7 +8,7 @@
       <% for (var i in vehicleArray) { %>
         <div class="card-panel hoverable">
           <a class="vehicle-delete secondary-content" onClick="if(confirm('This action is not recommended, are you sure? This will remove this vehicle from all reports!')){deleteRequest('<%= vehicleArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
-          <h4 class="card-title"><%= vehicleArray[i].name %></h4>
+          <h4 class="card-title"><a href="/vehicle/<%= vehicleArray[i]._id %>"><%= vehicleArray[i].name %></a></h4>
           <p class="card-content"><%= vehicleArray[i].vehicleType %></p>
           <p class="card-content"><%= vehicleArray[i].sourceCompany %></p>
         </div>

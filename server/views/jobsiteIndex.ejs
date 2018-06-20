@@ -1,54 +1,58 @@
 <% include partials/head %>
 <script src="/js/jobsiteIndex.js"></script>
+<script src="/js/libs/mustache.js"></script>
 
 <div class="container"> 
   <h1>Job List</h1>
   <% if (jobArray) { %>
 
       <% for (var i in jobArray) {%>
-        <div class="card-panel hoverable">
-          <% id = jobArray[i]._id %>
-          <a class="jobsite-delete secondary-content" onClick="if(confirm('Are you sure?')) {deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
-          <h3 class='card-title'><a href="/jobsite/<%=id%>"><%= jobArray[i].name %></a></h3>
-          <p><%= jobArray[i].description %></p>
-
-          <% if (jobArray[i].crews.length > 0) { %>
-            <h5>Crews: </h5>
-            <ul class="collection">
-              <% jobArray[i].crews.forEach((crew) => { %>
-                <li class="collection-item">
-                  <h6><%= crewArray[crew].name %></h6>
-                </li>
-              <% }); %>
-            </ul>
-          <% } %>
-        
-          <% if (crewArray) { %>
-            <div class="row">
-              <div class="col-12">
-                <a id="dropdown-crew-<%= jobArray[i]._id %>" class='crewDropdown btn' href='' data-target='job-<%= jobArray[i]._id %>-dropdown' style="width: 100%;">Select Crew</a>
+        <% id = jobArray[i]._id %>
+        <div class="card-panel hoverable" id="job-<%=id%>-container">
+          <div id="job-<%=id%>-content">
+            <a class="jobsite-delete secondary-content" onClick="if(confirm('Are you sure?')) {deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
+            <a class="crew-edit secondary-content" onClick="editRequest('<%= id %>', &quot;<%= jobArray[i].name %>&quot;, '<%= jobArray[i].description %>', '<%= jobArray[i].jobCode %>'); return false;" href=""><i class="material-icons">edit</i></a>
+            <h3 class='card-title'><a href="/jobsite/<%=id%>"><%= jobArray[i].name %></a></h3>
+            <p><%= jobArray[i].description %></p>
+  
+            <% if (jobArray[i].crews.length > 0) { %>
+              <h5>Crews: </h5>
+              <ul class="collection">
+                <% jobArray[i].crews.forEach((crew) => { %>
+                  <li class="collection-item">
+                    <h6><%= crewArray[crew].name %></h6>
+                  </li>
+                <% }); %>
+              </ul>
+            <% } %>
+          
+            <% if (crewArray) { %>
+              <div class="row">
+                <div class="col-12">
+                  <a id="dropdown-crew-<%= jobArray[i]._id %>" class='crewDropdown btn' href='' data-target='job-<%= jobArray[i]._id %>-dropdown' style="width: 100%;">Select Crew</a>
+                </div>
               </div>
-            </div>
-            <ul class="collection dropdown-content" id="job-<%= jobArray[i]._id %>-dropdown">
-              <form id="job-<%= jobArray[i]._id %>-crew-form">
-                <% for (var index in crewArray) { %>
-                  <label>
-                    <li class="collection-item" id="crew-<%= crewArray[index]._id %>-item">
-                      <input type="hidden" class="id" id="job-<%= jobArray[i]._id %>-id" value="<%= jobArray[i]._id %>" />
-                      <input type="checkbox" class="newCrew" id="crew-<%= crewArray[index]._id %>-checkbox" name="crew" value="<%= crewArray[index]._id %>" 
-                        <% jobArray[i].crews.forEach((crew) => {
-                          if (crewArray[index]._id.equals(crew)) {%>
-                            checked="true"
-                          <%}});%> />
-                      <span>
-                        <%= crewArray[index].name %>
-                      </span>
-                    </li>
-                  </label>
-                <% } %>
-              </form>
-            </ul>
-          <% } %> 
+              <ul class="collection dropdown-content" id="job-<%= jobArray[i]._id %>-dropdown">
+                <form id="job-<%= jobArray[i]._id %>-crew-form">
+                  <% for (var index in crewArray) { %>
+                    <label>
+                      <li class="collection-item" id="crew-<%= crewArray[index]._id %>-item">
+                        <input type="hidden" class="id" id="job-<%= jobArray[i]._id %>-id" value="<%= jobArray[i]._id %>" />
+                        <input type="checkbox" class="newCrew" id="crew-<%= crewArray[index]._id %>-checkbox" name="crew" value="<%= crewArray[index]._id %>" 
+                          <% jobArray[i].crews.forEach((crew) => {
+                            if (crewArray[index]._id.equals(crew)) {%>
+                              checked="true"
+                            <%}});%> />
+                        <span>
+                          <%= crewArray[index].name %>
+                        </span>
+                      </li>
+                    </label>
+                  <% } %>
+                </form>
+              </ul>
+            <% } %> 
+          </div>
         </div>
       <% } %>
   <% } %>
@@ -79,6 +83,29 @@
         </div>
         <div class="input-field">
           <textarea id="description" class="materialize-textarea" name="description"></textarea>
+          <label for="description">Description</label>
+        </div>
+        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button>
+    </form>
+  </div>
+</script>
+
+<script id='jobsite-edit-form-template' type="text/template">
+  <div class="row card-panel">
+    <h3>Edit {{name}}</h3>
+    <form method="post" action="/jobsite/{{id}}/update">
+      <div class="input-field">
+          <input id="name" type="text" class="validate" name="name" value="{{name}}">
+          <label for="name">Job Name</label>
+        </div>
+        <div class="input-field">
+          <input id="jobcode" type="text" class="validate" name="jobcode" value="{{jobcode}}">
+          <label for="jobcode">Job Code</label>
+        </div>
+        <div class="input-field">
+          <textarea id="description" class="materialize-textarea" name="description">{{description}}</textarea>
           <label for="description">Description</label>
         </div>
         <button class="btn waves-effect waves-light right" type="submit" name="action">Submit

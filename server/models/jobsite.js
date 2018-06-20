@@ -19,7 +19,8 @@ var JobsiteSchema = new mongoose.Schema({
   },
   jobcode: {
     type: String,
-    trim: true
+    trim: true,
+    unique: true
   },
   crews: [{
     type: mongoose.Schema.Types.ObjectId,

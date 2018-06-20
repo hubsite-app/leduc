@@ -55,6 +55,19 @@ $(document).ready(function () {
   });
 });
 
+function editCrewRequest(id, name, type) {
+  var template = $('#crew-edit-form-template').html();
+  var html = Mustache.render(template, {id, name, type});
+  $(`#crew-${id}-content`).remove();
+  $(`#crew-${id}-container`).append(html);
+  $('input.autocomplete-type').autocomplete({
+    data: {
+      "Base": null,
+      "Paving": null,
+      "Concrete": null
+    }
+  });
+};
 function deleteRequest(id) {
   $.ajax({
     type: 'DELETE',
@@ -68,6 +81,13 @@ function loadForm() {
   var template = $('#crew-form-template').html();
   $("#crew-form-div").append(template);
   $('#add-crew').remove();
+  $('input.autocomplete-type').autocomplete({
+    data: {
+      "Base": null,
+      "Paving": null,
+      "Concrete": null
+    }
+  });
 };
 function loadEmployeeForm() {
   var template = $('#employee-form-template').html();

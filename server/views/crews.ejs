@@ -1,16 +1,19 @@
 <% include partials/head %>
 
 <script src="/js/crews.js"></script>
+<script src="/js/libs/mustache.js"></script>
 
 <div class="container">
   <h1>Crew List</h1>
   <% if (crewArray) { %>
     <% for (var result in crewArray) { %>
-      <div class="collection-item card-panel hoverable">
-        <div class="card-content">
-          <% id = crewArray[result]._id %>
+      <% id = crewArray[result]._id %>
+      <div class="collection-item card-panel hoverable" id="crew-<%=id%>-container">
+        <div class="card-content" id="crew-<%=id%>-content">
           <a class="crew-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
+          <a class="crew-edit secondary-content" onClick="editCrewRequest('<%= crewArray[result]._id %>', &quot;<%= crewArray[result].name %>&quot;, '<%= crewArray[result].type %>'); return false;" href=""><i class="material-icons">edit</i></a>
           <h3 class="card-title" style="font-weight: bold;"><a href="/crew/<%=id%>"><%= crewArray[result].name %></a></h3>
+          <span><%= crewArray[result].type %></span>
 
           <% if (crewArray[result].employees.length > 0) { %>
             <h5>Employees: </h5>
@@ -125,6 +128,29 @@
       <div class="input-field">
         <input id="name" type="text" class="validate" name="name">
         <label for="name">Crew Name</label>
+      </div>
+      <div class="input-field">
+        <input name="type" type="text" id="autocomplete-type" class="autocomplete-type" autocomplete="off" />
+        <label for="autocomplete-type">Crew Type</label>
+      </div>
+      <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+        <i class="material-icons right">send</i>
+      </button>
+    </form>
+  </div>
+</script>
+
+<script id='crew-edit-form-template' type="text/template">
+  <div class="row card-panel">
+    <h3>Edit {{name}}</h3>
+    <form method="post" action="/crew/{{id}}/update">
+      <div class="input-field">
+        <input id="name" type="text" class="validate" name="name" value="{{name}}">
+        <label for="name">Crew Name</label>
+      </div>
+      <div class="input-field">
+        <input name="type" type="text" id="autocomplete-type" class="autocomplete-type" autocomplete="off" value="{{type}}" />
+        <label for="autocomplete-type">Crew Type</label>
       </div>
       <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
         <i class="material-icons right">send</i>
