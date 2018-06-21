@@ -1,26 +1,67 @@
 <% var title = 'Signup Page' %>
 <% include ../partials/head %>
 
+<style>
+  .tooltip {
+      position: relative;
+      display: inline-block;
+      border-bottom: 1px dotted black;
+  }
+
+  .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 15em;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 0.5em;
+      
+      /* Position the tooltip */
+      position: absolute;
+      z-index: 1;
+      top: -5px;
+      left: 105%;
+  }
+
+  .tooltip:hover .tooltiptext {
+      visibility: visible;
+  }
+</style>
+
+<script src="/js/signup.js"></script>
+
 <div class="container">
   <h1>Signup</h1>
   <form method="post" action="/signup">
     <div class="input-field col s12">
-      <input id="name" type="text" class="validate" name="name">
+      <input id="name" type="text" name="name">
       <label for="name">Full Name</label>
     </div>
     <div class="input-field col s12">
         <input id="email" type="email" name="email" class="validate">
         <label for="email">Email</label>
-        <span class="helper-text" data-error="wrong" data-success="right">Validate</span>
+        <span class="helper-text" data-error="Wrong" data-success="Right">Validate</span>
       </div>
     <div class="input-field col s12">
-      <input id="password" type="password" class="validate" name="password">
+      <input id="password" type="password" name="password">
       <label for="password">Password</label>
     </div>
-    <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
-      <i class="material-icons right">send</i>
-    </button>
+    <div class="input-field col s12">
+      <input id="confirm" type="password" />
+      <label for="confirm">Confirm Password</label>
+    </div>
+    <div id="submit-button-div"></div>
   </form>
+  <div class="tooltip">Help
+    <span class="tooltiptext">If a submit button doesn't appear once you've entered matching passwords, you likely will need to upgrade your browser to use this site. I personally recommend Google Chrome, Firefox, Safari, or Microsoft Edge</span>
+  </div>
 </div>
 
 <% include ../partials/foot %>
+
+<script id="submit-button-template" type="text/template">
+  <button id="submit-button" class="btn waves-effect waves-light right" type="submit" name="action">Submit
+    <i class="material-icons right">send</i>
+  </button>
+</script>
