@@ -4,6 +4,8 @@
 
 <div class="container">
   <h1><%= vehicle.name %></h1>
+  <span><%= vehicle.vehicleCode %></span>
+  <p><%= vehicle.vehicleType %></p>
   <a class="vehicle-edit secondary-content" onClick="editRequest('<%= vehicle._id %>', '<%= vehicle.name %>', '<%= vehicle.vehicleCode %>', '<%= vehicle.vehicleType %>'); return false;" href=""><i class="material-icons">edit</i></a>
   <div id="vehicle-edit-container"></div>
   <% if (typeof crewArray !== 'undefined') { %>

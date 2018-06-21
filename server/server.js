@@ -92,27 +92,32 @@ app.use((req, res, next) => {
 
 // root
 app.get('/', async (req, res, next) => {
-  const user = req.user;
-  if (user) {
-    if(!user.employee) {
-      req.flash('error', 'Please link your account with a Bow Mark employee');
-      res.redirect(`/user/${user._id}/`);
-    }
-    var crewArray = [];
-    var jobArray = [];
-    var crewArray = await Crew.find({employees: user.employee}, (err, crews) => {
-      if(err) {return console.log(err);}
-    });
-    Jobsite.find({}, async (err, jobsites) => {
-      if(err) {return console.log(err);}
-      await jobsites.forEach((jobsite) => {
-        jobArray[jobsite._id] = jobsite;
+  try {
+    const user = req.user;
+    if (user) {
+      if(!user.employee) {
+        req.flash('error', 'Please link your account with a Bow Mark employee');
+        res.redirect(`/user/${user._id}/`);
+      }
+      var crewArray = [];
+      var jobArray = [];
+      var crewArray = await Crew.find({employees: user.employee}, (err, crews) => {
+        if(err) {return console.log(err);}
       });
-      res.render('index', {jobArray, crewArray});
-    });
-  } else {
-    req.flash('info', 'You must be logged in to use this site');
-    res.render('login');
+      Jobsite.find({}, async (err, jobsites) => {
+        if(err) {return console.log(err);}
+        await jobsites.forEach((jobsite) => {
+          jobArray[jobsite._id] = jobsite;
+        });
+        res.render('index', {jobArray, crewArray});
+      });
+    } else {
+      req.flash('info', 'You must be logged in to use this site');
+      res.render('login');
+    }
+  } catch (e) {
+    req.flash('error', e.message);
+    res.redirect('back');
   }
 });
 
@@ -292,8 +297,9 @@ app.post('/reset/:token', function(req, res) {
 
 // GET /users
 app.get('/users', async (req, res) => {
-  if (req.user.admin == true) {
-    try {
+  try {
+    await loggedIn(req);
+    if (req.user.admin == true) {
       await User.find({}, (err, users) => {
         var userMap = [];
         users.forEach((user) => {
@@ -301,42 +307,48 @@ app.get('/users', async (req, res) => {
         });
         res.render('users/userIndex', {array: userMap});
       });
-    } catch (e) {
-      return console.log(e);
+    } else {
+      req.flash('error', 'You are not authorized to view this page');
+      res.redirect('back');
     }
-  } else {
-    req.flash('error', 'You are not authorized to view this page');
+  } catch (e) {
+    req.flash('error', e.message);
     res.redirect('back');
   }
 });
 
 // GET /user/:id
-app.get('/user/:id', (req, res) => {
-  if (req.user) {
-    User.findById(req.params.id, (err, user) => {
-      if (err) {
-        console.log(err);
-        req.flash('error', err.message);
-        res.redirect('back');
-      }
-      if (req.user._id.equals(user._id) || req.user.admin == true) {
-        employeeArray = [];
-        Employee.find({}, (err, employees) => {
-          employees.forEach((employee) => {
-            employeeArray[employee._id] = employee;
+app.get('/user/:id', async (req, res) => {
+  try {
+    await loggedIn(req);
+    if (req.user) {
+      User.findById(req.params.id, (err, user) => {
+        if (err) {
+          console.log(err);
+          req.flash('error', err.message);
+          res.redirect('back');
+        }
+        if (req.user._id.equals(user._id) || req.user.admin == true) {
+          employeeArray = [];
+          Employee.find({}, (err, employees) => {
+            employees.forEach((employee) => {
+              employeeArray[employee._id] = employee;
+            });
+            res.render('users/user', {user, employeeArray});
           });
-          res.render('users/user', {user, employeeArray});
-        });
-      } else {
-        req.flash('error', "You are not authorized to view this account");
-        res.redirect(`/users/`);
-      }
-    });
-  } else {
-    req.flash('error', 'Must be logged in');
-    res.render('login');
+        } else {
+          req.flash('error', "You are not authorized to view this account");
+          res.redirect(`/users/`);
+        }
+      });
+    } else {
+      req.flash('error', 'Must be logged in');
+      res.render('login');
+    }
+  } catch (e) {
+    req.flash('error', e.message);
+    res.redirect('back');
   }
-  
 });
 
 // DELETE /users/:id
@@ -458,20 +470,26 @@ app.post('/jobsite/new', async (req, res) => {
 });
 
 // GET /jobsites
-app.get('/jobsites', (req, res) => {
-  var jobArray = [];
-  var crewArray = [];
-  Jobsite.find({}, (err, jobsites) => {
-    jobsites.forEach((jobsite) => {
-      jobArray[jobsite._id] = jobsite;
-    });
-    Crew.find({}, (err, crews) => {
-      crews.forEach((crew) => {
-        crewArray[crew._id] = crew;
+app.get('/jobsites', async (req, res) => {
+  try {
+    await loggedIn(req);
+    var jobArray = [];
+    var crewArray = [];
+    Jobsite.find({}, (err, jobsites) => {
+      jobsites.forEach((jobsite) => {
+        jobArray[jobsite._id] = jobsite;
       });
-      res.render('jobsiteIndex', {jobArray, crewArray});
+      Crew.find({}, (err, crews) => {
+        crews.forEach((crew) => {
+          crewArray[crew._id] = crew;
+        });
+        res.render('jobsiteIndex', {jobArray, crewArray});
+      });
     });
-  });
+  } catch (e) {
+    req.flash('error', e.message);
+    res.redirect('back');
+  }
 });
 
 // GET /api/jobsites
@@ -488,6 +506,7 @@ app.get('/api/jobsites', async (req, res) => {
 
 app.get('/api/jobsite/:code', async (req, res) => {
   try {
+    var truckingToggle;
     var w;
     var fullResponse;
     var response = {};
@@ -497,6 +516,8 @@ app.get('/api/jobsite/:code', async (req, res) => {
     var employeeArray = await Employee.getAll();
     var vehicleArray = await Vehicle.getAll();
     var job = await Jobsite.find({jobcode: req.params.code});
+    console.log(job);
+    if (job.length < 1) {throw new Error('Error: Ensure Job Number corresponds to a Job Number on the site');}
     var reports = await DailyReport.find({jobsite: job[0]._id});
     for (var r in reports) {
       if(reports[r].employeeWork.length > 0 || reports[r].vehicleWork.length > 0 || reports[r].materialShipment.length > 0) {
@@ -517,22 +538,22 @@ app.get('/api/jobsite/:code', async (req, res) => {
               }
               if (employeeWork) {
                 if (employeeArray[employeeWork.employee].name) {
-                  if (searchObjectArray(response[date].base.employees, employeeArray[employeeWork.employee].name || 'User Removed')) {
-                    response[date].base.employees[searchObjectArray(response[date].base.employees, employeeArray[employeeWork.employee].name || 'User Removed')].hours += Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100;
+                  if (searchObjectArray(response[date].base.employees, employeeArray[employeeWork.employee].name)) {
+                    response[date].base.employees[searchObjectArray(response[date].base.employees, employeeArray[employeeWork.employee].name)].quantity += Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100;
                   } else {
                     employee = {
-                      name: employeeArray[employeeWork.employee].name || 'User Removed',
-                      hours: Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100
+                      name: employeeArray[employeeWork.employee].name,
+                      quantity: Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100
                     }
                     response[date].base.employees.push(employee);
                   }
                 } else {
                   if (searchObjectArray(response[date].base.employees, 'User Removed')) {
-                    response[date].base.employees[searchObjectArray(response[date].base.employees, 'User Removed')].hours += Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100;
+                    response[date].base.employees[searchObjectArray(response[date].base.employees, 'User Removed')].quantity += Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100;
                   } else {
                     employee = {
                       name: 'User Removed',
-                      hours: Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100
+                      quantity: Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100
                     }
                     response[date].base.employees.push(employee);
                   }
@@ -552,22 +573,22 @@ app.get('/api/jobsite/:code', async (req, res) => {
               }
               if (vehicleWork) {
                 if (vehicleArray[vehicleWork.vehicle]) {
-                  if (searchObjectArray(response[date].base.vehicles, vehicleArray[vehicleWork.vehicle].name || 'Vehicle Removed')) {
-                    response[date].base.vehicles[searchObjectArray(response[date].base.vehicles, vehicleArray[vehicleWork.vehicle].name || 'Vehicle Removed')].hours += Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                  if (searchObjectArray(response[date].base.vehicles, vehicleArray[vehicleWork.vehicle].vehicleCode)) {
+                    response[date].base.vehicles[searchObjectArray(response[date].base.vehicles, vehicleArray[vehicleWork.vehicle].vehicleCode)].quantity += Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
                   } else {
                     vehicle = {
-                      name: vehicleArray[vehicleWork.vehicle].name || 'Vehicle Removed',
-                      hours: Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                      name: vehicleArray[vehicleWork.vehicle].vehicleCode,
+                      quantity: Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
                     }
                     response[date].base.vehicles.push(vehicle);
                   }
                 } else {
                   if (searchObjectArray(response[date].base.vehicles, 'Vehicle Removed')) {
-                    response[date].base.vehicles[searchObjectArray(response[date].base.vehicles, 'Vehicle Removed')].hours += Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                    response[date].base.vehicles[searchObjectArray(response[date].base.vehicles, 'Vehicle Removed')].quantity += Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
                   } else {
                     vehicle = {
                       name: 'Vehicle Removed',
-                      hours: Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                      quantity: Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
                     }
                     response[date].base.vehicles.push(vehicle);
                   }
@@ -586,14 +607,72 @@ app.get('/api/jobsite/:code', async (req, res) => {
                 throw new Error('Material Shipment ID is invalid');
               }
               if (materialShipment) {
-                if (searchObjectArray(response[date].base.materials, materialShipment.shipmentType)) {
-                  response[date].base.materials[searchObjectArray(response[date].base.materials, materialShipment.shipmentType)].quantity += materialShipment.quantity;
-                } else {
-                  material = {
-                    shipmentType: materialShipment.shipmentType,
-                    quantity: materialShipment.quantity
+                if (vehicleArray[materialShipment.vehicle].rental == true) {
+                  if (searchObjectArray(response[date].base.materials, `${materialShipment.shipmentType} - ${vehicleArray[materialShipment.vehicle].sourceCompany}`)) {
+                    response[date].base.materials[searchObjectArray(response[date].base.materials, `${materialShipment.shipmentType} - ${vehicleArray[materialShipment.vehicle].sourceCompany}`)].quantity += materialShipment.quantity;
+                  } else {
+                    material = {
+                      name: `${materialShipment.shipmentType} - ${vehicleArray[materialShipment.vehicle].sourceCompany}`,
+                      quantity: materialShipment.quantity
+                    }
+                    response[date].base.materials.push(material);
                   }
-                  response[date].base.materials.push(material);
+                } else {
+                  if (searchObjectArray(response[date].base.materials, materialShipment.shipmentType)) {
+                    response[date].base.materials[searchObjectArray(response[date].base.materials, materialShipment.shipmentType)].quantity += materialShipment.quantity;
+                  } else {
+                    material = {
+                      name: materialShipment.shipmentType,
+                      quantity: materialShipment.quantity
+                    }
+                    response[date].base.materials.push(material);
+                  }
+                }
+              }
+            }
+          }
+          // Base Trucking
+          if (reports[r].materialShipment.length > 0) {
+            truckingToggle = false;
+            for (w = 0; w < work.length; w++) {
+              if (mongoose.Types.ObjectId.isValid(work[w])){
+                materialShipment = await MaterialShipment.findById({_id: work[w]});
+                if (materialShipment.startTime) {
+                  truckingToggle = true
+                }
+              }
+            }
+            if (truckingToggle == true) {
+              response[date].base.trucking = [];
+              work = reports[r].materialShipment;
+              for (w = 0; w < work.length; w++) {
+                if (mongoose.Types.ObjectId.isValid(work[w])){
+                  materialShipment = await MaterialShipment.findById({_id: work[w]});
+                } else {
+                  throw new Error('Material Shipment ID is invalid');
+                }
+                if (materialShipment.startTime) {
+                  if (vehicleArray[materialShipment.vehicle].rental == true) {
+                    if (searchObjectArray(response[date].base.trucking, vehicleArray[materialShipment.vehicle].vehicleType)) {
+                      response[date].base.materials[searchObjectArray(response[date].base.trucking, vehicleArray[materialShipment.vehicle].vehicleType)].quantity += Math.round(Math.abs(materialShipment.endTime - materialShipment.startTime) / 3.6e6 * 100) / 100;
+                    } else {
+                      material = {
+                        name: vehicleArray[materialShipment.vehicle].vehicleType,
+                        quantity: Math.round(Math.abs(materialShipment.endTime - materialShipment.startTime) / 3.6e6 * 100) / 100
+                      }
+                      response[date].base.trucking.push(material);
+                    }
+                  } else {
+                    if (searchObjectArray(response[date].base.trucking, `${vehicleArray[materialShipment.vehicle].vehicleType} ${BM}`)) {
+                      response[date].base.materials[searchObjectArray(response[date].base.trucking, `${vehicleArray[materialShipment.vehicle].vehicleType} ${BM}`)].quantity += Math.round(Math.abs(materialShipment.endTime - materialShipment.startTime) / 3.6e6 * 100) / 100;
+                    } else {
+                      material = {
+                        name: `${vehicleArray[materialShipment.vehicle].vehicleType} ${BM}`,
+                        quantity: Math.round(Math.abs(materialShipment.endTime - materialShipment.startTime) / 3.6e6 * 100) / 100
+                      }
+                      response[date].base.trucking.push(material);
+                    }
+                  }
                 }
               }
             }
@@ -612,22 +691,22 @@ app.get('/api/jobsite/:code', async (req, res) => {
               }
               if (employeeWork) {
                 if (employeeArray[employeeWork.employee].name) {
-                  if (searchObjectArray(response[date].paving.employees, employeeArray[employeeWork.employee].name || 'User Removed')) {
-                    response[date].paving.employees[searchObjectArray(response[date].paving.employees, employeeArray[employeeWork.employee].name || 'User Removed')].hours += Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100;
+                  if (searchObjectArray(response[date].paving.employees, employeeArray[employeeWork.employee].name)) {
+                    response[date].paving.employees[searchObjectArray(response[date].paving.employees, employeeArray[employeeWork.employee].name)].quantity += Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100;
                   } else {
                     employee = {
-                      name: employeeArray[employeeWork.employee].name || 'User Removed',
-                      hours: Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100
+                      name: employeeArray[employeeWork.employee].name,
+                      quantity: Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100
                     }
                     response[date].paving.employees.push(employee);
                   }
                 } else {
                   if (searchObjectArray(response[date].paving.employees, 'User Removed')) {
-                    response[date].paving.employees[searchObjectArray(response[date].paving.employees, 'User Removed')].hours += Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100;
+                    response[date].paving.employees[searchObjectArray(response[date].paving.employees, 'User Removed')].quantity += Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100;
                   } else {
                     employee = {
                       name: 'User Removed',
-                      hours: Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100
+                      quantity: Math.round(Math.abs(employeeWork.endTime - employeeWork.startTime) / 3.6e6 * 100) / 100
                     }
                     response[date].paving.employees.push(employee);
                   }
@@ -647,22 +726,22 @@ app.get('/api/jobsite/:code', async (req, res) => {
               }
               if (vehicleWork) {
                 if (vehicleArray[vehicleWork.vehicle]) {
-                  if (searchObjectArray(response[date].paving.vehicles, vehicleArray[vehicleWork.vehicle].name || 'Vehicle Removed')) {
-                    response[date].paving.vehicles[searchObjectArray(response[date].paving.vehicles, vehicleArray[vehicleWork.vehicle].name || 'Vehicle Removed')].hours += Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                  if (searchObjectArray(response[date].paving.vehicles, vehicleArray[vehicleWork.vehicle].vehicleCode)) {
+                    response[date].paving.vehicles[searchObjectArray(response[date].paving.vehicles, vehicleArray[vehicleWork.vehicle].vehicleCode)].quantity += Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
                   } else {
                     vehicle = {
-                      name: vehicleArray[vehicleWork.vehicle].name || 'Vehicle Removed',
-                      hours: Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                      name: vehicleArray[vehicleWork.vehicle].vehicleCode,
+                      quantity: Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
                     }
                     response[date].paving.vehicles.push(vehicle);
                   }
                 } else {
                   if (searchObjectArray(response[date].paving.vehicles, 'Vehicle Removed')) {
-                    response[date].paving.vehicles[searchObjectArray(response[date].paving.vehicles, 'Vehicle Removed')].hours += Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                    response[date].paving.vehicles[searchObjectArray(response[date].paving.vehicles, 'Vehicle Removed')].quantity += Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
                   } else {
                     vehicle = {
                       name: 'Vehicle Removed',
-                      hours: Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
+                      quantity: Math.round(Math.abs(vehicleWork.endTime - vehicleWork.startTime) / 3.6e6 * 100) / 100
                     }
                     response[date].paving.vehicles.push(vehicle);
                   }
@@ -681,14 +760,72 @@ app.get('/api/jobsite/:code', async (req, res) => {
                 throw new Error('Material Shipment ID is invalid');
               }
               if (materialShipment) {
-                if (searchObjectArray(response[date].paving.materials, materialShipment.shipmentType)) {
-                  response[date].paving.materials[searchObjectArray(response[date].paving.materials, materialShipment.shipmentType)].quantity += materialShipment.quantity;
-                } else {
-                  material = {
-                    shipmentType: materialShipment.shipmentType,
-                    quantity: materialShipment.quantity
+                if (vehicleArray[materialShipment.vehicle].rental == true) {
+                  if (searchObjectArray(response[date].paving.materials, `${materialShipment.shipmentType} - ${vehicleArray[materialShipment.vehicle].sourceCompany}`)) {
+                    response[date].paving.materials[searchObjectArray(response[date].paving.materials, `${materialShipment.shipmentType} - ${vehicleArray[materialShipment.vehicle].sourceCompany}`)].quantity += materialShipment.quantity;
+                  } else {
+                    material = {
+                      name: `${materialShipment.shipmentType} - ${vehicleArray[materialShipment.vehicle].sourceCompany}`,
+                      quantity: materialShipment.quantity
+                    }
+                    response[date].paving.materials.push(material);
                   }
-                  response[date].paving.materials.push(material);
+                } else {
+                  if (searchObjectArray(response[date].paving.materials, materialShipment.shipmentType)) {
+                    response[date].paving.materials[searchObjectArray(response[date].paving.materials, materialShipment.shipmentType)].quantity += materialShipment.quantity;
+                  } else {
+                    material = {
+                      name: materialShipment.shipmentType,
+                      quantity: materialShipment.quantity
+                    }
+                    response[date].paving.materials.push(material);
+                  }
+                }
+              }
+            }
+          }
+          // Paving Trucking
+          if (reports[r].materialShipment.length > 0) {
+            truckingToggle = false;
+            for (w = 0; w < work.length; w++) {
+              if (mongoose.Types.ObjectId.isValid(work[w])){
+                materialShipment = await MaterialShipment.findById({_id: work[w]});
+                if (materialShipment.startTime) {
+                  truckingToggle = true
+                }
+              }
+            }
+            if (truckingToggle == true) {
+              response[date].paving.trucking = [];
+              work = reports[r].materialShipment;
+              for (w = 0; w < work.length; w++) {
+                if (mongoose.Types.ObjectId.isValid(work[w])){
+                  materialShipment = await MaterialShipment.findById({_id: work[w]});
+                } else {
+                  throw new Error('Material Shipment ID is invalid');
+                }
+                if (materialShipment.startTime) {
+                  if (vehicleArray[materialShipment.vehicle].rental == true) {
+                    if (searchObjectArray(response[date].paving.trucking, vehicleArray[materialShipment.vehicle].vehicleType)) {
+                      response[date].paving.materials[searchObjectArray(response[date].paving.trucking, vehicleArray[materialShipment.vehicle].vehicleType)].quantity += Math.round(Math.abs(materialShipment.endTime - materialShipment.startTime) / 3.6e6 * 100) / 100;
+                    } else {
+                      material = {
+                        name: vehicleArray[materialShipment.vehicle].vehicleType,
+                        quantity: Math.round(Math.abs(materialShipment.endTime - materialShipment.startTime) / 3.6e6 * 100) / 100
+                      }
+                      response[date].paving.trucking.push(material);
+                    }
+                  } else {
+                    if (searchObjectArray(response[date].paving.trucking, `${vehicleArray[materialShipment.vehicle].vehicleType} ${BM}`)) {
+                      response[date].paving.materials[searchObjectArray(response[date].paving.trucking, `${vehicleArray[materialShipment.vehicle].vehicleType} ${BM}`)].quantity += Math.round(Math.abs(materialShipment.endTime - materialShipment.startTime) / 3.6e6 * 100) / 100;
+                    } else {
+                      material = {
+                        name: `${vehicleArray[materialShipment.vehicle].vehicleType} ${BM}`,
+                        quantity: Math.round(Math.abs(materialShipment.endTime - materialShipment.startTime) / 3.6e6 * 100) / 100
+                      }
+                      response[date].paving.trucking.push(material);
+                    }
+                  }
                 }
               }
             }
@@ -707,9 +844,15 @@ app.get('/api/jobsite/:code', async (req, res) => {
   }
 });
 
+// Get /api/employees
+app.get('/api/employees', async (req, res) => {
+
+});
+
 // GET /jobsite/:id
-app.get('/jobsite/:id', (req, res) => {
+app.get('/jobsite/:id', async (req, res) => {
   try {
+    await loggedIn(req);
     var reportArray = [];
     Jobsite.findById(req.params.id, async (err, jobsite) => {
       await DailyReport.find({jobsite}, (err, reports) => {
@@ -823,60 +966,72 @@ app.delete('/jobsite/:jobId/crew/:crewId', async (req, res) => {
 });
 
 // GET /employees
-app.get('/employees', (req, res) => {
-  var employeeArray = [];
-  var crewArray = [];
-  var userArray = [];
-  Employee.find({}, (err, employees) => {
-    if (err) {
-      console.log(err);
-      req.flash('error', err.message);
-      return;
-    }
-    employees.forEach((employee) => {
-      employeeArray[employee._id] = employee;
-    });
-    Crew.find({}, (err, crews) => {
+app.get('/employees', async (req, res) => {
+  try {
+    await loggedIn(req);
+    var employeeArray = [];
+    var crewArray = [];
+    var userArray = [];
+    Employee.find({}, (err, employees) => {
       if (err) {
         console.log(err);
         req.flash('error', err.message);
         return;
       }
-      crews.forEach((crew) => {
-        crewArray[crew._id] = crew;
+      employees.forEach((employee) => {
+        employeeArray[employee._id] = employee;
       });
-      User.find({}, (err, users) => {
+      Crew.find({}, (err, crews) => {
         if (err) {
           console.log(err);
           req.flash('error', err.message);
           return;
         }
-        users.forEach((user) => {
-          userArray[user._id] = user;
+        crews.forEach((crew) => {
+          crewArray[crew._id] = crew;
         });
-        res.render('employees/employeeIndex', {employeeArray, crewArray, userArray});
+        User.find({}, (err, users) => {
+          if (err) {
+            console.log(err);
+            req.flash('error', err.message);
+            return;
+          }
+          users.forEach((user) => {
+            userArray[user._id] = user;
+          });
+          res.render('employees/employeeIndex', {employeeArray, crewArray, userArray});
+        });
       });
     });
-  });
+  } catch (e) {
+    req.flash('error', e.message);
+    res.redirect('back');
+  }
 });
 
 // GET /employee/:id
-app.get('/employee/:id', (req, res) => {
-  Employee.findById(req.params.id, (err, employee) => {
-    crewArray = [];
-    Crew.find({
-      '_id': {$in: employee.crews}
-    }, (err, crews) => {
-      if (err) {
-        req.flash('error', err.message);
-        return console.log(err);
-      }
-      crews.forEach((crew) => {
-        crewArray[crew._id] = crew;
-      })
-      res.render('employees/employee', {employee, crewArray});
+app.get('/employee/:id', async (req, res) => {
+  try {
+    await loggedIn(req);
+    Employee.findById(req.params.id, (err, employee) => {
+      crewArray = [];
+      Crew.find({
+        '_id': {$in: employee.crews}
+      }, (err, crews) => {
+        if (err) {
+          req.flash('error', err.message);
+          return console.log(err);
+        }
+        crews.forEach((crew) => {
+          crewArray[crew._id] = crew;
+        })
+        res.render('employees/employee', {employee, crewArray});
+      });
     });
-  });
+  } catch (e) {
+    req.flash('error', e.message);
+    res.redirect('back');
+  } 
 });
 
 // POST /employee
@@ -967,6 +1122,7 @@ app.delete('/employee/:id', async (req, res) => {
 // GET /vehicles
 app.get('/vehicles', async (req, res) => {
   try {
+    await loggedIn(req);
     var vehicleArray = await Vehicle.getAll();
     res.render('vehicles/vehicleIndex', {vehicleArray});
   } catch (e) {
@@ -991,21 +1147,27 @@ app.post('/vehicle', async (req, res) => {
 
 // GET /vehicle/:id
 app.get('/vehicle/:id', async (req, res) => {
-  Vehicle.findById(req.params.id, (err, vehicle) => {
-    crewArray = [];
-    Crew.find({
-      '_id': {$in: vehicle.crews}
-    }, (err, crews) => {
-      if (err) {
-        req.flash('error', err.message);
-        return console.log(err);
-      }
-      crews.forEach((crew) => {
-        crewArray[crew._id] = crew;
-      })
-      res.render('vehicles/vehicle', {vehicle, crewArray});
+  try {
+    await loggedIn(req);
+    Vehicle.findById(req.params.id, (err, vehicle) => {
+      crewArray = [];
+      Crew.find({
+        '_id': {$in: vehicle.crews}
+      }, (err, crews) => {
+        if (err) {
+          req.flash('error', err.message);
+          return console.log(err);
+        }
+        crews.forEach((crew) => {
+          crewArray[crew._id] = crew;
+        })
+        res.render('vehicles/vehicle', {vehicle, crewArray});
+      });
     });
-  });
+  } catch(e) {
+    req.flash('error', e.message);
+    res.redirect('back');
+  }
 });
 
 // DELETE /vehicle/:id
@@ -1065,60 +1227,72 @@ app.post('/crew', async (req, res) => {
 });
 
 // GET /crews
-app.get('/crews', (req, res) => {
-  if (req.user.admin == true) {
-    Crew.find({}, (err, crews) => {
-      var crewMap = [];
-      crews.forEach((crew) => {
-        crewMap[crew._id] = crew;
-      });
-      Employee.find({}, (err, employees) => {
-        var employeeMap = [];
-        employees.forEach((employee) => {
-          employeeMap[employee._id] = employee;
+app.get('/crews', async (req, res) => {
+  try {
+    await loggedIn(req);
+    if (req.user.admin == true) {
+      Crew.find({}, (err, crews) => {
+        var crewMap = [];
+        crews.forEach((crew) => {
+          crewMap[crew._id] = crew;
         });
-        Jobsite.find({}, async (err, jobsites) => {
-          var jobArray = [];
-          if(err){return console.log(err);}
-          jobsites.forEach((jobsite) => {
-            jobArray[jobsite._id] = jobsite;
+        Employee.find({}, (err, employees) => {
+          var employeeMap = [];
+          employees.forEach((employee) => {
+            employeeMap[employee._id] = employee;
           });
-          try {
-            var vehicleArray = await Vehicle.getAll();
-            res.render('crews', {crewArray: crewMap, employeeArray: employeeMap, jobArray, vehicleArray});
-          } catch (e) {
-            console.log(e);
-            req.flash('error', e.message);
-            res.redirect('back');
-          }
+          Jobsite.find({}, async (err, jobsites) => {
+            var jobArray = [];
+            if(err){return console.log(err);}
+            jobsites.forEach((jobsite) => {
+              jobArray[jobsite._id] = jobsite;
+            });
+            try {
+              var vehicleArray = await Vehicle.getAll();
+              res.render('crews', {crewArray: crewMap, employeeArray: employeeMap, jobArray, vehicleArray});
+            } catch (e) {
+              console.log(e);
+              req.flash('error', e.message);
+              res.redirect('back');
+            }
+          });
         });
       });
-    });
-  } else {
-    req.flash('error', 'You are not authorized to view this page');
+    } else {
+      req.flash('error', 'You are not authorized to view this page');
+      res.redirect('back');
+    }
+  } catch (e) {
+    req.flash('error', e.message);
     res.redirect('back');
   }
 });
 
 // GET /crew/:id
-app.get('/crew/:id', (req, res) => {
-  Crew.findById(req.params.id, async (err, crew) => {
-    err && console.log(err);
-    try {
-      var jobArray = [];
-      var employeeArray = await Employee.getAll();
-      var vehicleArray = await Vehicle.getAll();
-      var jobs = await Jobsite.find({crews: crew._id});
-      for (var i in jobs) {
-        jobArray[jobs[i]._id] = jobs[i];
-      } 
-      res.render('crew', {crew, employeeArray, vehicleArray, jobArray});
-    } catch (e) {
-      console.log(e);
-      req.flash('error', e.message);
-      res.redirect('back');
-    }
-  });
+app.get('/crew/:id', async (req, res) => {
+  try {
+    await loggedIn(req);
+    Crew.findById(req.params.id, async (err, crew) => {
+      err && console.log(err);
+      try {
+        var jobArray = [];
+        var employeeArray = await Employee.getAll();
+        var vehicleArray = await Vehicle.getAll();
+        var jobs = await Jobsite.find({crews: crew._id});
+        for (var i in jobs) {
+          jobArray[jobs[i]._id] = jobs[i];
+        } 
+        res.render('crew', {crew, employeeArray, vehicleArray, jobArray});
+      } catch (e) {
+        console.log(e);
+        req.flash('error', e.message);
+        res.redirect('back');
+      }
+    });
+  } catch (e) {
+    req.flash('error', e.message);
+    res.redirect('back');
+  }
 });
 
 // DELETE /crew/:id
@@ -1263,6 +1437,7 @@ app.delete('/crew/:crewId/vehicle/:vehicleId', async (req, res) => {
 // GET /jobreport/:jobId/crew/:crewId/report?date=date
 app.get('/jobreport/:jobId/crew/:crewId/report?', async (req, res) => {
   try {
+    await loggedIn(req);
     const jobId = req.params.jobId;
     const crewId = req.params.crewId;
     if (!ObjectID.isValid(crewId) && !ObjectID.isValid(jobId)) {
@@ -1294,6 +1469,7 @@ app.get('/jobreport/:jobId/crew/:crewId/report?', async (req, res) => {
 // GET /reports
 app.get('/reports', async (req, res) => {
   try {
+    await loggedIn(req);
     var reportArray = await DailyReport.getAll();
     var crewArray = await Crew.getAll();
     var jobArray = await Jobsite.getAll();
@@ -1308,6 +1484,7 @@ app.get('/reports', async (req, res) => {
 // GET /report/:reportId
 app.get('/report/:reportId', async (req, res) => {
   try {
+    await loggedIn(req);
     const reportId = req.params.reportId;
     var report = await DailyReport.findById(reportId);
     var crew = await Crew.findById(report.crew);
@@ -1335,6 +1512,7 @@ app.get('/report/:reportId', async (req, res) => {
 // GET /report/:reportId/pdf
 app.get('/report/:reportId/pdf', async (req, res) => {
   try {
+    await loggedIn(req);
     const reportId = req.params.reportId;
     var report = await DailyReport.findById(reportId);
     var crew = await Crew.findById(report.crew);
@@ -1748,7 +1926,8 @@ app.post('/material', async (req, res) => {
         }
         vehicle = await new Vehicle({
           name: req.body.source.trim() + " Truck - " + req.body.sourceTruckCode.trim(),
-          vehicleType: "Dump Truck",
+          vehicleType: "Tandems",
+          vehicleCode: `Ren - ${req.body.sourceTruckCode.trim()}`,
           rental: true,
           sourceCompany: req.body.source.trim()
         });
@@ -1922,6 +2101,16 @@ function searchObjectArray(array, string) {
       return i;
     }
   }
+}
+
+async function loggedIn(req) {
+  return new Promise(async (resolve, reject) => {
+    if (req.user) {
+      resolve();
+    } else {
+      reject('You must be logged in');
+    }
+  });
 }
 
 app.listen(port, () => {
