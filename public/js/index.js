@@ -40,4 +40,20 @@ $(document).ready(function () {
       });
     }
   });
+  $('.report-form-dropdown').dropdown({
+    hover: false,
+    closeOnClick: false,
+    coverTrigger: false,
+    constrainWidth: false
+  });
+  $('.datepicker').datepicker({
+    container: '.container',
+    showClearBtn: true,
+    onOpen: function () {
+      $('.report-form-dropdown').dropdown('close');
+    },
+    onClose: function () {
+      $('.report-form-dropdown').dropdown('open');
+    }
+  });
 });

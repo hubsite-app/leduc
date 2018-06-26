@@ -111,6 +111,7 @@ app.get('/', async (req, res, next) => {
       }
       var crewArray = [];
       var jobArray = [];
+      var reportArray = await DailyReport.getAll();
       var crewArray = await Crew.find({employees: user.employee}, (err, crews) => {
         if(err) {return console.log(err);}
       });
@@ -119,7 +120,7 @@ app.get('/', async (req, res, next) => {
         await jobsites.forEach((jobsite) => {
           jobArray[jobsite._id] = jobsite;
         });
-        res.render('index', {jobArray, crewArray});
+        res.render('index', {jobArray, crewArray, reportArray});
       });
     } else {
       req.flash('info', 'You must be logged in to use this site');
@@ -854,9 +855,35 @@ app.get('/api/jobsite/:code', async (req, res) => {
   }
 });
 
-// Get /api/employees
-app.get('/api/employees', async (req, res) => {
-
+// Get /api/employeehours/:date
+app.get('/api/employeehours/:date', async (req, res) => {
+  try {
+    var employeeHourArray = [];
+    var employee;
+    var date = new Date(req.params.date);
+    console.log(date);
+    var employeeHours = await EmployeeWork.find({
+      startTime: {
+        $gte: new Date(date),
+        $lt: new Date(date.setDate(date.getDate() + 1))
+      }
+    });
+    if (employeeHours.length > 0) {
+      for (var i in employeeHours) {
+        employee = await Employee.findById(employeeHours[i].employee)
+        if (!employeeHourArray[employee.name]) {
+          employeeHourArray[employee.name] = Math.abs(employeeHours[i].endTime - employeeHours[i].startTime) / 3.6e6 * 100 / 100;
+        } else {
+          employeeHourArray[employee.name] += Math.abs(employeeHours[i].endTime - employeeHours[i].startTime) / 3.6e6 * 100 / 100;
+        }
+      }
+    }
+    console.log(employeeHourArray);
+    res.send(employeeHourArray);
+  } catch (e) {
+    console.log(e);
+    res.status(404).send(e.message);
+  }
 });
 
 // GET /jobsite/:id
@@ -1469,6 +1496,32 @@ app.get('/jobreport/:jobId/crew/:crewId/report?', async (req, res) => {
       await job.save();
       res.redirect(`/report/${report._id}`);
     }
+  } catch (e) {
+    console.log(e);
+    req.flash('error', e.message);
+    res.redirect('back');
+  }
+});
+
+// POST /report
+app.post('/report', async (req, res) => {
+  try {
+    const jobId = req.body.jobId;
+    const crewId = req.body.crewId;
+    if (!ObjectID.isValid(crewId) || !ObjectID.isValid(jobId)) {
+      throw new Error('Crew or Job ID is invalid');
+    }
+    var date = new Date(req.body.date);
+    var report = await new DailyReport({
+      date,
+      jobsite: jobId,
+      crew: crewId
+    });
+    await report.save();
+    var job = await Jobsite.findById(jobId);
+    job.dailyReports.push(report);
+    await job.save();
+    res.redirect(`/report/${report._id}`);
   } catch (e) {
     console.log(e);
     req.flash('error', e.message);
