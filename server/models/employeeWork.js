@@ -27,6 +27,24 @@ var EmployeeWorkSchema = new mongoose.Schema({
   }
 });
 
+EmployeeWorkSchema.statics.getAll = function() {
+  var EmployeeWork = this
+  var employeeWorkArray = [];
+  return EmployeeWork.find({}).then((works) => {
+    if (!works) {return Promise.reject();}
+    return new Promise(async (resolve, reject) => {
+      await works.forEach((work) => {
+        employeeWorkArray[work._id] = work;
+      });
+      if (Object.keys(employeeWorkArray).length > 0) {
+        resolve(employeeWorkArray);
+      } else {
+        reject('Error: Unable to create Employee array (check to ensure Employees have been created)');
+      }
+    });
+  });
+};
+
 var EmployeeWork = mongoose.model('EmployeeWork', EmployeeWorkSchema);
 
 module.exports = {EmployeeWork};

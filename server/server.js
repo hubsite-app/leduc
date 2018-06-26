@@ -2129,6 +2129,50 @@ app.post('/reportnote', async (req, res) => {
   }
 });
 
+// GET /hours
+app.get('/hours', async (req, res) => {
+  var hourArray = [];
+  var employeeHourArray = [];
+  var date, name;
+  var employeeArray = await Employee.getAll();
+  var workArray = await EmployeeWork.getAll();
+  var reportArray = await DailyReport.getAll();
+  var array = workArray.sort(function(a,b) {return (a.startTime < b.startTime) ? 1 : ((b.startTime < a.startTime) ? -1 : 0);})
+  var keys = array;
+  // Reverse associative array
+  for (var k in array) {
+    keys.unshift(k);
+  }
+  for (var c = keys.length, n = 0; n < c; n++) {
+    employeeHourArray[array[keys[n]]._id] = array[keys[n]];
+  }
+  for (var i in employeeHourArray) {
+    if (reportArray[employeeHourArray[i].dailyReport]) {
+      date = reportArray[employeeHourArray[i].dailyReport].date
+    } else {
+      await EmployeeWork.findByIdAndRemove(employeeHourArray[i]._id);
+      return;
+    }
+    date = await dateHandling(date);
+    name = employeeArray[employeeHourArray[i].employee].name;
+    if (!hourArray[date]) {
+      hourArray[date] = [];
+      hourArray[date][name] = {
+        hours: Math.round(Math.abs(employeeHourArray[i].endTime - employeeHourArray[i].startTime) / 3.6e6 * 100) / 100
+      }
+    } else {
+      if(hourArray[date].includes(name)) {
+        hourArray[date].hours += Math.round(Math.abs(employeeHourArray[i].endTime - employeeHourArray[i].startTime) / 3.6e6 * 100) / 100;
+      } else {
+        hourArray[date][name] = {
+          hours: Math.round(Math.abs(employeeHourArray[i].endTime - employeeHourArray[i].startTime) / 3.6e6 * 100) / 100
+        }
+      }
+    }
+  }
+  res.render('hours', {employeeArray, hourArray});
+});
+
 async function timeHandling(time, date) {
   try {
     var today = new Date(date);

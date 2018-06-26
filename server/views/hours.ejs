@@ -1,0 +1,31 @@
+<% include partials/head %>
+
+  <div class="container">
+    <h3>Hours</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <% for (var i in employeeArray) { %>
+            <th><%= employeeArray[i].name %></th>
+          <% } %>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (var i in hourArray) { %>
+          <tr>
+            <td><%= i %></td>
+            <% for (var e in employeeArray) { %>
+              <% if (hourArray[i][employeeArray[e].name]) { %>
+                <td><%= hourArray[i][employeeArray[e].name].hours %></td>
+              <% } else { %>
+                <td></td>
+              <% } %>
+            <% } %>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+<% include partials/foot %>
