@@ -962,14 +962,13 @@ app.post('/jobsite/:jobId/crew/:crewId', async (req, res) => {
     if (!ObjectID.isValid(crewId) && !ObjectID.isValid(jobId)) {
       return res.status(404).send();
     }
-    await Crew.findById(crewId, async (err, crew) => {
-      await Jobsite.findById(jobId, async (err, jobsite) => {
-        crew.jobsites.push(jobsite);
-        await crew.save();
-        jobsite.crews.push(crew);
-        await jobsite.save();
-      });
-    });
+    var crew = await Crew.findById(crewId);
+    var jobsite = await Jobsite.findById(jobId);
+    await crew.jobsites.push(jobsite);
+    await crew.save();
+    await jobsite.crews.push(crew);
+    await jobsite.save();
+    res.end()
   } catch (e) {
     console.log(e);
     req.flash('error', e.message);
@@ -1393,11 +1392,11 @@ app.post('/crew/:crewId/employee/:employeeId', async (req, res) => {
     if (!ObjectID.isValid(crewId) && !ObjectID.isValid(employeeId)) {
       return res.status(404).send();
     }
-    Crew.findById(crewId, (err, crew) => {
-      Employee.findById(employeeId, async (err, employee) => {
-        employee.crews.push(crew);
+    await Crew.findById(crewId, async (err, crew) => {
+      await Employee.findById(employeeId, async (err, employee) => {
+        await employee.crews.push(crew);
         await employee.save();
-        crew.employees.push(employee);
+        await crew.employees.push(employee);
         await crew.save();
         req.flash('success', `${employee.name} is the newest crew member, this should be interesting`);
         res.end();  
@@ -1423,9 +1422,9 @@ app.delete('/crew/:crewId/employee/:employeeId', async (req, res) => {
     req.flash('success', 'Employee has been removed from the crew, good riddance');
     res.end();
   } catch (e) {
-      console.log(e);
-      req.flash('error', e.message);
-      res.redirect('back');
+    console.log(e);
+    req.flash('error', e.message);
+    res.redirect('back');
   }
 });
 
@@ -1439,9 +1438,9 @@ app.post('/crew/:crewId/vehicle/:vehicleId', async (req, res) => {
     }
     var crew = await Crew.findById(crewId);
     var vehicle = await Vehicle.findById(vehicleId);
-    vehicle.crews.push(crew);
+    await vehicle.crews.push(crew);
     await vehicle.save();
-    crew.vehicles.push(vehicle);
+    await crew.vehicles.push(vehicle);
     await crew.save();
     req.flash('success', `Nice, ${crew.name} now get's to play with ${vehicle.name}`)
     res.end();

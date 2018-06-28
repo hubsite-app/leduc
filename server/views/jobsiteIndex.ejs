@@ -11,8 +11,9 @@
         <div class="card-panel hoverable" id="job-<%=id%>-container">
           <div id="job-<%=id%>-content">
             <a class="jobsite-delete secondary-content" onClick="if(confirm('Are you sure?')) {deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
-            <a class="crew-edit secondary-content" onClick="editRequest('<%= id %>', &quot;<%= jobArray[i].name %>&quot;, '<%= jobArray[i].description %>', '<%= jobArray[i].jobCode %>'); return false;" href=""><i class="material-icons">edit</i></a>
+            <a class="crew-edit secondary-content" onClick="editRequest('<%= id %>', &quot;<%= jobArray[i].name %>&quot;, '<%= jobArray[i].description %>', '<%= jobArray[i].jobcode %>'); return false;" href=""><i class="material-icons">edit</i></a>
             <h3 class='card-title'><a href="/jobsite/<%=id%>"><%= jobArray[i].name %></a></h3>
+            <span class="card-content"><%= jobArray[i].jobcode %></span>
             <p><%= jobArray[i].description %></p>
   
             <% if (jobArray[i].crews.length > 0) { %>
