@@ -2187,7 +2187,7 @@ async function timeHandling(time, date) {
     }
     var minute = parseInt(time.split(':')[1].split(' ')[0]);
     var time = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), hour, minute));
-    return time.setHours(time.getHours() + 6);
+    return time.setHours(time.getHours());
   } catch (err) {
     throw Error('Time info given was invalid');
   }

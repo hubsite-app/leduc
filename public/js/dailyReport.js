@@ -131,7 +131,9 @@ function loadVehicleForm() {
       "Blackfill and Landscape Rehab": null
     }
   });
-  $('.timepicker').timepicker();
+  $('.timepicker').timepicker({
+    container: '.container'
+  });
   $('select').formSelect({dropdownOptions: {
     constrainWidth: false
   }});
@@ -174,7 +176,9 @@ function loadVehicleEditForm(id, work, start, end, vehicleId) {
       "Blackfill and Landscape Rehab": null
     }
   });
-  $('.timepicker').timepicker();
+  $('.timepicker').timepicker({
+    container: '.container'
+  });
 };
 function removeVehicleEditForm(id, jobTitle, startTime, endTime, vehicleId) {
   var template = $('#vehicle-edit-form-button').html();
@@ -219,7 +223,9 @@ function loadProductionForm() {
       "Blackfill and Landscape Rehab": null
     }
   });
-  $('.timepicker').timepicker();
+  $('.timepicker').timepicker({
+    container: '.container'
+  });
   $('input.autocomplete-units').autocomplete({
     data: {
       "square meters": null,
@@ -269,7 +275,9 @@ function loadProductionEditForm(id, work, quantity, unit, start, end, descriptio
       "Blackfill and Landscape Rehab": null
     }
   });
-  $('.timepicker').timepicker();
+  $('.timepicker').timepicker({
+    container: '.container'
+  });
 };
 function removeProductionEditForm(id, work, quantity, unit, start, end, description) {
   var template = $('#production-edit-form-button').html();
@@ -307,7 +315,9 @@ function loadMaterialForm() {
       "tonnes": null
     }
   });
-  $('.timepicker').timepicker();
+  $('.timepicker').timepicker({
+    container: '.container'
+  });
   $('select').formSelect({dropdownOptions: {
     constrainWidth: false
   }});
@@ -338,7 +348,9 @@ function loadMaterialEditForm(id, shipment, quantity, unit, vehicleId) {
       "tonnes": null
     }
   });
-  $('.timepicker').timepicker();
+  $('.timepicker').timepicker({
+    container: '.container'
+  });
 };
 function removeMaterialEditForm(id, shipment, quantity, unit, vehicleId) {
   var template = $('#material-edit-form-button').html();
