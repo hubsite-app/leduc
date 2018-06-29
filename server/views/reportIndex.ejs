@@ -19,7 +19,14 @@
             <td><label><input type="checkbox" onClick="toggleApproval('<%=reportArray[i]._id%>')" id="report-<%= reportArray[i]._id %>-approval" 
               <% if (reportArray[i].approved == true) { %> checked="checked" <%}%> /><span></span></label>
             </td>
-            <td><a href="/report/<%= reportArray[i]._id %>"><%=jobArray[reportArray[i].jobsite].name%></a></td>
+            <td>
+              <% if (reportArray[i].employeeWork.length < 1 && reportArray[i].vehicleWork.length < 1 && reportArray[i].production.length < 1 && reportArray[i].materialShipment.length < 1) { %>
+                <i class="material-icons">radio_button_unchecked</i>
+              <% } else { %>
+                <i class="material-icons">radio_button_checked</i>
+              <% } %>
+              <a href="/report/<%= reportArray[i]._id %>"><%=jobArray[reportArray[i].jobsite].name%></a>
+            </td>
             <td><%= crewArray[reportArray[i].crew].name %></td>
             <% dateArray = reportArray[i].date.toString().split(' ') %>
             <td><%= dateArray[0] %>, <%= dateArray[1] %> <%= dateArray[2] %></td>

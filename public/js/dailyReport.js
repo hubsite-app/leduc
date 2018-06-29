@@ -34,7 +34,9 @@ function loadEmployeeForm() {
       "Blackfill and Landscape Rehab": null
     }
   });
-  $('.timepicker').timepicker();
+  $('.timepicker').timepicker({
+    container: '.container'
+  });
   $('select').formSelect({dropdownOptions: {
     constrainWidth: false
   }});
