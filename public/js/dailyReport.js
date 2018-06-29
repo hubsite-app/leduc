@@ -85,7 +85,9 @@ function loadEmployeeEditForm(id, work, start, end, employeeId) {
       "Blackfill and Landscape Rehab": null
     }
   });
-  $('.timepicker').timepicker();
+  $('.timepicker').timepicker({
+    container: '.container'
+  });
 };
 function removeEmployeeEditForm(id, jobTitle, startTime, endTime, employeeId) {
   var template = $('#employee-edit-form-button').html();
