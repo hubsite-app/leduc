@@ -70,17 +70,26 @@ function filterFormOn () {
   });
   $('#filter-toggle').attr("onclick", "filterFormOff()");
   $('#filter-job-select').on('change', function () {
-    var date = "", index;
-    if (window.location.href.includes('date')) {
+    var date = "";
+    if (($('#filter-date-select').val() != "") && (window.location.href.includes('date') && (window.location.href.includes('crew') || window.location.href.includes('jobs')) || $('#filter-job-select').val() != "")) {
       date = `&date=${encodeURIComponent($('#filter-date-select').val())}`
+    } else if (window.location.href.includes('date') && !window.location.href.includes('crew') && !window.location.href.includes('jobs')) {
+      alert('hi');
+      date = `?date=${encodeURIComponent($('#filter-date-select').val())}`
     }
     for (var i in $('#filter-job-select').val()) {
       if (i < 1) {
         if (history.pushState) {
-          var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname + 
-                       '?crew=' + window.location.search.substring(1).split('=')[1].split('&')[0] + 
-                       '&jobs[]=' + $('#filter-job-select').val()[i];
-          window.history.pushState({path: newURL}, '', newURL);
+          if (window.location.href.includes('crew')) {
+            var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname + 
+                         '?crew=' + window.location.search.substring(1).split('=')[1].split('&')[0] + 
+                         '&jobs[]=' + $('#filter-job-select').val()[i];
+            window.history.pushState({path: newURL}, '', newURL);
+          } else {
+            var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname +  
+                        '?jobs[]=' + $('#filter-job-select').val()[i];
+            window.history.pushState({path: newURL}, '', newURL);
+          }
         } 
       } else {
         window.history.pushState({}, '', window.location.href + '&jobs[]=' + $('#filter-job-select').val()[i]);
@@ -90,20 +99,33 @@ function filterFormOn () {
       window.history.pushState({}, '', window.location.href + date);
     }
     if ($('#filter-job-select').val().length < 1) {
-      var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname + 
-                   '?crew=' + window.location.search.substring(1).split('=')[1].split('&')[0] + date;
-      window.history.pushState({path: newURL}, '', newURL);
+      if (window.location.href.includes('crew')) {
+        var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname + 
+                     '?crew=' + window.location.search.substring(1).split('=')[1].split('&')[0] + date;
+        window.history.pushState({path: newURL}, '', newURL);
+      } else if (window.location.href.includes('date')) {
+        var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname + 
+                     `?date=${date.split('=')[1]}`;
+        window.history.pushState({path: newURL}, '', newURL);
+      } else {
+        var newURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.pushState({path: newURL}, '', newURL);
+      }
     }
     location.reload();
   });
   $('#filter-date-select').on('change', function () {
     if ($('#filter-date-select').val()) {
-      if (window.location.href.includes('date')) {
-        var newURL = window.location.href.split('date')[0].slice(0, -1) +
+      if (window.location.href.includes('date') && !window.location.href.includes('crew') && !window.location.href.includes('jobs')) {
+        var newURL = window.location.href.split('date')[0].slice(0, window.location.href.length) +
+                     `?date=${encodeURIComponent($('#filter-date-select').val())}`;
+        window.history.pushState({path: newURL}, '', newURL);
+      } else if (window.location.href.includes('date') && window.location.href.includes('crew') || window.location.href.includes('jobs')) {
+        var newURL = window.location.href.split('date')[0].slice(0, window.location.href.length) +
                      `&date=${encodeURIComponent($('#filter-date-select').val())}`;
         window.history.pushState({path: newURL}, '', newURL);
-      } else {
-        var newURL = window.location.href + `&date=${encodeURIComponent($('#filter-date-select').val())}`;
+      } else if (!window.location.href.includes('date') && !window.location.href.includes('crew') && !window.location.href.includes('jobs')) {
+        var newURL = window.location.href + `?date=${encodeURIComponent($('#filter-date-select').val())}`;
         window.history.pushState({path: newURL}, '', newURL);
       }
     } else {

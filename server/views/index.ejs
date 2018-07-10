@@ -99,7 +99,7 @@
           <% } %>
           <div class="row">   
             <div class="col s12">
-              <div class='btn-flat waves-effect waves-red right disabled' id="filter-toggle" onclick='filterFormOn()'><i class="material-icons right">sort</i>filter</div>   
+              <div class='btn-flat waves-effect waves-red right' id="filter-toggle" onclick='filterFormOn()'><i class="material-icons right">sort</i>filter</div>   
             </div>
             <div id="filter-form-container"></div>           
           </div>
@@ -168,15 +168,29 @@
       <div class="input-field row">
         <select multiple id="filter-job-select">
           <% for (var i in jobArray) { %>
-            <option value="<%= jobArray[i]._id %>"
-              <% if (locals.query.jobs != undefined) { %> 
-                <% if (locals.query.jobs.includes(jobArray[i]._id.toString())) { %> 
-                  selected 
-                <% } %>
-              <% } %> 
-            >
-              <%= jobArray[i].name %>
-            </option>
+            <% if (locals.query.crew) { %>
+              <% if (jobArray[i].crews.toString().includes(locals.query.crew)) { %>
+                <option value="<%= jobArray[i]._id %>"
+                  <% if (locals.query.jobs != undefined) { %> 
+                    <% if (locals.query.jobs.includes(jobArray[i]._id.toString())) { %> 
+                      selected 
+                    <% } %>
+                  <% } %> 
+                >
+                  <%= jobArray[i].name %>
+                </option>
+              <% } %>
+            <% } else { %>
+              <option value="<%= jobArray[i]._id %>"
+                <% if (locals.query.jobs != undefined) { %> 
+                  <% if (locals.query.jobs.includes(jobArray[i]._id.toString())) { %> 
+                    selected 
+                  <% } %>
+                <% } %> 
+              >
+                <%= jobArray[i].name %>
+              </option>
+            <% } %>
           <% } %>
         </select>
         <label>Select Job(s)</label>
