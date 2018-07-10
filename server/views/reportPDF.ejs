@@ -9,6 +9,10 @@
       {
         font-size: 1.5vw !important;
       }
+      td {
+        padding: 1em;
+        margin: 1em;
+      }
     </style>
   </head>
   <body>
@@ -31,7 +35,7 @@
           <u><h6>Employee Hours</h6></u>
           <table class="striped">
             <thead>
-              <tr>
+              <tr style="height: 0;">
                 <th>Employee</th>
                 <th>Job</th>
                 <th>Start Time</th>
@@ -40,6 +44,7 @@
               </tr>
             </thead>
             <tbody>
+              <% var totalEmployeeHours = 0 %>
               <% for (var i in employeeHourArray) { %>
                 <tr style="line-height: 0.1em;">
                   <td><% if (employeeArray[employeeHourArray[i].employee]){%><%= employeeArray[employeeHourArray[i].employee].name %><%}else{%>'Employee was removed'<%}%></td>
@@ -47,8 +52,15 @@
                   <td><%= employeeHourArray[i].startTime.getHours() %>:<%= employeeHourArray[i].startTime.getMinutes()<10?'0':''%><%= employeeHourArray[i].startTime.getMinutes() %></td>
                   <td><%= employeeHourArray[i].endTime.getHours() %>:<%= employeeHourArray[i].endTime.getMinutes()<10?'0':''%><%= employeeHourArray[i].endTime.getMinutes() %></td>
                   <td><%= Math.round(Math.abs(employeeHourArray[i].endTime - employeeHourArray[i].startTime) / 3.6e6 * 100) / 100 %></td>
+                  <% totalEmployeeHours += Math.round(Math.abs(employeeHourArray[i].endTime - employeeHourArray[i].startTime) / 3.6e6 * 100) / 100 %> 
                 </tr>
               <% } %> 
+                <tr>
+                  <td><b>Total</b></td><td></td><td></td><td></td>
+                  <td>
+                    <b><%= totalEmployeeHours %></b>
+                  </td>
+                </tr>
             </tbody>
           </table>
         <% } %>
@@ -68,6 +80,7 @@
               </tr>
             </thead>
             <tbody>
+              <% var totalVehicleHours = 0 %>
               <% for (var i in vehicleHourArray) { %>
                 <tr style="line-height: 0.1em;">
                   <td><% if (vehicleArray[vehicleHourArray[i].vehicle]){%><%= vehicleArray[vehicleHourArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%></td>
@@ -75,8 +88,15 @@
                   <td><%= vehicleHourArray[i].startTime.getHours() %>:<%= vehicleHourArray[i].startTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].startTime.getMinutes() %></td>
                   <td><%= vehicleHourArray[i].endTime.getHours() %>:<%= vehicleHourArray[i].endTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].endTime.getMinutes() %></td>
                   <td><%= Math.round(Math.abs(vehicleHourArray[i].endTime - vehicleHourArray[i].startTime) / 3.6e6 * 100) / 100 %></td>
+                  <% totalVehicleHours += Math.round(Math.abs(vehicleHourArray[i].endTime - vehicleHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
                 </tr>
-              <% } %> 
+              <% } %>
+              <tr>
+                <td><b>Total</b></td><td></td><td></td><td></td>
+                <td>
+                  <b><%= totalVehicleHours %></b>
+                </td>
+              </tr>
             </tbody>
           </table>
         <% } %>
@@ -125,14 +145,28 @@
               </tr>
             </thead>
             <tbody>
+              <% var totalMaterial = 0 %>
+              <% var totalMaterialHours = 0 %>
               <% for (var i in materialArray) { %>
                 <tr style="line-height: 0.1em;">
                   <td><%= materialArray[i].shipmentType.substring(0, 13) %></td>
                   <td><%= materialArray[i].quantity %> <%= materialArray[i].unit %></td>
+                  <% totalMaterial += materialArray[i].quantity %>
                   <td><% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%></td>
                   <td><%= Math.round(Math.abs(materialArray[i].endTime - materialArray[i].startTime) / 3.6e6 * 100) / 100 %></td>
+                  <% totalMaterialHours += Math.round(Math.abs(materialArray[i].endTime - materialArray[i].startTime) / 3.6e6 * 100) / 100 %>
                 </tr>
               <% } %> 
+              <tr>
+                <td><b>Total</b></td>
+                <td>
+                  <b><%= totalMaterial %></b>
+                </td>
+                <td></td>
+                <td>
+                  <b><%= totalMaterialHours %></b>
+                </td>
+              </tr>
             </tbody>
           </table>
         <% } %>
