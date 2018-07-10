@@ -5,59 +5,60 @@
     <div class="container">
 
       <div class="row">
-        <div class="col s8"><span class="flow-text">Choose a Job</span></div>
-        <% if(crewArray.length > 1) { %>
-          <div class="col s4">
-            <a class='crew-dropdown-toggle btn right' href='' data-target='crew-dropdown'>Select Crew</a>
-          </div>
-          <ul id="crew-dropdown" class="collection dropdown-content">
-            <% for (var i in crewArray) { %>
-              <li class="collection-item">
-                <label>
-                  <input class="with-gap crew-selection" type="radio" name="crew" value="<%=crewArray[i]._id%>" 
-                    <% if (crewArray[i]._id.equals(locals.query.crew)) { %>
-                      checked="true"
-                    <% } %> />
-                  <span><%= crewArray[i].name %></span>
-                </label>
-              </li>
-            <% } %>
-          </ul>
-        <% } else if (crewArray.length == 1) { %>
-          <div class="col s4">
-            <% for (var i in crewArray) { %>
-              <body onload="loadURL()"></body>
-              <input id="singleCrewSelection" name="crew" type="hidden" value="<%= crewArray[i]._id %>" />
-              <% if (locals.query.crew) { %>
-                <input id="crewIdCheck" value="<%= locals.query.crew %>" type="hidden" />
+        <% if (locals.user.admin != true && locals.user.projectManager != true) { %>
+          <div class="col s8"><span class="flow-text">Choose a Job</span></div>
+          <% if(crewArray.length > 1) { %>
+            <div class="col s4">
+              <a class='crew-dropdown-toggle btn right' href='' data-target='crew-dropdown'>Select Crew</a>
+            </div>
+            <ul id="crew-dropdown" class="collection dropdown-content">
+              <% for (var i in crewArray) { %>
+                <li class="collection-item">
+                  <label>
+                    <input class="with-gap crew-selection" type="radio" name="crew" value="<%=crewArray[i]._id%>" 
+                      <% if (crewArray[i]._id.equals(locals.query.crew)) { %>
+                        checked="true"
+                      <% } %> />
+                    <span><%= crewArray[i].name %></span>
+                  </label>
+                </li>
               <% } %>
-            <% } %>
-          </div>
-        <% } else { %>
-          <div class="row">
-              <h3>You must be added to a crew in order to pick a job</h3>
-          </div>
+            </ul>
+          <% } else if (crewArray.length == 1) { %>
+            <div class="col s4">
+              <% for (var i in crewArray) { %>
+                <body onload="loadURL()"></body>
+                <input id="singleCrewSelection" name="crew" type="hidden" value="<%= crewArray[i]._id %>" />
+                <% if (locals.query.crew) { %>
+                  <input id="crewIdCheck" value="<%= locals.query.crew %>" type="hidden" />
+                <% } %>
+              <% } %>
+            </div>
+          <% } else { %>
+            <div class="row">
+                <h3>You must be added to a crew in order to pick a job</h3>
+            </div>
+          <% } %>
+          <% if (jobArray) { %>
+            <div class="row">
+              <% for (var i in jobArray) { %>
+                <% if (jobArray[i].crews.toString().includes(locals.query.crew)) { %>
+                  <div class="col s12 m6">
+                    <a class="report-link" href="" id="<%=jobArray[i]._id%>">
+                      <div class="card" style="padding: 1em;">
+                        <span class="card-title"><%= jobArray[i].name %></span>
+                        <div class="card-content">
+                          <p><%= jobArray[i].description %></p>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                <% } %>
+              <% } %>
+           </div>
+          <% } %>
         <% } %>
       </div>
-
-      <% if (jobArray) { %>
-        <div class="row">
-          <% for (var i in jobArray) { %>
-            <% if (jobArray[i].crews.toString().includes(locals.query.crew)) { %>
-              <div class="col s12 m6">
-                <a class="report-link" href="" id="<%=jobArray[i]._id%>">
-                  <div class="card" style="padding: 1em;">
-                    <span class="card-title"><%= jobArray[i].name %></span>
-                    <div class="card-content">
-                      <p><%= jobArray[i].description %></p>
-                    </div>
-                  </div>
-                </a>
-              </div>
-            <% } %>
-          <% } %>
-       </div>
-      <% } %>
 
       <% if (reportArray) { %>
         <div class="row card-panel">
@@ -106,7 +107,7 @@
             <ul class="collection">
               <% var reportCount = 0 %>
               <% for (var i in reportArray) { %>
-                <% if (reportArray[i].crew == locals.query.crew) { %>
+                <% if (reportArray[i].crew == locals.query.crew || locals.user.admin == true || locals.user.projectManager == true) { %>
                   <% if (locals.query.jobs || locals.query.date) { %>
                     <!-- If filter for jobs and not date -->
                     <% if (locals.query.jobs && !locals.query.date) { %>
