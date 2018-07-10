@@ -2024,11 +2024,7 @@ app.post('/material', async (req, res) => {
           rental: true,
           sourceCompany: req.body.source.trim()
         });
-        var crew = await Crew.findById(report.crew);
-        vehicle.crews.push(crew);
         await vehicle.save();
-        crew.vehicles.push(vehicle);
-        await crew.save();
         material = await new MaterialShipment({
           startTime, endTime,
           shipmentType: req.body.shipmentType,
