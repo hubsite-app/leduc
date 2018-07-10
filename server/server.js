@@ -150,7 +150,7 @@ app.post('/login', function(req, res, next) {
       res.redirect('back');
     };
     if (!user) {
-      req.flash('error', 'User was not authenticated')
+      req.flash('error', 'Email or password was incorrect');
       res.redirect('/login');
       return;
     }
@@ -388,7 +388,7 @@ app.delete('/user/:id', async (req, res) => {
 app.post('/user/:id/update', async (req, res) => {
   try {
     var id = req.params.id;
-    var body = _.pick(req.body, ['name', 'admin']);
+    var body = _.pick(req.body, ['name', 'admin', 'projectManager']);
     if (!ObjectID.isValid(id)) {
       req.flash('error', 'ID used in the request was wrong, that\'s odd');
       res.redirect('back');
@@ -1266,7 +1266,7 @@ app.post('/crew', async (req, res) => {
 app.get('/crews', async (req, res) => {
   try {
     await loggedIn(req);
-    if (req.user.admin == true) {
+    if (req.user.admin == true || req.user.projectManager == true) {
       Crew.find({}, (err, crews) => {
         var crewMap = [];
         crews.forEach((crew) => {
@@ -1528,6 +1528,36 @@ app.post('/report', async (req, res) => {
   }
 });
 
+// POST /report/:id/update
+app.post('/report/:id/update', async (req, res) => {
+  try {
+    if (!ObjectID.isValid(req.params.id)) {
+      throw new Error('Report ID is invalid');
+    }
+    var report = await DailyReport.findById(req.params.id);
+    if (report.jobsite.equals(req.body.jobId)) {
+      console.log('Jobs were unchanged');
+      await DailyReport.findByIdAndUpdate(req.params.id, {$set: {
+        date: req.body.date
+      }}, {new: true});
+    } else {
+      console.log(('New job requested'));
+      await Jobsite.findByIdAndUpdate(report.jobsite, {$pull: {dailyReport: report._id}}, {new :true});
+      report = await DailyReport.findByIdAndUpdate(req.params.id, {$set: {
+        date: req.body.date,
+        jobsite: req.body.jobId
+      }}, {new: true});
+      await Jobsite.findByIdAndUpdate(report.jobsite, {$push: {dailyReport: report._id}}, {new :true});
+    }
+    req.flash('success', 'Report successfully updated');
+    res.redirect('back');
+  } catch (e) {
+    console.log(e);
+    req.flash('error', e.message);
+    res.redirect('back');
+  }
+});
+
 // GET /reports
 app.get('/reports', async (req, res) => {
   try {
@@ -1558,8 +1588,9 @@ app.get('/report/:reportId', async (req, res) => {
     var productionArray = await Production.find({dailyReport: report});
     var materialArray = await MaterialShipment.find({dailyReport: report});
     var reportNote = await ReportNote.find({dailyReport: report});
-    if (crew.employees.some((employee) => employee.equals(req.user.employee)) || req.user.admin == true) {
-      res.render('dailyReport', {report, crew, job, employeeArray, employeeHourArray, vehicleArray, vehicleHourArray, productionArray, materialArray, reportNote: reportNote[0]});
+    var jobArray = await Jobsite.getAll();
+    if (crew.employees.some((employee) => employee.equals(req.user.employee)) || req.user.admin == true || req.user.projectManager == true) {
+      res.render('dailyReport', {report, crew, job, employeeArray, employeeHourArray, vehicleArray, vehicleHourArray, productionArray, materialArray, reportNote: reportNote[0], jobArray});
     } else {
       req.flash('error', 'You are not authorized to view this page');
       res.redirect('back');
@@ -1745,7 +1776,7 @@ app.delete('/employeework/:id', async (req, res) => {
   try {
     var id = req.params.id;
     var employeeWork = await EmployeeWork.findByIdAndRemove({_id: id});
-    var report = await DailyReport.findByIdAndUpdate(employeeWork.dailyReport, {$pull: {employeeWork: employeeWork._id}}, (err) => err && console.log(err));
+    var report = await DailyReport.findByIdAndUpdate(employeeWork.dailyReport, {$pull: {employeeWork: employeeWork._id}});
     req.flash('success', 'Employee work has been successfully deleted!');
     res.end();
   } catch (e) {

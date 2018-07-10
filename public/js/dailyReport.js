@@ -8,6 +8,14 @@ $('document').ready(function() {
   });
 });
 
+function loadEditForm() {
+  var template = $('#report-edit-form-template').html();
+  $('#edit-form-div').append(template);
+  $('#edit-button').remove();
+  $('.datepicker').datepicker();
+  $('select').formSelect();
+}
+
 function loadEmployeeForm() {
   var template = $('#employee-work-form-template').html();
   $("#employee-work-form-div").append(template);

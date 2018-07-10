@@ -41,4 +41,6 @@ function loadForm() {
   var template = $('#jobsite-form-template').html();
   $("#jobsite-form-div").append(template);
   $('#add-jobsite').remove();
+  $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+  return false;
 };

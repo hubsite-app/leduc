@@ -18,7 +18,7 @@
       <% if (!locals.user) {%>
         <li><a href="/login">Login</a></li>
         <li><a href="/signup">Signup</a></li>
-      <% } else if (locals.user.admin) { %>
+      <% } else if (locals.user.admin || locals.user.projectManager) { %>
         <li><a href="/reports">Reports</a></li>
         <li><a href="/hours">Hours</a></li>
         <li><a href="/jobsites">Jobsites</a></li>

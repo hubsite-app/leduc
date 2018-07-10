@@ -51,7 +51,9 @@
       <input id="confirm" type="password" />
       <label for="confirm">Confirm Password</label>
     </div>
-    <div id="submit-button-div"></div>
+    <button id="submit-button" class="btn waves-effect waves-light right disabled" type="submit" name="action">Submit
+      <i class="material-icons right">send</i>
+    </button>
   </form>
   <div class="tooltip">Help
     <span class="tooltiptext">If a submit button doesn't appear once you've entered matching passwords, you likely will need to upgrade your browser to use this site. I personally recommend Google Chrome, Firefox, Safari, or Microsoft Edge</span>
@@ -59,9 +61,3 @@
 </div>
 
 <% include ../partials/foot %>
-
-<script id="submit-button-template" type="text/template">
-  <button id="submit-button" class="btn waves-effect waves-light right" type="submit" name="action">Submit
-    <i class="material-icons right">send</i>
-  </button>
-</script>

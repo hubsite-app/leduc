@@ -15,4 +15,6 @@ function loadForm() {
   var template = $('#employee-form-template').html();
   $("#employee-form-div").append(template);
   $('#add-employee').remove();
+  $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+  return false;
 };

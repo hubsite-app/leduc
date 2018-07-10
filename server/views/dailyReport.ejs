@@ -3,7 +3,6 @@
   <script src="/js/libs/mustache.js"></script>
 
   <div class="container">
-
     <h2><a href="/jobsite/<%= job._id %>"><%= job.name %></a></h2>
     <h5><%= crew.name %><a href="/crew/<%= crew._id %>">    <i class="tiny material-icons">edit</i></a></h5>
     <% if (locals.user.admin == true) { %>
@@ -12,7 +11,11 @@
           <% if (report.approved == true) { %> checked="checked" <%}%> />
         <span>Approved</span>
       </label></br>
-      <a href="/report/<%=report._id%>/pdf">Report</a>
+      <a href="/report/<%=report._id%>/pdf">Report</a></br>
+    <% } %>
+    <% if (!locals.user.projectManager == true) { %>
+      <a href="" id="edit-button" onclick="loadEditForm(); return false;">Edit <i class="tiny material-icons">edit</i></a></br>
+      <div id="edit-form-div"></div>
     <% } %>
     <h6><%= report.date.toDateString(); %></h6>
 
@@ -24,16 +27,20 @@
             <% for (var i in employeeHourArray) { %>
               <% var hour = Math.round(Math.abs(employeeHourArray[i].endTime - employeeHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
               <li class="collection-item">
-                <div id="employee-work-<%=employeeHourArray[i]._id%>-div">
-                  <a class="employee-work-edit secondary-content" id="employee-work-<%=employeeHourArray[i]._id%>-edit-button"
-                    onClick="loadEmployeeEditForm('<%= employeeHourArray[i]._id %>', '<%= employeeHourArray[i].jobTitle %>', '<%= employeeHourArray[i].startTime %>', '<%= employeeHourArray[i].endTime %>', '<%=employeeHourArray[i].employee%>'); return false;" href="">
-                    <i class="material-icons">edit</i>
-                  </a>
-                </div>
-                <a class="employee-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteEmployeeWorkRequest('<%= employeeHourArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
+
+                  <% if (locals.user.projectManager != true) { %>
+                    <div id="employee-work-<%=employeeHourArray[i]._id%>-div">
+                      <a class="employee-work-edit secondary-content" id="employee-work-<%=employeeHourArray[i]._id%>-edit-button"
+                        onClick="loadEmployeeEditForm('<%= employeeHourArray[i]._id %>', '<%= employeeHourArray[i].jobTitle %>', '<%= employeeHourArray[i].startTime %>', '<%= employeeHourArray[i].endTime %>', '<%=employeeHourArray[i].employee%>'); return false;" href="">
+                        <i class="material-icons">edit</i>
+                      </a>
+                    </div>
+                    <a class="employee-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteEmployeeWorkRequest('<%= employeeHourArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
+                  <% } %>
+                
                 <b><%= employeeHourArray[i].jobTitle %></b> - <% if (employeeArray[employeeHourArray[i].employee]){%><%= employeeArray[employeeHourArray[i].employee].name %><%}else{%>'Employee was removed'<%}%></br>
                 <%= employeeHourArray[i].startTime.getHours() %>:<%= employeeHourArray[i].startTime.getMinutes()<10?'0':''%><%= employeeHourArray[i].startTime.getMinutes() %> - 
-                   <%= employeeHourArray[i].endTime.getHours() %>:<%= employeeHourArray[i].endTime.getMinutes()<10?'0':''%><%= employeeHourArray[i].endTime.getMinutes() %>
+                  <%= employeeHourArray[i].endTime.getHours() %>:<%= employeeHourArray[i].endTime.getMinutes()<10?'0':''%><%= employeeHourArray[i].endTime.getMinutes() %>
                 <span>(<%= hour %></span>
                   <% if (hour <= 1) { %> hour<% } else { %> hours<% } %>)
                 <div id="employee-<%=employeeHourArray[i]._id%>-work-edit-form-div"></div>
@@ -41,14 +48,16 @@
             <% } %>
           </ul>
         <% } %>
-        <div id="employee-work-form-div"></div>
-        <div id="employee-work-button-div">
-          <div id="add-employee-work">
-            <button class="btn waves-effect waves-light right" id="crew-form" onClick="loadEmployeeForm()">Add Employee Work
-              <i class="material-icons right">add</i>
-            </button>
+        <% if (locals.user.projectManager != true) { %> 
+          <div id="employee-work-form-div"></div>
+          <div id="employee-work-button-div">
+            <div id="add-employee-work">
+              <button class="btn waves-effect waves-light right" id="crew-form" onClick="loadEmployeeForm()">Add Employee Work
+                <i class="material-icons right">add</i>
+              </button>
+            </div>
           </div>
-        </div>
+        <% } %>
       </div>
     <% } %>
 
@@ -60,13 +69,17 @@
             <% for (var i in vehicleHourArray) { %>
               <% var hour = Math.round(Math.abs(vehicleHourArray[i].endTime - vehicleHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
               <li class="collection-item">
-                <div id="vehicle-work-<%=vehicleHourArray[i]._id%>-div">
-                  <a class="vehicle-work-edit secondary-content" id="vehicle-work-<%=vehicleHourArray[i]._id%>-edit-button"
-                    onClick="loadVehicleEditForm('<%= vehicleHourArray[i]._id %>', '<%= vehicleHourArray[i].jobTitle %>', '<%= vehicleHourArray[i].startTime %>', '<%= vehicleHourArray[i].endTime %>', '<%=vehicleHourArray[i].vehicle%>'); return false;" href="">
-                    <i class="material-icons">edit</i>
-                  </a>
-                </div>
-                <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteVehicleWorkRequest('<%= vehicleHourArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
+                
+                <% if (locals.user.projectManager != true) { %>
+                  <div id="vehicle-work-<%=vehicleHourArray[i]._id%>-div">
+                    <a class="vehicle-work-edit secondary-content" id="vehicle-work-<%=vehicleHourArray[i]._id%>-edit-button"
+                      onClick="loadVehicleEditForm('<%= vehicleHourArray[i]._id %>', '<%= vehicleHourArray[i].jobTitle %>', '<%= vehicleHourArray[i].startTime %>', '<%= vehicleHourArray[i].endTime %>', '<%=vehicleHourArray[i].vehicle%>'); return false;" href="">
+                      <i class="material-icons">edit</i>
+                    </a>
+                  </div>
+                  <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteVehicleWorkRequest('<%= vehicleHourArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
+                <% } %>
+
                 <b><%= vehicleHourArray[i].jobTitle %></b> - <% if (vehicleArray[vehicleHourArray[i].vehicle]){%><%= vehicleArray[vehicleHourArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%></br>
                 <%= vehicleHourArray[i].startTime.getHours() %>:<%= vehicleHourArray[i].startTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].startTime.getMinutes() %> - 
                   <%= vehicleHourArray[i].endTime.getHours() %>:<%= vehicleHourArray[i].endTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].endTime.getMinutes() %>
@@ -77,14 +90,16 @@
             <% } %>
           </ul>
         <% } %>
-        <div id="vehicle-work-form-div"></div>
-        <div id="vehicle-work-button-div">
-          <div id="add-vehicle-work">
-            <button class="btn waves-effect waves-light right" id="crew-form" onClick="loadVehicleForm()">Add Vehicle Work
-              <i class="material-icons right">add</i>
-            </button>
+        <% if (locals.user.projectManager != true) { %> 
+          <div id="vehicle-work-form-div"></div>
+          <div id="vehicle-work-button-div">
+            <div id="add-vehicle-work">
+              <button class="btn waves-effect waves-light right" id="crew-form" onClick="loadVehicleForm()">Add Vehicle Work
+                <i class="material-icons right">add</i>
+              </button>
+            </div>
           </div>
-        </div>
+        <% } %>
       </div>
     <% } %>
 
@@ -95,31 +110,38 @@
           <% for (var i in productionArray) { %>
             <% var hour = Math.round(Math.abs(productionArray[i].endTime - productionArray[i].startTime) / 3.6e6 * 100) / 100 %>
             <li class="collection-item">
-              <div id="production-edit-<%=productionArray[i]._id%>-div">
-                <a class="production-edit secondary-content" id="production-<%=productionArray[i]._id%>-edit-button"
-                  onClick="loadProductionEditForm('<%= productionArray[i]._id %>', '<%= productionArray[i].jobTitle %>', '<%= productionArray[i].quantity %>', '<%= productionArray[i].unit %>', '<%= productionArray[i].startTime %>', '<%= productionArray[i].endTime %>', '<%=productionArray[i].description%>'); return false;" href="">
+
+              <% if (locals.user.projectManager != true) { %>
+                <div id="production-edit-<%=productionArray[i]._id%>-div">
+                  <a class="production-edit secondary-content" id="production-<%=productionArray[i]._id%>-edit-button"
+                    onClick="loadProductionEditForm('<%= productionArray[i]._id %>', '<%= productionArray[i].jobTitle %>', '<%= productionArray[i].quantity %>', '<%= productionArray[i].unit %>', '<%= productionArray[i].startTime %>', '<%= productionArray[i].endTime %>', '<%=productionArray[i].description%>'); return false;" href="">
                   <i class="material-icons">edit</i>
-                </a>
-              </div>
-              <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteProductionRequest('<%= productionArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
+                  </a>
+                </div>
+                <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteProductionRequest('<%= productionArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
+              <% } %>
+              
               <b><%= productionArray[i].jobTitle %></b> - <%= productionArray[i].quantity %> <%= productionArray[i].unit %></br>
               <%= productionArray[i].startTime.getHours() %>:<%= productionArray[i].startTime.getMinutes()<10?'0':''%><%= productionArray[i].startTime.getMinutes() %> - 
                 <%= productionArray[i].endTime.getHours() %>:<%= productionArray[i].endTime.getMinutes()<10?'0':''%><%= productionArray[i].endTime.getMinutes() %>
               <span>(<%= hour %></span>
                 <% if (hour <= 1) { %> hour)<% } else { %> hours)<% } %>
               <div id="production-<%=productionArray[i]._id%>-edit-form-div"></div>
+              
             </li>
           <% } %>
         </ul>
       <% } %>
-      <div id="production-form-div"></div>
-      <div id="production-button-div">
-        <div id="add-production">
-          <button class="btn waves-effect waves-light right" id="production-form" onClick="loadProductionForm()">Add Production
-            <i class="material-icons right">add</i>
-          </button>
+      <% if (locals.user.projectManager != true) { %>
+        <div id="production-form-div"></div>
+        <div id="production-button-div">
+          <div id="add-production">
+            <button class="btn waves-effect waves-light right" id="production-form" onClick="loadProductionForm()">Add Production
+              <i class="material-icons right">add</i>
+            </button>
+          </div>
         </div>
-      </div>
+      <% } %>
     </div>
 
     <div class="card-panel" style="padding-bottom: 3em;">
@@ -128,13 +150,18 @@
         <ul class="collection">
           <% for (var i in materialArray) { %>
             <li class="collection-item">
-              <div id="material-edit-<%=materialArray[i]._id%>-div">
-                <a class="material-edit secondary-content" id="material-<%=materialArray[i]._id%>-edit-button"
-                  onClick="loadMaterialEditForm('<%= materialArray[i]._id %>', '<%= materialArray[i].shipmentType %>', '<%= materialArray[i].quantity %>', '<%= materialArray[i].unit %>', '<%= materialArray[i].vehicle %>'); return false;" href="">
-                  <i class="material-icons">edit</i>
-                </a>
-              </div>
-              <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteMaterialRequest('<%= materialArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
+              
+              <% if (locals.user.projectManager != true) { %>
+                <div id="material-edit-<%=materialArray[i]._id%>-div">
+                  <a class="material-edit secondary-content" id="material-<%=materialArray[i]._id%>-edit-button"
+                    onClick="loadMaterialEditForm('<%= materialArray[i]._id %>', '<%= materialArray[i].shipmentType %>', '<%= materialArray[i].quantity %>', '<%= materialArray[i].unit %>', '<%= materialArray[i].vehicle %>'); return false;" href="">
+                    <i class="material-icons">edit</i>
+                  </a>
+                </div>
+                <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteMaterialRequest('<%= materialArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
+              <% } %>
+              
+              
               <b><%= materialArray[i].shipmentType %></b> - <%= materialArray[i].quantity %> <%= materialArray[i].unit %></br>
               <% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%>
               <div id="material-<%=materialArray[i]._id%>-edit-form-div"></div>
@@ -142,14 +169,16 @@
           <% } %>
         </ul>
       <% } %>
-      <div id="material-form-div"></div>
-      <div id="material-button-div">
-        <div id="add-material">
-          <button class="btn waves-effect waves-light right" id="material-form" onClick="loadMaterialForm()">Add Shipment
-            <i class="material-icons right">add</i>
-          </button>
+      <% if (locals.user.projectManager != true) { %>
+        <div id="material-form-div"></div>
+        <div id="material-button-div">
+          <div id="add-material">
+            <button class="btn waves-effect waves-light right" id="material-form" onClick="loadMaterialForm()">Add Shipment
+              <i class="material-icons right">add</i>
+            </button>
+          </div>
         </div>
-      </div>
+      <% } %>
     </div>
 
     <div class="card-panel" style="padding-bottom: 4em;">
@@ -159,15 +188,41 @@
           <label for="reportnote">General Notes</label>
         </div>
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
-        <button class="btn waves-effect waves-light right" type="submit" name="action">Submit Notes
-          <i class="material-icons right">send</i>
-        </button>
+        <% if (locals.user.projectManager != true) { %>
+          <button class="btn waves-effect waves-light right" type="submit" name="action">Submit Notes
+            <i class="material-icons right">send</i>
+          </button>
+        <% } %>
       </form>
     </div>
     
   </div>
 
 <% include partials/foot %>
+
+<script id='report-edit-form-template' type="text/template">
+  <div class="row card-panel report-edit-form-content">
+    <form method="post" action="/report/<%= report._id %>/update">
+      <div class="input-field">
+        <select name="jobId">
+          <% for (var i in jobArray) { %>
+            <option value="<%= jobArray[i]._id %>" <% if (report.jobsite.equals(jobArray[i]._id)) { %> selected <% } %>>
+              <%= jobArray[i].name %>
+            </option>
+          <% } %>
+        </select>
+        <label>Job</label>
+      </div>
+      <div class="input-field">
+        <input name="date" id="report-date" type="text" class="datepicker" autocomplete="off" value="<%= report.date %>"/>
+        <label for="employee-start-time">Date</label>
+      </div>
+      <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+        <i class="material-icons right">send</i>
+      </button>
+    </form>
+  </div>
+</script>
 
 <script id='employee-work-form-template' type="text/template">
   <div id="employee-work-form">

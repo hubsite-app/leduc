@@ -18,6 +18,11 @@
                 <input id="user-admin-toggle" onclick="adminToggle('<%= array[result]._id %>', this)" type="checkbox" class="validate" name="admin" 
                   <% if (array[result].admin == true) { %> checked="checked" <%}%> />
                 <span>Admin</span>
+              </label></br>
+              <label>
+                <input id="user-pm-toggle" onclick="pmToggle('<%= array[result]._id %>', this)" type="checkbox" class="validate" name="projectManager" 
+                  <% if (array[result].projectManager == true) { %> checked="checked" <%}%> />
+                <span>Project Manager</span>
               </label>
             <% } %>
           </div>
@@ -48,6 +53,18 @@
       type: 'POST',
       url: `/user/${id}/update`,
       data: JSON.stringify({admin: cb.checked}),
+      success: function() {
+        location.reload();
+      }
+    });
+  }
+  function pmToggle(id, cb) {
+    $.ajax({
+      contentType: 'application/json',
+      dataType: 'json',
+      type: 'POST',
+      url: `/user/${id}/update`,
+      data: JSON.stringify({projectManager: cb.checked}),
       success: function() {
         location.reload();
       }

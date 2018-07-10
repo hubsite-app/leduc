@@ -88,6 +88,8 @@ function loadForm() {
       "Concrete": null
     }
   });
+  $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+  return false;
 };
 function loadEmployeeForm() {
   var template = $('#employee-form-template').html();

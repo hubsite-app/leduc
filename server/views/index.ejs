@@ -46,7 +46,7 @@
             <% if (jobArray[i].crews.toString().includes(locals.query.crew)) { %>
               <div class="col s12 m6">
                 <a class="report-link" href="" id="<%=jobArray[i]._id%>">
-                  <div class="card" style"padding: 2em;">
+                  <div class="card" style="padding: 1em;">
                     <span class="card-title"><%= jobArray[i].name %></span>
                     <div class="card-content">
                       <p><%= jobArray[i].description %></p>
@@ -58,8 +58,6 @@
           <% } %>
        </div>
       <% } %>
-
-
 
       <% if (reportArray) { %>
         <div class="row card-panel">
@@ -95,17 +93,65 @@
               </div>
             </div>
           </div>
+          <% if (locals.query.jobs || locals.query.date) { %>
+            <body onload="filterFormOn()"></body>
+          <% } %>
+          <div class="row">   
+            <div class="col s12">
+              <div class='btn-flat waves-effect waves-red right' id="filter-toggle" onclick='filterFormOn()'><i class="material-icons right">sort</i>filter</div>   
+            </div>
+            <div id="filter-form-container"></div>           
+          </div>
           <div style="overflow: scroll; height: 50%;">
             <ul class="collection">
+              <% var reportCount = 0 %>
               <% for (var i in reportArray) { %>
                 <% if (reportArray[i].crew == locals.query.crew) { %>
-                  <li class="collection-item">
-                    <b><a href="/report/<%= reportArray[i]._id %>"><%= jobArray[reportArray[i].jobsite].name %></a></b> - 
-                    <%= reportArray[i].date.toDateString(); %>
-                  </li>
+                  <% if (locals.query.jobs || locals.query.date) { %>
+                    <!-- If filter for jobs and not date -->
+                    <% if (locals.query.jobs && !locals.query.date) { %>
+                      <% if (locals.query.jobs.includes(reportArray[i].jobsite.toString())) { %>
+                        <li class="collection-item">
+                          <b><a href="/report/<%= reportArray[i]._id %>"><%= jobArray[reportArray[i].jobsite].name %></a></b> - 
+                          <%= reportArray[i].date.toDateString(); %>
+                        </li>
+                        <% reportCount++ %>
+                      <% } %>
+                    <% } %>
+                    <!-- If filter for date and not jobs -->
+                    <% if (!locals.query.jobs && locals.query.date) { %>
+                      <% if (new Date(reportArray[i].date).setHours(0,0,0,0) == new Date(locals.query.date).setHours(0,0,0,0)) { %>
+                        <li class="collection-item">
+                          <b><a href="/report/<%= reportArray[i]._id %>"><%= jobArray[reportArray[i].jobsite].name %></a></b> - 
+                          <%= reportArray[i].date.toDateString(); %>
+                        </li>
+                        <% reportCount++ %>
+                      <% } %>
+                    <% } %>
+
+                    <!-- If filter for both jobs and date -->
+                    <% if (locals.query.jobs && locals.query.date) { %>
+                      <% if (new Date(reportArray[i].date).setHours(0,0,0,0) == new Date(locals.query.date).setHours(0,0,0,0) && locals.query.jobs.includes(reportArray[i].jobsite.toString())) { %>
+                        <li class="collection-item">
+                          <b><a href="/report/<%= reportArray[i]._id %>"><%= jobArray[reportArray[i].jobsite].name %></a></b> - 
+                          <%= reportArray[i].date.toDateString(); %>
+                        </li>
+                        <% reportCount++ %>
+                      <% } %>
+                    <% } %>
+                    
+                  <% } else { %>
+                    <!-- No filter -->
+                    <li class="collection-item">
+                      <b><a href="/report/<%= reportArray[i]._id %>"><%= jobArray[reportArray[i].jobsite].name %></a></b> - 
+                      <%= reportArray[i].date.toDateString(); %>
+                    </li>
+                    <% reportCount++ %>
+                  <% } %>
                 <% } %>
               <% } %>
             </ul>
+            <% if (reportCount == 0) { %> <h4 class="center-align">No Reports were found</h4> <% } %>
           </div>
         </div>
       <% } %>
@@ -114,4 +160,40 @@
 
   <% include partials/foot %>
 </div>
+
+<script id='filter-form-template' type="text/template">
+  <div id="filter-form">
+    <div class="col s12 m5 l5">
+      <div class="input-field row">
+        <select multiple id="filter-job-select">
+          <% for (var i in jobArray) { %>
+            <option value="<%= jobArray[i]._id %>"
+              <% if (locals.query.jobs != undefined) { %> 
+                <% if (locals.query.jobs.includes(jobArray[i]._id.toString())) { %> 
+                  selected 
+                <% } %>
+              <% } %> 
+            >
+              <%= jobArray[i].name %>
+            </option>
+          <% } %>
+        </select>
+        <label>Select Job(s)</label>
+      </div>  
+    </div>
+    <div class="col s12 m2 l2">
+      <p class="center-align">and / or</p>
+    </div>
+    <div class="col s12 m5 l5">
+      <div class="input-field">
+        <input id="filter-date-select" type="text" name="date" class="filterdatepicker"
+          <% if (locals.query.date) { %>
+            value="<%= decodeURIComponent(locals.query.date) %>"
+          <% } %>
+        />
+        <label id="filter-date-select-label" for="date">Date</label>
+      </div>
+    </div>
+  </div>
+</script>
 

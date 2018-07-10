@@ -35,6 +35,9 @@ var UserSchema = new mongoose.Schema({
     required: true,
     default: false
   },
+  projectManager: {
+    type: Boolean
+  },
   employee: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Employee',

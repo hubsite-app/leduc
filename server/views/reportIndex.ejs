@@ -5,7 +5,9 @@
 
       <thead>
         <tr>
-          <th>Approval</th>
+          <% if (!locals.user.projectManager) { %>
+            <th>Approval</th>
+          <% } %>
           <th>Jobsite</th>
           <th>Crew</th>
           <th>Date</th>
@@ -16,9 +18,11 @@
       <tbody>
         <% for (var i in reportArray) { %>
           <tr>
-            <td><label><input type="checkbox" onClick="toggleApproval('<%=reportArray[i]._id%>')" id="report-<%= reportArray[i]._id %>-approval" 
-              <% if (reportArray[i].approved == true) { %> checked="checked" <%}%> /><span></span></label>
-            </td>
+            <% if (!locals.user.projectManager) { %>
+              <td><label><input type="checkbox" onClick="toggleApproval('<%=reportArray[i]._id%>')" id="report-<%= reportArray[i]._id %>-approval" 
+                <% if (reportArray[i].approved == true) { %> checked="checked" <%}%> /><span></span></label>
+              </td>
+            <% } %>
             <td>
               <% if (reportArray[i].employeeWork.length < 1 && reportArray[i].vehicleWork.length < 1 && reportArray[i].production.length < 1 && reportArray[i].materialShipment.length < 1) { %>
                 <i class="material-icons">radio_button_unchecked</i>
