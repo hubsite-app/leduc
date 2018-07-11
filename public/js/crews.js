@@ -95,11 +95,13 @@ function loadEmployeeForm() {
   var template = $('#employee-form-template').html();
   $("#employee-form-div").append(template);
   $('#add-employee').remove();
+  $("html, body").animate({ scrollTop: $(document).height() }, "slow");
 };
 function loadVehicleForm() {
   var template = $('#vehicle-form-template').html();
   $("#vehicle-form-div").append(template);
   $('#add-vehicle').remove();
+  $("html, body").animate({ scrollTop: $(document).height() }, "slow");
   $(document).ready(function() {
     $('#rental-toggle').click(function () {
       var template = $('#source-company-form-template').html();

@@ -1074,6 +1074,12 @@ app.get('/employee/:id', async (req, res) => {
 app.post('/employee', async (req, res) => {
   try {
     var employee = await new Employee(req.body);
+    if (req.headers.referer.includes('crew')) {
+      var crew = await Crew.findById(mongoose.Types.ObjectId(req.headers.referer.toString().split('/')[4]));
+      await crew.employees.push(employee._id);
+      await crew.save();
+      employee.crews.push(crew._id);
+    }
     await employee.save();
     req.flash('success', 'A new employee has been added... how exciting!')
     res.redirect('back');
@@ -1171,6 +1177,12 @@ app.get('/vehicles', async (req, res) => {
 app.post('/vehicle', async (req, res) => {
   try {
     var vehicle = await new Vehicle(req.body);
+    if (req.headers.referer.includes('crew')) {
+      var crew = await Crew.findById(mongoose.Types.ObjectId(req.headers.referer.toString().split('/')[4]));
+      await crew.vehicles.push(vehicle._id);
+      await crew.save();
+      vehicle.crews.push(crew._id);
+    }
     await vehicle.save();
     req.flash('success', 'Ooooooo a new vehicle, Kelly\'s gonna love this');
     res.redirect('back');
@@ -2012,14 +2024,13 @@ app.post('/material', async (req, res) => {
     if (req.body.source && !req.body.vehicle) {
       var material;
       var vehicle = await Vehicle.find({name: req.body.source.trim() + " Truck - " + req.body.sourceTruckCode.trim()});
-      console.log(req.body);
       if (_.isEmpty(vehicle)) {
         if (!req.body.sourceTruckCode) {
           throw new Error('Must include truck code');
         }
         vehicle = await new Vehicle({
           name: req.body.source.trim() + " Truck - " + req.body.sourceTruckCode.trim(),
-          vehicleType: "Tandems",
+          vehicleType: req.body.vehicleType,
           vehicleCode: `Ren - ${req.body.sourceTruckCode.trim()}`,
           rental: true,
           sourceCompany: req.body.source.trim()
@@ -2083,6 +2094,7 @@ app.post('/material', async (req, res) => {
         unit: req.body.unit,
         source: req.body.source,
         sourceTruckCode: req.body.sourceTruckCode,
+        vehicleType: req.body.vehicleType,
         vehicle: req.body.vehicle,
         dailyReport: report._id
       });

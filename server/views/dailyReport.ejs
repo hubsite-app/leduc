@@ -165,7 +165,7 @@
               
               
               <b><%= materialArray[i].shipmentType %></b> - <%= materialArray[i].quantity %> <%= materialArray[i].unit %></br>
-              <% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%>
+              <% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].name %> - <%= vehicleArray[materialArray[i].vehicle].vehicleType %><%}else{%>'Vehicle was removed'<%}%>
               <div id="material-<%=materialArray[i]._id%>-edit-form-div"></div>
             </li>
           <% } %>
@@ -587,17 +587,27 @@
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.endTime != '') {%> value="<%=locals.query.endTime%>" <%}%>/>
           <label for="shipment-end-time">End Time (Optional)</label>
         </div>
-        <div class="input-field col s8">
+        <div class="input-field col s12 m6">
           <input name="source" type="text" id="shipment-source" class="autocomplete-units"
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.source != '') {%> value="<%=locals.query.source%>" <%}%>/>
           <label for="shipment-source">Source Company</label>
-          <span class="helper-text">Enter 'Source Company' OR pick vehicle from below</span>
         </div>
-        <div class="input-field col s4">
+        <div class="input-field col s6 m3">
+          <select name="vehicleType" id="shipment-vehicleType">
+            <option value="Tandem" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && local.query.vehicleType == 'Tandem') {%> selected <%}%>>Tandem</option>
+            <option value="Truck and Pup" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && local.query.vehicleType == 'Truck and Pup') {%> selected <%}%>>Truck and Pup</option>
+            <option value="Truck and Tri" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && local.query.vehicleType == 'Truck and Tri') {%> selected <%}%>>Truck and Tri</option>
+            <option value="Sidewinder" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && local.query.vehicleType == 'Sidewinder') {%> selected <%}%>>Sidewinder</option>
+            <option value="Wagon" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && local.query.vehicleType == 'Wagon') {%> selected <%}%>>Wagon</option>
+          </select>
+          <label for="shipment-source">Vehicle Type</label>
+        </div>
+        <div class="input-field col s6 m3">
           <input name="sourceTruckCode" type="text" id="shipment-source-truck-code" 
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.sourceTruckCode != '') {%> value="<%=locals.query.sourceTruckCode%>" <%}%>/>
           <label for="shipment-source-truck-code">Vehicle Code</label>
         </div>
+        <spam>Enter 'Source Company' OR pick vehicle from below</span>
         <div class="hide-on-med-and-up">
           <div class="input-field col s6">
             <select multiple name="vehicle">
