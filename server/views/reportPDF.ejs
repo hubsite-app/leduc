@@ -154,7 +154,9 @@
                   <% totalMaterial += materialArray[i].quantity %>
                   <td><% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%></td>
                   <td><%= Math.round(Math.abs(materialArray[i].endTime - materialArray[i].startTime) / 3.6e6 * 100) / 100 %></td>
-                  <% totalMaterialHours += Math.round(Math.abs(materialArray[i].endTime - materialArray[i].startTime) / 3.6e6 * 100) / 100 %>
+                  <% if (typeof (Math.round(Math.abs(materialArray[i].endTime - materialArray[i].startTime) / 3.6e6 * 100) / 100) == 'number') { %>
+                    <% totalMaterialHours += Math.round(Math.abs(materialArray[i].endTime - materialArray[i].startTime) / 3.6e6 * 100) / 100 %>
+                  <% } %>
                 </tr>
               <% } %> 
               <tr>

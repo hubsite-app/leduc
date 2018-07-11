@@ -77,12 +77,10 @@
                   <div class="input-field">
                     <div id="job-select" style="padding: 0.5em;">
                       <% for (var i in jobArray) { %>
-                        <% if (jobArray[i].crews.toString().includes(locals.query.crew)) { %>
-                          <label>
-                            <input class="with-gap" name="jobId" type="radio" value="<%= jobArray[i]._id %>" />
-                            <span><%= jobArray[i].name %></span>
-                          </label>
-                        <% } %>
+                        <label>
+                          <input class="with-gap" name="jobId" type="radio" value="<%= jobArray[i]._id %>" />
+                          <span><%= jobArray[i].name %></span>
+                        </label></br>
                       <% } %>
                     </div>
                   </div>

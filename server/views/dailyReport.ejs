@@ -4,20 +4,22 @@
 
   <div class="container">
     <h2><a href="/jobsite/<%= job._id %>"><%= job.name %></a></h2>
-    <h5><%= crew.name %><a href="/crew/<%= crew._id %>">    <i class="tiny material-icons">edit</i></a></h5>
-    <% if (locals.user.admin == true) { %>
-      <label>
-        <input type="checkbox" onClick="toggleApproval('<%=report._id%>')" id="report-<%= report._id %>-approval" 
-          <% if (report.approved == true) { %> checked="checked" <%}%> />
-        <span>Approved</span>
-      </label></br>
-      <a href="/report/<%=report._id%>/pdf">Report</a></br>
-    <% } %>
-    <% if (!locals.user.projectManager == true) { %>
-      <a href="" id="edit-button" onclick="loadEditForm(); return false;">Edit <i class="tiny material-icons">edit</i></a></br>
-      <div id="edit-form-div"></div>
-    <% } %>
-    <h6><%= report.date.toDateString(); %></h6>
+    <div class="row">
+      <h5><%= crew.name %><a href="/crew/<%= crew._id %>">    <i class="tiny material-icons">edit</i></a></h5>
+      <% if (locals.user.admin == true) { %>
+        <label>
+          <input type="checkbox" onClick="toggleApproval('<%=report._id%>')" id="report-<%= report._id %>-approval" 
+            <% if (report.approved == true) { %> checked="checked" <%}%> />
+          <span>Approved</span>
+        </label></br>
+        <a href="/report/<%=report._id%>/pdf">Report</a></br>
+      <% } %>
+      <% if (!locals.user.projectManager == true) { %>
+        <a href="" id="edit-button" onclick="loadEditForm(); return false;">Edit <i class="tiny material-icons">edit</i></a></br>
+        <div id="edit-form-div"></div>
+      <% } %>
+      <h6><%= report.date.toDateString(); %></h6>
+    </div>
 
     <% if (Object.keys(employeeArray).length > 0) { %>
       <div class="card-panel" style="padding-bottom: 3em;">
@@ -385,7 +387,7 @@
                       checked="checked"
                     <% } %> />
                   <%} else { %>/><%}%> 
-                <span><%= vehicleArray[vehicleId].name %></span>
+                <span><%= vehicleArray[vehicleId].vehicleCode %> - <%= vehicleArray[vehicleId].name %></span>
               </label>
             </div>
           <% }); %>
@@ -616,7 +618,7 @@
             <div class="input-field col s6">
               <label>
                 <input type="radio" value="<%= vehicleArray[vehicleId]._id %>" name="vehicle" />
-                <span><%= vehicleArray[vehicleId].name %></span>
+                <span><%= vehicleArray[vehicleId].vehicleCode %> - <%= vehicleArray[vehicleId].name %></span>
               </label>
             </div>
           <% }); %>

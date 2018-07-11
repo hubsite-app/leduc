@@ -32,8 +32,8 @@
             <ul class="collection">
               <% crewArray[result].vehicles.forEach((vehicle) => { %>
                 <li class="collection-item">
-                  <h6><a href="/vehicle/<%= vehicleArray[vehicle]._id %>"><%= vehicleArray[vehicle].name %></a></h6>
-                  <span><%= vehicleArray[vehicle].vehicleType %></span>
+                  <h6><a href="/vehicle/<%= vehicleArray[vehicle]._id %>"><%= vehicleArray[vehicle].name %></a>: <%= vehicleArray[vehicle].vehicleType %></h6>
+                  <span><%= vehicleArray[vehicle].vehicleCode %></span>
                 </li>
               <% }); %>
             </ul>
@@ -95,7 +95,7 @@
                             checked="true"
                           <%}});%> />
                       <span>
-                        <%= vehicleArray[i].name %> - <%= vehicleArray[i].vehicleType %>
+                        <%= vehicleArray[i].name %> - <%= vehicleArray[i].vehicleCode %>
                       </span>
                     </li>
                   </label>
