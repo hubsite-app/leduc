@@ -112,6 +112,46 @@ function deleteEmployeeWorkRequest(id) {
     }
   });
 };
+function loadExtraEmployeeWork(index) {
+  var template = $('#extra-employee-work-template').html();
+  var startTime;
+  if (index == 1) {
+    startTime = $('#employee-end-time').val();
+    $('#original-employee-work-add-button').remove();
+    $('#original-employee-work-div').removeClass('s10 m11').addClass('s12 m12 l12');    
+  } else if (index > 1) {
+    startTime = $(`#employee-end-time-${index - 1}`).val();
+    $('#employee-work-add-button-' + (index - 1)).remove();
+    $('#employee-work-div-' + (index - 1)).removeClass('s10 m11').addClass('s12 m12 l12'); 
+  }
+  var html = Mustache.render(template, {index, startTime});
+  $('#extra-employee-work-div').append(html);
+  $('input.autocomplete-work').autocomplete({
+    data: {
+      "Subgrade Prep": null,
+      "Pit-run": null,
+      "Base Gravel": null,
+      "Prime/Tack": null,
+      "Paving": null,
+      "Utilities": null,
+      "Force Account / Extra Work": null,
+      "Saw Cut": null,
+      "Breakout and Dispose": null,
+      "Preperation and Gravel": null,
+      "Rebar": null,
+      "Forming": null,
+      "Hand Pour": null,
+      "Slurry": null,
+      "String Line": null,
+      "Machine Pour": null,
+      "Concrete Supply": null,
+      "Blackfill and Landscape Rehab": null
+    }
+  });
+  $(`.timepicker-${index}`).timepicker({
+    container: '.container'
+  });
+}; 
 
 function loadVehicleForm() {
   var template = $('#vehicle-work-form-template').html();
@@ -203,6 +243,47 @@ function deleteVehicleWorkRequest(id) {
     }
   });
 };
+function loadExtraVehicleWork(index) {
+  var template = $('#extra-vehicle-work-template').html();
+  var startTime;
+  if (index == 1) {
+    startTime = $('#vehicle-end-time').val();
+    $('#original-vehicle-work-add-button').remove();
+    $('#original-vehicle-work-div').removeClass('s10 m11').addClass('s12 m12 l12');    
+  } else if (index > 1) {
+    startTime = $(`#vehicle-end-time-${index - 1}`).val();
+    $('#vehicle-work-add-button-' + (index - 1)).remove();
+    $('#vehicle-work-div-' + (index - 1)).removeClass('s10 m11').addClass('s12 m12 l12'); 
+  }
+  var html = Mustache.render(template, {index, startTime});
+  $('#extra-vehicle-work-div').append(html);
+  $('input.autocomplete-work').autocomplete({
+    data: {
+      "Subgrade Prep": null,
+      "Pit-run": null,
+      "Base Gravel": null,
+      "Prime/Tack": null,
+      "Paving": null,
+      "Utilities": null,
+      "Force Account / Extra Work": null,
+      "Saw Cut": null,
+      "Breakout and Dispose": null,
+      "Preperation and Gravel": null,
+      "Rebar": null,
+      "Forming": null,
+      "Hand Pour": null,
+      "Slurry": null,
+      "String Line": null,
+      "Machine Pour": null,
+      "Concrete Supply": null,
+      "Blackfill and Landscape Rehab": null
+    }
+  });
+  $(`.timepicker-${index}`).timepicker({
+    container: '.container'
+  });
+}; 
+
 
 function loadProductionForm() {
   var template = $('#production-form-template').html();

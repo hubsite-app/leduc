@@ -1689,8 +1689,39 @@ app.post('/employeehour', async (req, res) => {
     var startTime = await timeHandling(req.body.startTime, report.date);
     var endTime = await timeHandling(req.body.endTime, report.date);
     var netEmployeeHours = 0;
+    var index, workArray = [];
+    if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
+      index = 1
+      while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
+        var tempStartTime = await timeHandling(req.body[`startTime-${index}`], report.date);
+        var tempEndTime = await timeHandling(req.body[`endTime-${index}`], report.date);
+        workArray[index] = {
+          jobTitle: req.body[`jobTitle-${index}`],
+          startTime: tempStartTime, 
+          endTime: tempEndTime
+        }
+        console.log(workArray[index]);
+        index++;
+        console.log(index);
+      }
+      index = index - 1;
+    }
     if (typeof req.body.employee == 'object') {
       for (var i in req.body.employee) {
+        if (index != undefined) {
+          for (var j = 1; j < index + 1; j++) {
+            var employeeWork = await new EmployeeWork({
+              startTime: workArray[j].startTime, 
+              endTime: workArray[j].endTime,
+              jobTitle: workArray[j].jobTitle,
+              employee: req.body.employee[i],
+              dailyReport: report._id
+            });
+            await employeeWork.save();
+            await report.employeeWork.push(employeeWork);
+            await report.save();
+          }
+        } 
         var employeeWork = new EmployeeWork({
           startTime, endTime,
           jobTitle: req.body.jobTitle,
@@ -1709,6 +1740,20 @@ app.post('/employeehour', async (req, res) => {
       req.flash('success', `Work added, that is a combined ${netEmployeeHours} hours on this job today!`);
       res.redirect(`/report/${report._id}`);
     } else {
+      if (index != undefined) {
+        for (var i = 1; i < index + 1; i++) {
+          var employeeWork = await new EmployeeWork({
+            startTime: workArray[i].startTime, 
+            endTime: workArray[i].endTime,
+            jobTitle: workArray[i].jobTitle,
+            employee: req.body.employee,
+            dailyReport: report._id
+          });
+          await employeeWork.save();
+          await report.employeeWork.push(employeeWork);
+          await report.save();
+        }
+      } 
       var employeeWork = await new EmployeeWork({
         startTime, endTime,
         jobTitle: req.body.jobTitle,
@@ -1805,8 +1850,39 @@ app.post('/vehiclehour', async (req, res) => {
     var startTime = await timeHandling(req.body.startTime, report.date);
     var endTime = await timeHandling(req.body.endTime, report.date);
     var netVehicleHours = 0;
+    var index, workArray = [];
+    if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
+      index = 1
+      while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
+        var tempStartTime = await timeHandling(req.body[`startTime-${index}`], report.date);
+        var tempEndTime = await timeHandling(req.body[`endTime-${index}`], report.date);
+        workArray[index] = {
+          jobTitle: req.body[`jobTitle-${index}`],
+          startTime: tempStartTime, 
+          endTime: tempEndTime
+        }
+        console.log(workArray[index]);
+        index++;
+        console.log(index);
+      }
+      index = index - 1;
+    }
     if (typeof req.body.vehicle == 'object') {
       for (var i in req.body.vehicle) {
+        if (index != undefined) {
+          for (var j = 1; j < index + 1; j++) {
+            var vehicleWork = await new VehicleWork({
+              startTime: workArray[j].startTime, 
+              endTime: workArray[j].endTime,
+              jobTitle: workArray[j].jobTitle,
+              vehicle: req.body.vehicle[i],
+              dailyReport: report._id
+            });
+            await vehicleWork.save();
+            await report.vehicleWork.push(vehicleWork);
+            await report.save();
+          }
+        } 
         var vehicleWork = await new VehicleWork({
           startTime, endTime,
           jobTitle: req.body.jobTitle,
@@ -1825,6 +1901,20 @@ app.post('/vehiclehour', async (req, res) => {
       req.flash('success', `Work added, that is a combined ${netVehicleHours} vehicle hours on this job today!`);
       res.redirect('back');
     } else {
+      if (index != undefined) {
+        for (var i = 1; i < index + 1; i++) {
+          var vehicleWork = await new VehicleWork({
+            startTime: workArray[i].startTime, 
+            endTime: workArray[i].endTime,
+            jobTitle: workArray[i].jobTitle,
+            vehicle: req.body.vehicle,
+            dailyReport: report._id
+          });
+          await vehicleWork.save();
+          await report.vehicleWork.push(vehicleWork);
+          await report.save();
+        }
+      } 
       var vehicleWork = await new VehicleWork({
         startTime, endTime,
         jobTitle: req.body.jobTitle,
