@@ -13,13 +13,13 @@
       </thead>
       <tbody>
         <% for (var i in hourArray) { %>
-          <tr style="border-right: 1px solid black;">
+          <tr style="border-right: 1px solid black; padding: 0;">
             <td style="border-bottom: 1px solid black;"><b><%= i %></b></td>
             <% for (var e in employeeArray) { %>
               <% if (hourArray[i][employeeArray[e].name]) { %>
-                <td><%= hourArray[i][employeeArray[e].name].hours %></td>
+                <td style="border-bottom: 1px solid black;"><%= hourArray[i][employeeArray[e].name].hours %></td>
               <% } else { %>
-                <td></td>
+                <td style="border-bottom: 1px solid black;"></td>
               <% } %>
             <% } %>
           </tr>
