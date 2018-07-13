@@ -2,7 +2,7 @@
 
   <div class="container">
     <h3>Hours</h3>
-    <table class="responsive-table">
+    <table class="responsive-table striped centered">
       <thead>
         <tr>
           <th>Date</th>
@@ -13,8 +13,8 @@
       </thead>
       <tbody>
         <% for (var i in hourArray) { %>
-          <tr>
-            <td><b><%= i %></b></td>
+          <tr style="border-right: 1px solid black;">
+            <td style="border-bottom: 1px solid black;"><b><%= i %></b></td>
             <% for (var e in employeeArray) { %>
               <% if (hourArray[i][employeeArray[e].name]) { %>
                 <td><%= hourArray[i][employeeArray[e].name].hours %></td>
