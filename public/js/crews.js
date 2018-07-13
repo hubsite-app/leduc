@@ -4,6 +4,13 @@ $(document).ready(function () {
     closeOnClick: false,
     coverTrigger: false
   });
+  $(document).on('click','.crew-dropdown-select', function(event) {
+    event.preventDefault();
+    var target = "#" + this.getAttribute('data-target');
+    $('html, body').animate({
+        scrollTop: $(target).offset().top
+    }, 1000);
+});
   $('.newCrewMember').click(function () {
     var crewId = $(this).siblings('.id').val();
     var employeeId = $(this).val();
@@ -31,6 +38,12 @@ $(document).ready(function () {
     hover: false,
     closeOnClick: false,
     coverTrigger: false
+  });
+  $('.crewDropdown').dropdown({
+    hover: false,
+    closeOnClick: true,
+    coverTrigger: false,
+    constrainWidth: false
   });
   $('.newCrewVehicle').click(function () {
     var crewId = $(this).siblings('.id').val();
@@ -88,7 +101,6 @@ function loadForm() {
       "Concrete": null
     }
   });
-  $("html, body").animate({ scrollTop: $(document).height() }, "slow");
   return false;
 };
 function loadEmployeeForm() {

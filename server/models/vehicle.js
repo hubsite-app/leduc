@@ -41,7 +41,7 @@ var VehicleSchema = new mongoose.Schema({
 VehicleSchema.statics.getAll = function() {
   var Vehicle = this
   var vehicleArray = [];
-  return Vehicle.find({}).then((vehicles) => {
+  return Vehicle.find({}).sort({vehicleCode: 'desc'}).then((vehicles) => {
     if (!vehicles) {return Promise.reject();}
     return new Promise(async (resolve, reject) => {
       await vehicles.forEach((vehicle) => {

@@ -2,7 +2,11 @@ $(document).ready(function () {
   $('.crewDropdown').dropdown({
     hover: false,
     closeOnClick: false,
-    coverTrigger: false
+    coverTrigger: false,
+    constrainWidth: false,
+    onCloseEnd: function() {
+      location.reload();
+    }
   });
 
   $('.newCrew').click(function () {
@@ -13,13 +17,17 @@ $(document).ready(function () {
         type: 'POST',
         url: `/jobsite/${jobId}/crew/${crewId}`
       });
-      location.reload(true);
+      setTimeout(function(){
+        location.reload(true);
+      }, 5000);
     } else {
       $.ajax({
         type: 'DELETE',
         url: `/jobsite/${jobId}/crew/${crewId}`
       });
-      location.reload(true);
+      setTimeout(function(){
+        location.reload(true);
+      }, 5000);
     }
   });
 });
@@ -27,8 +35,8 @@ $(document).ready(function () {
 function editRequest(id, name, description, jobcode) {
   var template = $('#jobsite-edit-form-template').html();
   var html = Mustache.render(template, {id, name, description, jobcode});
-  $(`#job-${id}-content`).remove();
-  $(`#job-${id}-container`).append(html);
+  $(`#job-${id}-edit-button`).remove();
+  $(`#job-${id}-edit-container`).append(html);
 };
 function deleteRequest(id) {
   $.ajax({
@@ -41,6 +49,6 @@ function loadForm() {
   var template = $('#jobsite-form-template').html();
   $("#jobsite-form-div").append(template);
   $('#add-jobsite').remove();
-  $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+  $('select').formSelect();
   return false;
 };

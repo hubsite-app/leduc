@@ -4,7 +4,32 @@
 <script src="/js/libs/mustache.js"></script>
 
 <div class="container">
-  <h1>Crew List</h1>
+  <div class="row">
+      <h1>Crew List</h1>
+
+      <a id="dropdown-crew-select" class='crewDropdown btn' href='' data-target='crew-select-dropdown'>Select Crew</a>
+
+      <ul class="collection dropdown-content" id="crew-select-dropdown">
+        <form>
+          <% for (var i in crewArray) { %>
+            <label>
+              <li class="collection-item" id="crew-<%= crewArray[i]._id %>-item">
+                <a class="crew-dropdown-select" data-target="crew-<%=crewArray[i]._id%>-container"><%= crewArray[i].name %></a>
+              </li>
+            </label>
+            <% } %>
+        </form>
+      </ul>
+  
+      <div id="crew-form-div"></div>
+    
+      <div id="add-crew">
+        <button class="btn waves-effect waves-light right" id="crew-form" onClick="loadForm()">Add Crew
+          <i class="material-icons right">add</i>
+        </button>
+      </div>
+  </div>
+
   <% if (crewArray) { %>
     <% for (var result in crewArray) { %>
       <% id = crewArray[result]._id %>
@@ -42,11 +67,13 @@
           <% if (crewArray[result].jobsites.length > 0) { %>
             <h5>Jobsites: </h5>
             <ul class="collection">
-              <% crewArray[result].jobsites.forEach((jobsite) => { %>
-                <li class="collection-item">
-                  <h6><a href="/jobsite/<%= jobArray[jobsite]._id %>"><%= jobArray[jobsite].name %></a></h6>
-                </li>
-              <% }); %>
+              <% for(var j in jobArray) { %>
+                <% if (JSON.stringify(crewArray[result].jobsites).includes(jobArray[j]._id.toString())) { %>
+                  <li class="collection-item">
+                    <h6><a href="/jobsite/<%= jobArray[j]._id %>"><%= jobArray[j].jobcode %> - <%= jobArray[j].name %></a></h6>
+                  </li>
+                <% } %>
+              <% } %>
             </ul>
           <% } %>
 
@@ -107,16 +134,7 @@
         </div>
       </div>
     <% } %>
-  <% } %>
-
-  <div id="crew-form-div"></div>
-
-  <div id="add-crew">
-    <button class="btn waves-effect waves-light right" id="crew-form" onClick="loadForm()">Add Crew
-      <i class="material-icons right">add</i>
-    </button>
-  </div>
-  
+  <% } %>  
 </div>
 
 <% include partials/foot %>

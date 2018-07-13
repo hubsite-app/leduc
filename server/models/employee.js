@@ -27,7 +27,7 @@ var EmployeeSchema = new mongoose.Schema({
 EmployeeSchema.statics.getAll = function() {
   var Employee = this
   var employeeArray = [];
-  return Employee.find({}).then((employees) => {
+  return Employee.find({}).sort({name: 'asc'}).then((employees) => {
     if (!employees) {return Promise.reject();}
     return new Promise(async (resolve, reject) => {
       await employees.forEach((employee) => {

@@ -52,7 +52,7 @@ var DailyReportSchema = new mongoose.Schema({
 DailyReportSchema.statics.getAll = function() {
   var Report = this
   var reportArray = [];
-  return Report.find({}).then((reports) => {
+  return Report.find({}).sort({date: 'asc'}).then((reports) => {
     if (!reports) {return Promise.reject();}
     return new Promise(async (resolve, reject) => {
       await reports.reverse().forEach((report) => {

@@ -35,7 +35,7 @@ var JobsiteSchema = new mongoose.Schema({
 JobsiteSchema.statics.getAll = function() {
   var Job = this
   var jobArray = [];
-  return Job.find({}).then((jobs) => {
+  return Job.find().sort({jobcode: 'desc'}).then((jobs) => {
     if (!jobs) {return Promise.reject();}
     return new Promise(async (resolve, reject) => {
       await jobs.forEach((job) => {

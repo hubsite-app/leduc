@@ -66,6 +66,24 @@ UserSchema.pre('save', function (next) {
   }
 });
 
+UserSchema.statics.getAll = function() {
+  var User = this
+  var userArray = [];
+  return User.find({}).sort({name: 'asc'}).then((users) => {
+    if (!users) {return Promise.reject();}
+    return new Promise(async (resolve, reject) => {
+      await users.forEach((user) => {
+        userArray[user._id] = user;
+      });
+      if (Object.keys(userArray).length > 0) {
+        resolve(userArray);
+      } else {
+        reject('Error: Unable to create Employee array (check to ensure Employees have been created)');
+      }
+    });
+  });
+};
+
 var User = mongoose.model('User', UserSchema);
 
 module.exports = {User};

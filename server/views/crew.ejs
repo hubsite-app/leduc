@@ -36,11 +36,13 @@
       <% if (crew.jobsites.length > 0) { %>
         <h5>Jobsites: </h5>
         <ul class="collection">
-          <% crew.jobsites.forEach((jobsite) => { %>
-            <li class="collection-item">
-              <h6><a href="/jobsite/<%= jobArray[jobsite]._id %>"><%= jobArray[jobsite].name %></a></h6>
-            </li>
-          <% }); %>
+          <% for(var j in jobArray) { %>
+            <% if (JSON.stringify(crew.jobsites).includes(jobArray[j]._id.toString())) { %>
+              <li class="collection-item">
+                <h6><a href="/jobsite/<%= jobArray[j]._id %>"><%= jobArray[j].jobcode %> - <%= jobArray[j].name %></a></h6>
+              </li>
+            <% } %>
+          <% } %>
         </ul>
       <% } %>
 

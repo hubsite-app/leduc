@@ -468,8 +468,20 @@ app.patch('/user/:id/employee', async (req, res) => {
 
 // POST /jobsite/new
 app.post('/jobsite/new', async (req, res) => {
-  var jobsite = new Jobsite(req.body);
   try {
+    var crew;
+    var jobsite = new Jobsite(req.body);
+    if (typeof req.body.crews == 'object') {
+      for (var i in req.body.crews) {
+        crew = await Crew.findById(req.body.crews[i]);
+        await crew.jobsites.push(jobsite._id);
+        await crew.save();
+      }
+    } else {
+      crew = await Crew.findById(req.body.crews);
+      await crew.jobsites.push(jobsite._id);
+      await crew.save();
+    }
     await jobsite.save();
     req.flash('success', 'New jobsite added, some great bidding guys!')
     res.redirect('/jobsites');
@@ -486,17 +498,9 @@ app.get('/jobsites', async (req, res) => {
     await loggedIn(req);
     var jobArray = [];
     var crewArray = [];
-    Jobsite.find({}, (err, jobsites) => {
-      jobsites.forEach((jobsite) => {
-        jobArray[jobsite._id] = jobsite;
-      });
-      Crew.find({}, (err, crews) => {
-        crews.forEach((crew) => {
-          crewArray[crew._id] = crew;
-        });
-        res.render('jobsiteIndex', {jobArray, crewArray});
-      });
-    });
+    crewArray = await Crew.getAll();
+    jobArray = await Jobsite.getAll();
+    res.render('jobsiteIndex', {jobArray, crewArray});
   } catch (e) {
     req.flash('error', e.message);
     res.redirect('back');
@@ -1005,40 +1009,10 @@ app.delete('/jobsite/:jobId/crew/:crewId', async (req, res) => {
 app.get('/employees', async (req, res) => {
   try {
     await loggedIn(req);
-    var employeeArray = [];
-    var crewArray = [];
-    var userArray = [];
-    Employee.find({}, (err, employees) => {
-      if (err) {
-        console.log(err);
-        req.flash('error', err.message);
-        return;
-      }
-      employees.forEach((employee) => {
-        employeeArray[employee._id] = employee;
-      });
-      Crew.find({}, (err, crews) => {
-        if (err) {
-          console.log(err);
-          req.flash('error', err.message);
-          return;
-        }
-        crews.forEach((crew) => {
-          crewArray[crew._id] = crew;
-        });
-        User.find({}, (err, users) => {
-          if (err) {
-            console.log(err);
-            req.flash('error', err.message);
-            return;
-          }
-          users.forEach((user) => {
-            userArray[user._id] = user;
-          });
-          res.render('employees/employeeIndex', {employeeArray, crewArray, userArray});
-        });
-      });
-    });
+    var employeeArray = await Employee.getAll();
+    var crewArray = await Crew.getAll();
+    var userArray = await User.getAll();
+    res.render('employees/employeeIndex', {employeeArray, crewArray, userArray});
   } catch (e) {
     req.flash('error', e.message);
     res.redirect('back');
@@ -1279,33 +1253,11 @@ app.get('/crews', async (req, res) => {
   try {
     await loggedIn(req);
     if (req.user.admin == true || req.user.projectManager == true) {
-      Crew.find({}, (err, crews) => {
-        var crewMap = [];
-        crews.forEach((crew) => {
-          crewMap[crew._id] = crew;
-        });
-        Employee.find({}, (err, employees) => {
-          var employeeMap = [];
-          employees.forEach((employee) => {
-            employeeMap[employee._id] = employee;
-          });
-          Jobsite.find({}, async (err, jobsites) => {
-            var jobArray = [];
-            if(err){return console.log(err);}
-            jobsites.forEach((jobsite) => {
-              jobArray[jobsite._id] = jobsite;
-            });
-            try {
-              var vehicleArray = await Vehicle.getAll();
-              res.render('crews', {crewArray: crewMap, employeeArray: employeeMap, jobArray, vehicleArray});
-            } catch (e) {
-              console.log(e);
-              req.flash('error', e.message);
-              res.redirect('back');
-            }
-          });
-        });
-      });
+      var crewArray = await Crew.getAll();
+      var employeeArray = await Employee.getAll();
+      var vehicleArray = await Vehicle.getAll();
+      var jobArray = await Jobsite.getAll();
+      res.render('crews', {crewArray, employeeArray, jobArray, vehicleArray});     
     } else {
       req.flash('error', 'You are not authorized to view this page');
       res.redirect('back');
@@ -1323,13 +1275,9 @@ app.get('/crew/:id', async (req, res) => {
     Crew.findById(req.params.id, async (err, crew) => {
       err && console.log(err);
       try {
-        var jobArray = [];
+        var jobArray = await Jobsite.getAll();
         var employeeArray = await Employee.getAll();
         var vehicleArray = await Vehicle.getAll();
-        var jobs = await Jobsite.find({crews: crew._id});
-        for (var i in jobs) {
-          jobArray[jobs[i]._id] = jobs[i];
-        } 
         res.render('crew', {crew, employeeArray, vehicleArray, jobArray});
       } catch (e) {
         console.log(e);
