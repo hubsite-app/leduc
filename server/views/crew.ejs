@@ -11,39 +11,45 @@
 
       <% if (crew.employees.length > 0) { %>
         <h5>Employees: </h5>
-        <ul class="collection">
-          <% crew.employees.forEach((employee) => { %>
-            <li class="collection-item">
-              <h6><a href="/employee/<%= employeeArray[employee]._id %>"><%= employeeArray[employee].name %></a></h6>
-              <span><%= employeeArray[employee].jobTitle %></span>
-            </li>
-          <% }); %>
-        </ul>
+        <div style="overflow: scroll; overflow-x: hidden; max-height: 70vh;">
+          <ul class="collection">
+            <% crew.employees.forEach((employee) => { %>
+              <li class="collection-item">
+                <h6><a href="/employee/<%= employeeArray[employee]._id %>"><%= employeeArray[employee].name %></a></h6>
+                <span><%= employeeArray[employee].jobTitle %></span>
+              </li>
+            <% }); %>
+          </ul>
+        </div>
       <% } %>
 
       <% if (crew.vehicles.length > 0) { %>
         <h5>Vehicles: </h5>
-        <ul class="collection">
-          <% crew.vehicles.forEach((vehicle) => { %>
-            <li class="collection-item">
-              <h6><a href="/vehicle/<%= vehicleArray[vehicle]._id %>"><%= vehicleArray[vehicle].name %></a></h6>
-              <span><%= vehicleArray[vehicle].vehicleCode %></span>
-            </li>
-          <% }); %>
-        </ul>
+        <div style="overflow: scroll; overflow-x: hidden; max-height: 70vh;">
+          <ul class="collection">
+            <% crew.vehicles.forEach((vehicle) => { %>
+              <li class="collection-item">
+                <h6><a href="/vehicle/<%= vehicleArray[vehicle]._id %>"><%= vehicleArray[vehicle].name %></a></h6>
+                <span><%= vehicleArray[vehicle].vehicleCode %></span>
+              </li>
+            <% }); %>
+          </ul>
+        </div>
       <% } %>
 
       <% if (crew.jobsites.length > 0) { %>
         <h5>Jobsites: </h5>
-        <ul class="collection">
-          <% for(var j in jobArray) { %>
-            <% if (JSON.stringify(crew.jobsites).includes(jobArray[j]._id.toString())) { %>
-              <li class="collection-item">
-                <h6><a href="/jobsite/<%= jobArray[j]._id %>"><%= jobArray[j].jobcode %> - <%= jobArray[j].name %></a></h6>
-              </li>
+        <div style="overflow: scroll; overflow-x: hidden; max-height: 70vh;">
+          <ul class="collection">
+            <% for(var j in jobArray) { %>
+              <% if (JSON.stringify(crew.jobsites).includes(jobArray[j]._id.toString())) { %>
+                <li class="collection-item">
+                  <h6><a href="/jobsite/<%= jobArray[j]._id %>"><%= jobArray[j].jobcode %> - <%= jobArray[j].name %></a></h6>
+                </li>
+              <% } %>
             <% } %>
-          <% } %>
-        </ul>
+          </ul>
+        </div>
       <% } %>
 
       <% if (employeeArray) { %>

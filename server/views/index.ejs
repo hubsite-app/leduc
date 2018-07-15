@@ -6,8 +6,8 @@
 
       <div class="row">
         <% if (locals.user.admin != true && locals.user.projectManager != true) { %>
-          <div class="col s8"><span class="flow-text">Choose a Job</span></div>
           <% if(crewArray.length > 1) { %>
+            <div class="col s8"><span class="flow-text">Choose a Job</span></div>
             <div class="col s4">
               <a class='crew-dropdown-toggle btn right' href='' data-target='crew-dropdown'>Select Crew</a>
             </div>
@@ -25,6 +25,7 @@
               <% } %>
             </ul>
           <% } else if (crewArray.length == 1) { %>
+            <div class="col s8"><span class="flow-text">Choose a Job</span></div>
             <div class="col s4">
               <% for (var i in crewArray) { %>
                 <body onload="loadURL()"></body>
@@ -36,7 +37,7 @@
             </div>
           <% } else { %>
             <div class="row">
-                <h3>You must be added to a crew in order to pick a job</h3>
+              <h3>You must be added to a crew in order to pick a job</h3>
             </div>
           <% } %>
           <% if (jobArray) { %>
@@ -102,7 +103,7 @@
             </div>
             <div id="filter-form-container"></div>           
           </div>
-          <div style="overflow: scroll; height: 50%;">
+          <div style="overflow: scroll; height: 70vh;">
             <ul class="collection">
               <% var reportCount = 0 %>
               <% for (var i in reportArray) { %>
