@@ -112,19 +112,22 @@ function deleteEmployeeWorkRequest(id) {
     }
   });
 };
-function loadExtraEmployeeWork(index) {
+function loadExtraEmployeeWork(index, jobTitle, startTime, endTime) {
   var template = $('#extra-employee-work-template').html();
-  var startTime;
   if (index == 1) {
-    startTime = $('#employee-end-time').val();
+    if(!startTime) {
+      startTime = $('#employee-end-time').val();
+    }
     $('#original-employee-work-add-button').remove();
     $('#original-employee-work-div').removeClass('s10 m11').addClass('s12 m12 l12');    
   } else if (index > 1) {
-    startTime = $(`#employee-end-time-${index - 1}`).val();
+    if (!startTime) {
+      startTime = $(`#employee-end-time-${index - 1}`).val();
+    }
     $('#employee-work-add-button-' + (index - 1)).remove();
     $('#employee-work-div-' + (index - 1)).removeClass('s10 m11').addClass('s12 m12 l12'); 
   }
-  var html = Mustache.render(template, {index, startTime});
+  var html = Mustache.render(template, {index, jobTitle, startTime, endTime});
   $('#extra-employee-work-div').append(html);
   $('input.autocomplete-work').autocomplete({
     data: {
@@ -152,6 +155,15 @@ function loadExtraEmployeeWork(index) {
     container: '.container'
   });
 }; 
+function loadExtraEmployeeForm(jobs, startTimes, endTimes) {
+  var jobTitleArray = jobs.split(',');
+  var startTimeArray = startTimes.split(',');
+  var endTimeArray = endTimes.split(',');
+  var index = jobTitleArray.length;
+  for(var i = 0; i < index; i++) {
+    loadExtraEmployeeWork(i + 1, jobTitleArray[i], startTimeArray[i], endTimeArray[i]);
+  }
+}
 
 function loadVehicleForm() {
   var template = $('#vehicle-work-form-template').html();
@@ -243,19 +255,23 @@ function deleteVehicleWorkRequest(id) {
     }
   });
 };
-function loadExtraVehicleWork(index) {
+function loadExtraVehicleWork(index, jobTitle, startTime, endTime) {
   var template = $('#extra-vehicle-work-template').html();
   var startTime;
   if (index == 1) {
-    startTime = $('#vehicle-end-time').val();
+    if (!startTime) {
+      startTime = $('#vehicle-end-time').val();
+    }
     $('#original-vehicle-work-add-button').remove();
     $('#original-vehicle-work-div').removeClass('s10 m11').addClass('s12 m12 l12');    
   } else if (index > 1) {
-    startTime = $(`#vehicle-end-time-${index - 1}`).val();
+    if (!startTime) {
+      startTime = $(`#vehicle-end-time-${index - 1}`).val();
+    }
     $('#vehicle-work-add-button-' + (index - 1)).remove();
     $('#vehicle-work-div-' + (index - 1)).removeClass('s10 m11').addClass('s12 m12 l12'); 
   }
-  var html = Mustache.render(template, {index, startTime});
+  var html = Mustache.render(template, {index, jobTitle, startTime, endTime});
   $('#extra-vehicle-work-div').append(html);
   $('input.autocomplete-work').autocomplete({
     data: {
@@ -283,7 +299,15 @@ function loadExtraVehicleWork(index) {
     container: '.container'
   });
 }; 
-
+function loadExtraVehicleForm(jobs, startTimes, endTimes) {
+  var jobTitleArray = jobs.split(',');
+  var startTimeArray = startTimes.split(',');
+  var endTimeArray = endTimes.split(',');
+  var index = jobTitleArray.length;
+  for(var i = 0; i < index; i++) {
+    loadExtraVehicleWork(i + 1, jobTitleArray[i], startTimeArray[i], endTimeArray[i]);
+  }
+}
 
 function loadProductionForm() {
   var template = $('#production-form-template').html();

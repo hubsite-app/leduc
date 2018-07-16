@@ -17,7 +17,7 @@ const bcrypt = require('bcrypt-nodejs');
 const async = require('async');
 const crypto = require('crypto');
 const flash = require('express-flash');
-const querystring = require('querystring');
+const querystring = require('query-string');
 const pdf = require('html-pdf');
 const util = require('util');
 
@@ -1648,9 +1648,7 @@ app.post('/employeehour', async (req, res) => {
           startTime: tempStartTime, 
           endTime: tempEndTime
         }
-        console.log(workArray[index]);
         index++;
-        console.log(index);
       }
       index = index - 1;
     }
@@ -1721,6 +1719,29 @@ app.post('/employeehour', async (req, res) => {
     }
   } catch (e) {
     try {
+      var index, append, extraJobtitleArray = [], extraStarttimeArray = [], extraEndtimeArray = [];
+      if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
+        index = 1
+        console.log(req.body);
+        while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
+          tempStartTime = undefined, tempEndTime = undefined;
+          if (req.body[`startTime-${index}`] != '') {
+            var tempStartTime = await timeHandling(req.body[`startTime-${index}`], report.date);
+            var start = new Date(tempStartTime);
+            tempStartTime = `${start.getHours().toString()}:${start.getMinutes().toString()<10?'0':''}${start.getMinutes().toString()}`;
+          }
+          if (req.body[`endTime-${index}`] != '') {
+            var tempEndTime = await timeHandling(req.body[`endTime-${index}`], report.date);
+            var end = new Date(tempEndTime);
+            tempEndTime = `${end.getHours().toString()}:${end.getMinutes().toString()<10?'0':''}${end.getMinutes().toString()}`;
+          }
+          extraJobtitleArray[index - 1] = req.body[`jobTitle-${index}`];
+          extraStarttimeArray[index - 1] = tempStartTime;
+          extraEndtimeArray[index - 1] = tempEndTime;
+          index++;
+        }
+        index = index - 1;
+      }
       if(req.body.startTime) {
         var startTime = await timeHandling(req.body.startTime, report.date);
         var start = new Date(startTime);
@@ -1737,8 +1758,19 @@ app.post('/employeehour', async (req, res) => {
         startTime, endTime,
         jobTitle: req.body.jobTitle,
         employee: req.body.employee,
-        dailyReport: report._id
       });
+      append = querystring.stringify({
+        extraJobtitleArray
+      }, {arrayFormat: 'bracket'});
+      query += `&${append}`;
+      append = querystring.stringify({
+        extraStarttimeArray
+      }, {arrayFormat: 'bracket'});
+      query += `&${append}`;
+      append = querystring.stringify({
+        extraEndtimeArray
+      }, {arrayFormat: 'bracket'});
+      query += `&${append}`;
       console.log(e);
       res.redirect(`/report/${report._id}/?` + query);
     } catch (e) {
@@ -1882,6 +1914,29 @@ app.post('/vehiclehour', async (req, res) => {
     }
   } catch (e) {
     try {
+      var index, append, extraJobtitleArray = [], extraStarttimeArray = [], extraEndtimeArray = [];
+      if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
+        index = 1
+        console.log(req.body);
+        while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
+          tempStartTime = undefined, tempEndTime = undefined;
+          if (req.body[`startTime-${index}`] != '') {
+            var tempStartTime = await timeHandling(req.body[`startTime-${index}`], report.date);
+            var start = new Date(tempStartTime);
+            tempStartTime = `${start.getHours().toString()}:${start.getMinutes().toString()<10?'0':''}${start.getMinutes().toString()}`;
+          }
+          if (req.body[`endTime-${index}`] != '') {
+            var tempEndTime = await timeHandling(req.body[`endTime-${index}`], report.date);
+            var end = new Date(tempEndTime);
+            tempEndTime = `${end.getHours().toString()}:${end.getMinutes().toString()<10?'0':''}${end.getMinutes().toString()}`;
+          }
+          extraJobtitleArray[index - 1] = req.body[`jobTitle-${index}`];
+          extraStarttimeArray[index - 1] = tempStartTime;
+          extraEndtimeArray[index - 1] = tempEndTime;
+          index++;
+        }
+        index = index - 1;
+      }
       if(req.body.startTime) {
         var startTime = await timeHandling(req.body.startTime, report.date);
         var start = new Date(startTime);
@@ -1897,9 +1952,20 @@ app.post('/vehiclehour', async (req, res) => {
         message: e.message,
         startTime, endTime,
         jobTitle: req.body.jobTitle,
-        vehicle: req.body.vehicle,
-        dailyReport: report._id
+        vehicle: req.body.vehicle
       });
+      append = querystring.stringify({
+        extraJobtitleArray
+      }, {arrayFormat: 'bracket'});
+      query += `&${append}`;
+      append = querystring.stringify({
+        extraStarttimeArray
+      }, {arrayFormat: 'bracket'});
+      query += `&${append}`;
+      append = querystring.stringify({
+        extraEndtimeArray
+      }, {arrayFormat: 'bracket'});
+      query += `&${append}`;
       console.log(e);
       res.redirect(`/report/${report._id}/?` + query);
     } catch (e) {

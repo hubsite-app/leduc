@@ -313,8 +313,7 @@
   <div id="extra-employee-work-div">
     <div class="row">
       <div class="input-field col s10 m11" id="employee-work-div-{{index}}">
-        <input name="jobTitle-{{index}}" type="text" id="employee-autocomplete-job-title-{{index}}" class="autocomplete-work" autocomplete="off" autofocus
-          <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.jobTitle != '') {%> value="<%=locals.query.jobTitle %>-{{index}}" <%}%>/>
+        <input name="jobTitle-{{index}}" type="text" id="employee-autocomplete-job-title-{{index}}" class="autocomplete-work" autocomplete="off" autofocus value="{{jobTitle}}" />
         <label for="employee-autocomplete-job-title-{{index}}">Work Done</label>
       </div>
       <div class="input-field col s2 m1">
@@ -323,13 +322,11 @@
     </div>
     <div class="row">
       <div class="input-field col s6">
-        <input name="startTime-{{index}}" id="employee-start-time-{{index}}" type="text" class="timepicker-{{index}}" autocomplete="off" 
-          <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.startTime != '') {%> value="<%= locals.query.startTime %>-{{index}}" <%} else { %> value="{{startTime}}" <% } %>/>
-        <label for="employee-start-time-{{index}}">Start Time</label>
+        <input name="startTime-{{index}}" id="employee-start-time-{{index}}" type="text" class="timepicker-{{index}}" autocomplete="off" value="{{startTime}}" />
+        <label class="active" for="employee-start-time-{{index}}">Start Time</label>
       </div>
       <div class="input-field col s6">
-        <input name="endTime-{{index}}" id="employee-end-time-{{index}}" type="text" class="timepicker-{{index}}" autocomplete="off" 
-          <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.endTime != '') {%> value="<%=locals.query.endTime %>-{{index}}" <%}%>/>
+        <input name="endTime-{{index}}" id="employee-end-time-{{index}}" type="text" class="timepicker-{{index}}" autocomplete="off" value="{{endTime}}" />
         <label for="employee-end-time-{{index}}">End Time</label>
       </div>
     </div>
@@ -458,8 +455,7 @@
   <div id="extra-vehicle-work-div">
     <div class="row">
       <div class="input-field col s10 m11" id="vehicle-work-div-{{index}}">
-        <input name="jobTitle-{{index}}" type="text" id="vehicle-autocomplete-job-title-{{index}}" class="autocomplete-work" autocomplete="off" autofocus
-          <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.jobTitle != '') {%> value="<%=locals.query.jobTitle %>-{{index}}" <%}%>/>
+        <input name="jobTitle-{{index}}" type="text" id="vehicle-autocomplete-job-title-{{index}}" class="autocomplete-work" autocomplete="off" autofocus value="{{jobTitle}}" />
         <label for="vehicle-autocomplete-job-title-{{index}}">Work Done</label>
       </div>
       <div class="input-field col s2 m1">
@@ -468,13 +464,11 @@
     </div>
     <div class="row">
       <div class="input-field col s6">
-        <input name="startTime-{{index}}" id="vehicle-start-time-{{index}}" type="text" class="timepicker-{{index}}" autocomplete="off" 
-          <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.startTime != '') {%> value="<%= locals.query.startTime %>-{{index}}" <%} else { %> value="{{startTime}}" <% } %>/>
-        <label for="vehicle-start-time-{{index}}">Start Time</label>
+        <input name="startTime-{{index}}" id="vehicle-start-time-{{index}}" type="text" class="timepicker-{{index}}" autocomplete="off" value="{{startTime}}" />
+        <label class="active" for="vehicle-start-time-{{index}}">Start Time</label>
       </div>
       <div class="input-field col s6">
-        <input name="endTime-{{index}}" id="vehicle-end-time-{{index}}" type="text" class="timepicker-{{index}}" autocomplete="off" 
-          <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.endTime != '') {%> value="<%=locals.query.endTime %>-{{index}}" <%}%>/>
+        <input name="endTime-{{index}}" id="vehicle-end-time-{{index}}" type="text" class="timepicker-{{index}}" autocomplete="off" value="{{endTime}}" />
         <label for="vehicle-end-time-{{index}}">End Time</label>
       </div>
     </div>
@@ -768,8 +762,14 @@
 <% if (Object.keys(locals.query).length !== 0 ) { %>
   <% if (locals.query.item == 'employee') { %>
     <script>loadEmployeeForm();</script>
+    <% if (locals.query.extraJobtitleArray) { %>
+      <script>loadExtraEmployeeForm('<%= locals.query.extraJobtitleArray %>', '<%= locals.query.extraStarttimeArray %>', '<%= locals.query.extraEndtimeArray %>');</script>
+    <% } %>
   <% } else if (locals.query.item == 'vehicle') { %> 
     <script>loadVehicleForm();</script>
+    <% if (locals.query.extraJobtitleArray) { %>
+      <script>loadExtraVehicleForm('<%= locals.query.extraJobtitleArray %>', '<%= locals.query.extraStarttimeArray %>', '<%= locals.query.extraEndtimeArray %>');</script>
+    <% } %>
   <% } else if (locals.query.item == 'production') { %>
     <script>loadProductionForm();</script>
   <% } else if (locals.query.item == 'shipment') { %>
