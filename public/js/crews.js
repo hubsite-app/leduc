@@ -2,7 +2,10 @@ $(document).ready(function () {
   $('.employeeDropdown').dropdown({
     hover: false,
     closeOnClick: false,
-    coverTrigger: false
+    coverTrigger: false,
+    onCloseEnd: function() {
+      location.reload();
+    }
   });
   $(document).on('click','.crew-dropdown-select', function(event) {
     event.preventDefault();
@@ -20,7 +23,9 @@ $(document).ready(function () {
         url: `/crew/${crewId}/employee/${employeeId}`,
         timeout: 5000,
         success: function () {
-          location.reload(true);
+          setTimeout(function(){
+            location.reload(true);
+          }, 5000);
         }
       });
     } else {
@@ -29,7 +34,9 @@ $(document).ready(function () {
         url: `/crew/${crewId}/employee/${employeeId}`,
         timeout: 5000,
         success: function () {
-          location.reload(true);
+          setTimeout(function(){
+            location.reload(true);
+          }, 5000);
         }
       });
     }
@@ -37,7 +44,10 @@ $(document).ready(function () {
   $('.vehicleDropdown').dropdown({
     hover: false,
     closeOnClick: false,
-    coverTrigger: false
+    coverTrigger: false,
+    onCloseEnd: function() {
+      location.reload();
+    }
   });
   $('.crewDropdown').dropdown({
     hover: false,
@@ -53,7 +63,9 @@ $(document).ready(function () {
         type: 'POST',
         url: `/crew/${crewId}/vehicle/${vehicleId}`,
         success: function() {
-          location.reload(true);
+          setTimeout(function(){
+            location.reload(true);
+          }, 5000);
         }
       });
     } else {
@@ -61,7 +73,9 @@ $(document).ready(function () {
         type: 'DELETE',
         url: `/crew/${crewId}/vehicle/${vehicleId}`,
         success: function() {
-          location.reload(true);
+          setTimeout(function(){
+            location.reload(true);
+          }, 5000);
         }
       });
     }
