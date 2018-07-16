@@ -1637,24 +1637,29 @@ app.post('/employeehour', async (req, res) => {
     var startTime = await timeHandling(req.body.startTime, report.date);
     var endTime = await timeHandling(req.body.endTime, report.date);
     var netEmployeeHours = 0;
-    var index, workArray = [];
+    var index, workArray = [], missingIndices;
     if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
       index = 1
+      missingIndices = 0;
       while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
-        var tempStartTime = await timeHandling(req.body[`startTime-${index}`], report.date);
-        var tempEndTime = await timeHandling(req.body[`endTime-${index}`], report.date);
-        workArray[index] = {
-          jobTitle: req.body[`jobTitle-${index}`],
-          startTime: tempStartTime, 
-          endTime: tempEndTime
+        if (req.body[`jobTitle-${index}`] != '' && req.body[`endTime-${index}`] != '') {
+          var tempStartTime = await timeHandling(req.body[`startTime-${index}`], report.date);
+          var tempEndTime = await timeHandling(req.body[`endTime-${index}`], report.date);
+          workArray[index] = {
+            jobTitle: req.body[`jobTitle-${index}`],
+            startTime: tempStartTime, 
+            endTime: tempEndTime
+          }
+        } else {
+          missingIndices++;
         }
         index++;
       }
-      index = index - 1;
+      index = index - 1 - missingIndices;
     }
     if (typeof req.body.employee == 'object') {
       for (var i in req.body.employee) {
-        if (index != undefined) {
+        if (index != undefined || index != 0) {
           for (var j = 1; j < index + 1; j++) {
             var employeeWork = await new EmployeeWork({
               startTime: workArray[j].startTime, 
@@ -1686,7 +1691,8 @@ app.post('/employeehour', async (req, res) => {
       req.flash('success', `Work added, that is a combined ${netEmployeeHours} hours on this job today!`);
       res.redirect(`/report/${report._id}`);
     } else {
-      if (index != undefined) {
+      console.log(index);
+      if (index != undefined || index != 0) {
         for (var i = 1; i < index + 1; i++) {
           var employeeWork = await new EmployeeWork({
             startTime: workArray[i].startTime, 
@@ -1722,7 +1728,6 @@ app.post('/employeehour', async (req, res) => {
       var index, append, extraJobtitleArray = [], extraStarttimeArray = [], extraEndtimeArray = [];
       if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
         index = 1
-        console.log(req.body);
         while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
           tempStartTime = undefined, tempEndTime = undefined;
           if (req.body[`startTime-${index}`] != '') {
@@ -1830,26 +1835,29 @@ app.post('/vehiclehour', async (req, res) => {
     var startTime = await timeHandling(req.body.startTime, report.date);
     var endTime = await timeHandling(req.body.endTime, report.date);
     var netVehicleHours = 0;
-    var index, workArray = [];
+    var index, workArray = [], missingIndices;
     if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
-      index = 1
+      index = 1;
+      missingIndices = 0
       while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
-        var tempStartTime = await timeHandling(req.body[`startTime-${index}`], report.date);
-        var tempEndTime = await timeHandling(req.body[`endTime-${index}`], report.date);
-        workArray[index] = {
-          jobTitle: req.body[`jobTitle-${index}`],
-          startTime: tempStartTime, 
-          endTime: tempEndTime
+        if (req.body[`jobTitle-${index}`] != '' && req.body[`endTime-${index}`] != '') {
+          var tempStartTime = await timeHandling(req.body[`startTime-${index}`], report.date);
+          var tempEndTime = await timeHandling(req.body[`endTime-${index}`], report.date);
+          workArray[index] = {
+            jobTitle: req.body[`jobTitle-${index}`],
+            startTime: tempStartTime, 
+            endTime: tempEndTime
+          }
+        } else {
+          missingIndices++;
         }
-        console.log(workArray[index]);
         index++;
-        console.log(index);
       }
-      index = index - 1;
+      index = index - 1 - missingIndices;
     }
     if (typeof req.body.vehicle == 'object') {
       for (var i in req.body.vehicle) {
-        if (index != undefined) {
+        if (index != undefined || index != 0) {
           for (var j = 1; j < index + 1; j++) {
             var vehicleWork = await new VehicleWork({
               startTime: workArray[j].startTime, 
@@ -1881,7 +1889,7 @@ app.post('/vehiclehour', async (req, res) => {
       req.flash('success', `Work added, that is a combined ${netVehicleHours} vehicle hours on this job today!`);
       res.redirect('back');
     } else {
-      if (index != undefined) {
+      if (index != undefined || index != 0) {
         for (var i = 1; i < index + 1; i++) {
           var vehicleWork = await new VehicleWork({
             startTime: workArray[i].startTime, 
