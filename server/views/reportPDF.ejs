@@ -29,9 +29,11 @@
       </div>
     </div>
 
+    <!-- Employee Hours -->
     <div class="row" style="margin-top: 0em;">
       <div class="col s6">
         <% if (Object.keys(employeeHourArray).length > 0) { %>
+          <% employeeHourArray.sort(function(a,b) {return (employeeArray[a.employee].name > employeeArray[b.employee].name) ? 1 : ((employeeArray[b.employee].name > employeeArray[a.employee].name) ? -1 : 0);} ); %>
           <u><h6>Employee Hours</h6></u>
           <table class="striped">
             <thead>
@@ -44,8 +46,18 @@
               </tr>
             </thead>
             <tbody>
-              <% var totalEmployeeHours = 0 %>
+              <% var totalEmployeeHours = 0, prevEmployeeID %>
               <% for (var i in employeeHourArray) { %>
+                <% if (prevEmployeeID != employeeHourArray[i].employee.toString() && prevEmployeeID != undefined) { %>
+                  <tr style="line-height: 0.1em;">
+                    <td><b>Total</b></td><td></td><td></td><td></td>
+                    <td>
+                      <b><%= totalEmployeeHours.toFixed(2) %></b>
+                    </td>
+                  </tr>
+                  <% totalEmployeeHours = 0 %>
+                <% } %>
+                <% prevEmployeeID = employeeHourArray[i].employee %>
                 <tr style="line-height: 0.1em;">
                   <td><% if (employeeArray[employeeHourArray[i].employee]){%><%= employeeArray[employeeHourArray[i].employee].name %><%}else{%>'Employee was removed'<%}%></td>
                   <td><%= employeeHourArray[i].jobTitle.substring(0, 13) %></td>
@@ -54,20 +66,22 @@
                   <td><%= Math.round(Math.abs(employeeHourArray[i].endTime - employeeHourArray[i].startTime) / 3.6e6 * 100) / 100 %></td>
                   <% totalEmployeeHours += Math.round(Math.abs(employeeHourArray[i].endTime - employeeHourArray[i].startTime) / 3.6e6 * 100) / 100 %> 
                 </tr>
-              <% } %> 
-                <tr>
-                  <td><b>Total</b></td><td></td><td></td><td></td>
-                  <td>
-                    <b><%= totalEmployeeHours %></b>
-                  </td>
-                </tr>
+              <% } %>
+              <tr style="line-height: 0.1em;">
+                <td><b>Total</b></td><td></td><td></td><td></td>
+                <td>
+                  <b><%= totalEmployeeHours.toFixed(2) %></b>
+                </td>
+              </tr> 
             </tbody>
           </table>
         <% } %>
       </div>
 
+      <!-- Vehicle Hours -->
       <div class="col s6">
         <% if (Object.keys(vehicleHourArray).length > 0) { %>
+          <% vehicleHourArray.sort(function(a,b) {return (vehicleArray[a.vehicle].name > vehicleArray[b.vehicle].name) ? 1 : ((vehicleArray[b.vehicle].name > vehicleArray[a.vehicle].name) ? -1 : 0);} ); %>
           <u><h6>Vehicle Hours</h6></u>
           <table class="striped">
             <thead>
@@ -80,8 +94,18 @@
               </tr>
             </thead>
             <tbody>
-              <% var totalVehicleHours = 0 %>
+              <% var totalVehicleHours = 0, prevVehicleID %>
               <% for (var i in vehicleHourArray) { %>
+                <% if (prevVehicleID != vehicleHourArray[i].vehicle.toString() && prevVehicleID != undefined) { %>
+                  <tr style="line-height: 0.1em;">
+                    <td><b>Total</b></td><td></td><td></td><td></td>
+                    <td>
+                      <b><%= totalVehicleHours.toFixed(2) %></b>
+                    </td>
+                  </tr>
+                  <% totalVehicleHours = 0 %>
+                <% } %>
+                <% prevVehicleID = vehicleHourArray[i].vehicle %>
                 <tr style="line-height: 0.1em;">
                   <td><% if (vehicleArray[vehicleHourArray[i].vehicle]){%><%= vehicleArray[vehicleHourArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%></td>
                   <td><%= vehicleHourArray[i].jobTitle.substring(0, 13) %></td>
@@ -91,10 +115,10 @@
                   <% totalVehicleHours += Math.round(Math.abs(vehicleHourArray[i].endTime - vehicleHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
                 </tr>
               <% } %>
-              <tr>
+              <tr style="line-height: 0.1em;">
                 <td><b>Total</b></td><td></td><td></td><td></td>
                 <td>
-                  <b><%= totalVehicleHours %></b>
+                  <b><%= totalVehicleHours.toFixed(2) %></b>
                 </td>
               </tr>
             </tbody>
@@ -103,6 +127,7 @@
       </div>
     </div> 
 
+    <!-- Production -->
     <div class="row" style="margin-top: 0em;">
       <div class="col s6">
           <% if (Object.keys(productionArray).length > 0) { %>
@@ -132,8 +157,10 @@
           <% } %>
       </div>
 
+      <!-- Material Shipments -->
       <div class="col s6">
         <% if (Object.keys(materialArray).length > 0) { %>
+          <% materialArray.sort(function(a,b) {return (a.shipmentType > b.shipmentType) ? 1 : ((b.shipmentType > a.shipmentType) ? -1 : 0);} ); %>
           <u><h6>Material Shipments</h6></u>
           <table class="striped">
             <thead>
@@ -145,9 +172,22 @@
               </tr>
             </thead>
             <tbody>
-              <% var totalMaterial = 0 %>
-              <% var totalMaterialHours = 0 %>
+              <% var totalMaterial = 0, totalMaterialHours = 0, prevShipment %>
               <% for (var i in materialArray) { %>
+                <% if (prevShipment != materialArray[i].shipmentType && prevShipment != undefined) { %>
+                  <tr style="line-height: 0.1em;">
+                    <td><b>Total</b></td>
+                    <td>
+                      <b><%= totalMaterial %></b>
+                    </td>
+                    <td></td>
+                    <td>
+                      <b><%= totalMaterialHours %></b>
+                    </td>
+                  </tr>
+                  <% totalMaterialHours = 0, totalMaterial = 0 %>
+                <% } %>
+                <% prevShipment = materialArray[i].shipmentType %>
                 <tr style="line-height: 0.1em;">
                   <td><%= materialArray[i].shipmentType.substring(0, 13) %></td>
                   <td><%= materialArray[i].quantity %> <%= materialArray[i].unit %></td>
@@ -159,7 +199,7 @@
                   <% } %>
                 </tr>
               <% } %> 
-              <tr>
+              <tr style="line-height: 0.1em;">
                 <td><b>Total</b></td>
                 <td>
                   <b><%= totalMaterial %></b>
