@@ -109,10 +109,23 @@
                 <tr style="line-height: 0.1em;">
                   <td><% if (vehicleArray[vehicleHourArray[i].vehicle]){%><%= vehicleArray[vehicleHourArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%></td>
                   <td><%= vehicleHourArray[i].jobTitle.substring(0, 13) %></td>
-                  <td><%= vehicleHourArray[i].startTime.getHours() %>:<%= vehicleHourArray[i].startTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].startTime.getMinutes() %></td>
-                  <td><%= vehicleHourArray[i].endTime.getHours() %>:<%= vehicleHourArray[i].endTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].endTime.getMinutes() %></td>
-                  <td><%= Math.round(Math.abs(vehicleHourArray[i].endTime - vehicleHourArray[i].startTime) / 3.6e6 * 100) / 100 %></td>
-                  <% totalVehicleHours += Math.round(Math.abs(vehicleHourArray[i].endTime - vehicleHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
+                  <% if (vehicleHourArray[i].startTime) { %>
+                    <td><%= vehicleHourArray[i].startTime.getHours() %>:<%= vehicleHourArray[i].startTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].startTime.getMinutes() %></td>
+                  <% } else { %>
+                    <td></td>
+                  <% } %>
+                  <% if (vehicleHourArray[i].endTime) { %>
+                    <td><%= vehicleHourArray[i].endTime.getHours() %>:<%= vehicleHourArray[i].endTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].endTime.getMinutes() %></td>
+                  <% } else { %>
+                    <td></td>
+                  <% } %>
+                  <% if (vehicleHourArray[i].startTime && vehicleHourArray[i].endTime) { %>
+                    <td><%= Math.round(Math.abs(vehicleHourArray[i].endTime - vehicleHourArray[i].startTime) / 3.6e6 * 100) / 100 %></td>
+                    <% totalVehicleHours += Math.round(Math.abs(vehicleHourArray[i].endTime - vehicleHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
+                  <% } else { %>
+                    <td><%= vehicleHourArray[i].hours %></td>
+                    <% totalVehicleHours += vehicleHourArray[i].hours %>
+                  <% } %>
                 </tr>
               <% } %>
               <tr style="line-height: 0.1em;">

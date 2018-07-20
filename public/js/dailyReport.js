@@ -1,7 +1,6 @@
 $('document').ready(function() {
   $('select').formSelect();
   $('#employee-form-close').on('click', function() {
-    alert('Hi');
     var template = $('#employee-work-form-add-button').html();
     $('#add-employee-work').append(template);
     $('#employee-work-form-div').remove();
@@ -203,15 +202,12 @@ function removeVehicleForm() {
   $('#vehicle-work-button-div').append(template);
   $('#vehicle-work-form').remove();
 };
-function loadVehicleEditForm(id, work, start, end, vehicleId) {
-  if (start.split(' ').length > 1) {
-    start = start.split(' ')[4];
-  }
-  if (end.split(' ').length > 1) {
-    end = end.split(' ')[4];
+function loadVehicleEditForm(id, work, start, end, vehicleId, hours) {
+  if (start && end) {
+    hours = Math.round(Math.abs(new Date(end) - new Date(start)) / 3.6e6 * 100) / 100
   }
   var template = $('#vehicle-work-edit-form-template').html();
-  var html = Mustache.render(template, {id, work, start, end, vehicleId})
+  var html = Mustache.render(template, {id, work, start, end, vehicleId, hours})
   $("#vehicle-"+ id +"-work-edit-form-div").append(html);
   $('#vehicle-work-'+ id +'-edit-button').remove();
   $('input.autocomplete-work').autocomplete({
@@ -240,9 +236,9 @@ function loadVehicleEditForm(id, work, start, end, vehicleId) {
     container: '.container'
   });
 };
-function removeVehicleEditForm(id, jobTitle, startTime, endTime, vehicleId) {
+function removeVehicleEditForm(id, jobTitle, startTime, endTime, vehicleId, hours) {
   var template = $('#vehicle-edit-form-button').html();
-  var html = Mustache.render(template, {id, jobTitle, startTime, endTime, vehicleId});
+  var html = Mustache.render(template, {id, jobTitle, startTime, endTime, vehicleId, hours});
   $('#vehicle-work-'+ id +'-div').append(html);
   $('#vehicle-work-edit-form').remove();
 };
@@ -255,23 +251,16 @@ function deleteVehicleWorkRequest(id) {
     }
   });
 };
-function loadExtraVehicleWork(index, jobTitle, startTime, endTime) {
+function loadExtraVehicleWork(index, jobTitle, hours) {
   var template = $('#extra-vehicle-work-template').html();
-  var startTime;
   if (index == 1) {
-    if (!startTime) {
-      startTime = $('#vehicle-end-time').val();
-    }
     $('#original-vehicle-work-add-button').remove();
-    $('#original-vehicle-work-div').removeClass('s10 m11').addClass('s12 m12 l12');    
+    $('#original-vehicle-hour-div').removeClass('s4 m5').addClass('s6 m6');    
   } else if (index > 1) {
-    if (!startTime) {
-      startTime = $(`#vehicle-end-time-${index - 1}`).val();
-    }
     $('#vehicle-work-add-button-' + (index - 1)).remove();
-    $('#vehicle-work-div-' + (index - 1)).removeClass('s10 m11').addClass('s12 m12 l12'); 
+    $('#vehicle-hours-div-' + (index - 1)).removeClass('s4 m4').addClass('s6 m6'); 
   }
-  var html = Mustache.render(template, {index, jobTitle, startTime, endTime});
+  var html = Mustache.render(template, {index, jobTitle, hours});
   $('#extra-vehicle-work-div').append(html);
   $('input.autocomplete-work').autocomplete({
     data: {
@@ -299,13 +288,12 @@ function loadExtraVehicleWork(index, jobTitle, startTime, endTime) {
     container: '.container'
   });
 }; 
-function loadExtraVehicleForm(jobs, startTimes, endTimes) {
+function loadExtraVehicleForm(jobs, hours) {
   var jobTitleArray = jobs.split(',');
-  var startTimeArray = startTimes.split(',');
-  var endTimeArray = endTimes.split(',');
+  var hourArray = hours.split(',');
   var index = jobTitleArray.length;
   for(var i = 0; i < index; i++) {
-    loadExtraVehicleWork(i + 1, jobTitleArray[i], startTimeArray[i], endTimeArray[i]);
+    loadExtraVehicleWork(i + 1, jobTitleArray[i], hourArray[i]);
   }
 }
 

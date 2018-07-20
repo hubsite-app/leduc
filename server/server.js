@@ -1765,21 +1765,16 @@ app.delete('/employeework/:id', async (req, res) => {
 app.post('/vehiclehour', async (req, res) => {
   try {
     var report = await DailyReport.findById(req.body.dailyReport);
-    var startTime = await timeHandling(req.body.startTime, report.date);
-    var endTime = await timeHandling(req.body.endTime, report.date);
     var netVehicleHours = 0;
     var index, workArray = [], missingIndices;
     if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
       index = 1;
       missingIndices = 0
       while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
-        if (req.body[`jobTitle-${index}`] != '' && req.body[`endTime-${index}`] != '') {
-          var tempStartTime = await timeHandling(req.body[`startTime-${index}`], report.date);
-          var tempEndTime = await timeHandling(req.body[`endTime-${index}`], report.date);
+        if (req.body[`jobTitle-${index}`] != '' && req.body[`hours-${index}`] != '') {
           workArray[index] = {
             jobTitle: req.body[`jobTitle-${index}`],
-            startTime: tempStartTime, 
-            endTime: tempEndTime
+            hours: req.body[`hours-${index}`]
           }
         } else {
           missingIndices++;
@@ -1793,8 +1788,7 @@ app.post('/vehiclehour', async (req, res) => {
         if (index != undefined || index != 0) {
           for (var j = 1; j < index + 1; j++) {
             var vehicleWork = await new VehicleWork({
-              startTime: workArray[j].startTime, 
-              endTime: workArray[j].endTime,
+              hours: workArray[j].hours,
               jobTitle: workArray[j].jobTitle,
               vehicle: req.body.vehicle[i],
               dailyReport: report._id
@@ -1805,7 +1799,7 @@ app.post('/vehiclehour', async (req, res) => {
           }
         } 
         var vehicleWork = await new VehicleWork({
-          startTime, endTime,
+          hours: req.body.hours,
           jobTitle: req.body.jobTitle,
           vehicle: req.body.vehicle[i],
           dailyReport: report._id
@@ -1816,7 +1810,7 @@ app.post('/vehiclehour', async (req, res) => {
       };
       await VehicleWork.find({dailyReport: report._id}, (err, works) => {
         works.forEach((work) => {
-          netVehicleHours += Math.round(Math.abs(work.endTime - work.startTime) / 3.6e6 * 100) / 100;
+          netVehicleHours += work.hours;
         });
       });
       req.flash('success', `Work added, that is a combined ${netVehicleHours} vehicle hours on this job today!`);
@@ -1825,8 +1819,7 @@ app.post('/vehiclehour', async (req, res) => {
       if (index != undefined || index != 0) {
         for (var i = 1; i < index + 1; i++) {
           var vehicleWork = await new VehicleWork({
-            startTime: workArray[i].startTime, 
-            endTime: workArray[i].endTime,
+            hours: workArray[i].hours, 
             jobTitle: workArray[i].jobTitle,
             vehicle: req.body.vehicle,
             dailyReport: report._id
@@ -1837,7 +1830,7 @@ app.post('/vehiclehour', async (req, res) => {
         }
       } 
       var vehicleWork = await new VehicleWork({
-        startTime, endTime,
+        hours: req.body.hours,
         jobTitle: req.body.jobTitle,
         vehicle: req.body.vehicle,
         dailyReport: report._id
@@ -1847,51 +1840,28 @@ app.post('/vehiclehour', async (req, res) => {
       await report.save();
       await VehicleWork.find({dailyReport: report._id}, (err, works) => {
         works.forEach((work) => {
-          netVehicleHours += Math.round(Math.abs(work.endTime - work.startTime) / 3.6e6 * 100) / 100;
+          netVehicleHours += work.hours;
         });
       });
       req.flash('success', `Work added, that is a combined ${netVehicleHours} vehicle hours on this job today!`);
-      res.redirect('back');
+      res.redirect(`/report/${report._id}`);
     }
   } catch (e) {
     try {
-      var index, append, extraJobtitleArray = [], extraStarttimeArray = [], extraEndtimeArray = [];
+      var index, append, extraJobtitleArray = [], extraHourArray = [];
       if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
         index = 1
-        console.log(req.body);
         while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
-          tempStartTime = undefined, tempEndTime = undefined;
-          if (req.body[`startTime-${index}`] != '') {
-            var tempStartTime = await timeHandling(req.body[`startTime-${index}`], report.date);
-            var start = new Date(tempStartTime);
-            tempStartTime = `${start.getHours().toString()}:${start.getMinutes().toString()<10?'0':''}${start.getMinutes().toString()}`;
-          }
-          if (req.body[`endTime-${index}`] != '') {
-            var tempEndTime = await timeHandling(req.body[`endTime-${index}`], report.date);
-            var end = new Date(tempEndTime);
-            tempEndTime = `${end.getHours().toString()}:${end.getMinutes().toString()<10?'0':''}${end.getMinutes().toString()}`;
-          }
           extraJobtitleArray[index - 1] = req.body[`jobTitle-${index}`];
-          extraStarttimeArray[index - 1] = tempStartTime;
-          extraEndtimeArray[index - 1] = tempEndTime;
+          extraHourArray[index - 1] = req.body[`hours-${index}`];
           index++;
         }
         index = index - 1;
       }
-      if(req.body.startTime) {
-        var startTime = await timeHandling(req.body.startTime, report.date);
-        var start = new Date(startTime);
-        startTime = `${start.getHours().toString()}:${start.getMinutes().toString()<10?'0':''}${start.getMinutes().toString()}`;
-      } 
-      if (req.body.endTime) {
-        var endTime = await timeHandling(req.body.endTime, report.date);
-        var end = new Date(endTime);
-        endTime = `${end.getHours().toString()}:${end.getMinutes().toString()<10?'0':''}${end.getMinutes().toString()}`;
-      }
       var query = querystring.stringify({
         item: 'vehicle',
         message: e.message,
-        startTime, endTime,
+        hours: req.body.hours,
         jobTitle: req.body.jobTitle,
         vehicle: req.body.vehicle
       });
@@ -1900,14 +1870,9 @@ app.post('/vehiclehour', async (req, res) => {
       }, {arrayFormat: 'bracket'});
       query += `&${append}`;
       append = querystring.stringify({
-        extraStarttimeArray
+        extraHourArray
       }, {arrayFormat: 'bracket'});
       query += `&${append}`;
-      append = querystring.stringify({
-        extraEndtimeArray
-      }, {arrayFormat: 'bracket'});
-      query += `&${append}`;
-      console.log(e);
       res.redirect(`/report/${report._id}/?` + query);
     } catch (e) {
       console.log(e);
@@ -1919,20 +1884,33 @@ app.post('/vehiclehour', async (req, res) => {
 
 // POST /vehiclework/:id/update
 app.post('/vehiclework/:id/update', async (req, res) => {
-  try  {
-    var report = await DailyReport.findById(req.body.dailyReport);
-    var startTime = await timeHandling(req.body.startTime, report.date);
-    var endTime = await timeHandling(req.body.endTime, report.date);
+  try {
+    var report = await DailyReport.findById(req.body.dailyReport), hours;
+    if (req.body.startTime && req.body.endTime) {
+      var startTime = await timeHandling(req.body.startTime, report.date);
+      var endTime = await timeHandling(req.body.endTime, report.date);
+      hours = Math.round(Math.abs(work.endTime - work.startTime) / 3.6e6 * 100) / 100;
+
+    }
     var netVehicleHours = 0;
+    if (req.body.hours) {
+      hours = req.body.hours;
+    }
     await VehicleWork.findByIdAndUpdate(req.params.id, {$set: {
-      startTime, endTime,
+      startTime: '',
+      endTime: '',
+      hours,
       jobTitle: req.body.jobTitle,
       vehicle: req.body.vehicle,
       dailyReport: report._id
     }}, {new: true});
     await VehicleWork.find({dailyReport: report._id}, (err, works) => {
       works.forEach((work) => {
-        netVehicleHours += Math.round(Math.abs(work.endTime - work.startTime) / 3.6e6 * 100) / 100;
+        if (work.endTime && work.startTime) {
+          netVehicleHours += Math.round(Math.abs(work.endTime - work.startTime) / 3.6e6 * 100) / 100;
+        } else if (work.hours) {
+          netVehicleHours += work.hours;
+        } 
       });
     });
     req.flash('success', `Work updated, that is a combined ${netVehicleHours} vehicle hours on this job today!`);

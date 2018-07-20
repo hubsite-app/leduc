@@ -75,7 +75,7 @@
                 <% if (locals.user.projectManager != true) { %>
                   <div id="vehicle-work-<%=vehicleHourArray[i]._id%>-div">
                     <a class="vehicle-work-edit secondary-content" id="vehicle-work-<%=vehicleHourArray[i]._id%>-edit-button"
-                      onClick="loadVehicleEditForm('<%= vehicleHourArray[i]._id %>', '<%= vehicleHourArray[i].jobTitle %>', '<%= vehicleHourArray[i].startTime %>', '<%= vehicleHourArray[i].endTime %>', '<%=vehicleHourArray[i].vehicle%>'); return false;" href="">
+                      onClick="loadVehicleEditForm('<%= vehicleHourArray[i]._id %>', '<%= vehicleHourArray[i].jobTitle %>', '<%=vehicleHourArray[i].startTime%>', '<%=vehicleHourArray[i].endTime%>', '<%=vehicleHourArray[i].vehicle%>', '<%= vehicleHourArray[i].hours %>'); return false;" href="">
                       <i class="material-icons">edit</i>
                     </a>
                   </div>
@@ -83,10 +83,15 @@
                 <% } %>
 
                 <b><%= vehicleHourArray[i].jobTitle %></b> - <% if (vehicleArray[vehicleHourArray[i].vehicle]){%><%= vehicleArray[vehicleHourArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%></br>
-                <%= vehicleHourArray[i].startTime.getHours() %>:<%= vehicleHourArray[i].startTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].startTime.getMinutes() %> - 
-                  <%= vehicleHourArray[i].endTime.getHours() %>:<%= vehicleHourArray[i].endTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].endTime.getMinutes() %>
-                <span>(<%= hour %></span>
-                  <% if (hour <= 1) { %> hour<% } else { %> hours<% } %>)
+                <% if (vehicleHourArray[i].startTime && vehicleHourArray[i].endTime) { %>
+                  <%= vehicleHourArray[i].startTime.getHours() %>:<%= vehicleHourArray[i].startTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].startTime.getMinutes() %> - 
+                    <%= vehicleHourArray[i].endTime.getHours() %>:<%= vehicleHourArray[i].endTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].endTime.getMinutes() %>
+                  <span>(<%= hour %></span>
+                    <% if (hour <= 1) { %> hour<% } else { %> hours<% } %>)
+                <% } else { %>
+                  <span><%= vehicleHourArray[i].hours %></span>
+                    <% if (vehicleHourArray[i].hours <= 1) { %> hour<% } else { %> hours<% } %>
+                <% } %>
                 <div id="vehicle-<%=vehicleHourArray[i]._id%>-work-edit-form-div"></div>
               </li>
             <% } %>
@@ -379,26 +384,19 @@
         </div>
       <% } %>
       <form method="post" action="/vehiclehour" id="vehicle-form">
-        <div class="row">
-          <div class="input-field col s10 m11">
+        <div class="row" style="padding: 0;">
+          <div class="input-field col s6 m6" id="original-vehicle-work-div">
             <input name="jobTitle" type="text" id="vehicle-autocomplete-job-title" class="autocomplete-work" autocomplete="off" autofocus
               <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.jobTitle != '') {%> value="<%=locals.query.jobTitle%>" <%}%>/>
             <label for="vehicle-autocomplete-job-title">Work Done</label>
           </div>
+          <div class="input-field col s4 m5" id="original-vehicle-hour-div">
+            <input name="hours" type="text" id="vehicle-hours" autocomplete="off" autofocus
+              <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.hours != '') {%> value="<%=locals.query.hours%>" <%}%>/>
+            <label for="vehicle-autocomplete-job-title">Hours</label>
+          </div>
           <div class="input-field col s2 m1">
             <a class="btn-floating" id="original-vehicle-work-add-button" onclick="loadExtraVehicleWork(1)"><i class="material-icons">add</i></a>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s6">
-            <input name="startTime" id="vehicle-start-time" type="text" class="timepicker" autocomplete="off" 
-              <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.startTime != '') {%> value="<%=locals.query.startTime%>" <%}%>/>
-            <label for="vehicle-start-time">Start Time</label>
-          </div>
-          <div class="input-field col s6">
-            <input name="endTime" id="vehicle-end-time" type="text" class="timepicker" autocomplete="off" 
-              <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.endTime != '') {%> value="<%=locals.query.endTime%>" <%}%>/>
-            <label for="vehicle-end-time">End Time</label>
           </div>
         </div>
         <div id="extra-vehicle-work-div"></div>
@@ -454,22 +452,16 @@
 <script id="extra-vehicle-work-template" type="text/template">
   <div id="extra-vehicle-work-div">
     <div class="row">
-      <div class="input-field col s10 m11" id="vehicle-work-div-{{index}}">
+      <div class="input-field col s6 m6" id="vehicle-work-div-{{index}}">
         <input name="jobTitle-{{index}}" type="text" id="vehicle-autocomplete-job-title-{{index}}" class="autocomplete-work" autocomplete="off" autofocus value="{{jobTitle}}" />
         <label for="vehicle-autocomplete-job-title-{{index}}">Work Done</label>
       </div>
+      <div class="input-field col s4 m5" id="vehicle-hours-div-{{index}}">
+        <input name="hours-{{index}}" type="text" id="vehicle-hours-{{index}}" autocomplete="off" autofocus value="{{hours}}" />
+        <label for="vehicle-autocomplete-job-title-{{index}}">Hours</label>
+      </div>
       <div class="input-field col s2 m1">
         <a class="btn-floating" id="vehicle-work-add-button-{{index}}" onclick="loadExtraVehicleWork({{index}} + 1)"><i class="material-icons">add</i></a>
-      </div>
-    </div>
-    <div class="row">
-      <div class="input-field col s6">
-        <input name="startTime-{{index}}" id="vehicle-start-time-{{index}}" type="text" class="timepicker-{{index}}" autocomplete="off" value="{{startTime}}" />
-        <label class="active" for="vehicle-start-time-{{index}}">Start Time</label>
-      </div>
-      <div class="input-field col s6">
-        <input name="endTime-{{index}}" id="vehicle-end-time-{{index}}" type="text" class="timepicker-{{index}}" autocomplete="off" value="{{endTime}}" />
-        <label for="vehicle-end-time-{{index}}">End Time</label>
       </div>
     </div>
   </div>
@@ -478,20 +470,16 @@
 <script id='vehicle-work-edit-form-template' type="text/template">
   <div id="vehicle-work-edit-form">
     <div class="row card-panel">
-      <i class="material-icons right pointer" onClick="removeVehicleEditForm('{{id}}', '{{work}}', '{{start}}', '{{end}}', '{{vehicleId}}'); return false;" id="vehicle-edit-form-close" aria-hidden="true">close</i>
+      <i class="material-icons right pointer" onClick="removeVehicleEditForm('{{id}}', '{{work}}', '{{vehicleId}}', '{{hours}}'); return false;" id="vehicle-edit-form-close" aria-hidden="true">close</i>
       <h3>Edit Work</h3>
       <form method="post" action="/vehiclework/{{id}}/update" id="vehicle-form">
-        <div class="input-field col s12">
+        <div class="input-field col s6">
           <input name="jobTitle" type="text" id="autocomplete-input" class="autocomplete-work" autocomplete="off" value="{{work}}" />
-          <span class="helper-text">Work Done</span>
+          <label class="active" for="autocomplete-input">Work Done</label>
         </div>
         <div class="input-field col s6">
-          <input name="startTime" type="text" class="timepicker" autocomplete="off" value="{{start}}" />
-          <span class="helper-text">Start Time</span>
-        </div>
-        <div class="input-field col s6">
-          <input name="endTime" type="text" class="timepicker" autocomplete="off" value="{{end}}" />
-          <span class="helper-text">End Time</span>
+          <input name="hours" type="text" id="vehicle-hours" autocomplete="off" value="{{hours}}" />
+          <label class="active" for="vehicle-autocomplete-job-title">Hours</label>
         </div>
         <input type="hidden" name="vehicle" value="{{vehicleId}}" />
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
@@ -505,7 +493,7 @@
 
 <script id='vehicle-edit-form-button' type='text/template'>
   <a class="vehicle-work-edit secondary-content" id="vehicle-work-{{id}}-edit-button"
-    onClick="loadVehicleEditForm('{{id}}', '{{jobTitle}}', '{{startTime}}', '{{endTime}}', '{{vehicleId}}'); return false;" href="">
+    onClick="loadVehicleEditForm('{{id}}', '{{jobTitle}}', '{{startTime}}', '{{endTime}}', '{{vehicleId}}', '{{hours}}'); return false;" href="">
     <i class="material-icons">edit</i>
   </a>
 </script>
@@ -768,7 +756,7 @@
   <% } else if (locals.query.item == 'vehicle') { %> 
     <script>loadVehicleForm();</script>
     <% if (locals.query.extraJobtitleArray) { %>
-      <script>loadExtraVehicleForm('<%= locals.query.extraJobtitleArray %>', '<%= locals.query.extraStarttimeArray %>', '<%= locals.query.extraEndtimeArray %>');</script>
+      <script>loadExtraVehicleForm('<%= locals.query.extraJobtitleArray %>', '<%= locals.query.extraHourArray %>');</script>
     <% } %>
   <% } else if (locals.query.item == 'production') { %>
     <script>loadProductionForm();</script>

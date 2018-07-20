@@ -15,12 +15,10 @@ var ProductionSchema = new mongoose.Schema({
     required: true
   },
   startTime: {
-    type: Date,
-    required: true
+    type: Date
   },
   endTime: {
-    type: Date,
-    required: true
+    type: Date
   },
   description: {
     type: String,
