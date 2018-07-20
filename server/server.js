@@ -191,118 +191,6 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-// GET /forgot
-app.get('/forgot', (req, res) => {
-  res.render('users/forgot');
-});
-
-// POST /forgot
-app.post('/forgot', (req, res, next) => {
-  async.waterfall([
-    function(done) {
-      crypto.randomBytes(20, function(err, buf) {
-        var token = buf.toString('hex');
-        done(err, token);
-      });
-    },
-    function(token, done) {
-      User.findOne({ email: req.body.email }, function(err, user) {
-        if (!user) {
-          req.flash('error', 'No account with that email address exists.');
-          return res.redirect('/forgot');
-        }
-        user.resetPasswordToken = token;
-        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-        user.save(function(err) {
-          done(err, token, user);
-        });
-      });
-    },
-    function(token, user, done) {
-      var smtpTransport = nodemailer.createTransport({
-        service: 'SendGrid',
-        auth: {
-          user: 'app98138005@heroku.com',
-          pass: 'z2ilzs7v6175'
-        }
-      });
-      var mailOptions = {
-        to: user.email,
-        from: 'passwordreset@bowmark.ca',
-        subject: 'Bow Mark Password Reset',
-        text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-          'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-          'If you did not request this, please ignore this email and your password will remain unchanged.\n'
-      };
-      smtpTransport.sendMail(mailOptions, function(err) {
-        req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
-        done(err, 'done');
-      });
-    }
-  ], function(err) {
-    if (err) return next(err);
-    res.redirect('/forgot');
-  });
-});
-
-// GET /reset/:token
-app.get('/reset/:token', (req, res) => {
-  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
-    if (!user) {
-      req.flash('error', 'Password reset token is invalid or has expired.');
-      return res.redirect('/forgot');
-    }
-    res.render('users/reset', {
-      token: req.params.token
-    });
-  });
-});
-
-// POST /reset/:token
-app.post('/reset/:token', function(req, res) {
-  async.waterfall([
-    function(done) {
-      User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
-        if (!user) {
-          req.flash('error', 'Password reset token is invalid or has expired.');
-          return res.redirect('back');
-        }
-        user.password = req.body.password;
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpires = undefined;
-        user.save(function(err) {
-          req.logIn(user, function(err) {
-            done(err, user);
-          });
-        });
-      });
-    },
-    function(user, done) {
-      var smtpTransport = nodemailer.createTransport({
-        service: 'SendGrid',
-        auth: {
-          user: 'app98138005@heroku.com',
-          pass: 'z2ilzs7v6175'
-        }
-      });
-      var mailOptions = {
-        to: user.email,
-        from: 'passwordreset@bowmark.ca',
-        subject: 'Your password has been changed',
-        text: 'Hello,\n\n' +
-          'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
-      };
-      smtpTransport.sendMail(mailOptions, function(err) {
-        req.flash('success', 'Success! Your password has been changed.');
-        done(err);
-      });
-    }
-  ], function(err) {
-    res.redirect('/');
-  });
-});
-
 // GET /users
 app.get('/users', async (req, res) => {
   try {
@@ -948,6 +836,54 @@ app.post('/jobsite/:id/update', async (req, res) => {
     req.flash('success', 'Jobsite successfully updated! Isn\'t that just fantastic?!');
     res.redirect('back');
     res.end();
+  } catch (e) {
+    console.log(e);
+    req.flash('error', e.message);
+    res.redirect('back');
+  }
+});
+
+// POST /jobsite/:id/activate
+app.post('/jobsite/:id/activate', async (req, res) => {
+  try {
+    var job = await Jobsite.findById(req.params.id);
+    var crew;
+    if (job.crews.length > 0) {
+      job.crews = [];
+    }
+    var crewArray = await Crew.getAll();
+    for (var i in crewArray) {
+      await job.crews.push(crewArray[i]._id);
+      crew = await Crew.findById(i);
+      if (!crew.jobsites.includes(job._id)) {
+        await crew.jobsites.push(job._id);
+        await crew.save();
+      }
+    }
+    job.active = true;
+    await job.save();
+    res.redirect('back');
+  } catch (e) {
+    console.log(e);
+    req.flash('error', e.message);
+    res.redirec('back');
+  }
+});
+
+// POST /jobsite/:id/disactivate
+app.post('/jobsite/:id/disactivate', async (req, res) => {
+  try {
+    var job = await Jobsite.findByIdAndUpdate(req.params.id, {$set: {crews: []}});
+    job.active = false;
+    var crewArray = await job.crews;
+    if (crewArray.length > 0) {
+      crewArray.forEach(async (crewId) => {
+        crewId = mongoose.Types.ObjectId(crewId);
+        await Crew.findByIdAndUpdate(crewId, {$pull: {jobsites: job._id}}, {new: true});
+      });
+    }
+    await job.save();
+    res.redirect('back');
   } catch (e) {
     console.log(e);
     req.flash('error', e.message);

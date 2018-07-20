@@ -21,57 +21,22 @@
         <th>Job Number</th>
         <th>Job Name</th>
         <th>Description</th>
-        <th>Crew(s)</th>
         <th>Options</th>
       </thead>
       <tbody>
         <% for (var i in jobArray) { %>
           <tr>
             <td style="vertical-align:top;"><%= jobArray[i].jobcode %></td>
-            <td style="vertical-align:top;"><b><%= jobArray[i].name %></b></td>
+            <td style="vertical-align:top;"><a href="/jobsite/<%= jobArray[i]._id %>"><b><%= jobArray[i].name %></b></a></td>
             <td style="vertical-align:top;"><%= jobArray[i].description %></td>
             <td style="vertical-align:top;">
-              <% if (jobArray[i].crews.length > 0) { %>
-                <ul class="collection">
-                  <% jobArray[i].crews.forEach((crew) => { %>
-                    <li class="collection-item">
-                      <h6><%= crewArray[crew].name %></h6>
-                    </li>
-                  <% }); %>
-                </ul>
-              <% } %>
-            </td>
-            <td style="vertical-align:top;">
+              <label>
+                <input type="checkbox" onClick="toggleApproval('<%=jobArray[i]._id%>')" id="job-<%= jobArray[i]._id %>-activation" 
+                  <% if (jobArray[i].active == true) { %> checked="checked" <%}%> /><span>Active</span>
+              </label></br>
               <a class="jobsite-delete secondary-content" onClick="if(confirm('Are you sure?')) {deleteRequest('<%= jobArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
               <a class="crew-edit secondary-content" id="job-<%= jobArray[i]._id %>-edit-button" onClick="editRequest('<%= jobArray[i]._id %>', &quot;<%= jobArray[i].name %>&quot;, '<%= jobArray[i].description %>', '<%= jobArray[i].jobcode %>'); return false;" href=""><i class="material-icons">edit</i></a>
-              <% if (crewArray) { %>
-                <div class="row">
-                  <div class="col-12">
-                    <a id="dropdown-crew-<%= jobArray[i]._id %>" class='crewDropdown btn' href='' data-target='job-<%= jobArray[i]._id %>-dropdown' style="width: 100%;">Crew(s)</a>
-                  </div>
-                </div>
-                <ul class="collection dropdown-content" id="job-<%= jobArray[i]._id %>-dropdown">
-                  <form id="job-<%= jobArray[i]._id %>-crew-form">
-                    <% for (var index in crewArray) { %>
-                      <label>
-                        <li class="collection-item" id="crew-<%= crewArray[index]._id %>-item">
-                          <input type="hidden" class="id" id="job-<%= jobArray[i]._id %>-id" value="<%= jobArray[i]._id %>" />
-                          <input type="checkbox" class="newCrew" id="crew-<%= crewArray[index]._id %>-checkbox" name="crew" value="<%= crewArray[index]._id %>" 
-                            <% jobArray[i].crews.forEach((crew) => {
-                              if (crewArray[index]._id.equals(crew)) {%>
-                                checked="true"
-                              <%}});%> />
-                          <span>
-                            <%= crewArray[index].name %>
-                          </span>
-                        </li>
-                      </label>
-                    <% } %>
-                  </form>
-                </ul>
-              <% } %> 
             </td>
-            
           </tr>
           <tr>
             <td colspan="5"><div id="job-<%= jobArray[i]._id %>-edit-container"></div></td>
@@ -141,3 +106,25 @@
     </form>
   </div>
 </script>
+
+<script>
+    function toggleApproval(id) {
+      if ($('#job-'+ id + '-activation').is(':checked')) {
+        $.ajax({
+          type: 'POST',
+          url: '/jobsite/' + id + '/activate',
+          success: function() {
+            location.reload();
+          }
+        });
+      } else {
+        $.ajax({
+          type: 'POST',
+          url: '/jobsite/' + id + '/disactivate',
+          success: function() {
+            location.reload();
+          }
+        });
+      }
+    };
+  </script>

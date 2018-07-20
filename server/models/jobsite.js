@@ -22,6 +22,10 @@ var JobsiteSchema = new mongoose.Schema({
     trim: true,
     unique: true
   },
+  active: {
+    type: Boolean,
+    default: false
+  },
   crews: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Crew'
