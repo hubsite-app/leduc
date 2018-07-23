@@ -1769,7 +1769,7 @@ app.post('/vehiclehour', async (req, res) => {
     var index, workArray = [], missingIndices;
     if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
       index = 1;
-      missingIndices = 0
+      missingIndices = 0;
       while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
         if (req.body[`jobTitle-${index}`] != '' && req.body[`hours-${index}`] != '') {
           workArray[index] = {
