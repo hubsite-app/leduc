@@ -45,10 +45,12 @@
             <div style="overflow: scroll; overflow-x: hidden; max-height: 50vh;">
               <ul class="collection">
                 <% crewArray[result].employees.forEach((employee) => { %>
-                  <li class="collection-item">
-                    <h6><a href="/employee/<%= employeeArray[employee]._id %>"><%= employeeArray[employee].name %></a></h6>
-                    <span><%= employeeArray[employee].jobTitle %></span>
-                  </li>
+                  <% if (typeof employeeArray[employee] != 'undefined') { %>
+                    <li class="collection-item">
+                      <h6><a href="/employee/<%= employeeArray[employee]._id %>"><%= employeeArray[employee].name %></a></h6>
+                      <span><%= employeeArray[employee].jobTitle %></span>
+                    </li>
+                  <% } %>
                 <% }); %>
               </ul>
             </div>

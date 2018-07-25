@@ -269,9 +269,11 @@
           <div class="input-field col s6">
             <select multiple name="employee">
               <% crew.employees.forEach((employeeId) => { %>
-                <option value="<%= employeeArray[employeeId]._id %>">
-                  <%= employeeArray[employeeId].name %>
-                </option>
+                <% if (typeof employeeArray[employeeId] != 'undefined') {} %>
+                  <option value="<%= employeeArray[employeeId]._id %>">
+                    <%= employeeArray[employeeId].name %>
+                  </option>
+                <% } %>
               <% }); %>
             </select>
             <label>Employee Select</label>

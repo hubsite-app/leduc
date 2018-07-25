@@ -19,7 +19,7 @@
     
     <div class="row" style="margin-bottom: 0em;">
       <div class="col s10">
-        <a href="/report/<%=report._id%>"><h5 style="display: inline;"><%= job.name %></h5></a> - 
+        <a href="/report/<%=report._id%>"><h5 style="display: inline;"><%= job.jobcode %> <%= job.name %></h5></a> - 
         <span><%= crew.name %><a href="/crew/<%= crew._id %>"></a></span> - 
         <span><%= report.date.toDateString(); %></span>
       </div>
