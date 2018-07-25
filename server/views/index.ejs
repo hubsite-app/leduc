@@ -40,25 +40,28 @@
               <h3>You must be added to a crew in order to pick a job</h3>
             </div>
           <% } %>
-          <% if (jobArray) { %>
-            <div class="row">
-              <% for (var i in jobArray) { %>
-                <% if (jobArray[i].crews.toString().includes(locals.query.crew)) { %>
-                  <div class="col s12 m6">
-                    <a class="report-link" href="" id="<%=jobArray[i]._id%>">
-                      <div class="card" style="padding: 1em;">
-                        <span class="card-title"><%= jobArray[i].name %></span>
-                        <span><%= jobArray[i].jobcode %></span>
-                        <div class="card-content">
-                          <p><%= jobArray[i].description %></p>
-                        </div>
+        <% } %>
+      </div>
+
+      <div class="row">
+        <% if (jobArray && (locals.user.admin != true && locals.user.projectManager != true)) { %>
+          <div style="overflow: scroll; height: 50vh;">
+            <% for (var i in jobArray) { %>
+              <% if (jobArray[i].crews.toString().includes(locals.query.crew)) { %>
+                <div class="col s12 m12">
+                  <a class="report-link" href="" id="<%=jobArray[i]._id%>">
+                    <div class="card">
+                      <span class="card-title"><%= jobArray[i].jobcode %></span>
+                      <div class="card-content">
+                        <p><b><%= jobArray[i].name %></b></p>
+                        <p><%= jobArray[i].description %></p>
                       </div>
-                    </a>
-                  </div>
-                <% } %>
+                    </div>
+                  </a>
+                </div>
               <% } %>
-           </div>
-          <% } %>
+            <% } %>
+          </div>
         <% } %>
       </div>
 

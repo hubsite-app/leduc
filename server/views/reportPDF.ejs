@@ -107,7 +107,7 @@
                 <% } %>
                 <% prevVehicleID = vehicleHourArray[i].vehicle %>
                 <tr style="line-height: 0.1em;">
-                  <td><% if (vehicleArray[vehicleHourArray[i].vehicle]){%><%= vehicleArray[vehicleHourArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%></td>
+                  <td><% if (vehicleArray[vehicleHourArray[i].vehicle]){%>(<%= vehicleArray[vehicleHourArray[i].vehicle].vehicleCode %>) <%= vehicleArray[vehicleHourArray[i].vehicle].name %><%}else{%>'Vehicle was removed'<%}%></td>
                   <td><%= vehicleHourArray[i].jobTitle.substring(0, 13) %></td>
                   <% if (vehicleHourArray[i].startTime) { %>
                     <td><%= vehicleHourArray[i].startTime.getHours() %>:<%= vehicleHourArray[i].startTime.getMinutes()<10?'0':''%><%= vehicleHourArray[i].startTime.getMinutes() %></td>

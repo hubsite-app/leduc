@@ -107,18 +107,12 @@ app.get('/', async (req, res, next) => {
         res.redirect(`/user/${user._id}/`);
       }
       var crewArray = [];
-      var jobArray = [];
+      var jobArray = await Jobsite.getAll();
       var reportArray = await DailyReport.getAll();
       var crewArray = await Crew.find({employees: user.employee}, (err, crews) => {
         if(err) {return console.log(err);}
       });
-      Jobsite.find({}, async (err, jobsites) => {
-        if(err) {return console.log(err);}
-        await jobsites.forEach((jobsite) => {
-          jobArray[jobsite._id] = jobsite;
-        });
-        res.render('index', {jobArray, crewArray, reportArray});
-      });
+      res.render('index', {jobArray, crewArray, reportArray});
     } else {
       req.flash('info', 'You must be logged in to use this site');
       res.render('login');
