@@ -71,31 +71,33 @@
             <div class="col s6">
               <h5>Reports</h5>
             </div>
-            <div class="col s6">
-              <a class='report-form-dropdown btn right' href='' data-target='report-form'>Add Past Report</a>
-              <div id="report-form" class="dropdown-content" style="padding: 0.5em;">
-                <form method="post" action="/report">
-                  <div class="input-field">
-                    <input type="text" name="date" class="datepicker">
-                    <label for="date">Date</label>
-                  </div>
-                  <div class="input-field">
-                    <div id="job-select" style="padding: 0.5em;">
-                      <% for (var i in jobArray) { %>
-                        <label>
-                          <input class="with-gap" name="jobId" type="radio" value="<%= jobArray[i]._id %>" />
-                          <span><%= jobArray[i].name %></span>
-                        </label></br>
-                      <% } %>
+            <% if (locals.user.admin != true && locals.user.projectManager != true) { %>
+              <div class="col s6">
+                <a class='report-form-dropdown btn right' href='' data-target='report-form'>Add Past Report</a>
+                <div id="report-form" class="dropdown-content" style="padding: 0.5em;">
+                  <form method="post" action="/report">
+                    <div class="input-field">
+                      <input type="text" name="date" class="datepicker">
+                      <label for="date">Date</label>
                     </div>
-                  </div>
-                  <input type="hidden" name="crewId" value="<%= locals.query.crew %>" />
-                  <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
-                    <i class="material-icons right">send</i>
-                  </button>
-                </form>
+                    <div class="input-field">
+                      <div id="job-select" style="padding: 0.5em;">
+                        <% for (var i in jobArray) { %>
+                          <label>
+                            <input class="with-gap" name="jobId" type="radio" value="<%= jobArray[i]._id %>" />
+                            <span><%= jobArray[i].name %></span>
+                          </label></br>
+                        <% } %>
+                      </div>
+                    </div>
+                    <input type="hidden" name="crewId" value="<%= locals.query.crew %>" />
+                    <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
+                      <i class="material-icons right">send</i>
+                    </button>
+                  </form>
+                </div>
               </div>
-            </div>
+            <% } %>
           </div>
           <% if (locals.query.jobs || locals.query.date) { %>
             <body onload="filterFormOn()"></body>

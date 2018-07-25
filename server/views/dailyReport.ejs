@@ -5,19 +5,20 @@
   <div class="container">
     <h2><a href="/jobsite/<%= job._id %>"><%= job.name %></a></h2>
     <div class="row">
-      <h5><%= crew.name %><a href="/crew/<%= crew._id %>">    <i class="tiny material-icons">edit</i></a></h5>
+      <h5><a href="/crew/<%= crew._id %>"><%= crew.name %>    <i class="tiny material-icons">edit</i></a></h5>
       <% if (locals.user.admin == true) { %>
         <label>
           <input type="checkbox" onClick="toggleApproval('<%=report._id%>')" id="report-<%= report._id %>-approval" 
             <% if (report.approved == true) { %> checked="checked" <%}%> />
           <span>Approved</span>
         </label></br>
-        <a href="/report/<%=report._id%>/pdf">Report</a></br>
+        <a href="/report/<%=report._id%>/pdf">PDF Report</a></br>
       <% } %>
       <% if (!locals.user.projectManager == true) { %>
-        <a href="" id="edit-button" onclick="loadEditForm(); return false;">Edit <i class="tiny material-icons">edit</i></a></br>
+        <a href="" id="edit-button" onclick="loadEditForm(); return false;">Edit Report<i class="tiny material-icons">edit</i></a></br>
         <div id="edit-form-div"></div>
       <% } %>
+      <a class="report-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteReportRequest('<%= report._id %>')}" href=""><i class="material-icons">delete</i></a>
       <h6><%= report.date.toDateString(); %></h6>
     </div>
 

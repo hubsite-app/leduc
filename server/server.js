@@ -19,16 +19,16 @@ const querystring = require('query-string');
 const pdf = require('html-pdf');
 
 const {User} = require('./models/user');
-const {Jobsite} = require('./models/jobsite');
+const {DailyReport} = require('./models/dailyReport');
 const {Employee} = require('./models/employee');
 const {Vehicle} = require('./models/vehicle');
-const {Crew} = require('./models/crew');
-const {DailyReport} = require('./models/dailyReport');
+const {Jobsite} = require('./models/jobsite');
 const {EmployeeWork} = require('./models/employeeWork');
 const {VehicleWork} = require('./models/vehicleWork');
 const {Production} = require('./models/production');
 const {MaterialShipment} = require('./models/materialShipment');
 const {ReportNote} = require('./models/reportNote');
+const {Crew} = require('./models/crew');
 
 const port = process.env.PORT || 3000;
 var app = express();
@@ -1485,8 +1485,46 @@ app.get('/report/:reportId', async (req, res) => {
   } catch (e) {
     console.log(e);
     req.flash('error', e.message);
-    res.redirect('back');
+    res.redirect('/');
   } 
+});
+
+// DELETE /report/:id
+app.delete('/report/:id', async (req, res) => {
+  try {
+    var report = await DailyReport.findById(req.params.id);
+    if (report.employeeWork) {
+      report.employeeWork.forEach(async (employeeWork) => {
+        await EmployeeWork.findByIdAndRemove({_id: employeeWork}, {new: true});
+      });
+    }
+    if (report.vehicleWork) {
+      report.vehicleWork.forEach(async (vehicleWork) => {
+        await VehicleWork.findByIdAndRemove({_id: vehicleWork});
+      });
+    }
+    if (report.production) {
+      report.production.forEach(async (production) => {
+        await Production.findByIdAndRemove({_id: production});
+      });
+    }
+    if (report.materialShipment) {
+      report.materialShipment.forEach(async (materialShipment) => {
+        await MaterialShipment.findByIdAndRemove({_id: materialShipment});
+      });
+    }
+    if (report.reportNote) {
+      await ReportNote.findByIdAndRemove({_id: report.reportNote});
+    }
+    await Jobsite.findByIdAndUpdate({_id: report.jobsite}, {$pull: {dailyReport: report._id}});
+    await Crew.findByIdAndUpdate({_id: report.crew}, {$pull: {dailyReport: report._id}});
+    await DailyReport.findByIdAndRemove({_id: report._id});
+    res.redirect('/');
+  } catch (e) {
+    console.log(e);
+    req.flash('error', e.message);
+    res.redirect('back');
+  }
 });
 
 // GET /report/:reportId/pdf

@@ -1,5 +1,7 @@
 <% include partials/head %>
   
+  <script src="/js/reportIndex.js"></script>
+
   <div class="container">
     <table class="highlight">
 
@@ -12,6 +14,7 @@
           <th>Crew</th>
           <th>Date</th>
           <th>Report</th>
+          <th>Option</th>
         </tr>
       </thead>
 
@@ -35,6 +38,7 @@
             <% dateArray = reportArray[i].date.toString().split(' ') %>
             <td><%= dateArray[0] %>, <%= dateArray[1] %> <%= dateArray[2] %></td>
             <td><a href="/report/<%= reportArray[i]._id %>/pdf">PDF</a></td>
+            <td><a class="report-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteReportRequest('<%= reportArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a></td>
           </tr>
         <% } %> 
       </tbody>

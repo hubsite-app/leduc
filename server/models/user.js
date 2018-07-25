@@ -5,6 +5,7 @@ const _ = require('lodash');
 const bcrypt = require('bcryptjs');
 const {Employee} = require('./employee');
 
+
 var UserSchema = new mongoose.Schema({
   name: {
     type: String,

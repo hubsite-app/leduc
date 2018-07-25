@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
-const {Jobsite} = require('./jobsite');
-const {Crew} = require('./crew');
+const async = require('async');
+
 const {EmployeeWork} = require('./employeeWork');
 const {VehicleWork} = require('./vehicleWork');
 const {Production} = require('./production');
 const {MaterialShipment} = require('./materialShipment');
-const {ReportNote} = require('./reportNote');
+const {Jobsite} = require('./jobsite');
 
 var DailyReportSchema = new mongoose.Schema({
   date: {
@@ -50,7 +50,7 @@ var DailyReportSchema = new mongoose.Schema({
 });
 
 DailyReportSchema.statics.getAll = function() {
-  var Report = this
+  var Report = this;
   var reportArray = [];
   return Report.find({}).sort({date: 'asc'}).then((reports) => {
     if (!reports) {return Promise.reject();}
@@ -66,7 +66,6 @@ DailyReportSchema.statics.getAll = function() {
     });
   });
 }
-
 
 var DailyReport = mongoose.model('DailyReport', DailyReportSchema);
 

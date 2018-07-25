@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const {Crew} = require('./crew');
+
 const {DailyReport} = require('./dailyReport');
+const {Crew} = require('./crew');
 
 var JobsiteSchema = new mongoose.Schema({
   name: {

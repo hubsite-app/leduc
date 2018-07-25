@@ -488,3 +488,10 @@ function toggleApproval(id) {
     });
   }
 };
+
+function deleteReportRequest(id) {
+  $.ajax({
+    type: 'DELETE',
+    url: `/report/${id}`
+  });
+};
