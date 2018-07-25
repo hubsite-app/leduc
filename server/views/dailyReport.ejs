@@ -282,19 +282,21 @@
         <div class="hide-on-small-only">
           <h6>Employees: </h6>
           <% crew.employees.forEach((employeeId) => { %>
-            <div class="input-field col s6">
-              <label>
-                <input type="checkbox" value="<%= employeeArray[employeeId]._id %>" name="employee" 
-                  <% if (Object.keys(locals.query).length !== 0 && typeof locals.query.employee != null && locals.query.item == 'employee') {%> 
-                    <% if (typeof locals.query.employee == 'object' && locals.query.employee.some((employee) => employee == employeeArray[employeeId]._id.toString())) { %>
-                      checked="checked"
-                    <% } else if (typeof locals.query.employee == 'string' && locals.query.employee == employeeArray[employeeId]._id.toString()) { %>
-                      checked="checked"
-                    <% } %> />
-                  <%} else { %>/><%}%> 
-                <span><%= employeeArray[employeeId].name %></span>
-              </label>
-            </div>
+            <% if (typeof employeeArray[employeeId] != 'undefined') { %>
+              <div class="input-field col s6">
+                <label>
+                  <input type="checkbox" value="<%= employeeArray[employeeId]._id %>" name="employee" 
+                    <% if (Object.keys(locals.query).length !== 0 && typeof locals.query.employee != null && locals.query.item == 'employee') {%> 
+                      <% if (typeof locals.query.employee == 'object' && locals.query.employee.some((employee) => employee == employeeArray[employeeId]._id.toString())) { %>
+                        checked="checked"
+                      <% } else if (typeof locals.query.employee == 'string' && locals.query.employee == employeeArray[employeeId]._id.toString()) { %>
+                        checked="checked"
+                      <% } %> />
+                    <%} else { %>/><%}%> 
+                  <span><%= employeeArray[employeeId].name %></span>
+                </label>
+              </div>
+            <% } %>
           <% }); %>
         </div>
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
