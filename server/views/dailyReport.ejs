@@ -159,7 +159,7 @@
           <% var totalsArray = []; %>
           <% for (var i in materialArray) { %>
             <li class="collection-item">
-              <% console.log(Object.keys(totalsArray).toString() + materialArray[i].shipmentType) %>
+              <% console.log(Object.keys(totalsArray).toString() + ' ' + materialArray[i].shipmentType) %>
               <% if (!Object.keys(totalsArray).toString().includes(materialArray[i].shipmentType)) { %>
                 <% totalsArray[materialArray[i].shipmentType] = {}; %>
                 <% totalsArray[materialArray[i].shipmentType].total = materialArray[i].quantity; %>
