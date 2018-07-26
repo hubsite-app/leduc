@@ -156,10 +156,19 @@
       <h5 class="card-title">Material Shipments</h5>
       <% if (Object.keys(materialArray).length > 0) { %>
         <ul class="collection">
+          <% var totalsArray = []; %>
           <% for (var i in materialArray) { %>
             <li class="collection-item">
-              
+
+              <% if (!Object.keys(totalsArray).toString().includes(materialArray[i].shipmentType)) { %>
+                <% totalsArray[materialArray[i].shipmentType] = {}; %>
+                <% totalsArray[materialArray[i].shipmentType].total = materialArray[i].quantity; %>
+                <% totalsArray[materialArray[i].shipmentType].unit = materialArray[i].unit; %>
+              <% } else { %>
+                <% totalsArray[materialArray[i].shipmentType].total += materialArray[i].quantity; %>
+              <% } %> 
               <% if (locals.user.projectManager != true) { %>
+
                 <div id="material-edit-<%=materialArray[i]._id%>-div">
                   <a class="material-edit secondary-content" id="material-<%=materialArray[i]._id%>-edit-button"
                     onClick="loadMaterialEditForm('<%= materialArray[i]._id %>', '<%= materialArray[i].shipmentType %>', '<%= materialArray[i].quantity %>', '<%= materialArray[i].unit %>', '<%= materialArray[i].vehicle %>'); return false;" href="">
@@ -169,10 +178,15 @@
                 <a class="vehicle-work-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteMaterialRequest('<%= materialArray[i]._id %>')}" href=""><i class="material-icons">delete</i></a>
               <% } %>
               
-              
               <b><%= materialArray[i].shipmentType %></b> - <%= materialArray[i].quantity %> <%= materialArray[i].unit %></br>
               <% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].name %> - <%= vehicleArray[materialArray[i].vehicle].vehicleType %><%}else{%>'Vehicle was removed'<%}%>
               <div id="material-<%=materialArray[i]._id%>-edit-form-div"></div>
+            </li>
+          <% } %>
+          <li class="collection-item"></li>
+          <% for (var i in totalsArray) { %>
+            <li class="collection-item">
+              <b>Total <%= i %></b>: <%= totalsArray[i].total %> <%= totalsArray[i].unit %>
             </li>
           <% } %>
         </ul>
