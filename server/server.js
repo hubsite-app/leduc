@@ -2097,6 +2097,7 @@ app.post('/material', async (req, res) => {
           quantity: req.body.quantity,
           unit: req.body.unit,
           source: req.body.source,
+          supplier: req.body.supplier,
           vehicle: vehicle._id,
           dailyReport: report._id
         });
@@ -2107,6 +2108,7 @@ app.post('/material', async (req, res) => {
           quantity: req.body.quantity,
           unit: req.body.unit,
           source: req.body.source,
+          supplier: req.body.supplier,
           vehicle: vehicle[0]._id,
           dailyReport: report._id
         });
@@ -2118,6 +2120,7 @@ app.post('/material', async (req, res) => {
         quantity: req.body.quantity,
         unit: req.body.unit,
         source: req.body.source,
+        supplier: req.body.supplier,
         vehicle: req.body.vehicle,
         dailyReport: report._id
       });
@@ -2148,6 +2151,7 @@ app.post('/material', async (req, res) => {
         quantity: req.body.quantity,
         unit: req.body.unit,
         source: req.body.source,
+        supplier: req.body.supplier,
         sourceTruckCode: req.body.sourceTruckCode,
         vehicleType: req.body.vehicleType,
         vehicle: req.body.vehicle,
@@ -2170,6 +2174,7 @@ app.post('/material/:id/update', async (req, res) => {
       shipmentType: req.body.shipmentType,
       quantity: req.body.quantity,
       unit: req.body.unit,
+      supplier: req.body.supplier,
       vehicle: req.body.vehicle, 
       dailyReport: report
     }}, {new: true});

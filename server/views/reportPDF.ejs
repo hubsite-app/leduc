@@ -202,7 +202,7 @@
                 <% } %>
                 <% prevShipment = materialArray[i].shipmentType %>
                 <tr style="line-height: 0.1em;">
-                  <td><%= materialArray[i].shipmentType.substring(0, 13) %></td>
+                  <td><%= materialArray[i].supplier %> <%= materialArray[i].shipmentType.substring(0, 13) %></td>
                   <td><%= materialArray[i].quantity %> <%= materialArray[i].unit %></td>
                   <% totalMaterial += materialArray[i].quantity %>
                   <td><% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].name %> - <%= vehicleArray[materialArray[i].vehicle].vehicleType %><%}else{%>'Vehicle was removed'<%}%></td>

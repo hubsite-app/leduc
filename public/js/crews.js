@@ -20,24 +20,12 @@ $(document).ready(function () {
     if ($(this).is(':checked')) {
       $.ajax({
         type: 'POST',
-        url: `/crew/${crewId}/employee/${employeeId}`,
-        timeout: 5000,
-        success: function () {
-          setTimeout(function(){
-            location.reload(true);
-          }, 5000);
-        }
+        url: `/crew/${crewId}/employee/${employeeId}`
       });
     } else {
       $.ajax({
         type: 'DELETE',
-        url: `/crew/${crewId}/employee/${employeeId}`,
-        timeout: 5000,
-        success: function () {
-          setTimeout(function(){
-            location.reload(true);
-          }, 5000);
-        }
+        url: `/crew/${crewId}/employee/${employeeId}`
       });
     }
   });
@@ -53,7 +41,10 @@ $(document).ready(function () {
     hover: false,
     closeOnClick: true,
     coverTrigger: false,
-    constrainWidth: false
+    constrainWidth: false,
+    onCloseEnd: function () {
+      location.reload();
+    }
   });
   $('.newCrewVehicle').click(function () {
     var crewId = $(this).siblings('.id').val();
@@ -61,22 +52,12 @@ $(document).ready(function () {
     if ($(this).is(':checked')) {
       $.ajax({
         type: 'POST',
-        url: `/crew/${crewId}/vehicle/${vehicleId}`,
-        success: function() {
-          setTimeout(function(){
-            location.reload(true);
-          }, 5000);
-        }
+        url: `/crew/${crewId}/vehicle/${vehicleId}`
       });
     } else {
       $.ajax({
         type: 'DELETE',
-        url: `/crew/${crewId}/vehicle/${vehicleId}`,
-        success: function() {
-          setTimeout(function(){
-            location.reload(true);
-          }, 5000);
-        }
+        url: `/crew/${crewId}/vehicle/${vehicleId}`
       });
     }
   });

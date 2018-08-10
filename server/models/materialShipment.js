@@ -24,6 +24,10 @@ var MaterialShipmentSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  supplier: {
+    type: String,
+    trim: true
+  },
   vehicle: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Vehicle',

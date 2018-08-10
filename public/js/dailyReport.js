@@ -428,9 +428,9 @@ function removeMaterialForm() {
   $('#material-button-div').append(template);
   $('#material-form').remove();
 };
-function loadMaterialEditForm(id, shipment, quantity, unit, vehicleId) {
+function loadMaterialEditForm(id, shipment, quantity, unit, vehicleId, supplier) {
   var template = $('#material-edit-form-template').html();
-  var html = Mustache.render(template, {id, shipment, quantity, unit, vehicleId})
+  var html = Mustache.render(template, {id, shipment, quantity, unit, vehicleId, supplier})
   $("#material-"+ id +"-edit-form-div").append(html);
   $('#material-'+ id +'-edit-button').remove();
   $('input.autocomplete').autocomplete({
@@ -453,9 +453,9 @@ function loadMaterialEditForm(id, shipment, quantity, unit, vehicleId) {
     container: '.container'
   });
 };
-function removeMaterialEditForm(id, shipment, quantity, unit, vehicleId) {
+function removeMaterialEditForm(id, shipment, quantity, unit, vehicleId, supplier) {
   var template = $('#material-edit-form-button').html();
-  var html = Mustache.render(template, {id, shipment, quantity, unit, vehicleId});
+  var html = Mustache.render(template, {id, shipment, quantity, unit, vehicleId, supplier});
   $('#material-edit-'+ id +'-div').append(html);
   $('#material-edit-form').remove();
 };
