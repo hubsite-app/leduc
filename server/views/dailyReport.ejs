@@ -23,9 +23,7 @@
     </div>
 
     <% if (Object.keys(employeeArray).length > 0) { %>
-      <% if (crew.employees) { %>
-        <% crew.employees.sort(function (a, b) {if(employeeArray[a].name < employeeArray[b].name)return -1; if (employeeArray[a].name > employeeArray[b].name) return 1; return 0;}); %>
-      <% } %>
+
       <div class="card-panel" style="padding-bottom: 3em;">
         <h5 class="card-title">Employee Hours</h5>
         <% if (Object.keys(employeeHourArray).length > 0) { %>
