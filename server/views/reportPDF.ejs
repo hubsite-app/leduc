@@ -157,8 +157,8 @@
               </thead>
               <tbody>
                 <% for (var i in productionArray) { %>
-                  <tr style="line-height: 0.1em;">
-                    <td><%= productionArray[i].jobTitle.substring(0, 13) %></td>
+                  <tr>
+                    <td><%= productionArray[i].jobTitle %></td>
                     <td><%= productionArray[i].quantity %> <%= productionArray[i].unit %></td>
                     <td><%= productionArray[i].startTime.getHours() %>:<%= productionArray[i].startTime.getMinutes()<10?'0':''%><%= productionArray[i].startTime.getMinutes() %></td>
                     <td><%= productionArray[i].endTime.getHours() %>:<%= productionArray[i].endTime.getMinutes()<10?'0':''%><%= productionArray[i].endTime.getMinutes() %></td>
