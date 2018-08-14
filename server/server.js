@@ -1493,6 +1493,14 @@ app.get('/report/:reportId', async (req, res) => {
 app.delete('/report/:id', async (req, res) => {
   try {
     var report = await DailyReport.findById(req.params.id);
+    var crew = await Crew.findById(report.crew);
+    if (!crew.removedReports) {
+      crew.removedReports = 1;
+      await crew.save();
+    } else if (crew.removedReports > 1) {
+      crew.removedReports += 1;
+      await crew.save();
+    }
     if (report.employeeWork) {
       report.employeeWork.forEach(async (employeeWork) => {
         await EmployeeWork.findByIdAndRemove({_id: employeeWork}, {new: true});
@@ -1542,6 +1550,25 @@ app.get('/report/:reportId/pdf', async (req, res) => {
     var productionArray = await Production.find({dailyReport: report});
     var materialArray = await MaterialShipment.find({dailyReport: report});
     var reportNote = await ReportNote.find({dailyReport: report});
+    if (!report.id) {
+      var reportArray = await DailyReport.getAll();
+      var crewReportArray = [];
+      var num = 0;
+      for (var i in reportArray) {
+        if (reportArray[i].crew.equals(crew._id)) {
+          crewReportArray[num] = reportArray[i]._id;
+          num++;
+        }
+      }
+      crewReportArray.reverse();
+      if (DailyReport.findById(crewReportArray[crewReportArray.toString().split(',').indexOf(report._id.toString()) - 1]).id) {
+        var id = `${crew.name}-${parseInt(DailyReport.findById(crewReportArray[crewReportArray.toString().split(',').indexOf(report._id.toString()) - 1]).id.split('-')[1]) + 1}`
+      } else {
+        var id = `${crew.name}-${crewReportArray.toString().split(',').indexOf(report._id.toString()) + 1}`;
+      }
+      report.id = id;
+      await report.save();
+    }
     if (crew.employees.some((employee) => employee.equals(req.user.employee)) || req.user.admin == true) {
       res.render('reportPDF', {report, crew, job, employeeArray, employeeHourArray, vehicleArray, vehicleHourArray, productionArray, materialArray, reportNote: reportNote[0]}, (err, html) => {
         if(err) {throw new Error(err);}

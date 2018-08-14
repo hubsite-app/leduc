@@ -8,6 +8,9 @@ const {MaterialShipment} = require('./materialShipment');
 const {Jobsite} = require('./jobsite');
 
 var DailyReportSchema = new mongoose.Schema({
+  id: {
+    type: String
+  },
   date: {
     type: Date,
     required: true
