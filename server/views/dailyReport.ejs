@@ -172,9 +172,9 @@
               <% } %> 
               <% if (locals.user.projectManager != true) { %>
 
-                <div id="material-edit-<%=materialArray[i]._id%>-div">
+                <div id="material-edit-<%= materialArray[i]._id %>-div">
                   <a class="material-edit secondary-content" id="material-<%=materialArray[i]._id%>-edit-button"
-                    onClick="loadMaterialEditForm('<%= materialArray[i]._id %>', '<%= materialArray[i].shipmentType %>', '<%= materialArray[i].quantity %>', '<%= materialArray[i].unit %>', '<%= materialArray[i].vehicle %>', '<%= materialArray[i].supplier %>'); return false;" href="">
+                    onClick="loadMaterialEditForm('<%= materialArray[i]._id %>', '<%= materialArray[i].shipmentType %>', '<%= materialArray[i].quantity %>', '<%= materialArray[i].unit %>', '<%= materialArray[i].vehicle %>', '<%= materialArray[i].supplier %>', '<%= materialArray[i].startTime %>', '<%= materialArray[i].endTime %>'); return false;" href="">
                     <i class="material-icons">edit</i>
                   </a>
                 </div>
@@ -644,7 +644,7 @@
         <div class="input-field col s6">
           <input name="supplier" type="text" id="supplier" autocomplete="on" 
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.supplier != '') {%> value="<%=locals.query.supplier%>" <%}%>/>
-          <label for="autocomplete-shipment-type">Supplier</label>
+          <label for="supplier">Supplier</label>
         </div>
         <div class="input-field col s8">
           <input name="quantity" type="number" id="shipment-quantity" step="0.01"
@@ -732,9 +732,9 @@
 </script>
 
 <script id='material-edit-form-template' type="text/template">
-  <div id="material-edit-form">
+  <div id="material-edit-form-{{id}}">
     <div class="row card-panel">
-      <i class="material-icons right pointer" onClick="removeMaterialEditForm('{{id}}', '{{shipment}}', '{{quantity}}', '{{unit}}', '{{vehicleId}}', {{supplier}}); return false;" id="vehicle-edit-form-close" aria-hidden="true">close</i>
+      <i class="material-icons right pointer" onClick="removeMaterialEditForm('{{id}}', '{{shipment}}', '{{quantity}}', '{{unit}}', '{{vehicleId}}', '{{supplier}}', '{{startTime}}', '{{endTime}}'); return false;" id="vehicle-edit-form-close" aria-hidden="true">close</i>
       <h3>Edit Shipment</h3>
       <form method="post" action="/material/{{id}}/update" id="material-form">
         <div class="input-field col s6">
@@ -754,11 +754,11 @@
           <span class="helper-text">Unit</span>
         </div>
         <div class="input-field col s6">
-          <input name="startTime" type="text" class="timepicker" autocomplete="off" />
+          <input name="startTime" type="text" class="timepicker" autocomplete="off" value="{{startTime}}" />
           <label for="startTime">Start Time (Optional)</label>
         </div>
         <div class="input-field col s6">
-          <input name="endTime" type="text" class="timepicker" autocomplete="off" />
+          <input name="endTime" type="text" class="timepicker" autocomplete="off" value="{{endTime}}" />
           <label for="endTime">End Time (Optional)</label>
         </div>
         <input type="hidden" name="vehicle" value="{{vehicleId}}" />
@@ -773,7 +773,7 @@
 
 <script id='material-edit-form-button' type='text/template'>
   <a class="material-edit secondary-content" id="material-{{id}}-edit-button"
-    onClick="loadMaterialEditForm('{{id}}', '{{shipment}}', '{{quantity}}', '{{unit}}', '{{vehicleId}}', '{{supplier}}'); return false;" href="">
+    onClick="loadMaterialEditForm('{{id}}', '{{shipment}}', '{{quantity}}', '{{unit}}', '{{vehicleId}}', '{{supplier}}', '{{startTime}}', '{{endTime}}'); return false;" href="">
     <i class="material-icons">edit</i>
   </a>
 </script>
