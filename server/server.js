@@ -185,6 +185,118 @@ app.post('/signup', async (req, res) => {
   }
 });
 
+// GET /forgot
+app.get('/forgot', (req, res) => {
+  res.render('users/forgot');
+});
+
+// POST /forgot
+app.post('/forgot', (req, res, next) => {
+  async.waterfall([
+    function(done) {
+      crypto.randomBytes(20, function(err, buf) {
+        var token = buf.toString('hex');
+        done(err, token);
+      });
+    },
+    function(token, done) {
+      User.findOne({ email: req.body.email }, function(err, user) {
+        if (!user) {
+          req.flash('error', 'No account with that email address exists.');
+          return res.redirect('/forgot');
+        }
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+        user.save(function(err) {
+          done(err, token, user);
+        });
+      });
+    },
+    function(token, user, done) {
+      var smtpTransport = nodemailer.createTransport({
+        service: 'SendGrid',
+        auth: {
+          user: process.env.SEND_GRID_USERNAME,
+          pass: process.env.SEND_GRID_PASSWORD
+        }
+      });
+      var mailOptions = {
+        to: user.email,
+        from: 'passwordreset@bowmark.ca',
+        subject: 'Bow Mark Password Reset',
+        text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+          'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+          'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+      };
+      smtpTransport.sendMail(mailOptions, function(err) {
+        req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+        done(err, 'done');
+      });
+    }
+  ], function(err) {
+    if (err) return next(err);
+    res.redirect('/forgot');
+  });
+});
+
+// GET /reset/:token
+app.get('/reset/:token', (req, res) => {
+  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+    if (!user) {
+      req.flash('error', 'Password reset token is invalid or has expired.');
+      return res.redirect('/forgot');
+    }
+    res.render('users/reset', {
+      token: req.params.token
+    });
+  });
+});
+
+// POST /reset/:token
+app.post('/reset/:token', function(req, res) {
+  async.waterfall([
+    function(done) {
+      User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+        if (!user) {
+          req.flash('error', 'Password reset token is invalid or has expired.');
+          return res.redirect('back');
+        }
+        user.password = req.body.password;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        user.save(function(err) {
+          req.logIn(user, function(err) {
+            done(err, user);
+          });
+        });
+      });
+    },
+    function(user, done) {
+      var smtpTransport = nodemailer.createTransport({
+        service: 'SendGrid',
+        auth: {
+          user: process.env.SEND_GRID_USERNAME,
+          pass: process.env.SEND_GRID_PASSWORD
+        }
+      });
+      var mailOptions = {
+        to: user.email,
+        from: 'passwordreset@bowmark.ca',
+        subject: 'Your password has been changed',
+        text: 'Hello,\n\n' +
+          'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
+      };
+      smtpTransport.sendMail(mailOptions, function(err) {
+        req.flash('success', 'Success! Your password has been changed.');
+        done(err);
+      });
+    }
+  ], function(err) {
+    res.redirect('/');
+  });
+});
+
 // GET /users
 app.get('/users', async (req, res) => {
   try {
@@ -975,13 +1087,13 @@ app.get('/employee/:id', async (req, res) => {
 app.post('/employee', async (req, res) => {
   try {
     var employee = await new Employee(req.body);
+    await employee.save();
     if (req.headers.referer.includes('crew')) {
       var crew = await Crew.findById(mongoose.Types.ObjectId(req.headers.referer.toString().split('/')[4]));
       await crew.employees.push(employee._id);
       await crew.save();
       employee.crews.push(crew._id);
     }
-    await employee.save();
     req.flash('success', 'A new employee has been added... how exciting!')
     res.redirect('back');
   } catch (e) {
@@ -1078,13 +1190,13 @@ app.get('/vehicles', async (req, res) => {
 app.post('/vehicle', async (req, res) => {
   try {
     var vehicle = await new Vehicle(req.body);
+    await vehicle.save();
     if (req.headers.referer.includes('crew')) {
       var crew = await Crew.findById(mongoose.Types.ObjectId(req.headers.referer.toString().split('/')[4]));
       await crew.vehicles.push(vehicle._id);
       await crew.save();
       vehicle.crews.push(crew._id);
     }
-    await vehicle.save();
     req.flash('success', 'Ooooooo a new vehicle, Kelly\'s gonna love this');
     res.redirect('back');
   } catch (e) {
