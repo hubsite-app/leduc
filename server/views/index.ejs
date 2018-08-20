@@ -81,7 +81,7 @@
                       <label for="date">Date</label>
                     </div>
                     <div class="input-field">
-                      <div id="job-select" style="padding: 0.5em; overflow: scroll; overflow-x: hidden;">
+                      <div id="job-select" style="padding: 0.5em; overflow: scroll; overflow-x: hidden; max-height: 50vh;">
                         <% for (var i in jobArray) { %>
                           <label>
                             <input class="with-gap" name="jobId" type="radio" value="<%= jobArray[i]._id %>" />
