@@ -36,7 +36,7 @@
       <div class="collection-item card-panel hoverable" id="crew-<%=id%>-container">
         <div class="card-content" id="crew-<%=id%>-content">
           <a class="crew-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteRequest('<%= id %>')}" href=""><i class="material-icons">delete</i></a>
-          <a class="crew-edit secondary-content" onClick="editCrewRequest('<%= crewArray[result]._id %>', &quot;<%= crewArray[result].name %>&quot;, '<%= crewArray[result].type %>'); return false;" href=""><i class="material-icons">edit</i></a>
+          <a class="crew-edit secondary-content" onClick="editCrewRequest('<%= crewArray[result]._id %>', &quot;<%= crewArray[result].name %>&quot;, &quot;<%= crewArray[result].type %>&quot;); return false;" href=""><i class="material-icons">edit</i></a>
           <h3 class="card-title" style="font-weight: bold;"><a href="/crew/<%=id%>"><%= crewArray[result].name %></a></h3>
           <span><%= crewArray[result].type %> Crew</span>
 
