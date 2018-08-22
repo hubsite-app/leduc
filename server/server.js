@@ -1735,138 +1735,89 @@ app.post('/report/:reportId/disapprove', async (req, res) => {
 });
 
 // POST /employeehour
-app.post('/employeehour', async (req, res) => {
+app.post('/employeehour', async (req, res) => { 
   try {
     var report = await DailyReport.findById(req.body.dailyReport);
-    var startTime = await timeHandling(req.body.startTime, report.date);
-    var endTime = await timeHandling(req.body.endTime, report.date);
-    var netEmployeeHours = 0;
-    var index, workArray = [], missingIndices;
-    if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
-      index = 1
-      missingIndices = 0;
-      while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
-        if (req.body[`jobTitle-${index}`] != '' && req.body[`endTime-${index}`] != '') {
-          var tempStartTime = await timeHandling(req.body[`startTime-${index}`], report.date);
-          var tempEndTime = await timeHandling(req.body[`endTime-${index}`], report.date);
-          workArray[index] = {
-            jobTitle: req.body[`jobTitle-${index}`],
-            startTime: tempStartTime, 
-            endTime: tempEndTime
+    var netEmployeeHours = 0, formIndex, extraIndex;
+    if (JSON.stringify(req.body).includes(`jobTitle-0`)) {
+      formIndex = 0;
+      extraIndex = 0;
+      while (JSON.stringify(req.body).includes(`jobTitle-${formIndex}`)) {
+        while (JSON.stringify(req.body).includes(`jobTitle-${formIndex}-${extraIndex}`)) {
+          if (req.body[`jobTitle-${formIndex}-${extraIndex}`] != '') {
+            var tempStartTime = await timeHandling(req.body[`startTime-${formIndex}-${extraIndex}`], report.date);
+            var tempEndTime = await timeHandling(req.body[`endTime-${formIndex}-${extraIndex}`], report.date);
+            if (typeof req.body[`employee-${formIndex}`] == 'object') {
+              for (var i in req.body[`employee-${formIndex}`]) {
+                var employeeWork = new EmployeeWork({
+                  jobTitle: req.body[`jobTitle-${formIndex}-${extraIndex}`],
+                  startTime: tempStartTime, 
+                  endTime: tempEndTime,
+                  employee: req.body[`employee-${formIndex}`][i],
+                  dailyReport: report._id
+                });
+                await employeeWork.save();
+                await report.employeeWork.push(employeeWork);
+                await report.save();
+              }
+            } else {
+              var employeeWork = new EmployeeWork({
+                jobTitle: req.body[`jobTitle-${formIndex}-${extraIndex}`],
+                startTime: tempStartTime, 
+                endTime: tempEndTime,
+                employee: req.body[`employee-${formIndex}`],
+                dailyReport: report._id
+              });
+              await employeeWork.save();
+              await report.employeeWork.push(employeeWork);
+              await report.save();
+            }
           }
-        } else {
-          missingIndices++;
+          extraIndex++;
         }
-        index++;
+        extraIndex = 0;
+        formIndex++;
       }
-      index = index - 1 - missingIndices;
     }
-    if (typeof req.body.employee == 'object') {
-      for (var i in req.body.employee) {
-        if (index != undefined || index != 0) {
-          for (var j = 1; j < index + 1; j++) {
-            var employeeWork = await new EmployeeWork({
-              startTime: workArray[j].startTime, 
-              endTime: workArray[j].endTime,
-              jobTitle: workArray[j].jobTitle,
-              employee: req.body.employee[i],
-              dailyReport: report._id
-            });
-            await employeeWork.save();
-            await report.employeeWork.push(employeeWork);
-            await report.save();
-          }
-        } 
-        var employeeWork = new EmployeeWork({
-          startTime, endTime,
-          jobTitle: req.body.jobTitle,
-          employee: req.body.employee[i],
-          dailyReport: report._id
-        });
-        await employeeWork.save();
-        await report.employeeWork.push(employeeWork);
-        await report.save();
-      };
-      await EmployeeWork.find({dailyReport: report}, async (err, works) => {
-        await works.forEach((work) => {
-          netEmployeeHours += Math.round(Math.abs(work.endTime - work.startTime) / 3.6e6 * 100) / 100;
-        });
+    await EmployeeWork.find({dailyReport: report}, async (err, works) => {
+      await works.forEach((work) => {
+        netEmployeeHours += Math.round(Math.abs(work.endTime - work.startTime) / 3.6e6 * 100) / 100;
       });
-      req.flash('success', `Work added, that is a combined ${netEmployeeHours} hours on this job today!`);
-      res.redirect(`/report/${report._id}`);
-    } else {
-      console.log(index);
-      if (index != undefined || index != 0) {
-        for (var i = 1; i < index + 1; i++) {
-          var employeeWork = await new EmployeeWork({
-            startTime: workArray[i].startTime, 
-            endTime: workArray[i].endTime,
-            jobTitle: workArray[i].jobTitle,
-            employee: req.body.employee,
-            dailyReport: report._id
-          });
-          await employeeWork.save();
-          await report.employeeWork.push(employeeWork);
-          await report.save();
-        }
-      } 
-      var employeeWork = await new EmployeeWork({
-        startTime, endTime,
-        jobTitle: req.body.jobTitle,
-        employee: req.body.employee,
-        dailyReport: report._id
-      });
-      await employeeWork.save();
-      await report.employeeWork.push(employeeWork);
-      await report.save();
-      await EmployeeWork.find({dailyReport: report._id}, (err, works) => {
-        works.forEach((work) => {
-          netEmployeeHours += Math.round(Math.abs(work.endTime - work.startTime) / 3.6e6 * 100) / 100;
-        });
-      });
-      req.flash('success', `Work added, that is a combined ${netEmployeeHours} employee hours on this job today!`);
-      res.redirect(`/report/${report._id}`);
-    }
+    });
+    req.flash('success', `Work added, that is a combined ${netEmployeeHours} employee hours on this job today!`);
+    res.redirect(`/report/${report._id}`);
   } catch (e) {
+    console.log('hi');
     try {
-      var index, append, extraJobtitleArray = [], extraStarttimeArray = [], extraEndtimeArray = [];
-      if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
-        index = 1
-        while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
+      var formIndex, extraIndex, append, extraJobtitleArray = [], extraStarttimeArray = [], extraEndtimeArray = [], extraEmployeeArray = [];
+      formIndex = 0;
+      extraIndex = 0;
+      while (JSON.stringify(req.body).includes(`jobTitle-${formIndex}`)) {
+        extraJobtitleArray[formIndex] = [], extraStarttimeArray[formIndex] = []; extraEndtimeArray[formIndex] = [];
+        while (JSON.stringify(req.body).includes(`jobTitle-${formIndex}-${extraIndex}`)) {
           tempStartTime = undefined, tempEndTime = undefined;
-          if (req.body[`startTime-${index}`] != '') {
-            var tempStartTime = await timeHandling(req.body[`startTime-${index}`], report.date);
+          if (req.body[`startTime-${formIndex}-${extraIndex}`] != '') {
+            var tempStartTime = await timeHandling(req.body[`startTime-${formIndex}-${extraIndex}`], report.date);
             var start = new Date(tempStartTime);
             tempStartTime = `${start.getHours().toString()}:${start.getMinutes().toString()<10?'0':''}${start.getMinutes().toString()}`;
-          }
-          if (req.body[`endTime-${index}`] != '') {
-            var tempEndTime = await timeHandling(req.body[`endTime-${index}`], report.date);
+          } else { tempStartTime = ''; }
+          if (req.body[`endTime-${formIndex}-${extraIndex}`] != '') {
+            var tempEndTime = await timeHandling(req.body[`endTime-${formIndex}-${extraIndex}`], report.date);
             var end = new Date(tempEndTime);
             tempEndTime = `${end.getHours().toString()}:${end.getMinutes().toString()<10?'0':''}${end.getMinutes().toString()}`;
-          }
-          extraJobtitleArray[index - 1] = req.body[`jobTitle-${index}`];
-          extraStarttimeArray[index - 1] = tempStartTime;
-          extraEndtimeArray[index - 1] = tempEndTime;
-          index++;
+          } else { tempEndTime = ''; }
+          extraJobtitleArray[formIndex][extraIndex] = req.body[`jobTitle-${formIndex}-${extraIndex}`];
+          extraStarttimeArray[formIndex][extraIndex] = tempStartTime;
+          extraEndtimeArray[formIndex][extraIndex] = tempEndTime;
+          extraEmployeeArray[formIndex] = req.body[`employee-${formIndex}`];
+          extraIndex++;
         }
-        index = index - 1;
-      }
-      if(req.body.startTime) {
-        var startTime = await timeHandling(req.body.startTime, report.date);
-        var start = new Date(startTime);
-        startTime = `${start.getHours().toString()}:${start.getMinutes().toString()<10?'0':''}${start.getMinutes().toString()}`;
-      } 
-      if (req.body.endTime) {
-        var endTime = await timeHandling(req.body.endTime, report.date);
-        var end = new Date(endTime);
-        endTime = `${end.getHours().toString()}:${end.getMinutes().toString()<10?'0':''}${end.getMinutes().toString()}`;
+        formIndex++;
+        extraIndex = 0;
       }
       var query = querystring.stringify({
         item: 'employee',
-        message: e.message,
-        startTime, endTime,
-        jobTitle: req.body.jobTitle,
-        employee: req.body.employee,
+        message: e.message
       });
       append = querystring.stringify({
         extraJobtitleArray
@@ -1878,6 +1829,10 @@ app.post('/employeehour', async (req, res) => {
       query += `&${append}`;
       append = querystring.stringify({
         extraEndtimeArray
+      }, {arrayFormat: 'bracket'});
+      query += `&${append}`;
+      append = querystring.stringify({
+        extraEmployeeArray
       }, {arrayFormat: 'bracket'});
       query += `&${append}`;
       console.log(e);
@@ -1934,116 +1889,86 @@ app.delete('/employeework/:id', async (req, res) => {
 
 // POST /vehiclehour
 app.post('/vehiclehour', async (req, res) => {
+  console.log(req.body);
   try {
     var report = await DailyReport.findById(req.body.dailyReport);
-    var netVehicleHours = 0;
-    var index, workArray = [], missingIndices;
-    if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
-      index = 1;
-      missingIndices = 0;
-      while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
-        if (req.body[`jobTitle-${index}`] != '' && req.body[`hours-${index}`] != '') {
-          workArray[index] = {
-            jobTitle: req.body[`jobTitle-${index}`],
-            hours: req.body[`hours-${index}`]
+    var netVehicleHours = 0, formIndex, extraIndex;
+    if (JSON.stringify(req.body).includes(`jobTitle-0`)) {
+      formIndex = 0;
+      extraIndex = 0;
+      while (JSON.stringify(req.body).includes(`jobTitle-${formIndex}`)) {
+        while (JSON.stringify(req.body).includes(`jobTitle-${formIndex}-${extraIndex}`)) {
+          if (req.body[`jobTitle-${formIndex}-${extraIndex}`] != '') {
+            if (typeof req.body[`vehicle-${formIndex}`] == 'object') {
+              for (var i in req.body[`vehicle-${formIndex}`]) {
+                var vehicleWork = new VehicleWork({
+                  jobTitle: req.body[`jobTitle-${formIndex}-${extraIndex}`],
+                  hours: req.body[`hours-${formIndex}-${extraIndex}`],
+                  vehicle: req.body[`vehicle-${formIndex}`][i],
+                  dailyReport: report._id
+                });
+                await vehicleWork.save();
+                await report.vehicleWork.push(vehicleWork);
+                await report.save();
+              }
+            } else {
+              var vehicleWork = new VehicleWork({
+                jobTitle: req.body[`jobTitle-${formIndex}-${extraIndex}`],
+                hours: req.body[`hours-${formIndex}-${extraIndex}`],
+                vehicle: req.body[`vehicle-${formIndex}`],
+                dailyReport: report._id
+              });
+              await vehicleWork.save();
+              await report.vehicleWork.push(vehicleWork);
+              await report.save();
+            }
           }
-        } else {
-          missingIndices++;
+          extraIndex++;
         }
-        index++;
+        extraIndex = 0;
+        formIndex++;
       }
-      index = index - 1 - missingIndices;
     }
-    if (typeof req.body.vehicle == 'object') {
-      for (var i in req.body.vehicle) {
-        if (index != undefined || index != 0) {
-          for (var j = 1; j < index + 1; j++) {
-            var vehicleWork = await new VehicleWork({
-              hours: workArray[j].hours,
-              jobTitle: workArray[j].jobTitle,
-              vehicle: req.body.vehicle[i],
-              dailyReport: report._id
-            });
-            await vehicleWork.save();
-            await report.vehicleWork.push(vehicleWork);
-            await report.save();
-          }
-        } 
-        var vehicleWork = await new VehicleWork({
-          hours: req.body.hours,
-          jobTitle: req.body.jobTitle,
-          vehicle: req.body.vehicle[i],
-          dailyReport: report._id
-        });
-        await vehicleWork.save();
-        await report.vehicleWork.push(vehicleWork);
-        await report.save();
-      };
-      await VehicleWork.find({dailyReport: report._id}, (err, works) => {
-        works.forEach((work) => {
-          netVehicleHours += work.hours;
-        });
+    await VehicleWork.find({dailyReport: report._id}, (err, works) => {
+      works.forEach((work) => {
+        netVehicleHours += work.hours;
       });
-      req.flash('success', `Work added, that is a combined ${netVehicleHours} vehicle hours on this job today!`);
-      res.redirect('back');
-    } else {
-      if (index != undefined || index != 0) {
-        for (var i = 1; i < index + 1; i++) {
-          var vehicleWork = await new VehicleWork({
-            hours: workArray[i].hours, 
-            jobTitle: workArray[i].jobTitle,
-            vehicle: req.body.vehicle,
-            dailyReport: report._id
-          });
-          await vehicleWork.save();
-          await report.vehicleWork.push(vehicleWork);
-          await report.save();
-        }
-      } 
-      var vehicleWork = await new VehicleWork({
-        hours: req.body.hours,
-        jobTitle: req.body.jobTitle,
-        vehicle: req.body.vehicle,
-        dailyReport: report._id
-      });
-      await vehicleWork.save();
-      await report.vehicleWork.push(vehicleWork);
-      await report.save();
-      await VehicleWork.find({dailyReport: report._id}, (err, works) => {
-        works.forEach((work) => {
-          netVehicleHours += work.hours;
-        });
-      });
-      req.flash('success', `Work added, that is a combined ${netVehicleHours} vehicle hours on this job today!`);
-      res.redirect(`/report/${report._id}`);
-    }
+    });
+    req.flash('success', `Work added, that is a combined ${netVehicleHours} vehicle hours on this job today!`);
+    res.redirect('back');
   } catch (e) {
     try {
-      var index, append, extraJobtitleArray = [], extraHourArray = [];
-      if (JSON.stringify(req.body).includes(`jobTitle-1`)) {
-        index = 1
-        while (JSON.stringify(req.body).includes(`jobTitle-${index}`)) {
-          extraJobtitleArray[index - 1] = req.body[`jobTitle-${index}`];
-          extraHourArray[index - 1] = req.body[`hours-${index}`];
-          index++;
+      var formIndex, extraIndex, append, extraJobtitleArray = [], extraHoursArray = [], extraVehicleArray = [];
+      formIndex = 0;
+      extraIndex = 0;
+      while (JSON.stringify(req.body).includes(`jobTitle-${formIndex}`)) {
+        extraJobtitleArray[formIndex] = []; extraHoursArray[formIndex] = []; extraVehicleArray[formIndex] = [];
+        while (JSON.stringify(req.body).includes(`jobTitle-${formIndex}-${extraIndex}`)) {
+          extraJobtitleArray[formIndex][extraIndex] = req.body[`jobTitle-${formIndex}-${extraIndex}`];
+          extraHoursArray[formIndex][extraIndex] = req.body[`hours-${formIndex}-${extraIndex}`];
+          extraVehicleArray[formIndex][extraIndex] = req.body[`vehicle-${formIndex}`];
+          extraIndex++;
         }
-        index = index - 1;
+        formIndex++;
+        extraIndex = 0;
       }
       var query = querystring.stringify({
         item: 'vehicle',
         message: e.message,
-        hours: req.body.hours,
-        jobTitle: req.body.jobTitle,
-        vehicle: req.body.vehicle
       });
       append = querystring.stringify({
         extraJobtitleArray
       }, {arrayFormat: 'bracket'});
       query += `&${append}`;
       append = querystring.stringify({
-        extraHourArray
+        extraHoursArray
       }, {arrayFormat: 'bracket'});
       query += `&${append}`;
+      append = querystring.stringify({
+        extraVehicleArray
+      }, {arrayFormat: 'bracket'});
+      query += `&${append}`;
+      console.log(e);
       res.redirect(`/report/${report._id}/?` + query);
     } catch (e) {
       console.log(e);

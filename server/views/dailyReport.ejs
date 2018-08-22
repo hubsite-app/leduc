@@ -261,31 +261,31 @@
       <% } %>
       <form method="post" action="/employeehour" id="employee-form">
         <div class="row">
-          <div class="input-field col s10 m11" id="original-employee-work-div">
-            <input name="jobTitle" type="text" id="employee-autocomplete-job-title" class="autocomplete-work" autocomplete="off" autofocus
-              <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.jobTitle != '') {%> value="<%=locals.query.jobTitle%>" <%}%>/>
-            <label for="employee-autocomplete-job-title">Work Done</label>
+          <div class="input-field col s10 m11" id="employee-work-div-0-0">
+            <input name="jobTitle-0-0" type="text" id="employee-autocomplete-job-title-form-0-0" class="autocomplete-work" autocomplete="off" autofocus
+              <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.extraJobtitleArray != '') {%> value="<%=locals.query.extraJobtitleArray.toString().split(',')[0]%>" <%}%>/>
+            <label for="employee-autocomplete-job-title-0-0">Work Done</label>
           </div>
           <div class="input-field col s2 m1">
-            <a class="btn-floating" id="original-employee-work-add-button" onclick="loadExtraEmployeeWork(1)"><i class="material-icons">add</i></a>
+            <a class="btn-floating" id="employee-work-add-button-0-0" onclick="loadExtraEmployeeWork(0,'','','',0);"><i class="material-icons">add</i></a>
           </div>
         </div>
         <div class="row">
           <div class="input-field col s6">
-            <input name="startTime" id="employee-start-time" type="text" class="timepicker" autocomplete="off" 
-              <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.startTime != '') {%> value="<%=locals.query.startTime%>" <%}%>/>
-            <label for="employee-start-time">Start Time</label>
+            <input name="startTime-0-0" id="employee-start-time-0-0" type="text" class="timepicker" autocomplete="off" 
+              <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.startTime != '') {%> value="<%=locals.query.extraStarttimeArray.toString().split(',')[0]%>" <%}%>/>
+            <label for="employee-start-time-0-0">Start Time</label>
           </div>
           <div class="input-field col s6">
-            <input name="endTime" id="employee-end-time" type="text" class="timepicker" autocomplete="off" 
-              <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.endTime != '') {%> value="<%=locals.query.endTime%>" <%}%>/>
-            <label for="employee-end-time">End Time</label>
+            <input name="endTime-0-0" id="employee-end-time-0-0" type="text" class="timepicker" autocomplete="off" 
+              <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'employee' && locals.query.extraEndtimeArray != '') {%> value="<%=locals.query.extraEndtimeArray.toString().split(',')[0]%>" <%}%>/>
+            <label for="employee-end-time-0-0">End Time</label>
           </div>
         </div>
-        <div id="extra-employee-work-div"></div>
-        <div class="hide-on-med-and-up">
+        <div id="extra-employee-work-div-0"></div>
+        <div class="row hide-on-med-and-up">
           <div class="input-field col s6">
-            <select multiple name="employee">
+            <select multiple name="employee-0">
               <% crew.employees.forEach((employeeId) => { %>
                 <% if (typeof employeeArray[employeeId] != 'undefined') { %>
                   <option value="<%= employeeArray[employeeId]._id %>">
@@ -297,18 +297,16 @@
             <label>Employee Select</label>
           </div>
         </div>    
-        <div class="hide-on-small-only">
+        <div class="row hide-on-small-only" style="padding-bottom: 1em;">
           <h6>Employees: </h6>
           <% crew.employees.forEach((employeeId) => { %>
             <% if (typeof employeeArray[employeeId] != 'undefined') { %>
               <div class="input-field col s6">
                 <label>
-                  <input type="checkbox" value="<%= employeeArray[employeeId]._id %>" name="employee" 
-                    <% if (Object.keys(locals.query).length !== 0 && typeof locals.query.employee != null && locals.query.item == 'employee') {%> 
-                      <% if (typeof locals.query.employee == 'object' && locals.query.employee.some((employee) => employee == employeeArray[employeeId]._id.toString())) { %>
-                        checked="checked"
-                      <% } else if (typeof locals.query.employee == 'string' && locals.query.employee == employeeArray[employeeId]._id.toString()) { %>
-                        checked="checked"
+                  <input type="checkbox" value="<%= employeeArray[employeeId]._id %>" name="employee-0" 
+                    <% if (Object.keys(locals.query).length !== 0 && typeof locals.query.extraEmployeeArray != 'undefined' && locals.query.item == 'employee') {%> 
+                      <% if (locals.query.extraEmployeeArray[0].toString().includes(employeeId)) { %>
+                        checked="checked" 
                       <% } %> />
                     <%} else { %>/><%}%> 
                   <span><%= employeeArray[employeeId].name %></span>
@@ -318,6 +316,8 @@
           <% }); %>
         </div>
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
+        <div id="additional-employee-form-div"></div>
+        <a class="btn left" id="additional-employee-work-add-button" onclick="loadAdditionalEmployeeWork(1)"><i class="material-icons">add</i></a>
         <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
           <i class="material-icons right">send</i>
         </button>
@@ -339,23 +339,76 @@
 <script id="extra-employee-work-template" type="text/template">
   <div id="extra-employee-work-div">
     <div class="row">
-      <div class="input-field col s10 m11" id="employee-work-div-{{index}}">
-        <input name="jobTitle-{{index}}" type="text" id="employee-autocomplete-job-title-{{index}}" class="autocomplete-work" autocomplete="off" autofocus value="{{jobTitle}}" />
-        <label for="employee-autocomplete-job-title-{{index}}">Work Done</label>
+      <div class="input-field col s10 m11" id="employee-work-div-{{additional}}-{{index}}">
+        <input name="jobTitle-{{additional}}-{{index}}" type="text" id="employee-autocomplete-job-title-{{additional}}-{{index}}" class="autocomplete-work" autocomplete="off" autofocus value="{{jobTitle}}" />
+        <label for="employee-autocomplete-job-title-{{additional}}-{{index}}">Work Done</label>
       </div>
       <div class="input-field col s2 m1">
-        <a class="btn-floating" id="employee-work-add-button-{{index}}" onclick="loadExtraEmployeeWork({{index}} + 1)"><i class="material-icons">add</i></a>
+        <a class="btn-floating" id="employee-work-add-button-{{additional}}-{{index}}" onclick="loadExtraEmployeeWork({{index}},'','','', {{additional}})"><i class="material-icons">add</i></a>
       </div>
     </div>
     <div class="row">
       <div class="input-field col s6">
-        <input name="startTime-{{index}}" id="employee-start-time-{{index}}" type="text" class="timepicker-{{index}}" autocomplete="off" value="{{startTime}}" />
-        <label class="active" for="employee-start-time-{{index}}">Start Time</label>
+        <input name="startTime-{{additional}}-{{index}}" id="employee-start-time-{{additional}}-{{index}}" type="text" class="timepicker" autocomplete="off" value="{{startTime}}" />
+        <label class="active" for="employee-start-time-{{additional}}-{{index}}">Start Time</label>
       </div>
       <div class="input-field col s6">
-        <input name="endTime-{{index}}" id="employee-end-time-{{index}}" type="text" class="timepicker-{{index}}" autocomplete="off" value="{{endTime}}" />
-        <label for="employee-end-time-{{index}}">End Time</label>
+        <input name="endTime-{{additional}}-{{index}}" id="employee-end-time-{{additional}}-{{index}}" type="text" class="timepicker" autocomplete="off" value="{{endTime}}" />
+        <label for="employee-end-time-{{additional}}-{{index}}">End Time</label>
       </div>
+    </div>
+  </div>
+</script>
+
+<script id="additional-employee-work-template" type="text/template">
+  <div class="additional-employee-work-form row">
+    <div style="margin-top: 2em; margin-bottom: 1em; border: 1px solid black"></div>
+    <div class="row">
+      <div class="input-field col s10 m11" id="employee-work-div-{{index}}-0">
+        <input name="jobTitle-{{index}}-0" type="text" id="employee-autocomplete-job-title-{{index}}-0" class="autocomplete-work" autocomplete="off" autofocus value="{{jobTitle}}" />
+        <label for="employee-autocomplete-job-title-{{index}}-0">Work Done</label>
+      </div>
+      <div class="input-field col s2 m1">
+        <a class="btn-floating" id="employee-work-add-button-{{index}}-0" onclick="loadExtraEmployeeWork(0,'','','',{{index}})"><i class="material-icons">add</i></a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <input name="startTime-{{index}}-0" id="employee-start-time-{{index}}-0" type="text" class="timepicker" autocomplete="off" value="{{startTime}}" />
+        <label for="employee-start-time-{{index}}-0">Start Time</label>
+      </div>
+      <div class="input-field col s6">
+        <input name="endTime-{{index}}-0" id="employee-end-time-{{index}}-0" type="text" class="timepicker" autocomplete="off" value="{{endTime}}" />
+        <label for="employee-end-time-{{index}}-0">End Time</label>
+      </div>
+    </div>
+    <div id="extra-employee-work-div-{{index}}"></div>
+    <div class="row hide-on-med-and-up">
+      <div class="input-field col s6">
+        <select multiple name="employee-{{index}}">
+          <% crew.employees.forEach((employeeId) => { %>
+            <% if (typeof employeeArray[employeeId] != 'undefined') { %>
+              <option value="<%= employeeArray[employeeId]._id %>">
+                <%= employeeArray[employeeId].name %>
+              </option>
+            <% } %>
+          <% }); %>
+        </select>
+        <label>Employee Select</label>
+      </div>
+    </div>    
+    <div class="row hide-on-small-only" style="padding-bottom: 1em;">
+      <h6>Employees: </h6>
+      <% crew.employees.forEach((employeeId) => { %>
+        <% if (typeof employeeArray[employeeId] != 'undefined') { %>
+          <div class="input-field col s6">
+            <label>
+              <input type="checkbox" value="<%= employeeArray[employeeId]._id %>" name="employee-{{index}}" />
+              <span><%= employeeArray[employeeId].name %></span>
+            </label>
+          </div>
+        <% } %>
+      <% }); %>
     </div>
   </div>
 </script>
@@ -407,24 +460,24 @@
       <% } %>
       <form method="post" action="/vehiclehour" id="vehicle-form">
         <div class="row" style="padding: 0;">
-          <div class="input-field col s6 m6" id="original-vehicle-work-div">
-            <input name="jobTitle" type="text" id="vehicle-autocomplete-job-title" class="autocomplete-work" autocomplete="off" autofocus
-              <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.jobTitle != '') {%> value="<%=locals.query.jobTitle%>" <%}%>/>
-            <label for="vehicle-autocomplete-job-title">Work Done</label>
+          <div class="input-field col s6 m6" id="vehicle-work-div-0-0">
+            <input name="jobTitle-0-0" type="text" id="vehicle-autocomplete-job-title-0-0" class="autocomplete-work" autocomplete="off" autofocus
+              <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.extraJobtitleArray != '') {%> value="<%=locals.query.extraJobtitleArray.toString().split(',')[0]%>" <%}%>/>
+            <label for="vehicle-autocomplete-job-title-0-0">Work Done</label>
           </div>
-          <div class="input-field col s4 m5" id="original-vehicle-hour-div">
-            <input name="hours" type="text" id="vehicle-hours" autocomplete="off" autofocus
-              <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.hours != '') {%> value="<%=locals.query.hours%>" <%}%>/>
-            <label for="vehicle-autocomplete-job-title">Hours</label>
+          <div class="input-field col s4 m5" id="vehicle-hours-div-0-0">
+            <input name="hours-0-0" type="text" id="vehicle-hours-0-0" autocomplete="off" autofocus
+              <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'vehicle' && locals.query.extraHoursArray != '') {%> value="<%=locals.query.extraHoursArray.toString().split(',')[0]%>" <%}%>/>
+            <label for="vehicle-hours-0-0">Hours</label>
           </div>
           <div class="input-field col s2 m1">
-            <a class="btn-floating" id="original-vehicle-work-add-button" onclick="loadExtraVehicleWork(1)"><i class="material-icons">add</i></a>
+            <a class="btn-floating" id="vehicle-work-add-button-0-0" onclick="loadExtraVehicleWork(0,'','', 0);"><i class="material-icons">add</i></a>
           </div>
         </div>
-        <div id="extra-vehicle-work-div"></div>
-        <div class="hide-on-med-and-up">
+        <div id="extra-vehicle-work-div-0"></div>
+        <div class="row hide-on-med-and-up">
           <div class="input-field col s6">
-            <select multiple name="vehicle">
+            <select multiple name="vehicle-0">
               <% crew.vehicles.forEach((vehicleId) => { %>
                 <option value="<%= vehicleArray[vehicleId]._id %>">
                   <%= vehicleArray[vehicleId].name %>
@@ -434,16 +487,14 @@
             <label>Vehicle Select</label>
           </div>
         </div>    
-        <div class="hide-on-small-only">
+        <div class="row hide-on-small-only" style="padding-bottom: 1em;">
           <h6>Vehicles: </h6>
           <% crew.vehicles.forEach((vehicleId) => { %>
             <div class="input-field col s6">
               <label>
-                <input type="checkbox" value="<%= vehicleArray[vehicleId]._id %>" name="vehicle"
-                  <% if (Object.keys(locals.query).length !== 0 && typeof locals.query.vehicle != null && locals.query.item == 'vehicle') {%> 
-                    <% if (typeof locals.query.vehicle == 'object' && locals.query.vehicle.some((vehicle) => vehicle == vehicleArray[vehicleId]._id.toString())) { %>
-                      checked="checked"
-                    <% } else if (typeof locals.query.vehicle == 'string' && locals.query.vehicle == vehicleArray[vehicleId]._id.toString()) { %>
+                <input type="checkbox" value="<%= vehicleArray[vehicleId]._id %>" name="vehicle-0"
+                  <% if (Object.keys(locals.query).length !== 0 && typeof locals.query.extraVehicleArray != null && locals.query.item == 'vehicle') {%> 
+                    <% if (locals.query.extraVehicleArray[0].toString().includes(vehicleId)) { %>
                       checked="checked"
                     <% } %> />
                   <%} else { %>/><%}%> 
@@ -453,6 +504,8 @@
           <% }); %>
         </div>
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
+        <div id="additional-vehicle-form-div"></div>
+        <a class="btn left" id="additional-vehicle-work-add-button" onclick="loadAdditionalVehicleWork(1)"><i class="material-icons">add</i></a>
         <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
           <i class="material-icons right">send</i>
         </button>
@@ -474,17 +527,67 @@
 <script id="extra-vehicle-work-template" type="text/template">
   <div id="extra-vehicle-work-div">
     <div class="row">
-      <div class="input-field col s6 m6" id="vehicle-work-div-{{index}}">
-        <input name="jobTitle-{{index}}" type="text" id="vehicle-autocomplete-job-title-{{index}}" class="autocomplete-work" autocomplete="off" autofocus value="{{jobTitle}}" />
-        <label for="vehicle-autocomplete-job-title-{{index}}">Work Done</label>
+      <div class="input-field col s6 m6" id="vehicle-work-div-{{additional}}-{{index}}">
+        <input name="jobTitle-{{additional}}-{{index}}" type="text" id="vehicle-autocomplete-job-title-{{additional}}-{{index}}" class="autocomplete-work" autocomplete="off" autofocus value="{{jobTitle}}" />
+        <label for="vehicle-autocomplete-job-title-{{additional}}-{{index}}">Work Done</label>
       </div>
-      <div class="input-field col s4 m5" id="vehicle-hours-div-{{index}}">
-        <input name="hours-{{index}}" type="text" id="vehicle-hours-{{index}}" autocomplete="off" autofocus value="{{hours}}" />
-        <label for="vehicle-autocomplete-job-title-{{index}}">Hours</label>
+      <div class="input-field col s4 m5" id="vehicle-hours-div-{{additional}}-{{index}}">
+        <input name="hours-{{additional}}-{{index}}" type="text" id="vehicle-hours-{{additional}}-{{index}}" autocomplete="off" autofocus value="{{hours}}" />
+        <label for="vehicle-hours-{{additional}}-{{index}}">Hours</label>
       </div>
       <div class="input-field col s2 m1">
-        <a class="btn-floating" id="vehicle-work-add-button-{{index}}" onclick="loadExtraVehicleWork({{index}} + 1)"><i class="material-icons">add</i></a>
+        <a class="btn-floating" id="vehicle-work-add-button-{{additional}}-{{index}}" onclick="loadExtraVehicleWork({{index}}, '', '', {{additional}})"><i class="material-icons">add</i></a>
       </div>
+    </div>
+  </div>
+</script>
+
+<script id="additional-vehicle-work-template" type="text/template">
+  <div class="additional-vehicle-work-form row">
+    <div style="margin-top: 2em; margin-bottom: 1em; border: 1px solid black"></div>
+    <div class="row">
+      <div class="input-field col s6 m6" id="vehicle-work-div-{{additional}}-0">
+        <input name="jobTitle-{{additional}}-0" type="text" id="vehicle-autocomplete-job-title-{{additional}}-0" class="autocomplete-work" autocomplete="off" autofocus value="{{jobTitle}}" />
+        <label for="vehicle-autocomplete-job-title-{{additional}}-0">Work Done</label>
+      </div>
+      <div class="input-field col s4 m5" id="vehicle-hours-div-{{additional}}-0">
+        <input name="hours-{{additional}}-0" type="text" id="vehicle-hours-{{additional}}-0" autocomplete="off" autofocus value="{{hours}}" />
+        <label for="vehicle-hours-{{additional}}-0">Hours</label>
+      </div>
+      <div class="input-field col s2 m1">
+        <a class="btn-floating" id="vehicle-work-add-button-{{additional}}-0" onclick="loadExtraVehicleWork(0, '', '', {{additional}})"><i class="material-icons">add</i></a>
+      </div>
+    </div>
+    <div id="extra-vehicle-work-div-{{additional}}"></div>
+    <div class="row hide-on-med-and-up">
+      <div class="input-field col s6">
+        <select multiple name="vehicle-{{additional}}">
+          <% crew.vehicles.forEach((vehicleId) => { %>
+            <option value="<%= vehicleArray[vehicleId]._id %>">
+              <%= vehicleArray[vehicleId].name %>
+            </option>
+          <% }); %>
+        </select>
+        <label>Vehicle Select</label>
+      </div>
+    </div>    
+    <div class="row hide-on-small-only" style="padding-bottom: 1em;">
+      <h6>Vehicles: </h6>
+      <% crew.vehicles.forEach((vehicleId) => { %>
+        <div class="input-field col s6">
+          <label>
+            <input type="checkbox" value="<%= vehicleArray[vehicleId]._id %>" name="vehicle-{{additional}}"
+              <% if (Object.keys(locals.query).length !== 0 && typeof locals.query.vehicle != null && locals.query.item == 'vehicle') {%> 
+                <% if (typeof locals.query.vehicle == 'object' && locals.query.vehicle.some((vehicle) => vehicle == vehicleArray[vehicleId]._id.toString())) { %>
+                  checked="checked"
+                <% } else if (typeof locals.query.vehicle == 'string' && locals.query.vehicle == vehicleArray[vehicleId]._id.toString()) { %>
+                  checked="checked"
+                <% } %> />
+              <%} else { %>/><%}%> 
+            <span><%= vehicleArray[vehicleId].vehicleCode %> - <%= vehicleArray[vehicleId].name %></span>
+          </label>
+        </div>
+      <% }); %>
     </div>
   </div>
 </script>
@@ -781,13 +884,13 @@
 <% if (Object.keys(locals.query).length !== 0 ) { %>
   <% if (locals.query.item == 'employee') { %>
     <script>loadEmployeeForm();</script>
-    <% if (locals.query.extraJobtitleArray) { %>
-      <script>loadExtraEmployeeForm('<%= locals.query.extraJobtitleArray %>', '<%= locals.query.extraStarttimeArray %>', '<%= locals.query.extraEndtimeArray %>');</script>
+    <% if (locals.query.extraJobtitleArray.toString().split(',').length > 1) { %>
+      <script>loadExtraEmployeeForm('<%= JSON.stringify(locals.query.extraJobtitleArray) %>', '<%= JSON.stringify(locals.query.extraStarttimeArray) %>', '<%= JSON.stringify(locals.query.extraEndtimeArray) %>', "<%= locals.query.extraJobtitleArray.length %>");</script>
     <% } %>
   <% } else if (locals.query.item == 'vehicle') { %> 
     <script>loadVehicleForm();</script>
-    <% if (locals.query.extraJobtitleArray) { %>
-      <script>loadExtraVehicleForm('<%= locals.query.extraJobtitleArray %>', '<%= locals.query.extraHourArray %>');</script>
+    <% if (locals.query.extraJobtitleArray.toString().split(',').length > 1) { %>
+      <script>loadExtraVehicleForm('<%= JSON.stringify(locals.query.extraJobtitleArray) %>', '<%= JSON.stringify(locals.query.extraHoursArray) %>', '<%= locals.query.extraJobtitleArray.length %>');</script>
     <% } %>
   <% } else if (locals.query.item == 'production') { %>
     <script>loadProductionForm();</script>

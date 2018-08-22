@@ -111,23 +111,15 @@ function deleteEmployeeWorkRequest(id) {
     }
   });
 };
-function loadExtraEmployeeWork(index, jobTitle, startTime, endTime) {
+function loadExtraEmployeeWork(index, jobTitle, startTime, endTime, additional) {
   var template = $('#extra-employee-work-template').html();
-  if (index == 1) {
-    if(!startTime) {
-      startTime = $('#employee-end-time').val();
-    }
-    $('#original-employee-work-add-button').remove();
-    $('#original-employee-work-div').removeClass('s10 m11').addClass('s12 m12 l12');    
-  } else if (index > 1) {
-    if (!startTime) {
-      startTime = $(`#employee-end-time-${index - 1}`).val();
-    }
-    $('#employee-work-add-button-' + (index - 1)).remove();
-    $('#employee-work-div-' + (index - 1)).removeClass('s10 m11').addClass('s12 m12 l12'); 
+  if(!startTime) {
+    startTime = $(`#employee-end-time-${additional}-${index}`).val();
   }
-  var html = Mustache.render(template, {index, jobTitle, startTime, endTime});
-  $('#extra-employee-work-div').append(html);
+  $(`#employee-work-add-button-${additional}-${index}`).remove();
+  $(`#employee-work-div-${additional}-${index}`).removeClass('s10 m11').addClass('s12 m12 l12');    
+  var html = Mustache.render(template, {index: index + 1, jobTitle, startTime, endTime, additional});
+  $(`#extra-employee-work-div-${additional}`).append(html);
   $('input.autocomplete-work').autocomplete({
     data: {
       "Subgrade Prep": null,
@@ -150,18 +142,54 @@ function loadExtraEmployeeWork(index, jobTitle, startTime, endTime) {
       "Blackfill and Landscape Rehab": null
     }
   });
-  $(`.timepicker-${index}`).timepicker({
+  $(`.timepicker`).timepicker({
     container: '.container'
   });
 }; 
-function loadExtraEmployeeForm(jobs, startTimes, endTimes) {
-  var jobTitleArray = jobs.split(',');
-  var startTimeArray = startTimes.split(',');
-  var endTimeArray = endTimes.split(',');
-  var index = jobTitleArray.length;
-  for(var i = 0; i < index; i++) {
-    loadExtraEmployeeWork(i + 1, jobTitleArray[i], startTimeArray[i], endTimeArray[i]);
+function loadExtraEmployeeForm(jobs, startTimes, endTimes, forms) {
+  var jobTitleArray = handleDimensionalArray(jobs);
+  var startTimeArray = handleDimensionalArray(startTimes);
+  var endTimeArray = handleDimensionalArray(endTimes);
+  for (var f = 0; f < forms; f++) {
+    var index = jobTitleArray[f].length;
+    if (f > 0) {
+      loadAdditionalEmployeeWork(f, jobTitleArray[f][0], startTimeArray[f][0], endTimeArray[f][0]);
+    }
+    for(var i = 1; i < index; i++) {
+      loadExtraEmployeeWork(i - 1, jobTitleArray[f][i], startTimeArray[f][i], endTimeArray[f][i],f);
+    }
   }
+}
+function loadAdditionalEmployeeWork(index, jobTitle, startTime, endTime) {
+  $('#additional-employee-work-add-button').attr('onclick', `loadAdditionalEmployeeWork(${index + 1});`);
+  var template = $('#additional-employee-work-template').html();
+  var html = Mustache.render(template, {index, jobTitle, startTime, endTime});
+  $('#additional-employee-form-div').append(html);
+  $('input.autocomplete-work').autocomplete({
+    data: {
+      "Subgrade Prep": null,
+      "Pit-run": null,
+      "Base Gravel": null,
+      "Prime/Tack": null,
+      "Paving": null,
+      "Utilities": null,
+      "Force Account / Extra Work": null,
+      "Saw Cut": null,
+      "Breakout and Dispose": null,
+      "Preperation and Gravel": null,
+      "Rebar": null,
+      "Forming": null,
+      "Hand Pour": null,
+      "Slurry": null,
+      "String Line": null,
+      "Machine Pour": null,
+      "Concrete Supply": null,
+      "Blackfill and Landscape Rehab": null
+    }
+  });
+  $(`.timepicker`).timepicker({
+    container: '.container'
+  });
 }
 
 function loadVehicleForm() {
@@ -232,9 +260,6 @@ function loadVehicleEditForm(id, work, start, end, vehicleId, hours) {
       "Blackfill and Landscape Rehab": null
     }
   });
-  $('.timepicker').timepicker({
-    container: '.container'
-  });
 };
 function removeVehicleEditForm(id, jobTitle, startTime, endTime, vehicleId, hours) {
   var template = $('#vehicle-edit-form-button').html();
@@ -251,17 +276,12 @@ function deleteVehicleWorkRequest(id) {
     }
   });
 };
-function loadExtraVehicleWork(index, jobTitle, hours) {
+function loadExtraVehicleWork(index, jobTitle, hours, additional) {
   var template = $('#extra-vehicle-work-template').html();
-  if (index == 1) {
-    $('#original-vehicle-work-add-button').remove();
-    $('#original-vehicle-hour-div').removeClass('s4 m5').addClass('s6 m6');    
-  } else if (index > 1) {
-    $('#vehicle-work-add-button-' + (index - 1)).remove();
-    $('#vehicle-hours-div-' + (index - 1)).removeClass('s4 m4').addClass('s6 m6'); 
-  }
-  var html = Mustache.render(template, {index, jobTitle, hours});
-  $('#extra-vehicle-work-div').append(html);
+  $(`#vehicle-work-add-button-${additional}-${index}`).remove();
+  $(`#vehicle-hours-div-${additional}-${index}`).removeClass('s4 m5').addClass('s6 m6');    
+  var html = Mustache.render(template, {index: index + 1, jobTitle, hours, additional});
+  $(`#extra-vehicle-work-div-${additional}`).append(html);
   $('input.autocomplete-work').autocomplete({
     data: {
       "Subgrade Prep": null,
@@ -284,17 +304,47 @@ function loadExtraVehicleWork(index, jobTitle, hours) {
       "Blackfill and Landscape Rehab": null
     }
   });
-  $(`.timepicker-${index}`).timepicker({
-    container: '.container'
-  });
 }; 
-function loadExtraVehicleForm(jobs, hours) {
-  var jobTitleArray = jobs.split(',');
-  var hourArray = hours.split(',');
-  var index = jobTitleArray.length;
-  for(var i = 0; i < index; i++) {
-    loadExtraVehicleWork(i + 1, jobTitleArray[i], hourArray[i]);
+function loadExtraVehicleForm(jobs, hours, forms) {
+  var jobTitleArray = handleDimensionalArray(jobs);
+  var hourArray = handleDimensionalArray(hours);
+  for (var f = 0; f < forms; f++) {
+    var index = jobTitleArray[f].length;
+    if (f > 0) {
+      loadAdditionalVehicleWork(f, jobTitleArray[f][0], hourArray[f][0]);
+    }
+    for(var i = 1; i < index; i++) {
+      loadExtraVehicleWork(i - 1, jobTitleArray[f][i], hourArray[f][i], f);
+    }
   }
+}
+function loadAdditionalVehicleWork(additional, jobTitle, hours) {
+  $('#additional-vehicle-work-add-button').attr('onclick', `loadAdditionalVehicleWork(${additional + 1});`);
+  var template = $('#additional-vehicle-work-template').html();
+  var html = Mustache.render(template, {additional, jobTitle, hours});
+  $('#additional-vehicle-form-div').append(html);
+  $('input.autocomplete-work').autocomplete({
+    data: {
+      "Subgrade Prep": null,
+      "Pit-run": null,
+      "Base Gravel": null,
+      "Prime/Tack": null,
+      "Paving": null,
+      "Utilities": null,
+      "Force Account / Extra Work": null,
+      "Saw Cut": null,
+      "Breakout and Dispose": null,
+      "Preperation and Gravel": null,
+      "Rebar": null,
+      "Forming": null,
+      "Hand Pour": null,
+      "Slurry": null,
+      "String Line": null,
+      "Machine Pour": null,
+      "Concrete Supply": null,
+      "Blackfill and Landscape Rehab": null
+    }
+  });
 }
 
 function loadProductionForm() {
@@ -495,3 +545,29 @@ function deleteReportRequest(id) {
     url: `/report/${id}`
   });
 };
+
+function decodeHtml(html) {
+  var txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
+}
+
+function handleDimensionalArray(string) {
+  var array = [];
+  string = decodeHtml(string).split('"');
+  string.splice(string.indexOf('['), 1);
+  string.splice(string.indexOf(']'), 1);
+  if (string.indexOf(',') != -1) {
+    string = string.toString().split(',,,');
+    for (var i in string) {
+      brokenString = string[i].toString().split(',');
+      array[i] = [];
+      for (var j in brokenString) {
+        array[i][j] = brokenString[j];
+      }
+    }
+  } else {
+    array[0] = string.toString().split(',');
+  }
+  return array;
+}
