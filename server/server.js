@@ -2147,13 +2147,23 @@ app.post('/material', async (req, res) => {
         if (!req.body.sourceTruckCode) {
           throw new Error('Must include truck code');
         }
-        vehicle = await new Vehicle({
-          name: req.body.source.trim() + " Truck - " + req.body.sourceTruckCode.trim(),
-          vehicleType: req.body.vehicleType,
-          vehicleCode: `Ren - ${req.body.sourceTruckCode.trim()}`,
-          rental: true,
-          sourceCompany: req.body.source.trim()
-        });
+        if (req.body.source.trim().toLowerCase() != 'bow mark' && req.body.source.trim().toLowerCase() != 'bowmark' && req.body.source.trim().toLowerCase() != 'bmp') {
+          vehicle = await new Vehicle({
+            name: req.body.source.trim() + " Truck",
+            vehicleType: req.body.vehicleType,
+            vehicleCode: `Ren - ${req.body.sourceTruckCode.trim()}`,
+            rental: true,
+            sourceCompany: req.body.source.trim()
+          });
+        } else {
+          vehicle = await new Vehicle({
+            name: req.body.source.trim() + " Truck",
+            vehicleType: req.body.vehicleType,
+            vehicleCode: req.body.sourceTruckCode.trim(),
+            rental: true,
+            sourceCompany: req.body.source.trim()
+          });
+        }
         await vehicle.save();
         material = await new MaterialShipment({
           startTime, endTime,

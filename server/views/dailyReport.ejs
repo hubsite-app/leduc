@@ -182,7 +182,7 @@
               <% } %>
               
               <b><%= materialArray[i].supplier %> <%= materialArray[i].shipmentType %></b> - <%= materialArray[i].quantity %> <%= materialArray[i].unit %></br>
-              <% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].name %> - <%= vehicleArray[materialArray[i].vehicle].vehicleType %><%}else{%>'Vehicle was removed'<%}%>
+              <% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].vehicleCode %> <%= vehicleArray[materialArray[i].vehicle].name %> - <%= vehicleArray[materialArray[i].vehicle].vehicleType %><%}else{%>'Vehicle was removed'<%}%>
               <div id="material-<%=materialArray[i]._id%>-edit-form-div"></div>
             </li>
           <% } %>
