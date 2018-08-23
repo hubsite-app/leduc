@@ -52,7 +52,6 @@ function loadEmployeeForm() {
   $('input.autocomplete-work').on('click', function () {
     instance.open();
   });
-  
 };
 function removeEmployeeForm() {
   var template = $('#employee-work-form-add-button').html();
@@ -189,6 +188,14 @@ function loadAdditionalEmployeeWork(index, jobTitle, startTime, endTime) {
   });
   $(`.timepicker`).timepicker({
     container: '.container'
+  });
+  $('select').formSelect({dropdownOptions: {
+    constrainWidth: false
+  }});
+  var elem = document.querySelector('.autocomplete-work');
+  var instance = M.Autocomplete.getInstance(elem);
+  $('input.autocomplete-work').on('click', function () {
+    instance.open();
   });
 }
 
