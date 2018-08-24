@@ -232,7 +232,7 @@
         <select name="jobId">
           <% for (var i in jobArray) { %>
             <option value="<%= jobArray[i]._id %>" <% if (report.jobsite.equals(jobArray[i]._id)) { %> selected <% } %>>
-              <%= jobArray[i].name %>
+              <%= jobArray[i].jobcode %>: <%= jobArray[i].name %>
             </option>
           <% } %>
         </select>
