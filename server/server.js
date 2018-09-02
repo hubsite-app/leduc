@@ -2141,11 +2141,50 @@ app.post('/material', async (req, res) => {
     if(req.body.startTime) {var startTime = await timeHandling(req.body.startTime, report.date)};
     if(req.body.endTime) {var endTime = await timeHandling(req.body.endTime, report.date)};
     if (req.body.source && !req.body.vehicle) {
-      var material;
-      var vehicle = await Vehicle.find({name: req.body.source.trim() + " Truck - " + req.body.sourceTruckCode.trim()});
+      var material, vehicle;
       if (_.isEmpty(vehicle)) {
         if (!req.body.sourceTruckCode) {
           throw new Error('Must include truck code');
+        }
+        console.log(req.body.sourceTruckCode);
+        var v = await Vehicle.find({name: `${req.body.source} Truck`});
+        if (!v) {
+          v = await Vehicle.find({name: `${req.body.source} Truck`});
+        }
+        if (v.length > 0) {
+          for (var i in v) {
+            console.log(v[i]);
+            if (v[i].vehicleCode == `Ren - ${req.body.sourceTruckCode.trim()}` || v[i].vehicleCode == req.body.sourceTruckCode.trim()) {
+              vehicle = v[i];
+              console.log('hi1');
+            } else {
+              vehicle = await new Vehicle({
+                name: v[i].name,
+                vehicleType: req.body.vehicleType,
+                vehicleCode: `Ren - ${req.body.sourceTruckCode.trim()}`,
+                rental: true,
+                sourceCompany: req.body.source.trim()
+              });
+              console.log('hi2');
+            }
+          }
+          await vehicle.save();
+          material = await new MaterialShipment({
+            startTime, endTime,
+            shipmentType: req.body.shipmentType,
+            quantity: req.body.quantity,
+            unit: req.body.unit,
+            source: req.body.source,
+            supplier: req.body.supplier,
+            vehicle: vehicle._id,
+            dailyReport: report._id
+          });
+          await material.save();
+          await report.materialShipment.push(material);
+          await report.save();
+          console.log('hi');
+          req.flash('success', 'The shipment has successfully been added');
+          res.redirect(`/report/${report._id}`);
         }
         if (req.body.source.trim().toLowerCase() != 'bow mark' && req.body.source.trim().toLowerCase() != 'bowmark' && req.body.source.trim().toLowerCase() != 'bmp') {
           vehicle = await new Vehicle({
@@ -2160,7 +2199,7 @@ app.post('/material', async (req, res) => {
             name: req.body.source.trim() + " Truck",
             vehicleType: req.body.vehicleType,
             vehicleCode: req.body.sourceTruckCode.trim(),
-            rental: true,
+            rental: false,
             sourceCompany: req.body.source.trim()
           });
         }
