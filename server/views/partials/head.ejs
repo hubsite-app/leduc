@@ -28,6 +28,12 @@
         <li><a href="/users">Users</a></li>
         <li><a href="/user/<%=locals.user._id%>"><%= locals.user.name %></a></li>
         <li><a href="/logout">Logout</a></li>
+      <% } else if (locals.user.admin == false && locals.user.crews  && locals.user.crews.length > 0) { %>
+        <% locals.user.crews.forEach((crew) => { %>
+          <li><a href="/crew/<%=crew%>">Crew - <%= crew %></a></li>          
+        <% }); %>
+        <li><a href="/user/<%=locals.user._id%>"><%= locals.user.name %></a></li>
+        <li><a href="/logout">Logout</a></li>
       <% } else { %>
         <li><a href="/user/<%=locals.user._id%>"><%= locals.user.name %></a></li>
         <li><a href="/logout">Logout</a></li>

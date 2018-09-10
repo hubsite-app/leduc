@@ -3,3 +3,4 @@ newrelic_agent.log
 /server/config
 /excelFiles
 /.vscode
+/newrelic_agent.log
