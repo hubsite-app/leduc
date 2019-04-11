@@ -44,17 +44,6 @@ var sess = {
   })
 };
 
-const oauth2Client = new OAuth2(
-  process.env.CLIENT_ID,
-  process.env.CLIENT_SECRET,
-  "https://developers.google.com/oauthplayground"
-);
-oauth2Client.setCredentials({
-  refresh_token: process.env.REFRESH_TOKEN
-});
-const tokens = await oauth2Client.refreshAccessToken();
-const accessToken = tokens.credentials.access_token;
-
 passport.use(
   new LocalStrategy(
     {
@@ -237,6 +226,16 @@ app.post("/forgot", (req, res, next) => {
         });
       },
       function(token, user, done) {
+        const oauth2Client = new OAuth2(
+          process.env.CLIENT_ID,
+          process.env.CLIENT_SECRET,
+          "https://developers.google.com/oauthplayground"
+        );
+        oauth2Client.setCredentials({
+          refresh_token: process.env.REFRESH_TOKEN
+        });
+        const tokens = await oauth2Client.refreshAccessToken();
+        const accessToken = tokens.credentials.access_token;
         var smtpTransport = nodemailer.createTransport({
           service: "gmail",
           auth: {
