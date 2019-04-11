@@ -17,6 +17,8 @@ const crypto = require("crypto");
 const flash = require("express-flash");
 const querystring = require("query-string");
 const pdf = require("html-pdf");
+const { google } = require("googleapis");
+const OAuth2 = google.auth.OAuth2;
 
 const { User } = require("./models/user");
 const { DailyReport } = require("./models/dailyReport");
@@ -41,6 +43,17 @@ var sess = {
     mongooseConnection: mongoose.connection
   })
 };
+
+const oauth2Client = new OAuth2(
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  "https://developers.google.com/oauthplayground"
+);
+oauth2Client.setCredentials({
+  refresh_token: process.env.REFRESH_TOKEN
+});
+const tokens = await oauth2Client.refreshAccessToken();
+const accessToken = tokens.credentials.access_token;
 
 passport.use(
   new LocalStrategy(
@@ -227,8 +240,12 @@ app.post("/forgot", (req, res, next) => {
         var smtpTransport = nodemailer.createTransport({
           service: "gmail",
           auth: {
+            type: "OAuth2",
             user: "triproster@gmail.com",
-            pass: process.env.GMAIL_PASSWORD
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+            refreshToken: process.env.REFRESH_TOKEN,
+            accessToken: accessToken
           }
         });
         var mailOptions = {
