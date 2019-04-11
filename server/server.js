@@ -225,7 +225,7 @@ app.post("/forgot", (req, res, next) => {
           });
         });
       },
-      function(token, user, done) {
+      async function(token, user, done) {
         const oauth2Client = new OAuth2(
           process.env.CLIENT_ID,
           process.env.CLIENT_SECRET,
