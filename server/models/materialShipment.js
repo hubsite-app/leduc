@@ -20,6 +20,7 @@ var MaterialShipmentSchema = new mongoose.Schema({
   endTime: {
     type: Date,
   },
+  // Depreciated
   source: {
     type: String,
     trim: true
@@ -30,8 +31,19 @@ var MaterialShipmentSchema = new mongoose.Schema({
   },
   vehicle: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Vehicle',
-    required: true
+    ref: 'Vehicle'
+  },
+  vehicleObject: {
+    // Name
+    source: {
+      type: String,
+      trim: true
+    },
+    vehicleType: {
+      type: String,
+      trim: true,
+      default: "Truck"
+    }
   },
   dailyReport: {
     type: mongoose.Schema.Types.ObjectId,

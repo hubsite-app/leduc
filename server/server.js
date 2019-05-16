@@ -2988,6 +2988,7 @@ app.delete("/production/:id", async (req, res) => {
 // POST /material
 app.post("/material", async (req, res) => {
   try {
+    console.log(req.body);
     var report = await DailyReport.findById(req.body.dailyReport);
     if (req.body.startTime) {
       var startTime = await timeHandling(req.body.startTime, report.date);
@@ -2998,67 +2999,92 @@ app.post("/material", async (req, res) => {
     if (req.body.source && !req.body.vehicle) {
       var material, vehicle;
       if (_.isEmpty(vehicle)) {
+        // No existing vehicle selected (will always be true now as the form no longer support vehicle selection)
         if (!req.body.sourceTruckCode) {
-          throw new Error("Must include truck code");
+          // No longer require Truck Code
+          // throw new Error("Must include truck code");
         }
-        if (
-          req.body.source.trim().toLowerCase() != "bow mark" &&
-          req.body.source.trim().toLowerCase() != "bowmark" &&
-          req.body.source.trim().toLowerCase() != "bmp"
-        ) {
-          vehicle = await new Vehicle({
-            name: req.body.source.trim() + " Truck",
-            vehicleType: req.body.vehicleType,
-            vehicleCode: `Ren - ${req.body.sourceTruckCode.trim()}`,
-            rental: true,
-            sourceCompany: req.body.source.trim()
-          });
-        } else {
-          vehicle = await new Vehicle({
-            name: req.body.source.trim() + " Truck",
-            vehicleType: req.body.vehicleType,
-            vehicleCode: req.body.sourceTruckCode.trim(),
-            rental: false,
-            sourceCompany: req.body.source.trim()
-          });
+        // if (
+        //   req.body.source.trim().toLowerCase() != "bow mark" &&
+        //   req.body.source.trim().toLowerCase() != "bowmark" &&
+        //   req.body.source.trim().toLowerCase() != "bmp"
+        // ) {
+        //   vehicle = await new Vehicle({
+        //     name: req.body.source.trim() + " Truck",
+        //     vehicleType: req.body.vehicleType,
+        //     vehicleCode: `Ren - ${req.body.sourceTruckCode.trim()}`,
+        //     rental: true,
+        //     sourceCompany: req.body.source.trim()
+        //   });
+        // } else {
+        //   vehicle = await new Vehicle({
+        //     name: req.body.source.trim() + " Truck",
+        //     vehicleType: req.body.vehicleType,
+        //     vehicleCode: req.body.sourceTruckCode.trim(),
+        //     rental: false,
+        //     sourceCompany: req.body.source.trim()
+        //   });
+        // }
+        // await vehicle.save();
+        // material = await new MaterialShipment({
+        //   startTime,
+        //   endTime,
+        //   shipmentType: req.body.shipmentType,
+        //   quantity: req.body.quantity,
+        //   unit: req.body.unit,
+        //   source: req.body.source,
+        //   supplier: req.body.supplier,
+        //   vehicle: vehicle._id,
+        //   dailyReport: report._id
+        // });
+
+        // Ensure the existance of 'source' 
+        if (req.body.source === '') {
+          throw new Error("Must Enter a Source Company");
         }
-        await vehicle.save();
         material = await new MaterialShipment({
           startTime,
           endTime,
           shipmentType: req.body.shipmentType,
           quantity: req.body.quantity,
           unit: req.body.unit,
-          source: req.body.source,
+          // source: req.body.source,
           supplier: req.body.supplier,
-          vehicle: vehicle._id,
+          vehicleObject: {
+            source: req.body.source,
+            vehicleType: req.body.vehicleType
+          },
           dailyReport: report._id
         });
       } else {
-        material = await new MaterialShipment({
-          startTime,
-          endTime,
-          shipmentType: req.body.shipmentType,
-          quantity: req.body.quantity,
-          unit: req.body.unit,
-          source: req.body.source,
-          supplier: req.body.supplier,
-          vehicle: vehicle[0]._id,
-          dailyReport: report._id
-        });
+        // This will no longer happen
+      throw new Error("This should not have happened, please call me at 403-973-7408 and let me know what you did");
+        // material = await new MaterialShipment({
+        //   startTime,
+        //   endTime,
+        //   shipmentType: req.body.shipmentType,
+        //   quantity: req.body.quantity,
+        //   unit: req.body.unit,
+        //   source: req.body.source,
+        //   supplier: req.body.supplier,
+        //   vehicle: vehicle[0]._id,
+        //   dailyReport: report._id
+        // });
       }
     } else {
-      material = await new MaterialShipment({
-        startTime,
-        endTime,
-        shipmentType: req.body.shipmentType,
-        quantity: req.body.quantity,
-        unit: req.body.unit,
-        source: req.body.source,
-        supplier: req.body.supplier,
-        vehicle: req.body.vehicle,
-        dailyReport: report._id
-      });
+      // This should also no longer happen
+      throw new Error("You did not enter a source");
+      // material = await new MaterialShipment({
+      //   startTime,
+      //   endTime,
+      //   shipmentType: req.body.shipmentType,
+      //   quantity: req.body.quantity,
+      //   unit: req.body.unit,
+      //   source: req.body.source,
+      //   supplier: req.body.supplier,
+      //   vehicle: req.body.vehicle,
+      //   dailyReport: report._id
+      // });
     }
     await material.save();
     await report.materialShipment.push(material);
@@ -3118,7 +3144,7 @@ app.post("/material/:id/update", async (req, res) => {
           quantity: req.body.quantity,
           unit: req.body.unit,
           supplier: req.body.supplier,
-          vehicle: req.body.vehicle,
+          // vehicle: req.body.vehicle,
           dailyReport: report
         }
       },

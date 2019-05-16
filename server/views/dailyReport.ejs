@@ -182,7 +182,11 @@
               <% } %>
               
               <b><%= materialArray[i].supplier %> <%= materialArray[i].shipmentType %></b> - <%= materialArray[i].quantity %> <%= materialArray[i].unit %></br>
-              <% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].vehicleCode %> <%= vehicleArray[materialArray[i].vehicle].name %> - <%= vehicleArray[materialArray[i].vehicle].vehicleType %><%}else{%>'Vehicle was removed'<%}%>
+              <% if (materialArray[i].vehicle) { %>
+                <% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].vehicleCode %> <%= vehicleArray[materialArray[i].vehicle].name %> - <%= vehicleArray[materialArray[i].vehicle].vehicleType %><%}else{%>'Vehicle was removed'<%}%>
+              <% } else if (materialArray[i].vehicleObject) { %>
+                <% if (materialArray[i].vehicleObject.source && materialArray[i].vehicleObject.vehicleType) { %><%= materialArray[i].vehicleObject.source %> <%= materialArray[i].vehicleObject.vehicleType %><% } else { %>This Vehicle did not save properly <% } %>
+              <% } %>
               <div id="material-<%=materialArray[i]._id%>-edit-form-div"></div>
             </li>
           <% } %>
@@ -769,12 +773,12 @@
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.endTime != '') {%> value="<%=locals.query.endTime%>" <%}%>/>
           <label for="shipment-end-time">End Time (Optional)</label>
         </div>
-        <div class="input-field col s12 m6">
+        <div class="input-field col s6 m6">
           <input name="source" type="text" id="shipment-source" class="autocomplete-units"
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.source != '') {%> value="<%=locals.query.source%>" <%}%>/>
           <label for="shipment-source">Source Company</label>
         </div>
-        <div class="input-field col s6 m3">
+        <div class="input-field col s6 m6">
           <select name="vehicleType" id="shipment-vehicleType">
             <option value="Tandem" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && locals.query.vehicleType == 'Tandem') {%> selected <%}%>>Tandem</option>
             <option value="Truck and Pup" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && locals.query.vehicleType == 'Truck and Pup') {%> selected <%}%>>Truck and Pup</option>
@@ -784,13 +788,13 @@
           </select>
           <label for="shipment-source">Vehicle Type</label>
         </div>
-        <div class="input-field col s6 m3">
+        <!-- <div class="input-field col s6 m3">
           <input name="sourceTruckCode" type="text" id="shipment-source-truck-code" 
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.sourceTruckCode != '') {%> value="<%=locals.query.sourceTruckCode%>" <%}%>/>
           <label for="shipment-source-truck-code">Vehicle Code</label>
-        </div>
-        <spam>Enter 'Source Company' OR pick vehicle from below</span>
-        <div class="hide-on-med-and-up">
+        </div> -->
+        <!-- <span>Enter 'Source Company' OR pick vehicle from below</span> -->
+        <!-- <div class="hide-on-med-and-up">
           <div class="input-field col s6">
             <select multiple name="vehicle">
               <% crew.vehicles.forEach((vehicleId) => { %>
@@ -814,7 +818,7 @@
               </label>
             </div>
           <% }); %>
-        </div>
+        </div> -->
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
         <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
           <i class="material-icons right">send</i>
