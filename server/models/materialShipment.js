@@ -43,6 +43,10 @@ var MaterialShipmentSchema = new mongoose.Schema({
       type: String,
       trim: true,
       default: "Truck"
+    },
+    vehicleCode: {
+      type: String,
+      trim: true
     }
   },
   dailyReport: {

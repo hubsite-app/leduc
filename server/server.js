@@ -2988,7 +2988,6 @@ app.delete("/production/:id", async (req, res) => {
 // POST /material
 app.post("/material", async (req, res) => {
   try {
-    console.log(req.body);
     var report = await DailyReport.findById(req.body.dailyReport);
     if (req.body.startTime) {
       var startTime = await timeHandling(req.body.startTime, report.date);
@@ -3042,6 +3041,10 @@ app.post("/material", async (req, res) => {
         if (req.body.source === '') {
           throw new Error("Must Enter a Source Company");
         }
+        if (req.body.sourceTruckCode === '') {
+          throw new Error("Must enter a Vehicle Code");
+        }
+        console.log(req.body);
         material = await new MaterialShipment({
           startTime,
           endTime,
@@ -3052,7 +3055,8 @@ app.post("/material", async (req, res) => {
           supplier: req.body.supplier,
           vehicleObject: {
             source: req.body.source,
-            vehicleType: req.body.vehicleType
+            vehicleType: req.body.vehicleType,
+            vehicleCode: req.body.sourceTruckCode
           },
           dailyReport: report._id
         });
