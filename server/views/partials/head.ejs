@@ -15,7 +15,7 @@
   </head>
   <body>
     <ul id="dropdown1" class="dropdown-content">
-      <% if (!locals.user) {%>
+      <% if (!locals.user) { %>
         <li><a href="/login">Login</a></li>
         <li><a href="/signup">Signup</a></li>
       <% } else if (locals.user.admin || locals.user.projectManager) { %>
@@ -28,9 +28,9 @@
         <li><a href="/users">Users</a></li>
         <li><a href="/user/<%=locals.user._id%>"><%= locals.user.name %></a></li>
         <li><a href="/logout">Logout</a></li>
-      <% } else if (locals.user.admin == false && locals.user.crews  && locals.user.crews.length > 0) { %>
-        <% locals.user.crews.forEach((crew) => { %>
-          <li><a href="/crew/<%=crew%>">Crew - <%= crew %></a></li>          
+      <% } else if (locals.user.admin == false && locals.crews && locals.crews.length > 0) { %>
+        <% locals.crews.forEach((crew) => { %>
+          <li><a href="/crew/<%=crew._id%>">Crew - <%= crew.name %></a></li>          
         <% }); %>
         <li><a href="/user/<%=locals.user._id%>"><%= locals.user.name %></a></li>
         <li><a href="/logout">Logout</a></li>

@@ -86,10 +86,21 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, "../public")));
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
+  let user = req.user;
+  let crews = [];
+  if (user && user.employee) {
+    let employee = await Employee.findById(user.employee);
+    if (employee.crews && employee.crews.length > 0) {
+      employee.crews.forEach(async crew => {
+        crews.push(await Crew.findById(crew));
+      });
+    }
+  }
   res.locals.session = req.session;
   res.locals.baseUrl = req.headers.host;
   res.locals.user = req.user;
+  res.locals.crews = crews
   res.locals.query = req.query;
   next();
 });

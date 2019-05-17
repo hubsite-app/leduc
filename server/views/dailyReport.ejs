@@ -14,11 +14,11 @@
         </label></br>
         <a href="/report/<%=report._id%>/pdf">PDF Report</a></br>
       <% } %>
-      <% if (!locals.user.projectManager == true) { %>
+      <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>      
         <a href="" id="edit-button" onclick="loadEditForm(); return false;">Edit Report<i class="tiny material-icons">edit</i></a></br>
         <div id="edit-form-div"></div>
+        <a class="report-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteReportRequest('<%= report._id %>')}" href=""><i class="material-icons">delete</i></a>
       <% } %>
-      <a class="report-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteReportRequest('<%= report._id %>')}" href=""><i class="material-icons">delete</i></a>
       <h6><%= report.date.toDateString(); %></h6>
     </div>
 
@@ -32,7 +32,7 @@
               <% var hour = Math.round(Math.abs(employeeHourArray[i].endTime - employeeHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
               <li class="collection-item">
 
-                  <% if (locals.user.projectManager != true) { %>
+                  <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>                  
                     <div id="employee-work-<%=employeeHourArray[i]._id%>-div">
                       <a class="employee-work-edit secondary-content" id="employee-work-<%=employeeHourArray[i]._id%>-edit-button"
                         onClick="loadEmployeeEditForm('<%= employeeHourArray[i]._id %>', '<%= employeeHourArray[i].jobTitle %>', '<%= employeeHourArray[i].startTime %>', '<%= employeeHourArray[i].endTime %>', '<%=employeeHourArray[i].employee%>'); return false;" href="">
@@ -52,7 +52,7 @@
             <% } %>
           </ul>
         <% } %>
-        <% if (locals.user.projectManager != true) { %> 
+        <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>
           <div id="employee-work-form-div"></div>
           <div id="employee-work-button-div">
             <div id="add-employee-work">
@@ -77,7 +77,7 @@
               <% var hour = Math.round(Math.abs(vehicleHourArray[i].endTime - vehicleHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
               <li class="collection-item">
                 
-                <% if (locals.user.projectManager != true) { %>
+                <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>                
                   <div id="vehicle-work-<%=vehicleHourArray[i]._id%>-div">
                     <a class="vehicle-work-edit secondary-content" id="vehicle-work-<%=vehicleHourArray[i]._id%>-edit-button"
                       onClick="loadVehicleEditForm('<%= vehicleHourArray[i]._id %>', '<%= vehicleHourArray[i].jobTitle %>', '<%=vehicleHourArray[i].startTime%>', '<%=vehicleHourArray[i].endTime%>', '<%=vehicleHourArray[i].vehicle%>', '<%= vehicleHourArray[i].hours %>'); return false;" href="">
@@ -102,7 +102,7 @@
             <% } %>
           </ul>
         <% } %>
-        <% if (locals.user.projectManager != true) { %> 
+        <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>        
           <div id="vehicle-work-form-div"></div>
           <div id="vehicle-work-button-div">
             <div id="add-vehicle-work">
@@ -123,7 +123,7 @@
             <% var hour = Math.round(Math.abs(productionArray[i].endTime - productionArray[i].startTime) / 3.6e6 * 100) / 100 %>
             <li class="collection-item">
 
-              <% if (locals.user.projectManager != true) { %>
+              <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>              
                 <div id="production-edit-<%=productionArray[i]._id%>-div">
                   <a class="production-edit secondary-content" id="production-<%=productionArray[i]._id%>-edit-button"
                     onClick="loadProductionEditForm('<%= productionArray[i]._id %>', '<%= productionArray[i].jobTitle %>', '<%= productionArray[i].quantity %>', '<%= productionArray[i].unit %>', '<%= productionArray[i].startTime %>', '<%= productionArray[i].endTime %>', '<%=productionArray[i].description%>'); return false;" href="">
@@ -144,7 +144,7 @@
           <% } %>
         </ul>
       <% } %>
-      <% if (locals.user.projectManager != true) { %>
+      <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>      
         <div id="production-form-div"></div>
         <div id="production-button-div">
           <div id="add-production">
@@ -170,8 +170,7 @@
               <% } else { %>
                 <% totalsArray[materialArray[i].shipmentType].total += materialArray[i].quantity; %>
               <% } %> 
-              <% if (locals.user.projectManager != true) { %>
-
+              <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>              
                 <div id="material-edit-<%= materialArray[i]._id %>-div">
                   <a class="material-edit secondary-content" id="material-<%=materialArray[i]._id%>-edit-button"
                     onClick="loadMaterialEditForm('<%= materialArray[i]._id %>', '<%= materialArray[i].shipmentType %>', '<%= materialArray[i].quantity %>', '<%= materialArray[i].unit %>', '<%= materialArray[i].vehicle %>', '<%= materialArray[i].supplier %>', '<%= materialArray[i].startTime %>', '<%= materialArray[i].endTime %>'); return false;" href="">
@@ -198,7 +197,7 @@
           <% } %>
         </ul>
       <% } %>
-      <% if (locals.user.projectManager != true) { %>
+      <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>      
         <div id="material-form-div"></div>
         <div id="material-button-div">
           <div id="add-material">
@@ -217,7 +216,7 @@
           <label for="reportnote">General Notes</label>
         </div>
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
-        <% if (locals.user.projectManager != true) { %>
+        <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>        
           <button class="btn waves-effect waves-light right" type="submit" name="action">Submit Notes
             <i class="material-icons right">send</i>
           </button>
