@@ -14,7 +14,9 @@
       <a href="/report/<%= reportArray[i]._id %>">
         <% if (crewArray[reportArray[i].crew]) { %> <%=
         crewArray[reportArray[i].crew].name %> - <%= reportArray[i].date %> <% }
-        %>
+        else { %>
+        <span>{Cannot find Crew Name} - <%= reportArray[i].date %></span>
+        <% } %>
       </a>
     </li>
     <% } %>
