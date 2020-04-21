@@ -121,20 +121,22 @@
             <ul class="collection dropdown-content" id="crew-<%= crewArray[result]._id %>-vehicle-dropdown">
               <form id="crew-<%= crewArray[result]._id %>-vehicle-form">
                 <% for (var i in vehicleArray) { %>
-                  <label>
-                    <li class="collection-item" id="vehicle-<%= vehicleArray[i]._id %>-item">
-                      <input type="hidden" class="id" id="crew-<%= crewArray[result]._id %>-id" value="<%= crewArray[result]._id %>" />
-                      <input type="checkbox" class="newCrewVehicle" id="vehicle-<%= vehicleArray[i]._id %>-checkbox" name="vehicle" value="<%= vehicleArray[i]._id %>" 
-                        <% crewArray[result].vehicles.forEach((vehicle) => {
-                          if (vehicleArray[i]._id.equals(vehicle)) {%>
-                            checked="true"
-                          <%}});%> />
-                      <span>
-                        <%= vehicleArray[i].name %> - <%= vehicleArray[i].vehicleCode %>
-                      </span>
-                    </li>
-                  </label>
+                  <% if (!vehicleArray[i].vehicleCode.includes('Ren')) { %>
+                    <label>
+                      <li class="collection-item" id="vehicle-<%= vehicleArray[i]._id %>-item">
+                        <input type="hidden" class="id" id="crew-<%= crewArray[result]._id %>-id" value="<%= crewArray[result]._id %>" />
+                        <input type="checkbox" class="newCrewVehicle" id="vehicle-<%= vehicleArray[i]._id %>-checkbox" name="vehicle" value="<%= vehicleArray[i]._id %>" 
+                          <% crewArray[result].vehicles.forEach((vehicle) => {
+                            if (vehicleArray[i]._id.equals(vehicle)) {%>
+                              checked="true"
+                            <%}});%> />
+                        <span>
+                          <%= vehicleArray[i].name %> - <%= vehicleArray[i].vehicleCode %>
+                        </span>
+                      </li>
+                    </label>
                   <% } %>
+                <% } %>
               </form>
             </ul>
           <% } %>

@@ -6,7 +6,7 @@
   },
   "development": {
     "PORT": 3000,
-    "MONGODB_URI": "mongodb://localhost:27017/BowMarkApp",
+    "MONGODB_URI": "mongodb://devinMcArthur:chaos1@ds225375.mlab.com:25375/bow-mark-dev",
     "JWT_SECRET": "awughefhasgfa23^&2g3rahfw3193r*(ghf(&@#&9g(&@#(FG"
   }
 }

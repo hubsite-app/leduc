@@ -18,14 +18,11 @@
   <body>
     
     <div class="row" style="margin-bottom: 0em;">
-      <div class="col s10">
+      <div class="col s12">
         <a href="/report/<%=report._id%>"><h5 style="display: inline;"><%= job.jobcode %> <%= job.name %></h5></a> - 
         <span><%= crew.name %><a href="/crew/<%= crew._id %>"></a></span> - 
         <span><%= report.date.toDateString(); %></span>
-      </div>
-      
-      <div class="col s2">
-        <span><%= report.id %></span>
+        <span> - <%= report.id %></span>
       </div>
     </div>
 
@@ -205,7 +202,11 @@
                   <td><%= materialArray[i].supplier %> <%= materialArray[i].shipmentType.substring(0, 13) %></td>
                   <td><%= materialArray[i].quantity %> <%= materialArray[i].unit %></td>
                   <% totalMaterial += materialArray[i].quantity %>
-                  <td><% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].name %> - <%= vehicleArray[materialArray[i].vehicle].vehicleType %><%}else{%>'Vehicle was removed'<%}%></td>
+                  <% if (materialArray[i].vehicle) { %>
+                    <td><% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].name %> - <%= vehicleArray[materialArray[i].vehicle].vehicleType %><%}else{%>'Vehicle was removed'<%}%></td>
+                  <% } else if (materialArray[i].vehicleObject) { %>
+                    <% if (materialArray[i].vehicleObject.source && materialArray[i].vehicleObject.vehicleType && materialArray[i].vehicleObject.vehicleCode) { %><td><%= materialArray[i].vehicleObject.source %> / <%= materialArray[i].vehicleObject.vehicleType %> / <%= materialArray[i].vehicleObject.vehicleCode %></td><% } else { %><td>This Vehicle did not save properly</td><% } %>
+                  <% } %>
                   <td><%= Math.round(Math.abs(materialArray[i].endTime - materialArray[i].startTime) / 3.6e6 * 100) / 100 %></td>
                   <% if (typeof (Math.round(Math.abs(materialArray[i].endTime - materialArray[i].startTime) / 3.6e6 * 100) / 100) == 'number') { %>
                     <% totalMaterialHours += Math.round(Math.abs(materialArray[i].endTime - materialArray[i].startTime) / 3.6e6 * 100) / 100 %>

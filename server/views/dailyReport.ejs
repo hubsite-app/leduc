@@ -14,11 +14,11 @@
         </label></br>
         <a href="/report/<%=report._id%>/pdf">PDF Report</a></br>
       <% } %>
-      <% if (!locals.user.projectManager == true) { %>
+      <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>      
         <a href="" id="edit-button" onclick="loadEditForm(); return false;">Edit Report<i class="tiny material-icons">edit</i></a></br>
         <div id="edit-form-div"></div>
+        <a class="report-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteReportRequest('<%= report._id %>')}" href=""><i class="material-icons">delete</i></a>
       <% } %>
-      <a class="report-delete secondary-content" onClick="if(confirm('Are you sure?')){deleteReportRequest('<%= report._id %>')}" href=""><i class="material-icons">delete</i></a>
       <h6><%= report.date.toDateString(); %></h6>
     </div>
 
@@ -32,7 +32,7 @@
               <% var hour = Math.round(Math.abs(employeeHourArray[i].endTime - employeeHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
               <li class="collection-item">
 
-                  <% if (locals.user.projectManager != true) { %>
+                  <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>                  
                     <div id="employee-work-<%=employeeHourArray[i]._id%>-div">
                       <a class="employee-work-edit secondary-content" id="employee-work-<%=employeeHourArray[i]._id%>-edit-button"
                         onClick="loadEmployeeEditForm('<%= employeeHourArray[i]._id %>', '<%= employeeHourArray[i].jobTitle %>', '<%= employeeHourArray[i].startTime %>', '<%= employeeHourArray[i].endTime %>', '<%=employeeHourArray[i].employee%>'); return false;" href="">
@@ -52,7 +52,7 @@
             <% } %>
           </ul>
         <% } %>
-        <% if (locals.user.projectManager != true) { %> 
+        <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>
           <div id="employee-work-form-div"></div>
           <div id="employee-work-button-div">
             <div id="add-employee-work">
@@ -77,7 +77,7 @@
               <% var hour = Math.round(Math.abs(vehicleHourArray[i].endTime - vehicleHourArray[i].startTime) / 3.6e6 * 100) / 100 %>
               <li class="collection-item">
                 
-                <% if (locals.user.projectManager != true) { %>
+                <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>                
                   <div id="vehicle-work-<%=vehicleHourArray[i]._id%>-div">
                     <a class="vehicle-work-edit secondary-content" id="vehicle-work-<%=vehicleHourArray[i]._id%>-edit-button"
                       onClick="loadVehicleEditForm('<%= vehicleHourArray[i]._id %>', '<%= vehicleHourArray[i].jobTitle %>', '<%=vehicleHourArray[i].startTime%>', '<%=vehicleHourArray[i].endTime%>', '<%=vehicleHourArray[i].vehicle%>', '<%= vehicleHourArray[i].hours %>'); return false;" href="">
@@ -102,7 +102,7 @@
             <% } %>
           </ul>
         <% } %>
-        <% if (locals.user.projectManager != true) { %> 
+        <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>        
           <div id="vehicle-work-form-div"></div>
           <div id="vehicle-work-button-div">
             <div id="add-vehicle-work">
@@ -123,7 +123,7 @@
             <% var hour = Math.round(Math.abs(productionArray[i].endTime - productionArray[i].startTime) / 3.6e6 * 100) / 100 %>
             <li class="collection-item">
 
-              <% if (locals.user.projectManager != true) { %>
+              <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>              
                 <div id="production-edit-<%=productionArray[i]._id%>-div">
                   <a class="production-edit secondary-content" id="production-<%=productionArray[i]._id%>-edit-button"
                     onClick="loadProductionEditForm('<%= productionArray[i]._id %>', '<%= productionArray[i].jobTitle %>', '<%= productionArray[i].quantity %>', '<%= productionArray[i].unit %>', '<%= productionArray[i].startTime %>', '<%= productionArray[i].endTime %>', '<%=productionArray[i].description%>'); return false;" href="">
@@ -144,7 +144,7 @@
           <% } %>
         </ul>
       <% } %>
-      <% if (locals.user.projectManager != true) { %>
+      <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>      
         <div id="production-form-div"></div>
         <div id="production-button-div">
           <div id="add-production">
@@ -170,8 +170,7 @@
               <% } else { %>
                 <% totalsArray[materialArray[i].shipmentType].total += materialArray[i].quantity; %>
               <% } %> 
-              <% if (locals.user.projectManager != true) { %>
-
+              <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>              
                 <div id="material-edit-<%= materialArray[i]._id %>-div">
                   <a class="material-edit secondary-content" id="material-<%=materialArray[i]._id%>-edit-button"
                     onClick="loadMaterialEditForm('<%= materialArray[i]._id %>', '<%= materialArray[i].shipmentType %>', '<%= materialArray[i].quantity %>', '<%= materialArray[i].unit %>', '<%= materialArray[i].vehicle %>', '<%= materialArray[i].supplier %>', '<%= materialArray[i].startTime %>', '<%= materialArray[i].endTime %>'); return false;" href="">
@@ -182,7 +181,11 @@
               <% } %>
               
               <b><%= materialArray[i].supplier %> <%= materialArray[i].shipmentType %></b> - <%= materialArray[i].quantity %> <%= materialArray[i].unit %></br>
-              <% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].vehicleCode %> <%= vehicleArray[materialArray[i].vehicle].name %> - <%= vehicleArray[materialArray[i].vehicle].vehicleType %><%}else{%>'Vehicle was removed'<%}%>
+              <% if (materialArray[i].vehicle) { %>
+                <% if (vehicleArray[materialArray[i].vehicle]){%><%= vehicleArray[materialArray[i].vehicle].vehicleCode %> <%= vehicleArray[materialArray[i].vehicle].name %> - <%= vehicleArray[materialArray[i].vehicle].vehicleType %><%}else{%>'Vehicle was removed'<%}%>
+              <% } else if (materialArray[i].vehicleObject) { %>
+                <% if (materialArray[i].vehicleObject.source && materialArray[i].vehicleObject.vehicleType && materialArray[i].vehicleObject.vehicleCode) { %><%= materialArray[i].vehicleObject.source %> <%= materialArray[i].vehicleObject.vehicleType %> - <%= materialArray[i].vehicleObject.vehicleCode %><% } else { %>This Vehicle did not save properly <% } %>
+              <% } %>
               <div id="material-<%=materialArray[i]._id%>-edit-form-div"></div>
             </li>
           <% } %>
@@ -194,7 +197,7 @@
           <% } %>
         </ul>
       <% } %>
-      <% if (locals.user.projectManager != true) { %>
+      <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>      
         <div id="material-form-div"></div>
         <div id="material-button-div">
           <div id="add-material">
@@ -213,7 +216,7 @@
           <label for="reportnote">General Notes</label>
         </div>
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
-        <% if (locals.user.projectManager != true) { %>
+        <% if ((locals.user.projectManager == undefined || locals.user.projectManager == false) && ((!report.approved || locals.user.admin == true) || (report.approved && locals.user.admin == true))) { %>        
           <button class="btn waves-effect waves-light right" type="submit" name="action">Submit Notes
             <i class="material-icons right">send</i>
           </button>
@@ -779,18 +782,24 @@
             <option value="Tandem" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && locals.query.vehicleType == 'Tandem') {%> selected <%}%>>Tandem</option>
             <option value="Truck and Pup" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && locals.query.vehicleType == 'Truck and Pup') {%> selected <%}%>>Truck and Pup</option>
             <option value="Truck and Tri" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && locals.query.vehicleType == 'Truck and Tri') {%> selected <%}%>>Truck and Tri</option>
-            <option value="Sidewinder" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && locals.query.vehicleType == 'Sidewinder') {%> selected <%}%>>Sidewinder</option>
+            <option value="Endump" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && locals.query.vehicleType == 'Sidewinder') {%> selected <%}%>>Sidewinder</option>
             <option value="Wagon" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && locals.query.vehicleType == 'Wagon') {%> selected <%}%>>Wagon</option>
+            <option value="Delivered" <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.vehicleType != '' && locals.query.vehicleType == 'Delivered') {%> selected <%}%>>Delivered</option>
           </select>
           <label for="shipment-source">Vehicle Type</label>
         </div>
         <div class="input-field col s6 m3">
-          <input name="sourceTruckCode" type="text" id="shipment-source-truck-code" 
+            <input name="sourceTruckCode" type="text" id="shipment-source-truck-code" 
             <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.sourceTruckCode != '') {%> value="<%=locals.query.sourceTruckCode%>" <%}%>/>
           <label for="shipment-source-truck-code">Vehicle Code</label>
         </div>
-        <spam>Enter 'Source Company' OR pick vehicle from below</span>
-        <div class="hide-on-med-and-up">
+        <!-- <div class="input-field col s6 m3">
+          <input name="sourceTruckCode" type="text" id="shipment-source-truck-code" 
+            <% if (Object.keys(locals.query).length !== 0 && locals.query.item == 'shipment' && locals.query.sourceTruckCode != '') {%> value="<%=locals.query.sourceTruckCode%>" <%}%>/>
+          <label for="shipment-source-truck-code">Vehicle Code</label>
+        </div> -->
+        <!-- <span>Enter 'Source Company' OR pick vehicle from below</span> -->
+        <!-- <div class="hide-on-med-and-up">
           <div class="input-field col s6">
             <select multiple name="vehicle">
               <% crew.vehicles.forEach((vehicleId) => { %>
@@ -814,7 +823,7 @@
               </label>
             </div>
           <% }); %>
-        </div>
+        </div> -->
         <input type="hidden" name="dailyReport" value="<%= report._id %>" />
         <button class="btn waves-effect waves-light right" type="submit" name="action">Submit
           <i class="material-icons right">send</i>
