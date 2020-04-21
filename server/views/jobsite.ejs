@@ -12,7 +12,7 @@
     <% for (var i in reportArray) { %>
     <li class="collection-item">
       <a href="/report/<%= reportArray[i]._id %>">
-        <% if (crewArray[reportArray[i].crew].name) { %> <%=
+        <% if (crewArray[reportArray[i].crew]) { %> <%=
         crewArray[reportArray[i].crew].name %> - <%= reportArray[i].date %> <% }
         %>
       </a>
