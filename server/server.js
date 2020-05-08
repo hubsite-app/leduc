@@ -257,7 +257,7 @@ app.post("/forgot", async (req, res) => {
   } catch (e) {
     console.log(
       "POST /forgot",
-      util.inspect(e, { showHidden: false, depth: null })
+      require("util").inspect(e, { showHidden: false, depth: null })
     );
   }
   // async.waterfall(
