@@ -259,6 +259,7 @@ app.post("/forgot", (req, res, next) => {
             // accessToken: accessToken
           },
         });
+        console.log("HI");
         var mailOptions = {
           to: user.email,
           from: "Devin at Solitaire Design <triproster@gmail.com>",
