@@ -40,20 +40,20 @@ var sess = {
   resave: false,
   saveUninitialized: false,
   store: new MongoStore({
-    mongooseConnection: mongoose.connection
-  })
+    mongooseConnection: mongoose.connection,
+  }),
 };
 
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "email"
+      usernameField: "email",
     },
-    function(username, password, done) {
-      User.findOne({ email: username }, function(err, user) {
+    function (username, password, done) {
+      User.findOne({ email: username }, function (err, user) {
         if (err) return done(err);
         if (!user) return done(null, false, { message: "Incorrect username." });
-        user.comparePassword(password, function(err, isMatch) {
+        user.comparePassword(password, function (err, isMatch) {
           if (isMatch) {
             return done(null, user);
           } else {
@@ -65,12 +65,12 @@ passport.use(
   )
 );
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user.id);
 });
 
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
+passport.deserializeUser(function (id, done) {
+  User.findById(id, function (err, user) {
     done(err, user);
   });
 });
@@ -92,7 +92,7 @@ app.use(async (req, res, next) => {
   if (user && user.employee) {
     let employee = await Employee.findById(user.employee);
     if (employee.crews && employee.crews.length > 0) {
-      employee.crews.forEach(async crew => {
+      employee.crews.forEach(async (crew) => {
         crews.push(await Crew.findById(crew));
       });
     }
@@ -100,11 +100,11 @@ app.use(async (req, res, next) => {
   res.locals.session = req.session;
   res.locals.baseUrl = req.headers.host;
   res.locals.user = req.user;
-  res.locals.crews = crews
+  res.locals.crews = crews;
   res.locals.query = req.query;
   next();
 });
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   if (req.method == "POST" && req.url == "/login") {
     if (req.body.remember) {
       req.session.cookie.maxAge = 2592000000; // 30*24*60*60*1000 Rememeber 'me' for 30 days
@@ -156,8 +156,8 @@ app.get("/login", (req, res) => {
 });
 
 // POST /login
-app.post("/login", function(req, res, next) {
-  passport.authenticate("local", function(err, user, info) {
+app.post("/login", function (req, res, next) {
+  passport.authenticate("local", function (err, user, info) {
     if (err) {
       console.log(err);
       req.flash("error", err.message);
@@ -168,7 +168,7 @@ app.post("/login", function(req, res, next) {
       res.redirect("/login");
       return;
     }
-    req.logIn(user, function(err) {
+    req.logIn(user, function (err) {
       if (err) return next(err);
       return res.redirect("/");
     });
@@ -197,7 +197,7 @@ app.post("/signup", async (req, res) => {
   try {
     const user = new User(req.body);
     await user.save();
-    req.logIn(user, err => {
+    req.logIn(user, (err) => {
       req.flash("success", "Account successfully created and logged in");
       res.redirect("/");
     });
@@ -217,46 +217,47 @@ app.get("/forgot", (req, res) => {
 app.post("/forgot", (req, res, next) => {
   async.waterfall(
     [
-      function(done) {
-        crypto.randomBytes(20, function(err, buf) {
+      function (done) {
+        crypto.randomBytes(20, function (err, buf) {
           var token = buf.toString("hex");
           done(err, token);
         });
       },
-      function(token, done) {
-        User.findOne({ email: req.body.email }, function(err, user) {
+      function (token, done) {
+        User.findOne({ email: req.body.email }, function (err, user) {
           if (!user) {
             req.flash("error", "No account with that email address exists.");
             return res.redirect("/forgot");
           }
           user.resetPasswordToken = token;
           user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-          user.save(function(err) {
+          user.save(function (err) {
             done(err, token, user);
           });
         });
       },
-      async function(token, user, done) {
+      async function (token, user, done) {
         const oauth2Client = new OAuth2(
           process.env.CLIENT_ID,
           process.env.CLIENT_SECRET,
           "https://developers.google.com/oauthplayground"
         );
         oauth2Client.setCredentials({
-          refresh_token: process.env.REFRESH_TOKEN
+          refresh_token: process.env.REFRESH_TOKEN,
         });
         const tokens = await oauth2Client.refreshAccessToken();
         const accessToken = tokens.credentials.access_token;
         var smtpTransport = nodemailer.createTransport({
           service: "gmail",
           auth: {
-            type: "OAuth2",
+            // type: "OAuth2",
             user: "triproster@gmail.com",
-            clientId: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECRET,
-            refreshToken: process.env.REFRESH_TOKEN,
-            accessToken: accessToken
-          }
+            pass: process.env.GMAIL_PASSWORD,
+            // clientId: process.env.CLIENT_ID,
+            // clientSecret: process.env.CLIENT_SECRET,
+            // refreshToken: process.env.REFRESH_TOKEN,
+            // accessToken: accessToken
+          },
         });
         var mailOptions = {
           to: user.email,
@@ -270,9 +271,9 @@ app.post("/forgot", (req, res, next) => {
             "/reset/" +
             token +
             "\n\n" +
-            "If you did not request this, please ignore this email and your password will remain unchanged.\n"
+            "If you did not request this, please ignore this email and your password will remain unchanged.\n",
         };
-        smtpTransport.sendMail(mailOptions, function(err) {
+        smtpTransport.sendMail(mailOptions, function (err) {
           req.flash(
             "info",
             "An e-mail has been sent to " +
@@ -281,9 +282,9 @@ app.post("/forgot", (req, res, next) => {
           );
           done(err, "done");
         });
-      }
+      },
     ],
-    function(err) {
+    function (err) {
       if (err) return next(err);
       res.redirect("/forgot");
     }
@@ -295,31 +296,31 @@ app.get("/reset/:token", (req, res) => {
   User.findOne(
     {
       resetPasswordToken: req.params.token,
-      resetPasswordExpires: { $gt: Date.now() }
+      resetPasswordExpires: { $gt: Date.now() },
     },
-    function(err, user) {
+    function (err, user) {
       if (!user) {
         req.flash("error", "Password reset token is invalid or has expired.");
         return res.redirect("/forgot");
       }
       res.render("users/reset", {
-        token: req.params.token
+        token: req.params.token,
       });
     }
   );
 });
 
 // POST /reset/:token
-app.post("/reset/:token", function(req, res) {
+app.post("/reset/:token", function (req, res) {
   async.waterfall(
     [
-      function(done) {
+      function (done) {
         User.findOne(
           {
             resetPasswordToken: req.params.token,
-            resetPasswordExpires: { $gt: Date.now() }
+            resetPasswordExpires: { $gt: Date.now() },
           },
-          function(err, user) {
+          function (err, user) {
             if (!user) {
               req.flash(
                 "error",
@@ -330,21 +331,21 @@ app.post("/reset/:token", function(req, res) {
             user.password = req.body.password;
             user.resetPasswordToken = undefined;
             user.resetPasswordExpires = undefined;
-            user.save(function(err) {
-              req.logIn(user, function(err) {
+            user.save(function (err) {
+              req.logIn(user, function (err) {
                 done(err, user);
               });
             });
           }
         );
       },
-      function(user, done) {
+      function (user, done) {
         var smtpTransport = nodemailer.createTransport({
           service: "SendGrid",
           auth: {
             user: process.env.SEND_GRID_USERNAME,
-            pass: process.env.SEND_GRID_PASSWORD
-          }
+            pass: process.env.SEND_GRID_PASSWORD,
+          },
         });
         var mailOptions = {
           to: user.email,
@@ -354,15 +355,15 @@ app.post("/reset/:token", function(req, res) {
             "Hello,\n\n" +
             "This is a confirmation that the password for your account " +
             user.email +
-            " has just been changed.\n"
+            " has just been changed.\n",
         };
-        smtpTransport.sendMail(mailOptions, function(err) {
+        smtpTransport.sendMail(mailOptions, function (err) {
           req.flash("success", "Success! Your password has been changed.");
           done(err);
         });
-      }
+      },
     ],
-    function(err) {
+    function (err) {
       res.redirect("/");
     }
   );
@@ -375,7 +376,7 @@ app.get("/users", async (req, res) => {
     if (req.user.admin == true) {
       await User.find({}, (err, users) => {
         var userMap = [];
-        users.forEach(user => {
+        users.forEach((user) => {
           userMap[user._id] = user;
         });
         res.render("users/userIndex", { array: userMap });
@@ -404,7 +405,7 @@ app.get("/user/:id", async (req, res) => {
         if (req.user._id.equals(user._id) || req.user.admin == true) {
           employeeArray = [];
           Employee.find({}, (err, employees) => {
-            employees.forEach(employee => {
+            employees.forEach((employee) => {
               employeeArray[employee._id] = employee;
             });
             res.render("users/user", { user, employeeArray });
@@ -433,7 +434,7 @@ app.delete("/user/:id", async (req, res) => {
   }
   try {
     const user = await User.findOneAndRemove({
-      _id: id
+      _id: id,
     });
     if (!user) {
       req.flash(
@@ -493,7 +494,7 @@ app.post("/user/:id/employee", (req, res) => {
     }
     user.employee = employeeId;
     req.user.employee = employeeId;
-    user.save(err => {
+    user.save((err) => {
       if (err) {
         console.log(err);
         req.flash("error", err.message);
@@ -507,7 +508,7 @@ app.post("/user/:id/employee", (req, res) => {
         res.redirect("back");
       }
       employee.user = userId;
-      employee.save(err => {
+      employee.save((err) => {
         if (err) {
           console.log(err);
           req.flash("error", err.message);
@@ -593,7 +594,7 @@ app.get("/jobsites", async (req, res) => {
 app.get("/api/jobsites", async (req, res) => {
   try {
     var jobArray = [];
-    var jobsites = await Jobsite.find({}).then(jobsite => {
+    var jobsites = await Jobsite.find({}).then((jobsite) => {
       res.send(jobsite);
     });
   } catch (e) {
@@ -672,7 +673,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                           ) /
                             3.6e6) *
                             100
-                        ) / 100
+                        ) / 100,
                     };
                     response[date].base.employees.push(employee);
                   }
@@ -706,7 +707,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                           ) /
                             3.6e6) *
                             100
-                        ) / 100
+                        ) / 100,
                     };
                     response[date].base.employees.push(employee);
                   }
@@ -753,7 +754,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                           ) /
                             3.6e6) *
                             100
-                        ) / 100
+                        ) / 100,
                     };
                     response[date].base.vehicles.push(vehicle);
                   }
@@ -785,7 +786,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                           ) /
                             3.6e6) *
                             100
-                        ) / 100
+                        ) / 100,
                     };
                     response[date].base.vehicles.push(vehicle);
                   }
@@ -800,7 +801,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
             for (w = 0; w < work.length; w++) {
               if (mongoose.Types.ObjectId.isValid(work[w])) {
                 materialShipment = await MaterialShipment.findById({
-                  _id: work[w]
+                  _id: work[w],
                 });
               } else {
                 throw new Error("Material Shipment ID is invalid");
@@ -828,7 +829,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                       name: `${materialShipment.shipmentType} - ${
                         vehicleArray[materialShipment.vehicle].sourceCompany
                       }`,
-                      quantity: materialShipment.quantity
+                      quantity: materialShipment.quantity,
                     };
                     response[date].base.materials.push(material);
                   }
@@ -848,7 +849,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                   } else {
                     material = {
                       name: materialShipment.shipmentType,
-                      quantity: materialShipment.quantity
+                      quantity: materialShipment.quantity,
                     };
                     response[date].base.materials.push(material);
                   }
@@ -862,7 +863,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
             for (w = 0; w < work.length; w++) {
               if (mongoose.Types.ObjectId.isValid(work[w])) {
                 materialShipment = await MaterialShipment.findById({
-                  _id: work[w]
+                  _id: work[w],
                 });
                 if (materialShipment.startTime) {
                   truckingToggle = true;
@@ -875,7 +876,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
               for (w = 0; w < work.length; w++) {
                 if (mongoose.Types.ObjectId.isValid(work[w])) {
                   materialShipment = await MaterialShipment.findById({
-                    _id: work[w]
+                    _id: work[w],
                   });
                 } else {
                   throw new Error("Material Shipment ID is invalid");
@@ -914,7 +915,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                             ) /
                               3.6e6) *
                               100
-                          ) / 100
+                          ) / 100,
                       };
                       response[date].base.trucking.push(material);
                     }
@@ -956,7 +957,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                             ) /
                               3.6e6) *
                               100
-                          ) / 100
+                          ) / 100,
                       };
                       response[date].base.trucking.push(material);
                     }
@@ -1008,7 +1009,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                           ) /
                             3.6e6) *
                             100
-                        ) / 100
+                        ) / 100,
                     };
                     response[date].paving.employees.push(employee);
                   }
@@ -1042,7 +1043,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                           ) /
                             3.6e6) *
                             100
-                        ) / 100
+                        ) / 100,
                     };
                     response[date].paving.employees.push(employee);
                   }
@@ -1089,7 +1090,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                           ) /
                             3.6e6) *
                             100
-                        ) / 100
+                        ) / 100,
                     };
                     response[date].paving.vehicles.push(vehicle);
                   }
@@ -1121,7 +1122,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                           ) /
                             3.6e6) *
                             100
-                        ) / 100
+                        ) / 100,
                     };
                     response[date].paving.vehicles.push(vehicle);
                   }
@@ -1136,7 +1137,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
             for (w = 0; w < work.length; w++) {
               if (mongoose.Types.ObjectId.isValid(work[w])) {
                 materialShipment = await MaterialShipment.findById({
-                  _id: work[w]
+                  _id: work[w],
                 });
               } else {
                 throw new Error("Material Shipment ID is invalid");
@@ -1164,7 +1165,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                       name: `${materialShipment.shipmentType} - ${
                         vehicleArray[materialShipment.vehicle].sourceCompany
                       }`,
-                      quantity: materialShipment.quantity
+                      quantity: materialShipment.quantity,
                     };
                     response[date].paving.materials.push(material);
                   }
@@ -1184,7 +1185,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                   } else {
                     material = {
                       name: materialShipment.shipmentType,
-                      quantity: materialShipment.quantity
+                      quantity: materialShipment.quantity,
                     };
                     response[date].paving.materials.push(material);
                   }
@@ -1198,7 +1199,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
             for (w = 0; w < work.length; w++) {
               if (mongoose.Types.ObjectId.isValid(work[w])) {
                 materialShipment = await MaterialShipment.findById({
-                  _id: work[w]
+                  _id: work[w],
                 });
                 if (materialShipment.startTime) {
                   truckingToggle = true;
@@ -1211,7 +1212,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
               for (w = 0; w < work.length; w++) {
                 if (mongoose.Types.ObjectId.isValid(work[w])) {
                   materialShipment = await MaterialShipment.findById({
-                    _id: work[w]
+                    _id: work[w],
                   });
                 } else {
                   throw new Error("Material Shipment ID is invalid");
@@ -1250,7 +1251,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                             ) /
                               3.6e6) *
                               100
-                          ) / 100
+                          ) / 100,
                       };
                       response[date].paving.trucking.push(material);
                     }
@@ -1292,7 +1293,7 @@ app.get("/api/jobsite/:code", async (req, res) => {
                             ) /
                               3.6e6) *
                               100
-                          ) / 100
+                          ) / 100,
                       };
                       response[date].paving.trucking.push(material);
                     }
@@ -1327,8 +1328,8 @@ app.get("/api/employeehours/:date", async (req, res) => {
     var employeeHours = await EmployeeWork.find({
       startTime: {
         $gte: new Date(date),
-        $lt: new Date(date.setDate(date.getDate() + 1))
-      }
+        $lt: new Date(date.setDate(date.getDate() + 1)),
+      },
     });
     if (employeeHours.length > 0) {
       for (var i in employeeHours) {
@@ -1363,14 +1364,14 @@ app.get("/jobsite/:id", async (req, res) => {
     var reportArray = [];
     Jobsite.findById(req.params.id, async (err, jobsite) => {
       await DailyReport.find({ jobsite }, (err, reports) => {
-        reports.reverse().forEach(report => {
+        reports.reverse().forEach((report) => {
           reportArray[report._id] = report;
         });
       });
       reportArray
         .slice()
         .reverse()
-        .forEach(report => {
+        .forEach((report) => {
           console.log(report);
         });
       var crewArray = await Crew.getAll();
@@ -1475,12 +1476,12 @@ app.post("/jobsite/:id/activate", async (req, res) => {
 app.post("/jobsite/:id/disactivate", async (req, res) => {
   try {
     var job = await Jobsite.findByIdAndUpdate(req.params.id, {
-      $set: { crews: [] }
+      $set: { crews: [] },
     });
     job.active = false;
     var crewArray = await job.crews;
     if (crewArray.length > 0) {
-      crewArray.forEach(async crewId => {
+      crewArray.forEach(async (crewId) => {
         crewId = mongoose.Types.ObjectId(crewId);
         await Crew.findByIdAndUpdate(
           crewId,
@@ -1563,7 +1564,7 @@ app.get("/employees", async (req, res) => {
     res.render("employees/employeeIndex", {
       employeeArray,
       crewArray,
-      userArray
+      userArray,
     });
   } catch (e) {
     req.flash("error", e.message);
@@ -1579,14 +1580,14 @@ app.get("/employee/:id", async (req, res) => {
       crewArray = [];
       Crew.find(
         {
-          _id: { $in: employee.crews }
+          _id: { $in: employee.crews },
         },
         (err, crews) => {
           if (err) {
             req.flash("error", err.message);
             return console.log(err);
           }
-          crews.forEach(crew => {
+          crews.forEach((crew) => {
             crewArray[crew._id] = crew;
           });
           res.render("employees/employee", { employee, crewArray });
@@ -1658,7 +1659,7 @@ app.post("/employee/user/:id", async (req, res) => {
         return console.log(err);
       }
       user.employee = employee._id;
-      user.save(err => {
+      user.save((err) => {
         if (err) {
           console.log(err);
           req.flash("error", err.message);
@@ -1686,7 +1687,7 @@ app.delete("/employee/:id", async (req, res) => {
       throw new Error("The ID sent from the browser was invalid");
     }
     const employee = await Employee.findOneAndRemove({
-      _id: id
+      _id: id,
     });
     if (!employee) {
       throw new Error(
@@ -1751,14 +1752,14 @@ app.get("/vehicle/:id", async (req, res) => {
       crewArray = [];
       Crew.find(
         {
-          _id: { $in: vehicle.crews }
+          _id: { $in: vehicle.crews },
         },
         (err, crews) => {
           if (err) {
             req.flash("error", err.message);
             return console.log(err);
           }
-          crews.forEach(crew => {
+          crews.forEach((crew) => {
             crewArray[crew._id] = crew;
           });
           res.render("vehicles/vehicle", { vehicle, crewArray });
@@ -1835,8 +1836,9 @@ app.post("/crew", async (req, res) => {
     await crew.save();
     req.flash(
       "success",
-      `New crew has been added! Fun fact: Bow Mark now has ${crewLength +
-        1} crews`
+      `New crew has been added! Fun fact: Bow Mark now has ${
+        crewLength + 1
+      } crews`
     );
     res.redirect("back");
   } catch (e) {
@@ -1980,9 +1982,7 @@ app.post("/crew/:crewId/employee/:employeeId", async (req, res) => {
         await crew.save();
         req.flash(
           "success",
-          `${
-            employee.name
-          } is the newest crew member, this should be interesting`
+          `${employee.name} is the newest crew member, this should be interesting`
         );
         res.end();
       });
@@ -2088,8 +2088,8 @@ app.get("/jobreport/:jobId/crew/:crewId/report?", async (req, res) => {
       crew: crewId,
       date: {
         $gte: date.setHours(0, 0, 0, 0),
-        $lte: date.setHours(23, 59, 59, 999)
-      }
+        $lte: date.setHours(23, 59, 59, 999),
+      },
     });
     if (!_.isEmpty(report[0])) {
       res.redirect(`/report/${report[0]._id}`);
@@ -2097,7 +2097,7 @@ app.get("/jobreport/:jobId/crew/:crewId/report?", async (req, res) => {
       var report = await new DailyReport({
         date: new Date(),
         jobsite: jobId,
-        crew: crewId
+        crew: crewId,
       });
       await report.save();
       var job = await Jobsite.findById(jobId);
@@ -2124,7 +2124,7 @@ app.post("/report", async (req, res) => {
     var report = await new DailyReport({
       date,
       jobsite: jobId,
-      crew: crewId
+      crew: crewId,
     });
     await report.save();
     var job = await Jobsite.findById(jobId);
@@ -2151,8 +2151,8 @@ app.post("/report/:id/update", async (req, res) => {
         req.params.id,
         {
           $set: {
-            date: req.body.date
-          }
+            date: req.body.date,
+          },
         },
         { new: true }
       );
@@ -2168,8 +2168,8 @@ app.post("/report/:id/update", async (req, res) => {
         {
           $set: {
             date: req.body.date,
-            jobsite: req.body.jobId
-          }
+            jobsite: req.body.jobId,
+          },
         },
         { new: true }
       );
@@ -2198,7 +2198,7 @@ app.get("/reports", async (req, res) => {
     var html = await res.render("reportIndex", {
       reportArray,
       crewArray,
-      jobArray
+      jobArray,
     });
   } catch (e) {
     console.log(e);
@@ -2224,7 +2224,7 @@ app.get("/report/:reportId", async (req, res) => {
     var reportNote = await ReportNote.find({ dailyReport: report });
     var jobArray = await Jobsite.getAll();
     if (
-      crew.employees.some(employee => employee.equals(req.user.employee)) ||
+      crew.employees.some((employee) => employee.equals(req.user.employee)) ||
       req.user.admin == true ||
       req.user.projectManager == true
     ) {
@@ -2239,7 +2239,7 @@ app.get("/report/:reportId", async (req, res) => {
         productionArray,
         materialArray,
         reportNote: reportNote[0],
-        jobArray
+        jobArray,
       });
     } else {
       req.flash("error", "You are not authorized to view this page");
@@ -2265,7 +2265,7 @@ app.delete("/report/:id", async (req, res) => {
       await crew.save();
     }
     if (report.employeeWork) {
-      report.employeeWork.forEach(async employeeWork => {
+      report.employeeWork.forEach(async (employeeWork) => {
         await EmployeeWork.findByIdAndRemove(
           { _id: employeeWork },
           { new: true }
@@ -2273,17 +2273,17 @@ app.delete("/report/:id", async (req, res) => {
       });
     }
     if (report.vehicleWork) {
-      report.vehicleWork.forEach(async vehicleWork => {
+      report.vehicleWork.forEach(async (vehicleWork) => {
         await VehicleWork.findByIdAndRemove({ _id: vehicleWork });
       });
     }
     if (report.production) {
-      report.production.forEach(async production => {
+      report.production.forEach(async (production) => {
         await Production.findByIdAndRemove({ _id: production });
       });
     }
     if (report.materialShipment) {
-      report.materialShipment.forEach(async materialShipment => {
+      report.materialShipment.forEach(async (materialShipment) => {
         await MaterialShipment.findByIdAndRemove({ _id: materialShipment });
       });
     }
@@ -2343,27 +2343,29 @@ app.get("/report/:reportId/pdf", async (req, res) => {
           ]
         ).id
       ) {
-        var id = `${crew.name}-${parseInt(
-          DailyReport.findById(
-            crewReportArray[
-              crewReportArray
-                .toString()
-                .split(",")
-                .indexOf(report._id.toString()) - 1
-            ]
-          ).id.split("-")[1]
-        ) + 1}`;
+        var id = `${crew.name}-${
+          parseInt(
+            DailyReport.findById(
+              crewReportArray[
+                crewReportArray
+                  .toString()
+                  .split(",")
+                  .indexOf(report._id.toString()) - 1
+              ]
+            ).id.split("-")[1]
+          ) + 1
+        }`;
       } else {
-        var id = `${crew.name}-${crewReportArray
-          .toString()
-          .split(",")
-          .indexOf(report._id.toString()) + 1}`;
+        var id = `${crew.name}-${
+          crewReportArray.toString().split(",").indexOf(report._id.toString()) +
+          1
+        }`;
       }
       report.id = id;
       await report.save();
     }
     if (
-      crew.employees.some(employee => employee.equals(req.user.employee)) ||
+      crew.employees.some((employee) => employee.equals(req.user.employee)) ||
       req.user.admin == true
     ) {
       res.render(
@@ -2378,7 +2380,7 @@ app.get("/report/:reportId/pdf", async (req, res) => {
           vehicleHourArray,
           productionArray,
           materialArray,
-          reportNote: reportNote[0]
+          reportNote: reportNote[0],
         },
         (err, html) => {
           if (err) {
@@ -2483,7 +2485,7 @@ app.post("/employeehour", async (req, res) => {
                   startTime: tempStartTime,
                   endTime: tempEndTime,
                   employee: req.body[`employee-${formIndex}`][i],
-                  dailyReport: report._id
+                  dailyReport: report._id,
                 });
                 await employeeWork.save();
                 await report.employeeWork.push(employeeWork);
@@ -2495,7 +2497,7 @@ app.post("/employeehour", async (req, res) => {
                 startTime: tempStartTime,
                 endTime: tempEndTime,
                 employee: req.body[`employee-${formIndex}`],
-                dailyReport: report._id
+                dailyReport: report._id,
               });
               await employeeWork.save();
               await report.employeeWork.push(employeeWork);
@@ -2509,7 +2511,7 @@ app.post("/employeehour", async (req, res) => {
       }
     }
     await EmployeeWork.find({ dailyReport: report }, async (err, works) => {
-      await works.forEach(work => {
+      await works.forEach((work) => {
         netEmployeeHours +=
           Math.round((Math.abs(work.endTime - work.startTime) / 3.6e6) * 100) /
           100;
@@ -2578,32 +2580,32 @@ app.post("/employeehour", async (req, res) => {
       }
       var query = querystring.stringify({
         item: "employee",
-        message: e.message
+        message: e.message,
       });
       append = querystring.stringify(
         {
-          extraJobtitleArray
+          extraJobtitleArray,
         },
         { arrayFormat: "bracket" }
       );
       query += `&${append}`;
       append = querystring.stringify(
         {
-          extraStarttimeArray
+          extraStarttimeArray,
         },
         { arrayFormat: "bracket" }
       );
       query += `&${append}`;
       append = querystring.stringify(
         {
-          extraEndtimeArray
+          extraEndtimeArray,
         },
         { arrayFormat: "bracket" }
       );
       query += `&${append}`;
       append = querystring.stringify(
         {
-          extraEmployeeArray
+          extraEmployeeArray,
         },
         { arrayFormat: "bracket" }
       );
@@ -2633,13 +2635,13 @@ app.post("/employeework/:id/update", async (req, res) => {
           endTime,
           jobTitle: req.body.jobTitle,
           employee: req.body.employee,
-          dailyReport: report
-        }
+          dailyReport: report,
+        },
       },
       { new: true }
     );
     await EmployeeWork.find({ dailyReport: report._id }, (err, works) => {
-      works.forEach(work => {
+      works.forEach((work) => {
         netEmployeeHours +=
           Math.round((Math.abs(work.endTime - work.startTime) / 3.6e6) * 100) /
           100;
@@ -2663,7 +2665,7 @@ app.delete("/employeework/:id", async (req, res) => {
     var id = req.params.id;
     var employeeWork = await EmployeeWork.findByIdAndRemove({ _id: id });
     var report = await DailyReport.findByIdAndUpdate(employeeWork.dailyReport, {
-      $pull: { employeeWork: employeeWork._id }
+      $pull: { employeeWork: employeeWork._id },
     });
     req.flash("success", "Employee work has been successfully deleted!");
     res.end();
@@ -2698,7 +2700,7 @@ app.post("/vehiclehour", async (req, res) => {
                   jobTitle: req.body[`jobTitle-${formIndex}-${extraIndex}`],
                   hours: req.body[`hours-${formIndex}-${extraIndex}`],
                   vehicle: req.body[`vehicle-${formIndex}`][i],
-                  dailyReport: report._id
+                  dailyReport: report._id,
                 });
                 await vehicleWork.save();
                 await report.vehicleWork.push(vehicleWork);
@@ -2709,7 +2711,7 @@ app.post("/vehiclehour", async (req, res) => {
                 jobTitle: req.body[`jobTitle-${formIndex}-${extraIndex}`],
                 hours: req.body[`hours-${formIndex}-${extraIndex}`],
                 vehicle: req.body[`vehicle-${formIndex}`],
-                dailyReport: report._id
+                dailyReport: report._id,
               });
               await vehicleWork.save();
               await report.vehicleWork.push(vehicleWork);
@@ -2723,7 +2725,7 @@ app.post("/vehiclehour", async (req, res) => {
       }
     }
     await VehicleWork.find({ dailyReport: report._id }, (err, works) => {
-      works.forEach(work => {
+      works.forEach((work) => {
         netVehicleHours += work.hours;
       });
     });
@@ -2764,25 +2766,25 @@ app.post("/vehiclehour", async (req, res) => {
       }
       var query = querystring.stringify({
         item: "vehicle",
-        message: e.message
+        message: e.message,
       });
       append = querystring.stringify(
         {
-          extraJobtitleArray
+          extraJobtitleArray,
         },
         { arrayFormat: "bracket" }
       );
       query += `&${append}`;
       append = querystring.stringify(
         {
-          extraHoursArray
+          extraHoursArray,
         },
         { arrayFormat: "bracket" }
       );
       query += `&${append}`;
       append = querystring.stringify(
         {
-          extraVehicleArray
+          extraVehicleArray,
         },
         { arrayFormat: "bracket" }
       );
@@ -2822,13 +2824,13 @@ app.post("/vehiclework/:id/update", async (req, res) => {
           hours,
           jobTitle: req.body.jobTitle,
           vehicle: req.body.vehicle,
-          dailyReport: report._id
-        }
+          dailyReport: report._id,
+        },
       },
       { new: true }
     );
     await VehicleWork.find({ dailyReport: report._id }, (err, works) => {
-      works.forEach(work => {
+      works.forEach((work) => {
         if (work.endTime && work.startTime) {
           netVehicleHours +=
             Math.round(
@@ -2859,7 +2861,7 @@ app.delete("/vehiclework/:id", async (req, res) => {
     var report = DailyReport.findByIdAndUpdate(
       vehicleWork.dailyReport,
       { $pull: { vehicleWork: vehicleWork._id } },
-      err => err && console.log(err)
+      (err) => err && console.log(err)
     );
     req.flash("success", "Vehicle hours has successfully been deleted!");
     res.end();
@@ -2884,13 +2886,13 @@ app.post("/production", async (req, res) => {
       startTime,
       endTime,
       description: req.body.description,
-      dailyReport: report._id
+      dailyReport: report._id,
     });
     await production.save();
     await report.production.push(production);
     await report.save();
     await Production.find({ dailyReport: report._id }, (err, works) => {
-      works.forEach(work => {
+      works.forEach((work) => {
         netProductionHours +=
           Math.round((Math.abs(work.endTime - work.startTime) / 3.6e6) * 100) /
           100;
@@ -2926,7 +2928,7 @@ app.post("/production", async (req, res) => {
         quantity: req.body.quantity,
         unit: req.body.unit,
         description: req.body.description,
-        dailyReport: report._id
+        dailyReport: report._id,
       });
       console.log(e);
       res.redirect(`/report/${report._id}/?` + query);
@@ -2955,13 +2957,13 @@ app.post("/production/:id/update", async (req, res) => {
           quantity: req.body.quantity,
           unit: req.body.unit,
           description: req.body.description,
-          dailyReport: report._id
-        }
+          dailyReport: report._id,
+        },
       },
       { new: true }
     );
     await Production.find({ dailyReport: report._id }, (err, works) => {
-      works.forEach(work => {
+      works.forEach((work) => {
         netProductionHours +=
           Math.round((Math.abs(work.endTime - work.startTime) / 3.6e6) * 100) /
           100;
@@ -2985,7 +2987,7 @@ app.delete("/production/:id", async (req, res) => {
     var id = req.params.id;
     var production = await Production.findByIdAndRemove({ _id: id });
     var report = DailyReport.findByIdAndUpdate(production.dailyReport, {
-      $pull: { production: production._id }
+      $pull: { production: production._id },
     });
     req.flash("success", "Production has successfully been deleted");
     res.end();
@@ -3048,11 +3050,11 @@ app.post("/material", async (req, res) => {
         //   dailyReport: report._id
         // });
 
-        // Ensure the existance of 'source' 
-        if (req.body.source === '') {
+        // Ensure the existance of 'source'
+        if (req.body.source === "") {
           throw new Error("Must Enter a Source Company");
         }
-        if (req.body.sourceTruckCode === '') {
+        if (req.body.sourceTruckCode === "") {
           throw new Error("Must enter a Vehicle Code");
         }
         console.log(req.body);
@@ -3067,13 +3069,15 @@ app.post("/material", async (req, res) => {
           vehicleObject: {
             source: req.body.source,
             vehicleType: req.body.vehicleType,
-            vehicleCode: req.body.sourceTruckCode
+            vehicleCode: req.body.sourceTruckCode,
           },
-          dailyReport: report._id
+          dailyReport: report._id,
         });
       } else {
         // This will no longer happen
-      throw new Error("This should not have happened, please call me at 403-973-7408 and let me know what you did");
+        throw new Error(
+          "This should not have happened, please call me at 403-973-7408 and let me know what you did"
+        );
         // material = await new MaterialShipment({
         //   startTime,
         //   endTime,
@@ -3136,7 +3140,7 @@ app.post("/material", async (req, res) => {
         sourceTruckCode: req.body.sourceTruckCode,
         vehicleType: req.body.vehicleType,
         vehicle: req.body.vehicle,
-        dailyReport: report._id
+        dailyReport: report._id,
       });
       res.redirect(`/report/${report._id}/?` + query);
     } catch (e) {
@@ -3160,8 +3164,8 @@ app.post("/material/:id/update", async (req, res) => {
           unit: req.body.unit,
           supplier: req.body.supplier,
           // vehicle: req.body.vehicle,
-          dailyReport: report
-        }
+          dailyReport: report,
+        },
       },
       { new: true }
     );
@@ -3182,7 +3186,7 @@ app.delete("/material/:id", async (req, res) => {
     var report = DailyReport.findByIdAndUpdate(
       material.dailyReport,
       { $pull: { materialShipment: material._id } },
-      err => err && console.log(err)
+      (err) => err && console.log(err)
     );
     req.flash("success", "Shipment has been successfully deleted");
     res.end();
@@ -3199,7 +3203,7 @@ app.post("/reportnote", async (req, res) => {
     var report = await DailyReport.findById(req.body.dailyReport);
     if (report.reportNote) {
       var note = await ReportNote.findByIdAndUpdate(report.reportNote, {
-        note: req.body.note
+        note: req.body.note,
       });
       await report.save();
       req.flash("success", "Note updated successfully");
@@ -3228,7 +3232,7 @@ app.get("/hours", async (req, res) => {
   var employeeArray = await Employee.getAll();
   var workArray = await EmployeeWork.getAll();
   var reportArray = await DailyReport.getAll();
-  var array = workArray.sort(function(a, b) {
+  var array = workArray.sort(function (a, b) {
     return a.startTime < b.startTime ? 1 : b.startTime < a.startTime ? -1 : 0;
   });
   var keys = array;
@@ -3258,7 +3262,7 @@ app.get("/hours", async (req, res) => {
             ) /
               3.6e6) *
               100
-          ) / 100
+          ) / 100,
       };
     } else {
       if (hourArray[date].includes(name)) {
@@ -3279,7 +3283,7 @@ app.get("/hours", async (req, res) => {
               ) /
                 3.6e6) *
                 100
-            ) / 100
+            ) / 100,
         };
       }
     }
