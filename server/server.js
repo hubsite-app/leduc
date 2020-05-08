@@ -245,8 +245,10 @@ app.post("/forgot", (req, res, next) => {
         oauth2Client.setCredentials({
           refresh_token: process.env.REFRESH_TOKEN,
         });
+        console.log("1");
         const tokens = await oauth2Client.refreshAccessToken();
         const accessToken = tokens.credentials.access_token;
+        console.log("2")
         var smtpTransport = nodemailer.createTransport({
           service: "gmail",
           auth: {
