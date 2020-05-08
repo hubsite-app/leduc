@@ -215,82 +215,112 @@ app.get("/forgot", (req, res) => {
 });
 
 // POST /forgot
-app.post("/forgot", (req, res, next) => {
-  async.waterfall(
-    [
-      function (done) {
-        crypto.randomBytes(20, function (err, buf) {
-          var token = buf.toString("hex");
-          done(err, token);
-        });
-      },
-      function (token, done) {
-        User.findOne({ email: req.body.email }, function (err, user) {
-          if (!user) {
-            req.flash("error", "No account with that email address exists.");
-            return res.redirect("/forgot");
-          }
-          user.resetPasswordToken = token;
-          user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-          user.save(function (err) {
-            done(err, token, user);
-          });
-        });
-      },
-      async function (token, user) {
-        sgMail.setApiKey(process.env.SENDGRID_API);
-        // const oauth2Client = new OAuth2(
-        //   process.env.CLIENT_ID,
-        //   process.env.CLIENT_SECRET,
-        //   "https://developers.google.com/oauthplayground"
-        // );
-        // oauth2Client.setCredentials({
-        //   refresh_token: process.env.REFRESH_TOKEN
-        // });
-        // const tokens = await oauth2Client.refreshAccessToken();
-        // const accessToken = tokens.credentials.access_token;
-        // var smtpTransport = nodemailer.createTransport({
-        //   service: "gmail",
-        //   auth: {
-        //     type: "OAuth2",
-        //     user: "triproster@gmail.com",
-        //     clientId: process.env.CLIENT_ID,
-        //     clientSecret: process.env.CLIENT_SECRET,
-        //     refreshToken: process.env.REFRESH_TOKEN,
-        //     accessToken: accessToken
-        //   }
-        // });
-        var mailOptions = {
-          to: user.email,
-          from: "Devin at Solitaire Design <triproster@gmail.com>",
-          subject: "Bow Mark Password Reset",
-          text:
-            "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n" +
-            "Please click on the following link, or paste this into your browser to complete the process:\n\n" +
-            "http://" +
-            req.headers.host +
-            "/reset/" +
-            token +
-            "\n\n" +
-            "If you did not request this, please ignore this email and your password will remain unchanged.\n",
-        };
-        sgMail.send(mailOptions);
-        // smtpTransport.sendMail(mailOptions, function(err) {
-        //   req.flash(
-        //     "info",
-        //     "An e-mail has been sent to " +
-        //       user.email +
-        //       " with further instructions."
-        //   );
-        //   done(err, "done");
-        // });
-      },
-    ],
-    function (err) {
-      if (err) return next(err);
-      res.redirect("/forgot");
+app.post("/forgot", async (req, res, next) => {
+  try {
+    const token = await crypto.randomBytes(20).toString("hex");
+    const user = User.findOne({ email: req.body.email });
+    if (!user) {
+      req.flash("error", "No account with that email address exists.");
+      return res.redirect("/forgot");
     }
-  );
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    sgMail.setApiKey(process.env.SENDGRID_API);
+    const mailOptions = {
+      to: user.email,
+      from: "Devin at Solitaire Design <triproster@gmail.com>",
+      subject: "Bow Mark Password Reset",
+      text:
+        "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n" +
+        "Please click on the following link, or paste this into your browser to complete the process:\n\n" +
+        "http://" +
+        req.headers.host +
+        "/reset/" +
+        token +
+        "\n\n" +
+        "If you did not request this, please ignore this email and your password will remain unchanged.\n",
+    };
+    await sgMail.send(mailOptions);
+  } catch (e) {
+    console.log("POST /forgot", e);
+  }
+  // async.waterfall(
+  //   [
+  //     function (done) {
+  //       crypto.randomBytes(20, function (err, buf) {
+  //         var token = buf.toString("hex");
+  //         done(err, token);
+  //       });
+  //     },
+  //     function (token, done) {
+  //       User.findOne({ email: req.body.email }, function (err, user) {
+  //         if (!user) {
+  //           req.flash("error", "No account with that email address exists.");
+  //           return res.redirect("/forgot");
+  //         }
+  //         user.resetPasswordToken = token;
+  //         user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+  //         user.save(function (err) {
+  //           done(err, token, user);
+  //         });
+  //       });
+  //     },
+  //     async function (token, user) {
+  //       sgMail.setApiKey(process.env.SENDGRID_API);
+  //       // const oauth2Client = new OAuth2(
+  //       //   process.env.CLIENT_ID,
+  //       //   process.env.CLIENT_SECRET,
+  //       //   "https://developers.google.com/oauthplayground"
+  //       // );
+  //       // oauth2Client.setCredentials({
+  //       //   refresh_token: process.env.REFRESH_TOKEN
+  //       // });
+  //       // const tokens = await oauth2Client.refreshAccessToken();
+  //       // const accessToken = tokens.credentials.access_token;
+  //       // var smtpTransport = nodemailer.createTransport({
+  //       //   service: "gmail",
+  //       //   auth: {
+  //       //     type: "OAuth2",
+  //       //     user: "triproster@gmail.com",
+  //       //     clientId: process.env.CLIENT_ID,
+  //       //     clientSecret: process.env.CLIENT_SECRET,
+  //       //     refreshToken: process.env.REFRESH_TOKEN,
+  //       //     accessToken: accessToken
+  //       //   }
+  //       // });
+  //       var mailOptions = {
+  //         to: user.email,
+  //         from: "Devin at Solitaire Design <triproster@gmail.com>",
+  //         subject: "Bow Mark Password Reset",
+  //         text:
+  //           "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n" +
+  //           "Please click on the following link, or paste this into your browser to complete the process:\n\n" +
+  //           "http://" +
+  //           req.headers.host +
+  //           "/reset/" +
+  //           token +
+  //           "\n\n" +
+  //           "If you did not request this, please ignore this email and your password will remain unchanged.\n",
+  //       };
+  //       sgMail.send(mailOptions);
+  //       // smtpTransport.sendMail(mailOptions, function(err) {
+  //       //   req.flash(
+  //       //     "info",
+  //       //     "An e-mail has been sent to " +
+  //       //       user.email +
+  //       //       " with further instructions."
+  //       //   );
+  //       //   done(err, "done");
+  //       // });
+  //     },
+  //   ],
+  //   function (err) {
+  //     if (err) return next(err);
+  //     res.redirect("/forgot");
+  //   }
+  // );
 });
 
 // GET /reset/:token
