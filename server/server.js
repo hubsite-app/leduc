@@ -255,7 +255,10 @@ app.post("/forgot", async (req, res) => {
 
     res.redirect("/forgot");
   } catch (e) {
-    console.log("POST /forgot", e.response);
+    console.log(
+      "POST /forgot",
+      util.inspect(e, { showHidden: false, depth: null })
+    );
   }
   // async.waterfall(
   //   [
