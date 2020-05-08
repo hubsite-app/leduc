@@ -19,6 +19,7 @@ const querystring = require("query-string");
 const pdf = require("html-pdf");
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
+const sgMail = require("@sendgrid/mail");
 
 const { User } = require("./models/user");
 const { DailyReport } = require("./models/dailyReport");
@@ -237,31 +238,28 @@ app.post("/forgot", (req, res, next) => {
         });
       },
       async function (token, user, done) {
-        const oauth2Client = new OAuth2(
-          process.env.CLIENT_ID,
-          process.env.CLIENT_SECRET,
-          "https://developers.google.com/oauthplayground"
-        );
-        oauth2Client.setCredentials({
-          refresh_token: process.env.REFRESH_TOKEN,
-        });
-        console.log("1");
+        sgMail.setApiKey(process.env.SENDGRID_API);
+        // const oauth2Client = new OAuth2(
+        //   process.env.CLIENT_ID,
+        //   process.env.CLIENT_SECRET,
+        //   "https://developers.google.com/oauthplayground"
+        // );
+        // oauth2Client.setCredentials({
+        //   refresh_token: process.env.REFRESH_TOKEN
+        // });
         // const tokens = await oauth2Client.refreshAccessToken();
         // const accessToken = tokens.credentials.access_token;
-        console.log("2");
-        var smtpTransport = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            // type: "OAuth2",
-            user: "triproster@gmail.com",
-            pass: process.env.GMAIL_PASSWORD,
-            // clientId: process.env.CLIENT_ID,
-            // clientSecret: process.env.CLIENT_SECRET,
-            // refreshToken: process.env.REFRESH_TOKEN,
-            // accessToken: accessToken
-          },
-        });
-        console.log("HI");
+        // var smtpTransport = nodemailer.createTransport({
+        //   service: "gmail",
+        //   auth: {
+        //     type: "OAuth2",
+        //     user: "triproster@gmail.com",
+        //     clientId: process.env.CLIENT_ID,
+        //     clientSecret: process.env.CLIENT_SECRET,
+        //     refreshToken: process.env.REFRESH_TOKEN,
+        //     accessToken: accessToken
+        //   }
+        // });
         var mailOptions = {
           to: user.email,
           from: "Devin at Solitaire Design <triproster@gmail.com>",
@@ -276,15 +274,17 @@ app.post("/forgot", (req, res, next) => {
             "\n\n" +
             "If you did not request this, please ignore this email and your password will remain unchanged.\n",
         };
-        smtpTransport.sendMail(mailOptions, function (err) {
-          req.flash(
-            "info",
-            "An e-mail has been sent to " +
-              user.email +
-              " with further instructions."
-          );
-          done(err, "done");
-        });
+        sgMail.send(mailOptions);
+        done();
+        // smtpTransport.sendMail(mailOptions, function(err) {
+        //   req.flash(
+        //     "info",
+        //     "An e-mail has been sent to " +
+        //       user.email +
+        //       " with further instructions."
+        //   );
+        //   done(err, "done");
+        // });
       },
     ],
     function (err) {
