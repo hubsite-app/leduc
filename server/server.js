@@ -242,9 +242,9 @@ app.post("/forgot", async (req, res, next) => {
         "\n\n" +
         "If you did not request this, please ignore this email and your password will remain unchanged.\n",
     };
-    await sgMail.send(mailOptions);
+    sgMail.send(mailOptions);
   } catch (e) {
-    console.log("POST /forgot", e);
+    console.log("POST /forgot", e.response);
   }
   // async.waterfall(
   //   [
