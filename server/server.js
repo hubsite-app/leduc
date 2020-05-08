@@ -237,7 +237,7 @@ app.post("/forgot", (req, res, next) => {
           });
         });
       },
-      async function (token, user, done) {
+      async function (token, user) {
         sgMail.setApiKey(process.env.SENDGRID_API);
         // const oauth2Client = new OAuth2(
         //   process.env.CLIENT_ID,
@@ -275,7 +275,6 @@ app.post("/forgot", (req, res, next) => {
             "If you did not request this, please ignore this email and your password will remain unchanged.\n",
         };
         sgMail.send(mailOptions);
-        done();
         // smtpTransport.sendMail(mailOptions, function(err) {
         //   req.flash(
         //     "info",
