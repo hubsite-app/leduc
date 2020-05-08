@@ -217,7 +217,6 @@ app.get("/forgot", (req, res) => {
 // POST /forgot
 app.post("/forgot", async (req, res) => {
   try {
-    console.log("HI");
     const token = await crypto.randomBytes(20).toString("hex");
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
@@ -229,6 +228,8 @@ app.post("/forgot", async (req, res) => {
     await user.save();
 
     sgMail.setApiKey(process.env.SENDGRID_API);
+    console.log("HI");
+
     const mailOptions = {
       to: user.email,
       from: "Devin at Solitaire Design <triproster@gmail.com>",
