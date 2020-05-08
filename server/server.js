@@ -218,7 +218,7 @@ app.get("/forgot", (req, res) => {
 app.post("/forgot", async (req, res, next) => {
   try {
     const token = await crypto.randomBytes(20).toString("hex");
-    const user = User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email: req.body.email });
     if (!user) {
       req.flash("error", "No account with that email address exists.");
       return res.redirect("/forgot");
