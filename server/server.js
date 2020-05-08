@@ -232,7 +232,7 @@ app.post("/forgot", async (req, res) => {
 
     const mailOptions = {
       to: user.email,
-      from: "Devin at Solitaire Design <triproster@gmail.com>",
+      from: "triproster@gmail.com",
       subject: "Bow Mark Password Reset",
       text:
         "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n" +
