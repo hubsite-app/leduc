@@ -215,8 +215,9 @@ app.get("/forgot", (req, res) => {
 });
 
 // POST /forgot
-app.post("/forgot", async (req, res, next) => {
+app.post("/forgot", async (req, res) => {
   try {
+    console.log("HI");
     const token = await crypto.randomBytes(20).toString("hex");
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
