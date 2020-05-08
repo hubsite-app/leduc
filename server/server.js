@@ -227,7 +227,7 @@ app.post("/forgot", async (req, res) => {
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    sgMail.setApiKey(process.env.SENDGRID_API);
+    await sgMail.setApiKey(process.env.SENDGRID_API);
     console.log("HI");
 
     const mailOptions = {
@@ -244,7 +244,16 @@ app.post("/forgot", async (req, res) => {
         "\n\n" +
         "If you did not request this, please ignore this email and your password will remain unchanged.\n",
     };
-    sgMail.send(mailOptions);
+    await sgMail.send(mailOptions);
+
+    console.log("bye");
+
+    req.flash(
+      "info",
+      "An e-mail has been sent to " + user.email + " with further instructions."
+    );
+
+    res.redirect("/forgot");
   } catch (e) {
     console.log("POST /forgot", e.response);
   }
