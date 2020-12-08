@@ -266,7 +266,7 @@ app.post("/forgot", (req, res, next) => {
             " with further instructions."
         );
 
-        res.redirect("/forgot");
+        // res.redirect("/forgot");
         // const oauth2Client = new OAuth2(
         //   process.env.CLIENT_ID,
         //   process.env.CLIENT_SECRET,
