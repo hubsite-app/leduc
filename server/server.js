@@ -19,6 +19,7 @@ const querystring = require("query-string");
 const pdf = require("html-pdf");
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
+const sgMail = require("@sendgrid/mail");
 
 const { User } = require("./models/user");
 const { DailyReport } = require("./models/dailyReport");
@@ -288,8 +289,119 @@ app.post("/forgot", (req, res, next) => {
       if (err) return next(err);
       res.redirect("/forgot");
     }
-  );
-});
+    // user.resetPasswordToken = token;
+    // user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    // await user.save();
+
+    // await sgMail.setApiKey(process.env.SENDGRID_API);
+    // console.log("HI");
+
+    // const mailOptions = {
+    //   to: user.email,
+    //   from: "itsdevinmcarthur@gmail.com",
+    //   subject: "Bow Mark Password Reset",
+    //   text:
+    //     "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n" +
+    //     "Please click on the following link, or paste this into your browser to complete the process:\n\n" +
+    //     "http://" +
+    //     req.headers.host +
+    //     "/reset/" +
+    //     token +
+    //     "\n\n" +
+    //     "If you did not request this, please ignore this email and your password will remain unchanged.\n",
+    // };
+    // await sgMail.send(mailOptions);
+
+    // console.log("bye");
+
+    // req.flash(
+    //   "info",
+    //   "An e-mail has been sent to " + user.email + " with further instructions."
+    // );
+
+    // res.redirect("/forgot");
+  // } catch (e) {
+  //   console.log(
+  //     "POST /forgot",
+  //     require("util").inspect(e, { showHidden: false, depth: null })
+  //   );
+  // }
+  // async.waterfall(
+  //   [
+  //     function (done) {
+  //       crypto.randomBytes(20, function (err, buf) {
+  //         var token = buf.toString("hex");
+  //         done(err, token);
+  //       });
+  //     },
+  //     function (token, done) {
+  //       User.findOne({ email: req.body.email }, function (err, user) {
+  //         if (!user) {
+  //           req.flash("error", "No account with that email address exists.");
+  //           return res.redirect("/forgot");
+  //         }
+  //         user.resetPasswordToken = token;
+  //         user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+  //         user.save(function (err) {
+  //           done(err, token, user);
+  //         });
+  //       });
+  //     },
+  //     async function (token, user) {
+  //       sgMail.setApiKey(process.env.SENDGRID_API);
+  //       // const oauth2Client = new OAuth2(
+  //       //   process.env.CLIENT_ID,
+  //       //   process.env.CLIENT_SECRET,
+  //       //   "https://developers.google.com/oauthplayground"
+  //       // );
+  //       // oauth2Client.setCredentials({
+  //       //   refresh_token: process.env.REFRESH_TOKEN
+  //       // });
+  //       // const tokens = await oauth2Client.refreshAccessToken();
+  //       // const accessToken = tokens.credentials.access_token;
+  //       // var smtpTransport = nodemailer.createTransport({
+  //       //   service: "gmail",
+  //       //   auth: {
+  //       //     type: "OAuth2",
+  //       //     user: "triproster@gmail.com",
+  //       //     clientId: process.env.CLIENT_ID,
+  //       //     clientSecret: process.env.CLIENT_SECRET,
+  //       //     refreshToken: process.env.REFRESH_TOKEN,
+  //       //     accessToken: accessToken
+  //       //   }
+  //       // });
+  //       var mailOptions = {
+  //         to: user.email,
+  //         from: "Devin at Solitaire Design <triproster@gmail.com>",
+  //         subject: "Bow Mark Password Reset",
+  //         text:
+  //           "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n" +
+  //           "Please click on the following link, or paste this into your browser to complete the process:\n\n" +
+  //           "http://" +
+  //           req.headers.host +
+  //           "/reset/" +
+  //           token +
+  //           "\n\n" +
+  //           "If you did not request this, please ignore this email and your password will remain unchanged.\n",
+  //       };
+  //       sgMail.send(mailOptions);
+  //       // smtpTransport.sendMail(mailOptions, function(err) {
+  //       //   req.flash(
+  //       //     "info",
+  //       //     "An e-mail has been sent to " +
+  //       //       user.email +
+  //       //       " with further instructions."
+  //       //   );
+  //       //   done(err, "done");
+  //       // });
+  //     },
+  //   ],
+  //   function (err) {
+  //     if (err) return next(err);
+  //     res.redirect("/forgot");
+  //   }
+  // );
+);
 
 // GET /reset/:token
 app.get("/reset/:token", (req, res) => {
