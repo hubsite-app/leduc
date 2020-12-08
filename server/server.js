@@ -238,31 +238,12 @@ app.post("/forgot", (req, res, next) => {
         });
       },
       async function (token, user, done) {
-        const oauth2Client = new OAuth2(
-          process.env.CLIENT_ID,
-          process.env.CLIENT_SECRET,
-          "https://developers.google.com/oauthplayground"
-        );
-        oauth2Client.setCredentials({
-          refresh_token: process.env.REFRESH_TOKEN,
-        });
-        const tokens = await oauth2Client.refreshAccessToken();
-        const accessToken = tokens.credentials.access_token;
-        var smtpTransport = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            type: "OAuth2",
-            // user: "triproster@gmail.com",
-            // pass: process.env.GMAIL_PASSWORD,
-            clientId: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECRET,
-            refreshToken: process.env.REFRESH_TOKEN,
-            accessToken: accessToken,
-          },
-        });
-        var mailOptions = {
+        await sgMail.setApiKey(process.env.SENDGRID_API);
+        console.log("HI");
+
+        const mailOptions = {
           to: user.email,
-          from: "Devin at Solitaire Design <triproster@gmail.com>",
+          from: "itsdevinmcarthur@gmail.com",
           subject: "Bow Mark Password Reset",
           text:
             "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n" +
@@ -274,15 +255,64 @@ app.post("/forgot", (req, res, next) => {
             "\n\n" +
             "If you did not request this, please ignore this email and your password will remain unchanged.\n",
         };
-        smtpTransport.sendMail(mailOptions, function (err) {
-          req.flash(
-            "info",
-            "An e-mail has been sent to " +
-              user.email +
-              " with further instructions."
-          );
-          done(err, "done");
-        });
+        await sgMail.send(mailOptions);
+
+        console.log("bye");
+
+        req.flash(
+          "info",
+          "An e-mail has been sent to " +
+            user.email +
+            " with further instructions."
+        );
+
+        res.redirect("/forgot");
+        done();
+        // const oauth2Client = new OAuth2(
+        //   process.env.CLIENT_ID,
+        //   process.env.CLIENT_SECRET,
+        //   "https://developers.google.com/oauthplayground"
+        // );
+        // oauth2Client.setCredentials({
+        //   refresh_token: process.env.REFRESH_TOKEN,
+        // });
+        // const tokens = await oauth2Client.refreshAccessToken();
+        // const accessToken = tokens.credentials.access_token;
+        // var smtpTransport = nodemailer.createTransport({
+        //   service: "gmail",
+        //   auth: {
+        //     type: "OAuth2",
+        //     // user: "triproster@gmail.com",
+        //     // pass: process.env.GMAIL_PASSWORD,
+        //     clientId: process.env.CLIENT_ID,
+        //     clientSecret: process.env.CLIENT_SECRET,
+        //     refreshToken: process.env.REFRESH_TOKEN,
+        //     accessToken: accessToken,
+        //   },
+        // });
+        // var mailOptions = {
+        //   to: user.email,
+        //   from: "Devin at Solitaire Design <triproster@gmail.com>",
+        //   subject: "Bow Mark Password Reset",
+        //   text:
+        //     "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n" +
+        //     "Please click on the following link, or paste this into your browser to complete the process:\n\n" +
+        //     "http://" +
+        //     req.headers.host +
+        //     "/reset/" +
+        //     token +
+        //     "\n\n" +
+        //     "If you did not request this, please ignore this email and your password will remain unchanged.\n",
+        // };
+        // smtpTransport.sendMail(mailOptions, function (err) {
+        //   req.flash(
+        //     "info",
+        //     "An e-mail has been sent to " +
+        //       user.email +
+        //       " with further instructions."
+        //   );
+        //   done(err, "done");
+        // });
       },
     ],
     function (err) {
