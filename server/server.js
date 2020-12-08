@@ -250,13 +250,13 @@ app.post("/forgot", (req, res, next) => {
         var smtpTransport = nodemailer.createTransport({
           service: "gmail",
           auth: {
-            // type: "OAuth2",
-            user: "triproster@gmail.com",
-            pass: process.env.GMAIL_PASSWORD,
-            // clientId: process.env.CLIENT_ID,
-            // clientSecret: process.env.CLIENT_SECRET,
-            // refreshToken: process.env.REFRESH_TOKEN,
-            // accessToken: accessToken
+            type: "OAuth2",
+            // user: "triproster@gmail.com",
+            // pass: process.env.GMAIL_PASSWORD,
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+            refreshToken: process.env.REFRESH_TOKEN,
+            accessToken: accessToken,
           },
         });
         var mailOptions = {
