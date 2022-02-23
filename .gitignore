@@ -22,11 +22,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# API
-/api/.env.development
-/api/dist
+# Server
+/server/.env.development
+/server/dist
 
 # Client
 /client/build
 /client/.eslintcache
+/client/.next
 
