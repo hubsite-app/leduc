@@ -157,6 +157,9 @@ app.get("/login", (req, res) => {
 });
 
 // POST /login
+/**
+ * @todo LOGIN
+ */
 app.post("/login", function (req, res, next) {
   passport.authenticate("local", function (err, user, info) {
     if (err) {
@@ -194,6 +197,9 @@ app.get("/signup", (req, res) => {
 });
 
 // POST /signup
+/**
+ * @todo SIGNUP
+ */
 app.post("/signup", async (req, res) => {
   try {
     const user = new User(req.body);
@@ -215,6 +221,9 @@ app.get("/forgot", (req, res) => {
 });
 
 // POST /forgot
+/**
+ * @todo forgot password
+ */
 app.post("/forgot", (req, res, next) => {
   async.waterfall(
     [
@@ -294,6 +303,9 @@ app.get("/reset/:token", (req, res) => {
 });
 
 // POST /reset/:token
+/**
+ * @todo reset password
+ */
 app.post("/reset/:token", function (req, res) {
   async.waterfall(
     [
@@ -409,6 +421,9 @@ app.get("/user/:id", async (req, res) => {
 });
 
 // DELETE /users/:id
+/**
+ * @todo delete user
+ */
 app.delete("/user/:id", async (req, res) => {
   var id = req.params.id;
   if (!ObjectID.isValid(id)) {
@@ -434,6 +449,9 @@ app.delete("/user/:id", async (req, res) => {
 });
 
 // POST /user/:id/update
+/**
+ * @todo update user
+ */
 app.post("/user/:id/update", async (req, res) => {
   try {
     var id = req.params.id;
@@ -463,6 +481,9 @@ app.post("/user/:id/update", async (req, res) => {
 });
 
 // POST /user/:userId/employee/
+/**
+ * @todo link employee w/ user
+ */
 app.post("/user/:id/employee", (req, res) => {
   var userId = req.params.id;
   var employeeId = req.body.employee;
@@ -505,6 +526,9 @@ app.post("/user/:id/employee", (req, res) => {
 });
 
 // PATCH /user/:id/employee
+/**
+ * @todo remove employee link
+ */
 app.patch("/user/:id/employee", async (req, res) => {
   try {
     var userId = req.params.id;
@@ -533,6 +557,9 @@ app.patch("/user/:id/employee", async (req, res) => {
 });
 
 // POST /jobsite/new
+/**
+ * @todo new jobsite
+ */
 app.post("/jobsite/new", async (req, res) => {
   try {
     var crew;
@@ -888,8 +915,8 @@ app.get("/api/jobsite/:code", async (req, res) => {
                         ) / 100;
                     } else {
                       material = {
-                        name:
-                          vehicleArray[materialShipment.vehicle].vehicleType,
+                        name: vehicleArray[materialShipment.vehicle]
+                          .vehicleType,
                         quantity:
                           Math.round(
                             (Math.abs(
@@ -1224,8 +1251,8 @@ app.get("/api/jobsite/:code", async (req, res) => {
                         ) / 100;
                     } else {
                       material = {
-                        name:
-                          vehicleArray[materialShipment.vehicle].vehicleType,
+                        name: vehicleArray[materialShipment.vehicle]
+                          .vehicleType,
                         quantity:
                           Math.round(
                             (Math.abs(
@@ -1368,6 +1395,9 @@ app.get("/jobsite/:id", async (req, res) => {
 });
 
 // DELETE /jobsite/:id
+/**
+ * @todo delete jobsite
+ */
 app.delete("/jobsite/:id", async (req, res) => {
   try {
     var id = req.params.id;
@@ -1402,6 +1432,9 @@ app.delete("/jobsite/:id", async (req, res) => {
 });
 
 // POST /jobsite/:id/update
+/**
+ * @todo update jobsite
+ */
 app.post("/jobsite/:id/update", async (req, res) => {
   try {
     var id = req.params.id;
@@ -1429,6 +1462,9 @@ app.post("/jobsite/:id/update", async (req, res) => {
 });
 
 // POST /jobsite/:id/activate
+/**
+ * @todo activate jobsite
+ */
 app.post("/jobsite/:id/activate", async (req, res) => {
   try {
     var job = await Jobsite.findById(req.params.id);
@@ -1456,6 +1492,9 @@ app.post("/jobsite/:id/activate", async (req, res) => {
 });
 
 // POST /jobsite/:id/disactivate
+/**
+ * @todo deactivate jobsite
+ */
 app.post("/jobsite/:id/disactivate", async (req, res) => {
   try {
     var job = await Jobsite.findByIdAndUpdate(req.params.id, {
@@ -1483,6 +1522,9 @@ app.post("/jobsite/:id/disactivate", async (req, res) => {
 });
 
 // POST /jobsite/:jobId/crew/:crewId
+/**
+ * @todo add crew to jobsite
+ */
 app.post("/jobsite/:jobId/crew/:crewId", async (req, res) => {
   try {
     var crewId = req.params.crewId;
@@ -1505,6 +1547,9 @@ app.post("/jobsite/:jobId/crew/:crewId", async (req, res) => {
 });
 
 // DELETE /jobsite/:jobId/crew/:crewId
+/**
+ * @todo remove crew from jobsite
+ */
 app.delete("/jobsite/:jobId/crew/:crewId", async (req, res) => {
   try {
     var crewId = req.params.crewId;
@@ -1584,6 +1629,9 @@ app.get("/employee/:id", async (req, res) => {
 });
 
 // POST /employee
+/**
+ * @todo add new employee
+ */
 app.post("/employee", async (req, res) => {
   try {
     var employee = await new Employee(req.body);
@@ -1606,6 +1654,9 @@ app.post("/employee", async (req, res) => {
 });
 
 // POST /employee/:id/update
+/**
+ * @todo update employee
+ */
 app.post("/employee/:id/update", async (req, res) => {
   try {
     var id = req.params.id;
@@ -1633,6 +1684,9 @@ app.post("/employee/:id/update", async (req, res) => {
 });
 
 // POST /employee/user/:id
+/**
+ * @todo add user to employee
+ */
 app.post("/employee/user/:id", async (req, res) => {
   try {
     var employee = await new Employee(req.body);
@@ -1663,6 +1717,9 @@ app.post("/employee/user/:id", async (req, res) => {
 });
 
 // DELETE /employee/:id
+/**
+ * @todo delete employee
+ */
 app.delete("/employee/:id", async (req, res) => {
   try {
     var id = req.params.id;
@@ -1756,6 +1813,9 @@ app.get("/vehicle/:id", async (req, res) => {
 });
 
 // DELETE /vehicle/:id
+/**
+ * @todo delete vehicle
+ */
 app.delete("/vehicle/:id", async (req, res) => {
   try {
     var id = req.params.id;
@@ -1784,6 +1844,9 @@ app.delete("/vehicle/:id", async (req, res) => {
 });
 
 // POST /vehicle/:id/update
+/**
+ * @todo update vehicle
+ */
 app.post("/vehicle/:id/update", async (req, res) => {
   try {
     var id = req.params.id;
@@ -1811,6 +1874,9 @@ app.post("/vehicle/:id/update", async (req, res) => {
 });
 
 // POST /crew
+/**
+ * @todo create crew
+ */
 app.post("/crew", async (req, res) => {
   try {
     var crewLength = await Crew.getAll();
@@ -1875,6 +1941,9 @@ app.get("/crew/:id", async (req, res) => {
 });
 
 // DELETE /crew/:id
+/**
+ * @todo delete crew
+ */
 app.delete("/crew/:id", async (req, res) => {
   try {
     var id = req.params.id;
@@ -1923,6 +1992,9 @@ app.delete("/crew/:id", async (req, res) => {
 });
 
 // POST /crew/:id/update
+/**
+ * @todo update crew
+ */
 app.post("/crew/:id/update", async (req, res) => {
   try {
     var id = req.params.id;
@@ -1950,6 +2022,9 @@ app.post("/crew/:id/update", async (req, res) => {
 });
 
 // POST /crew/:crewId/employee/:employeeId
+/**
+ * @todo add employee to crew
+ */
 app.post("/crew/:crewId/employee/:employeeId", async (req, res) => {
   try {
     var crewId = req.params.crewId;
@@ -1978,6 +2053,9 @@ app.post("/crew/:crewId/employee/:employeeId", async (req, res) => {
 });
 
 // DELETE /crew/:crewId/employee/:employeeId
+/**
+ * @todo remove employee from crew
+ */
 app.delete("/crew/:crewId/employee/:employeeId", async (req, res) => {
   try {
     var crewId = req.params.crewId;
@@ -2006,6 +2084,9 @@ app.delete("/crew/:crewId/employee/:employeeId", async (req, res) => {
 });
 
 // POST /crew/:crewId/vehicle/:vehicleId
+/**
+ * @todo add vehicle to crew
+ */
 app.post("/crew/:crewId/vehicle/:vehicleId", async (req, res) => {
   try {
     var crewId = req.params.crewId;
@@ -2032,6 +2113,9 @@ app.post("/crew/:crewId/vehicle/:vehicleId", async (req, res) => {
 });
 
 // DELETE /crew/:crewId/vehicle/:vehicleId
+/**
+ * @todo remove vehicle from crew
+ */
 app.delete("/crew/:crewId/vehicle/:vehicleId", async (req, res) => {
   try {
     var crewId = req.params.crewId;
@@ -2096,6 +2180,9 @@ app.get("/jobreport/:jobId/crew/:crewId/report?", async (req, res) => {
 });
 
 // POST /report
+/**
+ * @todo create daily report
+ */
 app.post("/report", async (req, res) => {
   try {
     const jobId = req.body.jobId;
@@ -2122,6 +2209,9 @@ app.post("/report", async (req, res) => {
 });
 
 // POST /report/:id/update
+/**
+ * @todo update daily report
+ */
 app.post("/report/:id/update", async (req, res) => {
   try {
     if (!ObjectID.isValid(req.params.id)) {
@@ -2236,6 +2326,9 @@ app.get("/report/:reportId", async (req, res) => {
 });
 
 // DELETE /report/:id
+/**
+ * @todo delete daily report
+ */
 app.delete("/report/:id", async (req, res) => {
   try {
     var report = await DailyReport.findById(req.params.id);
@@ -2397,6 +2490,9 @@ app.get("/report/:reportId/pdf", async (req, res) => {
 });
 
 // POST /report/:reportId/approve
+/**
+ * @todo mark daily report as approved
+ */
 app.post("/report/:reportId/approve", async (req, res) => {
   try {
     await DailyReport.findByIdAndUpdate(
@@ -2417,6 +2513,9 @@ app.post("/report/:reportId/approve", async (req, res) => {
 });
 
 // POST /report/:reportId/disapprove
+/**
+ * @todo mark daily report as unapproved
+ */
 app.post("/report/:reportId/disapprove", async (req, res) => {
   try {
     await DailyReport.findByIdAndUpdate(
@@ -2437,6 +2536,9 @@ app.post("/report/:reportId/disapprove", async (req, res) => {
 });
 
 // POST /employeehour
+/**
+ * @todo create employee work
+ */
 app.post("/employeehour", async (req, res) => {
   try {
     var report = await DailyReport.findById(req.body.dailyReport);
@@ -2604,6 +2706,9 @@ app.post("/employeehour", async (req, res) => {
 });
 
 // POST /employeework/:id/update
+/**
+ * @todo update employee work
+ */
 app.post("/employeework/:id/update", async (req, res) => {
   try {
     var report = await DailyReport.findById(req.body.dailyReport);
@@ -2643,6 +2748,9 @@ app.post("/employeework/:id/update", async (req, res) => {
 });
 
 // DELETE /employeework/:id
+/**
+ * @todo delete employee work
+ */
 app.delete("/employeework/:id", async (req, res) => {
   try {
     var id = req.params.id;
@@ -2660,6 +2768,9 @@ app.delete("/employeework/:id", async (req, res) => {
 });
 
 // POST /vehiclehour
+/**
+ * @todo create vehicle work
+ */
 app.post("/vehiclehour", async (req, res) => {
   console.log(req.body);
   try {
@@ -2783,6 +2894,9 @@ app.post("/vehiclehour", async (req, res) => {
 });
 
 // POST /vehiclework/:id/update
+/**
+ * @todo update vehicle work
+ */
 app.post("/vehiclework/:id/update", async (req, res) => {
   try {
     var report = await DailyReport.findById(req.body.dailyReport),
@@ -2837,6 +2951,9 @@ app.post("/vehiclework/:id/update", async (req, res) => {
 });
 
 // DELETE /vehiclework/:id
+/**
+ * @todo delete vehicle work
+ */
 app.delete("/vehiclework/:id", async (req, res) => {
   try {
     var id = req.params.id;
@@ -2856,6 +2973,9 @@ app.delete("/vehiclework/:id", async (req, res) => {
 });
 
 // POST /production
+/**
+ * @todo create production
+ */
 app.post("/production", async (req, res) => {
   try {
     var report = await DailyReport.findById(req.body.dailyReport);
@@ -2924,6 +3044,9 @@ app.post("/production", async (req, res) => {
 });
 
 // POST /production/:id/update
+/**
+ * @todo update production
+ */
 app.post("/production/:id/update", async (req, res) => {
   try {
     var report = await DailyReport.findById(req.body.dailyReport);
@@ -2965,6 +3088,9 @@ app.post("/production/:id/update", async (req, res) => {
 });
 
 // DELETE /production/:id
+/**
+ * @todo delete production
+ */
 app.delete("/production/:id", async (req, res) => {
   try {
     var id = req.params.id;
@@ -2982,6 +3108,9 @@ app.delete("/production/:id", async (req, res) => {
 });
 
 // POST /material
+/**
+ * @todo create material shipment
+ */
 app.post("/material", async (req, res) => {
   try {
     var report = await DailyReport.findById(req.body.dailyReport);
@@ -3135,6 +3264,9 @@ app.post("/material", async (req, res) => {
 });
 
 // POST /material/:id/update
+/**
+ * @todo update material shipment
+ */
 app.post("/material/:id/update", async (req, res) => {
   try {
     var report = await DailyReport.findById(req.body.dailyReport);
@@ -3162,6 +3294,9 @@ app.post("/material/:id/update", async (req, res) => {
 });
 
 // DELETE /material/:id
+/**
+ * @todo delete material shipment
+ */
 app.delete("/material/:id", async (req, res) => {
   try {
     var id = req.params.id;
@@ -3181,6 +3316,9 @@ app.delete("/material/:id", async (req, res) => {
 });
 
 // POST /reportnote
+/**
+ * @todo create report note
+ */
 app.post("/reportnote", async (req, res) => {
   try {
     var report = await DailyReport.findById(req.body.dailyReport);
