@@ -1,0 +1,15 @@
+FROM node:12.13.0-alpine
+
+WORKDIR /usr/app
+
+ENV NODE_ENV=development
+ENV CHOKIDAR_USEPOLLING=true
+
+COPY package*.json ./
+RUN npm install -qy
+
+COPY . .
+
+EXPOSE 8080
+
+CMD ["npm", "run", "start:dev"]
