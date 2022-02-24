@@ -5,10 +5,14 @@ import * as dotenv from "dotenv";
 
 import seedDatabase from "./testing/seedDatabase";
 
+console.log(process.env.NODE_ENV);
+
 // Setup environment variables
+let notProduction = false;
 if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
+  notProduction = true;
   dotenv.config({ path: path.join(__dirname, "..", ".env.development") });
-}
+} else if (process.env.NODE_ENV !== "production") notProduction = true;
 
 import createApp from "./app";
 
@@ -21,7 +25,7 @@ const main = async () => {
       });
       console.log("MongoDB Connected");
 
-      if (process.env.NODE_ENV !== "production" && !!process.env.NODE_ENV) {
+      if (notProduction) {
         console.log("Database seeding...");
         await seedDatabase();
       }
