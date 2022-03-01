@@ -1,4 +1,38 @@
-import { Employee, EmployeeDocument, EmployeeWorkDocument } from "@models";
+import { Types } from "mongoose";
+
+import {
+  Employee,
+  EmployeeDocument,
+  EmployeeWorkDocument,
+  EmployeeWorkModel,
+} from "@models";
+import { GetByIDOptions } from "@typescript/models";
+import populateOptions from "@utils/populateOptions";
+
+const byIdDefaultOptions: GetByIDOptions = {
+  throwError: false,
+};
+const byId = (
+  EmployeeWork: EmployeeWorkModel,
+  id: Types.ObjectId | string,
+  options: GetByIDOptions = byIdDefaultOptions
+) => {
+  return new Promise<EmployeeWorkDocument | null>(async (resolve, reject) => {
+    try {
+      options = populateOptions(options, byIdDefaultOptions);
+
+      const employeeWork = await EmployeeWork.findById(id);
+
+      if (!employeeWork && options.throwError) {
+        throw new Error("EmployeeWork.getById: unable to find employee work");
+      }
+
+      resolve(employeeWork);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 
 const employee = (employeeWork: EmployeeWorkDocument) => {
   return new Promise<EmployeeDocument>(async (resolve, reject) => {
@@ -21,5 +55,6 @@ const employee = (employeeWork: EmployeeWorkDocument) => {
 };
 
 export default {
+  byId,
   employee,
 };

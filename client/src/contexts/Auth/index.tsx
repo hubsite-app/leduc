@@ -1,3 +1,5 @@
+import { useDisclosure } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import React from "react";
 
 import { useImmerReducer } from "use-immer";
@@ -94,6 +96,8 @@ const AuthProvider = ({ children }: IAuthProvider) => {
    * ----- Hook Initialization -----
    */
 
+  const router = useRouter();
+
   const [
     currentUser,
     {
@@ -186,6 +190,14 @@ const AuthProvider = ({ children }: IAuthProvider) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deauthorizeSession, state.user, token]);
+
+  // Go to login page if not logged in
+  React.useEffect(() => {
+    if (state.user === null && router.pathname !== "/login") {
+      router.push("/login");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.user, router.pathname]);
 
   return (
     <AuthContext.Provider value={{ state, login, logout }}>

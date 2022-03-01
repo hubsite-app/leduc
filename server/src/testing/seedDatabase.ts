@@ -35,6 +35,8 @@ export interface SeededDatabase {
 const seedDatabase = () => {
   return new Promise<SeededDatabase>(async (resolve, reject) => {
     try {
+      console.log("Database seeding...");
+
       // Clear Database
       await clearDatabase();
 

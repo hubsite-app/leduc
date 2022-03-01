@@ -4,7 +4,9 @@ import { ObjectType } from "type-graphql";
 import { DailyReportDocument, DailyReportModel } from "@models";
 import { DailyReportSchema } from "../schema";
 import get from "./get";
-import { GetByIDOptions } from "@typescript/models";
+import { GetByIDOptions, IListOptions } from "@typescript/models";
+import { IDailyReportUpdate } from "@typescript/dailyReport";
+import update from "./update";
 
 @ObjectType()
 export class DailyReportClass extends DailyReportSchema {
@@ -20,8 +22,11 @@ export class DailyReportClass extends DailyReportSchema {
     return get.byId(this, id, options);
   }
 
-  public static async getList(this: DailyReportModel) {
-    return get.list(this);
+  public static async getList(
+    this: DailyReportModel,
+    options?: IListOptions<DailyReportDocument>
+  ) {
+    return get.list(this, options);
   }
 
   public async getJobsite(this: DailyReportDocument) {
@@ -50,5 +55,16 @@ export class DailyReportClass extends DailyReportSchema {
 
   public async getReportNotes(this: DailyReportDocument) {
     return get.reportNotes(this);
+  }
+
+  /**
+   * ----- Update -----
+   */
+
+  public async updateDocument(
+    this: DailyReportDocument,
+    data: IDailyReportUpdate
+  ) {
+    return update.document(this, data);
   }
 }

@@ -1,0 +1,7 @@
+fragment DailyReportCardSnippet on DailyReportClass {
+  _id
+  date
+  jobsite {
+    name
+  }
+}

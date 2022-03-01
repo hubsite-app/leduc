@@ -1,0 +1,9 @@
+fragment EmployeeWorkCardSnippet on EmployeeWorkClass {
+  _id
+  jobTitle
+  employee {
+    name
+  }
+  startTime
+  endTime
+}

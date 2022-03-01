@@ -1,0 +1,11 @@
+fragment DailyReportFullSnippet on DailyReportClass {
+  _id
+  date
+  crew {
+    _id
+    name
+  }
+  employeeWork {
+    ...EmployeeWorkCardSnippet
+  }
+}

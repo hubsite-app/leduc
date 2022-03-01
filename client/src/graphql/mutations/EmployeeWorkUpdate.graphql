@@ -1,0 +1,5 @@
+mutation EmployeeWorkUpdate($id: String!, $data: EmployeeWorkUpdateData!) {
+  employeeWorkUpdate(id: $id, data: $data) {
+    ...EmployeeWorkCardSnippet
+  }
+}

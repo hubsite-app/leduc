@@ -1,2 +1,2 @@
-const fonts = { body: "Source Serif Pro", heading: "Source Serif Pro" };
+const fonts = { body: "Roboto", heading: "Roboto" };
 export default fonts;

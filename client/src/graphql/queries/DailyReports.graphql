@@ -1,0 +1,5 @@
+query DailyReports($options: ListOptionData) {
+  dailyReports(options: $options) {
+    ...DailyReportCardSnippet
+  }
+}

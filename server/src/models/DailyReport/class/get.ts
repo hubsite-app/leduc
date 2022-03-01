@@ -18,7 +18,7 @@ import {
   VehicleWork,
   VehicleWorkDocument,
 } from "@models";
-import { GetByIDOptions } from "@typescript/models";
+import { GetByIDOptions, IListOptions } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 
 /**
@@ -50,10 +50,29 @@ const byId = (
   });
 };
 
-const list = (DailyReport: DailyReportModel) => {
+const listDefaultOptions: IListOptions<DailyReportDocument> = {
+  pageLimit: 25,
+  offset: 0,
+};
+const list = (
+  DailyReport: DailyReportModel,
+  options?: IListOptions<DailyReportDocument>
+) => {
   return new Promise<DailyReportDocument[]>(async (resolve, reject) => {
     try {
-      const dailyReports = await DailyReport.find({});
+      options = populateOptions(options, listDefaultOptions);
+
+      const dailyReports = await DailyReport.find(
+        options?.query || {},
+        undefined,
+        {
+          limit: options?.pageLimit,
+          skip: options?.offset,
+          sort: {
+            date: -1,
+          },
+        }
+      );
 
       resolve(dailyReports);
     } catch (e) {

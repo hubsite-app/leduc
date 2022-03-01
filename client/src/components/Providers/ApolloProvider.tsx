@@ -30,26 +30,7 @@ export default function MyApolloProvider({
 
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache({
-      typePolicies: {
-        Query: {
-          fields: {
-            pages: {
-              keyArgs: [],
-              merge: (existing = [], incoming) => {
-                return [...existing, ...incoming];
-              },
-            },
-            questions: {
-              keyArgs: [],
-              merge: (existing = [], incoming) => {
-                return [...existing, ...incoming];
-              },
-            },
-          },
-        },
-      },
-    }),
+    cache: new InMemoryCache(),
     connectToDevTools: process.env.NODE_ENV === "development",
   });
 

@@ -26,8 +26,7 @@ const main = async () => {
       console.log("MongoDB Connected");
 
       if (notProduction) {
-        console.log("Database seeding...");
-        await seedDatabase();
+        // await seedDatabase();
       }
     }
 
