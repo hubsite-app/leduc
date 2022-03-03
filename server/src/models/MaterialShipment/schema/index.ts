@@ -1,3 +1,4 @@
+import SchemaVersions from "@constants/SchemaVersions";
 import { DailyReportClass, VehicleClass } from "@models";
 import { prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
@@ -40,6 +41,10 @@ export class MaterialShipmentSchema {
   @Field(() => VehicleObjectClass, { nullable: true })
   @prop({ type: () => VehicleObjectClass })
   public vehicleObject?: VehicleObjectClass;
+
+  @Field()
+  @prop({ required: true, default: SchemaVersions.MaterialShipment })
+  public schemaVersion!: number;
 
   /**
    * @deprecated link is already held in DailyReport document

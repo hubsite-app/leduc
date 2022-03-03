@@ -1,0 +1,8 @@
+mutation EmployeeWorkCreate(
+  $dailyReportId: String!
+  $data: [EmployeeWorkCreateData!]!
+) {
+  employeeWorkCreate(dailyReportId: $dailyReportId, data: $data) {
+    ...EmployeeWorkCardSnippet
+  }
+}

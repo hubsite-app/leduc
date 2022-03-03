@@ -32,6 +32,13 @@ export default extendTheme({
   styles,
   components: {
     Card,
+    Checkbox: {
+      baseStyle: {
+        control: {
+          bg: "white",
+        },
+      },
+    },
   },
   config: {
     initialColorMode: "light",

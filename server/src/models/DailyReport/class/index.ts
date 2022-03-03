@@ -1,12 +1,17 @@
 import { Types } from "mongoose";
 import { ObjectType } from "type-graphql";
 
-import { DailyReportDocument, DailyReportModel } from "@models";
+import {
+  DailyReportDocument,
+  DailyReportModel,
+  EmployeeWorkDocument,
+} from "@models";
 import { DailyReportSchema } from "../schema";
 import get from "./get";
 import { GetByIDOptions, IListOptions } from "@typescript/models";
 import { IDailyReportUpdate } from "@typescript/dailyReport";
 import update from "./update";
+import remove from "./remove";
 
 @ObjectType()
 export class DailyReportClass extends DailyReportSchema {
@@ -66,5 +71,27 @@ export class DailyReportClass extends DailyReportSchema {
     data: IDailyReportUpdate
   ) {
     return update.document(this, data);
+  }
+
+  public async updateDate(this: DailyReportDocument, date: Date) {
+    return update.date(this, date);
+  }
+
+  public async addEmployeeWork(
+    this: DailyReportDocument,
+    employeeWork: EmployeeWorkDocument
+  ) {
+    return update.addEmployeeWork(this, employeeWork);
+  }
+
+  /**
+   * ----- Remove -----
+   */
+
+  public async removeEmployeeWork(
+    this: DailyReportDocument,
+    employeeWork: EmployeeWorkDocument
+  ) {
+    return remove.employeeWork(this, employeeWork);
   }
 }

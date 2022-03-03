@@ -1,3 +1,4 @@
+import SchemaVersions from "@constants/SchemaVersions";
 import { CrewClass, DailyReportClass } from "@models";
 import { prop, Ref } from "@typegoose/typegoose";
 import isUrl from "@validation/isUrl";
@@ -38,6 +39,10 @@ export class JobsiteSchema {
   @Field(() => [CrewClass])
   @prop({ ref: () => CrewClass, default: [] })
   public crews!: Ref<CrewClass>[];
+
+  @Field()
+  @prop({ required: true, default: SchemaVersions.Jobsite })
+  public schemaVersion!: number;
 
   /**
    * @deprecated dailyReports holds the link to the jobsite

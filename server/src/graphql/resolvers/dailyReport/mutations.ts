@@ -10,11 +10,17 @@ export class DailyReportUpdateData {
 const update = (id: string, data: DailyReportUpdateData) => {
   return new Promise<DailyReportDocument>(async (resolve, reject) => {
     try {
-      const dailyReport = await DailyReport.getById(id, { throwError: true });
+      const dailyReport = (await DailyReport.getById(id, {
+        throwError: true,
+      }))!;
 
-      await dailyReport!.updateDocument(data);
+      const { employeeWork } = await dailyReport.updateDocument(data);
 
-      await dailyReport!.save();
+      await dailyReport.save();
+
+      for (let i = 0; i < employeeWork.length; i++) {
+        employeeWork[i].save();
+      }
 
       resolve(dailyReport!);
     } catch (e) {

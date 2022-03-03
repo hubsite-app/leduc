@@ -1,3 +1,4 @@
+import SchemaVersions from "@constants/SchemaVersions";
 import { DailyReportClass, EmployeeClass } from "@models";
 import { prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
@@ -23,6 +24,10 @@ export class EmployeeWorkSchema {
   @Field(() => EmployeeClass, { nullable: false })
   @prop({ ref: () => EmployeeClass, required: true })
   public employee!: Ref<EmployeeClass>;
+
+  @Field()
+  @prop({ required: true, default: SchemaVersions.EmployeeWork })
+  public schemaVersion!: number;
 
   /**
    * @deprecated link to this document held in DailyReport documents

@@ -1,3 +1,4 @@
+import SchemaVersions from "@constants/SchemaVersions";
 import { CrewClass, UserClass } from "@models";
 import { prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
@@ -15,6 +16,10 @@ export class EmployeeSchema {
   @Field({ nullable: true })
   @prop({ trim: true })
   public jobTitle?: string;
+
+  @Field()
+  @prop({ required: true, default: SchemaVersions.Employee })
+  public schemaVersion!: number;
 
   /**
    * @deprecated user will hold link to employee

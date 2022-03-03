@@ -26,7 +26,9 @@ import Card from "../../../Common/Card";
 import SubmitButton from "../../../Common/forms/SubmitButton";
 import Loading from "../../../Common/Loading";
 import TextLink from "../../../Common/TextLink";
+import EmployeeHours from "./views/EmployeeHours";
 import EmployeeWorkCard from "./views/EmployeeWorkCard";
+import VehicleWork from "./views/VehicleWork";
 
 interface IDailyReportClientContent {
   id: string;
@@ -94,18 +96,9 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
             </Flex>
           </Card>
 
-          <Card>
-            <Heading size="md">Employee Hours</Heading>
-            <Flex flexDir="column" w="100%" px={4} py={2}>
-              {data?.dailyReport.employeeWork.map((work) => (
-                <EmployeeWorkCard
-                  employeeWork={work}
-                  dailyReportDate={data.dailyReport.date}
-                  key={work._id}
-                />
-              ))}
-            </Flex>
-          </Card>
+          <EmployeeHours dailyReport={data.dailyReport} />
+
+          <VehicleWork dailyReport={data.dailyReport} />
 
           {/* REPORT EDIT MODAL */}
           <Modal isOpen={editModalOpen} onClose={onEditModalClose}>

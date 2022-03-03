@@ -1,4 +1,40 @@
-import { Vehicle, VehicleDocument, VehicleWorkDocument } from "@models";
+import {
+  Vehicle,
+  VehicleDocument,
+  VehicleWorkDocument,
+  VehicleWorkModel,
+} from "@models";
+import { GetByIDOptions, Id } from "@typescript/models";
+import populateOptions from "@utils/populateOptions";
+
+/**
+ * ----- Static Methods -----
+ */
+
+const byIdDefaultOptions: GetByIDOptions = {
+  throwError: false,
+};
+const byId = (
+  VehicleWork: VehicleWorkModel,
+  id: Id,
+  options: GetByIDOptions = byIdDefaultOptions
+) => {
+  return new Promise<VehicleWorkDocument | null>(async (resolve, reject) => {
+    try {
+      options = populateOptions(options, byIdDefaultOptions);
+
+      const vehicleWork = await VehicleWork.findById(id);
+
+      if (!vehicleWork && options.throwError) {
+        throw new Error("VehicleWork.getById: Unable to find vehicle work");
+      }
+
+      resolve(vehicleWork);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 
 /**
  * ----- Methods -----
@@ -23,5 +59,6 @@ const vehicle = (vehicleWork: VehicleWorkDocument) => {
 };
 
 export default {
+  byId,
   vehicle,
 };

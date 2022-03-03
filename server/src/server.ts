@@ -15,6 +15,7 @@ if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
 } else if (process.env.NODE_ENV !== "production") notProduction = true;
 
 import createApp from "./app";
+import updateDocuments from "@utils/updateDocuments";
 
 const main = async () => {
   try {
@@ -29,6 +30,8 @@ const main = async () => {
         // await seedDatabase();
       }
     }
+
+    await updateDocuments();
 
     let port = process.env.PORT || 8080;
 

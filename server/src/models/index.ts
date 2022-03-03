@@ -174,5 +174,5 @@ export interface VehicleWorkModel
   extends ReturnModelType<typeof VehicleWorkClass> {}
 
 export const VehicleWork = getModelForClass(VehicleWorkClass, {
-  schemaOptions: { collection: "vehiclesworks" },
+  schemaOptions: { collection: "vehicleworks" },
 });

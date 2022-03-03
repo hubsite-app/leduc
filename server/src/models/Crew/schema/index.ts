@@ -3,6 +3,7 @@ import { Field, ID, ObjectType } from "type-graphql";
 import { prop, Ref } from "@typegoose/typegoose";
 import { CrewTypes } from "@typescript/crew";
 import { EmployeeClass, JobsiteClass, VehicleClass } from "@models";
+import SchemaVersions from "@constants/SchemaVersions";
 
 @ObjectType()
 export class CrewSchema {
@@ -24,6 +25,10 @@ export class CrewSchema {
   @Field(() => [VehicleClass])
   @prop({ ref: () => VehicleClass, default: [] })
   public vehicles!: Ref<VehicleClass>[];
+
+  @Field()
+  @prop({ required: true, default: SchemaVersions.Crew })
+  public schemaVersion!: number;
 
   /**
    * @deprecated jobsite holds the list of crews

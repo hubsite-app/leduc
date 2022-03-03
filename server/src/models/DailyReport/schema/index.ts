@@ -1,3 +1,4 @@
+import SchemaVersions from "@constants/SchemaVersions";
 import {
   CrewClass,
   EmployeeWorkClass,
@@ -51,4 +52,8 @@ export class DailyReportSchema {
   @Field(() => [ReportNoteClass])
   @prop({ ref: () => ReportNoteClass, default: [] })
   public reportNote!: Ref<ReportNoteClass>[];
+
+  @Field()
+  @prop({ required: true, default: SchemaVersions.DailyReport })
+  public schemaVersion!: number;
 }

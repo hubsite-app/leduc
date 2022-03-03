@@ -1,3 +1,4 @@
+import SchemaVersions from "@constants/SchemaVersions";
 import { EmployeeClass } from "@models";
 import { prop, Ref } from "@typegoose/typegoose";
 import isEmail from "@validation/isEmail";
@@ -49,4 +50,8 @@ export class UserSchema {
   @Field(() => EmployeeClass)
   @prop({ ref: () => EmployeeClass })
   public employee?: Ref<EmployeeClass>;
+
+  @Field()
+  @prop({ required: true, default: SchemaVersions.User })
+  public schemaVersion!: number;
 }

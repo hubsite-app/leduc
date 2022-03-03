@@ -1,0 +1,5 @@
+mutation VehicleWorkUpdate($id: String!, $data: VehicleWorkUpdateData!) {
+  vehicleWorkUpdate(id: $id, data: $data) {
+    ...VehicleWorkCardSnippet
+  }
+}

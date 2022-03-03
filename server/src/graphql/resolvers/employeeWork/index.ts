@@ -12,7 +12,10 @@ import {
   EmployeeWorkClass,
   EmployeeWorkDocument,
 } from "@models";
-import mutations, { EmployeeWorkUpdateData } from "./mutations";
+import mutations, {
+  EmployeeWorkCreateData,
+  EmployeeWorkUpdateData,
+} from "./mutations";
 
 @Resolver(() => EmployeeWorkClass)
 export default class EmployeeWorkResolver {
@@ -30,11 +33,26 @@ export default class EmployeeWorkResolver {
    */
 
   @Authorized()
+  @Mutation(() => [EmployeeWorkClass])
+  async employeeWorkCreate(
+    @Arg("dailyReportId") dailyReportId: string,
+    @Arg("data", () => [EmployeeWorkCreateData]) data: EmployeeWorkCreateData[]
+  ) {
+    return mutations.create(dailyReportId, data);
+  }
+
+  @Authorized()
   @Mutation(() => EmployeeWorkClass)
   async employeeWorkUpdate(
     @Arg("id") id: string,
     @Arg("data") data: EmployeeWorkUpdateData
   ) {
     return mutations.update(id, data);
+  }
+
+  @Authorized()
+  @Mutation(() => String)
+  async employeeWorkDelete(@Arg("id") id: string) {
+    return mutations.remove(id);
   }
 }

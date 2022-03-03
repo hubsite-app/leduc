@@ -1,6 +1,8 @@
 import { Types } from "mongoose";
 
 import {
+  DailyReport,
+  DailyReportDocument,
   Employee,
   EmployeeDocument,
   EmployeeWorkDocument,
@@ -54,7 +56,22 @@ const employee = (employeeWork: EmployeeWorkDocument) => {
   });
 };
 
+const dailyReport = (employeeWork: EmployeeWorkDocument) => {
+  return new Promise<DailyReportDocument | null>(async (resolve, reject) => {
+    try {
+      const dailyReport = await DailyReport.findOne({
+        employeeWork: employeeWork._id,
+      });
+
+      resolve(dailyReport);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   byId,
   employee,
+  dailyReport,
 };

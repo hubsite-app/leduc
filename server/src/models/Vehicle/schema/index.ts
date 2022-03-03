@@ -1,3 +1,4 @@
+import SchemaVersions from "@constants/SchemaVersions";
 import { CrewClass } from "@models";
 import { prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
@@ -27,6 +28,10 @@ export class VehicleSchema {
   @Field({ nullable: false })
   @prop({ required: true, trim: true, minlength: 1, default: "Bow Mark" })
   public sourceCompany!: string;
+
+  @Field()
+  @prop({ required: true, default: SchemaVersions.Vehicle })
+  public schemaVersion!: number;
 
   /**
    * @deprecated don't need bidirection link, crew already holds vehicle link

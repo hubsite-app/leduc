@@ -4,8 +4,15 @@ fragment DailyReportFullSnippet on DailyReportClass {
   crew {
     _id
     name
+    employees {
+      _id
+      name
+    }
   }
   employeeWork {
     ...EmployeeWorkCardSnippet
+  }
+  vehicleWork {
+    ...VehicleWorkCardSnippet
   }
 }

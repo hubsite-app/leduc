@@ -54,7 +54,7 @@ const TextField = React.forwardRef<HTMLInputElement, ITextField>(
     return (
       <FormControl isInvalid={!!errorMessage} margin="auto">
         {label && (
-          <FormLabel mb={0} mt={1} ml={1}>
+          <FormLabel fontWeight="bold" mb={0} mt={1} ml={1}>
             {label}
           </FormLabel>
         )}
