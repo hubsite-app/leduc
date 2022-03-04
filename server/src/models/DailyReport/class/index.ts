@@ -5,6 +5,9 @@ import {
   DailyReportDocument,
   DailyReportModel,
   EmployeeWorkDocument,
+  MaterialShipmentDocument,
+  ProductionDocument,
+  VehicleWorkDocument,
 } from "@models";
 import { DailyReportSchema } from "../schema";
 import get from "./get";
@@ -84,6 +87,27 @@ export class DailyReportClass extends DailyReportSchema {
     return update.addEmployeeWork(this, employeeWork);
   }
 
+  public async addVehicleWork(
+    this: DailyReportDocument,
+    vehicleWork: VehicleWorkDocument
+  ) {
+    return update.addVehicleWork(this, vehicleWork);
+  }
+
+  public async addProduction(
+    this: DailyReportDocument,
+    production: ProductionDocument
+  ) {
+    return update.addProduction(this, production);
+  }
+
+  public async addMaterialShipment(
+    this: DailyReportDocument,
+    materialShipment: MaterialShipmentDocument
+  ) {
+    return update.addMaterialShipment(this, materialShipment);
+  }
+
   /**
    * ----- Remove -----
    */
@@ -93,5 +117,26 @@ export class DailyReportClass extends DailyReportSchema {
     employeeWork: EmployeeWorkDocument
   ) {
     return remove.employeeWork(this, employeeWork);
+  }
+
+  public async removeVehicleWork(
+    this: DailyReportDocument,
+    vehicleWork: VehicleWorkDocument
+  ) {
+    return remove.vehicleWork(this, vehicleWork);
+  }
+
+  public async removeProduction(
+    this: DailyReportDocument,
+    production: ProductionDocument
+  ) {
+    return remove.production(this, production);
+  }
+
+  public async removeMaterialShipment(
+    this: DailyReportDocument,
+    materialShipment: MaterialShipmentDocument
+  ) {
+    return remove.materialShipment(this, materialShipment);
   }
 }

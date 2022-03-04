@@ -15,8 +15,11 @@ import TextField, { ITextField } from "../components/Common/forms/TextField";
 const VehicleWorkUpdate = yup
   .object()
   .shape({
-    jobTitle: yup.string().required(),
-    hours: yup.number().required(),
+    jobTitle: yup.string().required("please provide a job title"),
+    hours: yup
+      .number()
+      .required("please provide hours")
+      .typeError("please provide hours"),
   })
   .required();
 

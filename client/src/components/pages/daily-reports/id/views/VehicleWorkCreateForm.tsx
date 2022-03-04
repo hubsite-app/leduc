@@ -1,65 +1,56 @@
-import React from "react";
-
 import {
   Box,
+  Checkbox,
   Flex,
-  SimpleGrid,
   IconButton,
-  Stack,
-  useToast,
-  FormErrorMessage,
+  SimpleGrid,
   Text,
+  useToast,
 } from "@chakra-ui/react";
+import { isEmpty } from "lodash";
+import React from "react";
+import { FiPlus, FiX } from "react-icons/fi";
+
 import {
   DailyReportFullDocument,
   DailyReportFullSnippetFragment,
-  EmployeeWorkCreateData,
-  useEmployeeWorkCreateMutation,
+  useVehicleWorkCreateMutation,
+  VehicleWorkCreateData,
 } from "../../../../../generated/graphql";
-import TextField from "../../../../Common/forms/TextField";
-import convertHourToDate from "../../../../../utils/convertHourToDate";
-import { FiPlus, FiX } from "react-icons/fi";
-import Checkbox from "../../../../Common/forms/Checkbox";
-import SubmitButton from "../../../../Common/forms/SubmitButton";
 import ErrorMessage from "../../../../Common/ErrorMessage";
-import dayjs from "dayjs";
-import isEmpty from "../../../../../utils/isEmpty";
+import SubmitButton from "../../../../Common/forms/SubmitButton";
+import TextField from "../../../../Common/forms/TextField";
 
-type JobErrors = { jobTitle?: string; startTime?: string; endTime?: string };
+type JobErrors = { jobTitle?: string; hours?: string };
 
 type FormErrors = {
   jobs: JobErrors[];
-  employees?: string;
+  vehicles?: string;
 }[];
 
-interface IEmployeeHourCreateForm {
+interface IVehicleWorkCreateForm {
   dailyReport: DailyReportFullSnippetFragment;
   closeForm?: () => void;
 }
 
-const EmployeeHourCreateForm = ({
+const initialJob = {
+  jobTitle: "",
+  hours: 1,
+};
+
+const VehicleWorkCreateForm = ({
   dailyReport,
   closeForm,
-}: IEmployeeHourCreateForm) => {
-  const initialJob = React.useMemo(() => {
-    const date = convertHourToDate(dayjs().format("HH:mm"), dailyReport.date);
-
-    return {
-      jobTitle: "",
-      startTime: date,
-      endTime: date,
-    };
-  }, [dailyReport.date]);
-
+}: IVehicleWorkCreateForm) => {
   /**
    * ----- Hook Initialization -----
    */
 
   const toast = useToast();
 
-  const [formData, setFormData] = React.useState<EmployeeWorkCreateData[]>([
+  const [formData, setFormData] = React.useState<VehicleWorkCreateData[]>([
     {
-      employees: [],
+      vehicles: [],
       jobs: [initialJob],
     },
   ]);
@@ -70,7 +61,7 @@ const EmployeeHourCreateForm = ({
 
   const [hasTriedSubmit, setHasTriedSubmit] = React.useState(false);
 
-  const [create, { loading }] = useEmployeeWorkCreateMutation({
+  const [create, { loading }] = useVehicleWorkCreateMutation({
     refetchQueries: [DailyReportFullDocument],
   });
 
@@ -80,7 +71,7 @@ const EmployeeHourCreateForm = ({
 
   const updateJobTitle = React.useCallback(
     (value: string, dataIndex: number, jobIndex: number) => {
-      const formDataCopy: EmployeeWorkCreateData[] = JSON.parse(
+      const formDataCopy: VehicleWorkCreateData[] = JSON.parse(
         JSON.stringify(formData)
       );
 
@@ -91,51 +82,32 @@ const EmployeeHourCreateForm = ({
     [formData]
   );
 
-  const updateStartTime = React.useCallback(
+  const updateHours = React.useCallback(
     (value: string, dataIndex: number, jobIndex: number) => {
-      const formDataCopy: EmployeeWorkCreateData[] = JSON.parse(
+      const formDataCopy: VehicleWorkCreateData[] = JSON.parse(
         JSON.stringify(formData)
       );
 
-      let startTime = isEmpty(value)
-        ? null
-        : convertHourToDate(value, dailyReport.date);
-      formDataCopy[dataIndex].jobs[jobIndex].startTime = startTime;
+      formDataCopy[dataIndex].jobs[jobIndex].hours = parseInt(value);
 
       setFormData(formDataCopy);
     },
-    [dailyReport.date, formData]
+    [formData]
   );
 
-  const updateEndTime = React.useCallback(
-    (value: string, dataIndex: number, jobIndex: number) => {
-      const formDataCopy: EmployeeWorkCreateData[] = JSON.parse(
+  const toggleVehicle = React.useCallback(
+    (vehicleId: string, dataIndex: number) => {
+      const formDataCopy: VehicleWorkCreateData[] = JSON.parse(
         JSON.stringify(formData)
       );
 
-      formDataCopy[dataIndex].jobs[jobIndex].endTime = convertHourToDate(
-        value,
-        dailyReport.date
-      );
-
-      setFormData(formDataCopy);
-    },
-    [dailyReport.date, formData]
-  );
-
-  const toggleEmployee = React.useCallback(
-    (employeeId: string, dataIndex: number) => {
-      const formDataCopy: EmployeeWorkCreateData[] = JSON.parse(
-        JSON.stringify(formData)
-      );
-
-      const existingIndex = formDataCopy[dataIndex].employees.findIndex(
-        (id) => id === employeeId
+      const existingIndex = formDataCopy[dataIndex].vehicles.findIndex(
+        (id) => id === vehicleId
       );
 
       if (existingIndex === -1)
-        formDataCopy[dataIndex].employees.push(employeeId);
-      else formDataCopy[dataIndex].employees.splice(existingIndex, 1);
+        formDataCopy[dataIndex].vehicles.push(vehicleId);
+      else formDataCopy[dataIndex].vehicles.splice(existingIndex, 1);
 
       setFormData(formDataCopy);
     },
@@ -152,7 +124,7 @@ const EmployeeHourCreateForm = ({
 
       setFormData(formDataCopy);
     },
-    [formData, initialJob]
+    [formData]
   );
 
   const removeJob = React.useCallback(
@@ -168,21 +140,21 @@ const EmployeeHourCreateForm = ({
 
   const addData = React.useCallback(() => {
     setHasTriedSubmit(false);
-    const formDataCopy: EmployeeWorkCreateData[] = JSON.parse(
+    const formDataCopy: VehicleWorkCreateData[] = JSON.parse(
       JSON.stringify(formData)
     );
 
     formDataCopy.push({
-      employees: [],
+      vehicles: [],
       jobs: [initialJob],
     });
 
     setFormData(formDataCopy);
-  }, [formData, setHasTriedSubmit, initialJob]);
+  }, [formData, setHasTriedSubmit]);
 
   const removeData = React.useCallback(
     (dataIndex: number) => {
-      const formDataCopy: EmployeeWorkCreateData[] = JSON.parse(
+      const formDataCopy: VehicleWorkCreateData[] = JSON.parse(
         JSON.stringify(formData)
       );
 
@@ -197,14 +169,13 @@ const EmployeeHourCreateForm = ({
     const formErrors: FormErrors = [];
     let valid = true;
     for (let i = 0; i < formData.length; i++) {
-      let employees: string | undefined = undefined,
+      let vehicles: string | undefined = undefined,
         jobs: JobErrors[] = [];
 
       for (let j = 0; j < formData[i].jobs.length; j++) {
         jobs[j] = {
           jobTitle: undefined,
-          startTime: undefined,
-          endTime: undefined,
+          hours: undefined,
         };
 
         if (isEmpty(formData[i].jobs[j].jobTitle)) {
@@ -212,25 +183,20 @@ const EmployeeHourCreateForm = ({
           valid = false;
         }
 
-        if (isEmpty(formData[i].jobs[j].startTime)) {
-          jobs[j].startTime = "please provide a start time";
-          valid = false;
-        }
-
-        if (isEmpty(formData[i].jobs[j].endTime)) {
-          jobs[j].endTime = "please provide a end time";
+        if (!formData[i].jobs[j].hours) {
+          jobs[j].hours = "please provide hours";
           valid = false;
         }
       }
 
-      if (formData[i].employees.length === 0) {
-        employees = "please select at least one employee";
+      if (formData[i].vehicles.length === 0) {
+        vehicles = "please select at least one vehicle";
         valid = false;
       }
 
       formErrors[i] = {
         jobs,
-        employees,
+        vehicles,
       };
     }
 
@@ -295,10 +261,12 @@ const EmployeeHourCreateForm = ({
                 aria-label="remove"
                 onClick={() => removeData(dataIndex)}
                 backgroundColor="transparent"
+                right={0}
                 isLoading={loading}
               />
             </Flex>
           )}
+
           {/* JOBS */}
           {data.jobs.map((job, jobIndex) => (
             <Box
@@ -320,40 +288,27 @@ const EmployeeHourCreateForm = ({
                   />
                 </Flex>
               )}
-              <TextField
-                label="Work Done"
-                isDisabled={loading}
-                value={job.jobTitle}
-                bgColor="white"
-                errorMessage={formErrors[dataIndex]?.jobs[jobIndex]?.jobTitle}
-                onChange={(e) =>
-                  updateJobTitle(e.target.value, dataIndex, jobIndex)
-                }
-              />
-              <SimpleGrid spacing={2} columns={[1, 1, 2]}>
+              <SimpleGrid columns={[1, 1, 2]} spacing={2}>
                 <TextField
-                  label="Start Time"
+                  label="Work Done"
                   isDisabled={loading}
-                  value={job.startTime}
+                  value={job.jobTitle}
                   bgColor="white"
-                  type="time"
+                  errorMessage={formErrors[dataIndex]?.jobs[jobIndex]?.jobTitle}
                   onChange={(e) =>
-                    updateStartTime(e.target.value, dataIndex, jobIndex)
-                  }
-                  errorMessage={
-                    formErrors[dataIndex]?.jobs[jobIndex]?.startTime
+                    updateJobTitle(e.target.value, dataIndex, jobIndex)
                   }
                 />
                 <TextField
-                  label="End Time"
+                  label="Hours"
                   isDisabled={loading}
-                  value={job.endTime}
+                  value={job.hours}
+                  type="number"
                   bgColor="white"
-                  type="time"
+                  errorMessage={formErrors[dataIndex]?.jobs[jobIndex]?.hours}
                   onChange={(e) =>
-                    updateEndTime(e.target.value, dataIndex, jobIndex)
+                    updateHours(e.target.value, dataIndex, jobIndex)
                   }
-                  errorMessage={formErrors[dataIndex]?.jobs[jobIndex]?.endTime}
                 />
               </SimpleGrid>
             </Box>
@@ -370,18 +325,18 @@ const EmployeeHourCreateForm = ({
           </Box>
 
           {/* EMPLOYEES */}
-          {formErrors[dataIndex]?.employees && (
-            <Text color="red.500">{formErrors[dataIndex]?.employees}</Text>
+          {formErrors[dataIndex]?.vehicles && (
+            <Text color="red.500">{formErrors[dataIndex]?.vehicles}</Text>
           )}
           <SimpleGrid columns={[2, 2, 4]} m={2} spacing={2}>
-            {dailyReport.crew.employees.map((employee) => (
+            {dailyReport.crew.vehicles.map((vehicle) => (
               <Checkbox
-                isChecked={data.employees.includes(employee._id)}
-                onChange={() => toggleEmployee(employee._id, dataIndex)}
-                key={employee._id}
+                key={vehicle._id}
+                isChecked={data.vehicles.includes(vehicle._id)}
+                onChange={() => toggleVehicle(vehicle._id, dataIndex)}
                 isDisabled={loading}
               >
-                {employee.name}
+                {vehicle.name}
               </Checkbox>
             ))}
           </SimpleGrid>
@@ -406,4 +361,4 @@ const EmployeeHourCreateForm = ({
   );
 };
 
-export default EmployeeHourCreateForm;
+export default VehicleWorkCreateForm;

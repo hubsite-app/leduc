@@ -1,4 +1,10 @@
-import { DailyReportDocument, EmployeeWorkDocument } from "@models";
+import {
+  DailyReportDocument,
+  EmployeeWorkDocument,
+  MaterialShipmentDocument,
+  ProductionDocument,
+  VehicleWorkDocument,
+} from "@models";
 import { IDailyReportUpdate } from "@typescript/dailyReport";
 
 const document = (
@@ -52,8 +58,56 @@ const addEmployeeWork = (
   });
 };
 
+const addVehicleWork = (
+  dailyReport: DailyReportDocument,
+  vehicleWork: VehicleWorkDocument
+) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      dailyReport.vehicleWork.push(vehicleWork._id);
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const addProduction = (
+  dailyReport: DailyReportDocument,
+  production: ProductionDocument
+) => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      dailyReport.production.push(production._id);
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const addMaterialShipment = (
+  dailyReport: DailyReportDocument,
+  materialShipment: MaterialShipmentDocument
+) => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      dailyReport.materialShipment.push(materialShipment._id);
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   document,
   date,
   addEmployeeWork,
+  addVehicleWork,
+  addProduction,
+  addMaterialShipment,
 };

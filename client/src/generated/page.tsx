@@ -13,6 +13,8 @@ import { getApolloClient , ApolloClientContext} from '../withApollo';
 
 
 
+
+
 export async function getServerPageCurrentUser
     (options: Omit<Apollo.QueryOptions<Types.CurrentUserQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);

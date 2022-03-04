@@ -28,6 +28,7 @@ import Loading from "../../../Common/Loading";
 import TextLink from "../../../Common/TextLink";
 import EmployeeHours from "./views/EmployeeHours";
 import EmployeeWorkCard from "./views/EmployeeWorkCard";
+import Production from "./views/Production";
 import VehicleWork from "./views/VehicleWork";
 
 interface IDailyReportClientContent {
@@ -99,6 +100,8 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
           <EmployeeHours dailyReport={data.dailyReport} />
 
           <VehicleWork dailyReport={data.dailyReport} />
+
+          <Production dailyReport={data.dailyReport} />
 
           {/* REPORT EDIT MODAL */}
           <Modal isOpen={editModalOpen} onClose={onEditModalClose}>

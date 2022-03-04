@@ -1,20 +1,19 @@
-import { Flex, Heading, IconButton } from "@chakra-ui/react";
 import React from "react";
-import { FiPlus } from "react-icons/fi";
 
+import { Flex, Heading, IconButton } from "@chakra-ui/react";
 import { DailyReportFullSnippetFragment } from "../../../../../generated/graphql";
 import Card from "../../../../Common/Card";
-import VehicleWorkCreateForm from "./VehicleWorkCreateForm";
-import VehicleWorkCard from "./VehicleWorldCard";
+import { FiPlus, FiX } from "react-icons/fi";
+import ProductionCard from "./ProductionCard";
 
-interface IVehicleWork {
+interface IProduction {
   dailyReport: DailyReportFullSnippetFragment;
 }
 
-const VehicleWork = ({ dailyReport }: IVehicleWork) => {
+const Production = ({ dailyReport }: IProduction) => {
   const [addForm, setAddForm] = React.useState(false);
 
-  const [collapsed, setCollapsed] = React.useState(true);
+  const [collapsed, setCollapsed] = React.useState(false);
 
   return (
     <Card>
@@ -27,25 +26,24 @@ const VehicleWork = ({ dailyReport }: IVehicleWork) => {
           cursor="pointer"
           onClick={() => setCollapsed(!collapsed)}
         >
-          Vehicle Hours
+          Production
         </Heading>
         <IconButton
-          icon={<FiPlus />}
+          icon={addForm ? <FiX /> : <FiPlus />}
           aria-label="add"
           backgroundColor="transparent"
           onClick={() => setAddForm(!addForm)}
         />
       </Flex>
-      {addForm && (
-        <VehicleWorkCreateForm
-          dailyReport={dailyReport}
-          closeForm={() => setAddForm(false)}
-        />
-      )}
+      {addForm && <h1>form</h1>}
       {!collapsed && (
         <Flex flexDir="column" w="100%" px={4} py={2}>
-          {dailyReport.vehicleWork.map((work) => (
-            <VehicleWorkCard vehicleWork={work} key={work._id} />
+          {dailyReport.productions.map((production) => (
+            <ProductionCard
+              production={production}
+              dailyReportDate={dailyReport.date}
+              key={production._id}
+            />
           ))}
         </Flex>
       )}
@@ -53,4 +51,4 @@ const VehicleWork = ({ dailyReport }: IVehicleWork) => {
   );
 };
 
-export default VehicleWork;
+export default Production;

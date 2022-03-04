@@ -1,0 +1,9 @@
+fragment ProductionCardSnippet on ProductionClass {
+  _id
+  jobTitle
+  quantity
+  unit
+  startTime
+  endTime
+  description
+}

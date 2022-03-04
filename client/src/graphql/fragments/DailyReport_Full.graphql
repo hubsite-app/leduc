@@ -8,11 +8,20 @@ fragment DailyReportFullSnippet on DailyReportClass {
       _id
       name
     }
+    vehicles {
+      _id
+      name
+      vehicleCode
+      vehicleType
+    }
   }
   employeeWork {
     ...EmployeeWorkCardSnippet
   }
   vehicleWork {
     ...VehicleWorkCardSnippet
+  }
+  productions {
+    ...ProductionCardSnippet
   }
 }

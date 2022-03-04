@@ -21,13 +21,13 @@ export class ProductionSchema {
   @prop({ required: true, trim: true })
   public unit!: string;
 
-  @Field({ nullable: true })
-  @prop()
-  public startTime?: Date;
+  @Field({ nullable: false })
+  @prop({ required: true })
+  public startTime!: Date;
 
-  @Field({ nullable: true })
-  @prop()
-  public endTime?: Date;
+  @Field({ nullable: false })
+  @prop({ required: true })
+  public endTime!: Date;
 
   @Field()
   @prop({ trim: true })

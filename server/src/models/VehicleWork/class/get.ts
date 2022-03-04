@@ -1,4 +1,6 @@
 import {
+  DailyReport,
+  DailyReportDocument,
   Vehicle,
   VehicleDocument,
   VehicleWorkDocument,
@@ -58,7 +60,22 @@ const vehicle = (vehicleWork: VehicleWorkDocument) => {
   });
 };
 
+const dailyReport = (vehicleWork: VehicleWorkDocument) => {
+  return new Promise<DailyReportDocument | null>(async (resolve, reject) => {
+    try {
+      const dailyReport = await DailyReport.findOne({
+        vehicleWork: vehicleWork._id,
+      });
+
+      resolve(dailyReport);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   byId,
   vehicle,
+  dailyReport,
 };

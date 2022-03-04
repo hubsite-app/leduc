@@ -16,10 +16,19 @@ interface IEmployeeHours {
 const EmployeeHours = ({ dailyReport }: IEmployeeHours) => {
   const [addForm, setAddForm] = React.useState(false);
 
+  const [collapsed, setCollapsed] = React.useState(true);
+
   return (
     <Card>
       <Flex flexDir="row" justifyContent="space-between">
-        <Heading my="auto" ml={2} size="md">
+        <Heading
+          w="100%"
+          my="auto"
+          ml={2}
+          size="md"
+          cursor="pointer"
+          onClick={() => setCollapsed(!collapsed)}
+        >
           Employee Hours
         </Heading>
         <IconButton
@@ -35,15 +44,17 @@ const EmployeeHours = ({ dailyReport }: IEmployeeHours) => {
           closeForm={() => setAddForm(false)}
         />
       )}
-      <Flex flexDir="column" w="100%" px={4} py={2}>
-        {dailyReport.employeeWork.map((work) => (
-          <EmployeeWorkCard
-            employeeWork={work}
-            dailyReportDate={dailyReport.date}
-            key={work._id}
-          />
-        ))}
-      </Flex>
+      {!collapsed && (
+        <Flex flexDir="column" w="100%" px={4} py={2}>
+          {dailyReport.employeeWork.map((work) => (
+            <EmployeeWorkCard
+              employeeWork={work}
+              dailyReportDate={dailyReport.date}
+              key={work._id}
+            />
+          ))}
+        </Flex>
+      )}
     </Card>
   );
 };

@@ -1,9 +1,14 @@
 import { VehicleWorkDocument, VehicleWorkModel } from "@models";
 import { GetByIDOptions, Id } from "@typescript/models";
-import { IVehicleWorkUpdate } from "@typescript/vehicleWork";
+import {
+  IVehicleWorkCreate,
+  IVehicleWorkUpdate,
+} from "@typescript/vehicleWork";
 import { ObjectType } from "type-graphql";
 import { VehicleWorkSchema } from "..";
+import create from "./create";
 import get from "./get";
+import remove from "./remove";
 import update from "./update";
 
 @ObjectType()
@@ -24,6 +29,29 @@ export class VehicleWorkClass extends VehicleWorkSchema {
     return get.vehicle(this);
   }
 
+  public async getDailyReport(this: VehicleWorkDocument) {
+    return get.dailyReport(this);
+  }
+
+  /**
+   * ----- Create -----
+   */
+
+  public static async createDocument(
+    this: VehicleWorkModel,
+    data: IVehicleWorkCreate
+  ) {
+    return create.document(this, data);
+  }
+
+  public static async createPerVehicle(
+    this: VehicleWorkModel,
+    data: Omit<IVehicleWorkCreate, "vehicleId">,
+    vehicles: Id[]
+  ) {
+    return create.perVehicle(this, data, vehicles);
+  }
+
   /**
    * ----- Update -----
    */
@@ -33,5 +61,13 @@ export class VehicleWorkClass extends VehicleWorkSchema {
     data: IVehicleWorkUpdate
   ) {
     return update.document(this, data);
+  }
+
+  /**
+   * ----- Remove -----
+   */
+
+  public async fullDelete(this: VehicleWorkDocument) {
+    return remove.fullDelete(this);
   }
 }
