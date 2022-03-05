@@ -1,0 +1,14 @@
+fragment MaterialShipmentCardSnippet on MaterialShipmentClass {
+  _id
+  shipmentType
+  supplier
+  quantity
+  unit
+  startTime
+  endTime
+  vehicleObject {
+    source
+    vehicleType
+    vehicleCode
+  }
+}

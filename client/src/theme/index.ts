@@ -39,6 +39,11 @@ export default extendTheme({
         },
       },
     },
+    Input: {
+      baseStyle: {
+        backgroundColor: "white",
+      },
+    },
   },
   config: {
     initialColorMode: "light",

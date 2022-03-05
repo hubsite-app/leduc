@@ -21,7 +21,10 @@ import {
   VehicleWorkClass,
 } from "@models";
 import { ListOptionData } from "@typescript/graphql";
-import mutations, { DailyReportUpdateData } from "./mutations";
+import mutations, {
+  DailyReportNoteUpdateData,
+  DailyReportUpdateData,
+} from "./mutations";
 
 @Resolver(() => DailyReportClass)
 export default class DailyReportResolver {
@@ -59,9 +62,9 @@ export default class DailyReportResolver {
     return dailyReport.getMaterialShipments();
   }
 
-  @FieldResolver(() => [ReportNoteClass])
-  async reportNotes(@Root() dailyReport: DailyReportDocument) {
-    return dailyReport.getReportNotes();
+  @FieldResolver(() => ReportNoteClass, { nullable: true })
+  async reportNote(@Root() dailyReport: DailyReportDocument) {
+    return dailyReport.getReportNote();
   }
 
   /**
@@ -92,5 +95,23 @@ export default class DailyReportResolver {
     @Arg("data") data: DailyReportUpdateData
   ) {
     return mutations.update(id, data);
+  }
+
+  @Authorized()
+  @Mutation(() => DailyReportClass)
+  async dailyReportNoteUpdate(
+    @Arg("id") id: string,
+    @Arg("data") data: DailyReportNoteUpdateData
+  ) {
+    return mutations.updateNote(id, data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => DailyReportClass)
+  async dailyReportApprovalUpdate(
+    @Arg("id") id: string,
+    @Arg("approved") approved: boolean
+  ) {
+    return mutations.updateApproval(id, approved);
   }
 }

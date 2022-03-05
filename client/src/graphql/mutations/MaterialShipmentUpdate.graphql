@@ -1,0 +1,8 @@
+mutation MaterialShipmentUpdate(
+  $id: String!
+  $data: MaterialShipmentUpdateData!
+) {
+  materialShipmentUpdate(id: $id, data: $data) {
+    ...MaterialShipmentCardSnippet
+  }
+}

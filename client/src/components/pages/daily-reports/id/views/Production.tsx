@@ -5,6 +5,7 @@ import { DailyReportFullSnippetFragment } from "../../../../../generated/graphql
 import Card from "../../../../Common/Card";
 import { FiPlus, FiX } from "react-icons/fi";
 import ProductionCard from "./ProductionCard";
+import ProductionCreateForm from "./ProductionCreateForm";
 
 interface IProduction {
   dailyReport: DailyReportFullSnippetFragment;
@@ -13,7 +14,7 @@ interface IProduction {
 const Production = ({ dailyReport }: IProduction) => {
   const [addForm, setAddForm] = React.useState(false);
 
-  const [collapsed, setCollapsed] = React.useState(false);
+  const [collapsed, setCollapsed] = React.useState(true);
 
   return (
     <Card>
@@ -26,7 +27,7 @@ const Production = ({ dailyReport }: IProduction) => {
           cursor="pointer"
           onClick={() => setCollapsed(!collapsed)}
         >
-          Production
+          Production ({dailyReport.productions.length || 0})
         </Heading>
         <IconButton
           icon={addForm ? <FiX /> : <FiPlus />}
@@ -35,7 +36,12 @@ const Production = ({ dailyReport }: IProduction) => {
           onClick={() => setAddForm(!addForm)}
         />
       </Flex>
-      {addForm && <h1>form</h1>}
+      {addForm && (
+        <ProductionCreateForm
+          dailyReport={dailyReport}
+          closeForm={() => setAddForm(false)}
+        />
+      )}
       {!collapsed && (
         <Flex flexDir="column" w="100%" px={4} py={2}>
           {dailyReport.productions.map((production) => (

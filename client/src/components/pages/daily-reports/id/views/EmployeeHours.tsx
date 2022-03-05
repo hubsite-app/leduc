@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Heading, Flex, IconButton, Box, Divider } from "@chakra-ui/react";
+import { Heading, Flex, IconButton } from "@chakra-ui/react";
 
 import EmployeeWorkCard from "./EmployeeWorkCard";
 import Card from "../../../../Common/Card";
@@ -29,7 +29,7 @@ const EmployeeHours = ({ dailyReport }: IEmployeeHours) => {
           cursor="pointer"
           onClick={() => setCollapsed(!collapsed)}
         >
-          Employee Hours
+          Employee Hours ({dailyReport.employeeWork.length || 0})
         </Heading>
         <IconButton
           icon={addForm ? <FiX /> : <FiPlus />}

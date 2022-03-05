@@ -22,12 +22,27 @@ export class MaterialShipmentUpdateData {
   @Field(() => Date, { nullable: true })
   public endTime?: Date;
 
-  @Field({ nullable: true })
-  public supplier?: string;
+  @Field({ nullable: false })
+  public supplier!: string;
 }
 
 @InputType()
-export class MaterialShipmentCreateData extends MaterialShipmentUpdateData {}
+export class MaterialShipmentVehicleObjectData {
+  @Field({ nullable: false })
+  public source!: string;
+
+  @Field({ nullable: false })
+  public vehicleType!: string;
+
+  @Field({ nullable: false })
+  public vehicleCode!: string;
+}
+
+@InputType()
+export class MaterialShipmentCreateData extends MaterialShipmentUpdateData {
+  @Field(() => MaterialShipmentVehicleObjectData, { nullable: false })
+  public vehicleObject!: MaterialShipmentVehicleObjectData;
+}
 
 const create = (dailyReportId: string, data: MaterialShipmentCreateData) => {
   return new Promise<MaterialShipmentDocument>(async (resolve, reject) => {

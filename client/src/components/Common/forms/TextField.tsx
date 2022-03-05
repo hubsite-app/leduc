@@ -63,7 +63,7 @@ const TextField = React.forwardRef<HTMLInputElement, ITextField>(
             <InputLeftElement h="auto">{inputLeftElement}</InputLeftElement>
           )}
           {inputLeftAddon && <InputLeftAddon>{inputLeftAddon}</InputLeftAddon>}
-          <Input ref={ref} {...props} value={value} />
+          <Input ref={ref} backgroundColor="white" {...props} value={value} />
           {inputRightElement && (
             <InputRightElement h="auto" py="auto" {...inputRightElementProps}>
               {inputRightElement}

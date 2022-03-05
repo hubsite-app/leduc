@@ -181,14 +181,14 @@ const materialShipments = (dailyReport: DailyReportDocument) => {
   });
 };
 
-const reportNotes = (dailyReport: DailyReportDocument) => {
-  return new Promise<ReportNoteDocument[]>(async (resolve, reject) => {
+const reportNote = (dailyReport: DailyReportDocument) => {
+  return new Promise<ReportNoteDocument | null>(async (resolve, reject) => {
     try {
-      const reportNotes = await ReportNote.find({
-        _id: { $in: dailyReport.reportNote },
-      });
+      if (dailyReport.reportNote) {
+        const reportNote = await ReportNote.getById(dailyReport.reportNote);
 
-      resolve(reportNotes);
+        resolve(reportNote);
+      } else return null;
     } catch (e) {
       reject(e);
     }
@@ -204,5 +204,5 @@ export default {
   vehicleWork,
   production,
   materialShipments,
-  reportNotes,
+  reportNote,
 };

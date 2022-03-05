@@ -5,6 +5,8 @@ import { EmployeeDocument, EmployeeModel } from "@models";
 import { EmployeeSchema } from "../schema";
 import get from "./get";
 import { GetByIDOptions } from "@typescript/models";
+import { IEmployeeCreate } from "@typescript/employee";
+import create from "./create";
 
 @ObjectType()
 export class EmployeeClass extends EmployeeSchema {
@@ -30,5 +32,16 @@ export class EmployeeClass extends EmployeeSchema {
 
   public async getCrews(this: EmployeeDocument) {
     return get.crews(this);
+  }
+
+  /**
+   * ----- Create -----
+   */
+
+  public static async createDocument(
+    this: EmployeeModel,
+    data: IEmployeeCreate
+  ) {
+    return create.document(this, data);
   }
 }

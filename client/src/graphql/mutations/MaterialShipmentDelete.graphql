@@ -1,0 +1,3 @@
+mutation MaterialShipmentDelete($id: String!) {
+  materialShipmentDelete(id: $id)
+}

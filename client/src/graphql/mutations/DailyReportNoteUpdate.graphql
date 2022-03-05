@@ -1,0 +1,8 @@
+mutation DailyReportNoteUpdate(
+  $id: String!
+  $data: DailyReportNoteUpdateData!
+) {
+  dailyReportNoteUpdate(id: $id, data: $data) {
+    ...DailyReportFullSnippet
+  }
+}

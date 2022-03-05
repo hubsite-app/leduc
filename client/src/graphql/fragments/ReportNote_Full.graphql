@@ -1,0 +1,3 @@
+fragment ReportNoteFullSnippet on ReportNoteClass {
+  note
+}

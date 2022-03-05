@@ -1,0 +1,5 @@
+query DailyReportPDF($id: String!) {
+  dailyReport(id: $id) {
+    ...DailyReportPDFSnippet
+  }
+}

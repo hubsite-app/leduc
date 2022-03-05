@@ -14,6 +14,7 @@ const document = (
         startTime: data.startTime,
         endTime: data.endTime,
         supplier: data.supplier,
+        vehicleObject: data.vehicleObject,
       });
 
       await data.dailyReport.addMaterialShipment(materialShipment);

@@ -27,7 +27,7 @@ const VehicleWork = ({ dailyReport }: IVehicleWork) => {
           cursor="pointer"
           onClick={() => setCollapsed(!collapsed)}
         >
-          Vehicle Hours
+          Vehicle Hours ({dailyReport.vehicleWork.length || 0})
         </Heading>
         <IconButton
           icon={<FiPlus />}

@@ -7,6 +7,11 @@ export interface IMaterialShipmentCreate {
   startTime?: Date;
   endTime?: Date;
   supplier?: string;
+  vehicleObject: {
+    source: string;
+    vehicleType: string;
+    vehicleCode: string;
+  };
   dailyReport: DailyReportDocument;
 }
 

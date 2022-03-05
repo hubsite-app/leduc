@@ -1,6 +1,7 @@
 fragment DailyReportFullSnippet on DailyReportClass {
   _id
   date
+  approved
   crew {
     _id
     name
@@ -23,5 +24,11 @@ fragment DailyReportFullSnippet on DailyReportClass {
   }
   productions {
     ...ProductionCardSnippet
+  }
+  materialShipments {
+    ...MaterialShipmentCardSnippet
+  }
+  reportNote {
+    ...ReportNoteFullSnippet
   }
 }

@@ -10,7 +10,7 @@ export class ReportNoteSchema {
   public _id!: Types.ObjectId;
 
   @Field({ nullable: false })
-  @prop({ required: true, trim: true })
+  @prop({ required: true, trim: true, default: "" })
   public note!: string;
 
   @Field()

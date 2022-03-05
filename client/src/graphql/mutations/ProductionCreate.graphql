@@ -1,0 +1,8 @@
+mutation ProductionCreate(
+  $dailyReportId: String!
+  $data: ProductionCreateData!
+) {
+  productionCreate(dailyReportId: $dailyReportId, data: $data) {
+    ...ProductionCardSnippet
+  }
+}

@@ -3,6 +3,7 @@ import {
   EmployeeWorkDocument,
   MaterialShipmentDocument,
   ProductionDocument,
+  ReportNoteDocument,
   VehicleWorkDocument,
 } from "@models";
 import { IDailyReportUpdate } from "@typescript/dailyReport";
@@ -41,6 +42,18 @@ const date = (dailyReport: DailyReportDocument, date: Date) => {
       }
     }
   );
+};
+
+const approval = (dailyReport: DailyReportDocument, approved: boolean) => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      dailyReport.approved = approved;
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 
 const addEmployeeWork = (
@@ -103,11 +116,33 @@ const addMaterialShipment = (
   });
 };
 
+const setReportNote = (
+  dailyReport: DailyReportDocument,
+  reportNote: ReportNoteDocument
+) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      if (!!dailyReport.reportNote)
+        throw new Error(
+          "dailyReport.setReportNote: this report already has notes"
+        );
+
+      dailyReport.reportNote = reportNote._id;
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   document,
   date,
+  approval,
   addEmployeeWork,
   addVehicleWork,
   addProduction,
   addMaterialShipment,
+  setReportNote,
 };

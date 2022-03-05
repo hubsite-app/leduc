@@ -50,15 +50,24 @@ const byEmail = (User: UserModel, email: string) => {
  */
 
 const employee = (user: UserDocument) => {
-  return new Promise<EmployeeDocument | null>(async (resolve, reject) => {
+  return new Promise<EmployeeDocument>(async (resolve, reject) => {
     try {
-      let employee: EmployeeDocument | null = null;
-
       if (user.employee) {
-        employee = await Employee.getById(user.employee);
-      }
+        const employee = await Employee.getById(user.employee);
 
-      resolve(employee);
+        if (!employee)
+          throw new Error("user.getEmployee: unable to find employee");
+
+        resolve(employee);
+      } else {
+        const employee = await Employee.createDocument({
+          name: user.name,
+        });
+
+        await employee.save();
+
+        resolve(employee);
+      }
     } catch (e) {
       reject(e);
     }

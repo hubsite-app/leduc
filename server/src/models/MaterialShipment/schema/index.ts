@@ -22,11 +22,11 @@ export class MaterialShipmentSchema {
   @prop({ required: true })
   public unit!: string;
 
-  @Field()
+  @Field({ nullable: true })
   @prop()
   public startTime?: Date;
 
-  @Field()
+  @Field({ nullable: true })
   @prop()
   public endTime?: Date;
 

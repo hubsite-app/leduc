@@ -1,8 +1,6 @@
 import {
   Box,
-  Button,
   Flex,
-  Heading,
   IconButton,
   Modal,
   ModalBody,
@@ -17,18 +15,23 @@ import {
 import dayjs from "dayjs";
 import React from "react";
 import { FiEdit } from "react-icons/fi";
+import { useAuth } from "../../../../contexts/Auth";
 import { useDailyReportUpdateForm } from "../../../../forms/dailyReport";
 import {
+  useDailyReportApprovalUpdateMutation,
   useDailyReportFullQuery,
   useDailyReportUpdateMutation,
 } from "../../../../generated/graphql";
+
 import Card from "../../../Common/Card";
+import Checkbox from "../../../Common/forms/Checkbox";
 import SubmitButton from "../../../Common/forms/SubmitButton";
 import Loading from "../../../Common/Loading";
 import TextLink from "../../../Common/TextLink";
 import EmployeeHours from "./views/EmployeeHours";
-import EmployeeWorkCard from "./views/EmployeeWorkCard";
+import MaterialShipments from "./views/MaterialShipments";
 import Production from "./views/Production";
+import ReportNotes from "./views/ReportNotes";
 import VehicleWork from "./views/VehicleWork";
 
 interface IDailyReportClientContent {
@@ -39,6 +42,10 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
   /**
    * ----- Hook Initialization -----
    */
+
+  const {
+    state: { user },
+  } = useAuth();
 
   const { data } = useDailyReportFullQuery({
     variables: {
@@ -53,6 +60,9 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
   } = useDisclosure();
 
   const [update, { loading }] = useDailyReportUpdateMutation();
+
+  const [updateApproval, { loading: approvalLoading }] =
+    useDailyReportApprovalUpdateMutation();
 
   const { FormComponents } = useDailyReportUpdateForm();
 
@@ -85,6 +95,22 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                     {data?.dailyReport.crew.name}
                   </TextLink>
                 </Text>
+                {user?.admin && (
+                  <Checkbox
+                    isDisabled={approvalLoading}
+                    isChecked={data?.dailyReport.approved}
+                    onChange={(e) => {
+                      updateApproval({
+                        variables: {
+                          id: data?.dailyReport._id,
+                          approved: e.target.checked,
+                        },
+                      });
+                    }}
+                  >
+                    Approved
+                  </Checkbox>
+                )}
               </Box>
               <Box>
                 <IconButton
@@ -102,6 +128,10 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
           <VehicleWork dailyReport={data.dailyReport} />
 
           <Production dailyReport={data.dailyReport} />
+
+          <MaterialShipments dailyReport={data.dailyReport} />
+
+          <ReportNotes dailyReport={data.dailyReport} />
 
           {/* REPORT EDIT MODAL */}
           <Modal isOpen={editModalOpen} onClose={onEditModalClose}>
@@ -145,6 +175,7 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
     }
   }, [
     FormComponents,
+    approvalLoading,
     data?.dailyReport,
     editModalOpen,
     id,
@@ -153,6 +184,8 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
     onEditModalOpen,
     toast,
     update,
+    updateApproval,
+    user?.admin,
   ]);
 
   return content;

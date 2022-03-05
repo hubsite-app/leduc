@@ -3,7 +3,6 @@ import { Field, ObjectType } from "type-graphql";
 
 @ObjectType()
 export class VehicleObjectClass {
-  // Name
   @Field({ nullable: true })
   @prop({ trim: true })
   public source!: string;

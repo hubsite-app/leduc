@@ -49,9 +49,9 @@ export class DailyReportSchema {
   @prop({ ref: () => MaterialShipmentClass, default: [] })
   public materialShipment!: Ref<MaterialShipmentClass>[];
 
-  @Field(() => [ReportNoteClass])
-  @prop({ ref: () => ReportNoteClass, default: [] })
-  public reportNote!: Ref<ReportNoteClass>[];
+  @Field(() => ReportNoteClass, { nullable: true })
+  @prop({ ref: () => ReportNoteClass })
+  public reportNote!: Ref<ReportNoteClass>;
 
   @Field()
   @prop({ required: true, default: SchemaVersions.DailyReport })

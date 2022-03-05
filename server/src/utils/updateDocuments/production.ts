@@ -46,6 +46,8 @@ const updateToV1 = () => {
 
           production.schemaVersion = 1;
 
+          if (!production.jobTitle) production.jobTitle = "Placeholder";
+
           await production.save();
         }
 

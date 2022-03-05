@@ -7,11 +7,12 @@ import {
   EmployeeWorkDocument,
   MaterialShipmentDocument,
   ProductionDocument,
+  ReportNoteDocument,
   VehicleWorkDocument,
 } from "@models";
 import { DailyReportSchema } from "../schema";
 import get from "./get";
-import { GetByIDOptions, IListOptions } from "@typescript/models";
+import { GetByIDOptions, Id, IListOptions } from "@typescript/models";
 import { IDailyReportUpdate } from "@typescript/dailyReport";
 import update from "./update";
 import remove from "./remove";
@@ -24,7 +25,7 @@ export class DailyReportClass extends DailyReportSchema {
 
   public static async getById(
     this: DailyReportModel,
-    id: Types.ObjectId | string,
+    id: Id,
     options?: GetByIDOptions
   ) {
     return get.byId(this, id, options);
@@ -61,8 +62,8 @@ export class DailyReportClass extends DailyReportSchema {
     return get.materialShipments(this);
   }
 
-  public async getReportNotes(this: DailyReportDocument) {
-    return get.reportNotes(this);
+  public async getReportNote(this: DailyReportDocument) {
+    return get.reportNote(this);
   }
 
   /**
@@ -78,6 +79,10 @@ export class DailyReportClass extends DailyReportSchema {
 
   public async updateDate(this: DailyReportDocument, date: Date) {
     return update.date(this, date);
+  }
+
+  public async updateApproval(this: DailyReportDocument, approved: boolean) {
+    return update.approval(this, approved);
   }
 
   public async addEmployeeWork(
@@ -106,6 +111,13 @@ export class DailyReportClass extends DailyReportSchema {
     materialShipment: MaterialShipmentDocument
   ) {
     return update.addMaterialShipment(this, materialShipment);
+  }
+
+  public async setReportNote(
+    this: DailyReportDocument,
+    reportNote: ReportNoteDocument
+  ) {
+    return update.setReportNote(this, reportNote);
   }
 
   /**

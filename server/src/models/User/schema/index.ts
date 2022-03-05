@@ -47,9 +47,9 @@ export class UserSchema {
   @prop({ required: true, default: false })
   public projectManager!: boolean;
 
-  @Field(() => EmployeeClass)
-  @prop({ ref: () => EmployeeClass })
-  public employee?: Ref<EmployeeClass>;
+  @Field(() => EmployeeClass, { nullable: false })
+  @prop({ ref: () => EmployeeClass, required: true })
+  public employee!: Ref<EmployeeClass>;
 
   @Field()
   @prop({ required: true, default: SchemaVersions.User })

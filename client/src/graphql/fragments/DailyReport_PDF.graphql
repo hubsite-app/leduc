@@ -1,0 +1,24 @@
+fragment DailyReportPDFSnippet on DailyReportClass {
+  date
+  crew {
+    name
+  }
+  jobsite {
+    name
+  }
+  employeeWork {
+    ...EmployeeWorkCardSnippet
+  }
+  vehicleWork {
+    ...VehicleWorkCardSnippet
+  }
+  productions {
+    ...ProductionCardSnippet
+  }
+  materialShipments {
+    ...MaterialShipmentCardSnippet
+  }
+  reportNote {
+    ...ReportNoteFullSnippet
+  }
+}
