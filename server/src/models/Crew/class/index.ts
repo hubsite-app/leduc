@@ -4,7 +4,9 @@ import { CrewDocument, CrewModel, VehicleDocument } from "@models";
 import { ObjectType } from "type-graphql";
 import { CrewSchema } from "../schema";
 import get from "./get";
-import { GetByIDOptions } from "@typescript/models";
+import { GetByIDOptions, Id } from "@typescript/models";
+import remove from "./remove";
+import update from "./update";
 
 @ObjectType()
 export class CrewClass extends CrewSchema {
@@ -38,5 +40,29 @@ export class CrewClass extends CrewSchema {
 
   public async getJobsites(this: CrewDocument) {
     return get.jobsites(this);
+  }
+
+  /**
+   * ----- Update -----
+   */
+
+  public async addEmployee(this: CrewDocument, employeeId: Id) {
+    return update.addEmployee(this, employeeId);
+  }
+
+  public async addVehicle(this: CrewDocument, vehicleId: Id) {
+    return update.addVehicle(this, vehicleId);
+  }
+
+  /**
+   * ----- Remove -----
+   */
+
+  public async removeEmployee(this: CrewDocument, employeeId: Id) {
+    return remove.employee(this, employeeId);
+  }
+
+  public async removeVehicle(this: CrewDocument, vehicleId: Id) {
+    return remove.vehicle(this, vehicleId);
   }
 }

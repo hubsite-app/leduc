@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: kube-devops
+  name: kibana-config
+  labels:
+    app: kibana
+data:
+  kibana.yml: |-
+    server.host: 0.0.0.0
+    elasticsearch:
+      hosts: ${ELASTICSEARCH_URL}
+      username: ${ELASTICSEARCH_USER}
+      password: ${ELASTICSEARCH_PASSWORD}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  namespace: kube-devops
+  labels:
+    component: kibana
+spec:
+  ports:
+    - port: 5601
+      name: http
+      protocol: TCP
+  selector:
+    app: kibana
+---
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: kibana
+#   namespace: kube-devops
+#   annotations:
+#     kubernetes.io/ingress.class: alb
+#     alb.ingress.kubernetes.io/scheme: internal
+#     alb.ingress.kubernetes.io/target-type: ip
+#     alb.ingress.kubernetes.io/backend-protocol: HTTP
+#     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+# spec:
+#   rules:
+#     - http:
+#         paths:
+#           - path: /*
+#             backend:
+#               serviceName: kibana
+#               servicePort: 5601
+# ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: kube-devops
+  labels:
+    app: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+        - name: kibana
+          image: docker.elastic.co/kibana/kibana:7.16.0
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 1Gi
+          env:
+            - name: ELASTICSEARCH_URL
+              value: http://elasticsearch-client:9200
+            - name: ELASTICSEARCH_USER
+              value: elastic
+            - name: ELASTICSEARCH_PASSWORD
+              value: changeme
+              # valueFrom:
+              #   secretKeyRef:
+              #     name: elasticsearch-secrets
+              #     key: password
+          ports:
+            - containerPort: 5601
+              name: kibana
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /usr/share/kibana/config/kibana.yml
+              readOnly: true
+              subPath: kibana.yml
+      volumes:
+        - name: config
+          configMap:
+            name: kibana-config

@@ -4,7 +4,7 @@ import { ObjectType } from "type-graphql";
 import { EmployeeDocument, EmployeeModel } from "@models";
 import { EmployeeSchema } from "../schema";
 import get from "./get";
-import { GetByIDOptions } from "@typescript/models";
+import { GetByIDOptions, ISearchOptions } from "@typescript/models";
 import { IEmployeeCreate } from "@typescript/employee";
 import create from "./create";
 
@@ -20,6 +20,18 @@ export class EmployeeClass extends EmployeeSchema {
     options?: GetByIDOptions
   ) {
     return get.byId(this, id, options);
+  }
+
+  public static async search(
+    this: EmployeeModel,
+    searchString: string,
+    options?: ISearchOptions
+  ) {
+    return get.search(this, searchString, options);
+  }
+
+  public static async getByName(this: EmployeeModel, name: string) {
+    return get.byName(this, name);
   }
 
   public static async getList(this: EmployeeModel) {

@@ -1,10 +1,14 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { CrewClass, UserClass } from "@models";
-import { prop, Ref } from "@typegoose/typegoose";
+import { ES_updateEmployee } from "@elasticsearch/helpers/employee";
+import { CrewClass, EmployeeDocument, UserClass } from "@models";
+import { post, prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
+@post<EmployeeDocument>("save", async (employee) => {
+  await ES_updateEmployee(employee);
+})
 export class EmployeeSchema {
   @Field(() => ID, { nullable: false })
   public _id!: Types.ObjectId;

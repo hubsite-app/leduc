@@ -1,0 +1,5 @@
+query CrewSSR($id: String!) {
+  crew(id: $id) {
+    ...CrewSSRSnippet
+  }
+}

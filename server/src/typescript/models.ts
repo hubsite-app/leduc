@@ -10,4 +10,9 @@ export interface IListOptions<Document> {
   query?: FilterQuery<Document>;
 }
 
+export interface ISearchOptions {
+  limit?: number;
+  blacklistedIds?: string[];
+}
+
 export type Id = string | Types.ObjectId;

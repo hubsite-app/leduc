@@ -3,18 +3,7 @@ fragment DailyReportFullSnippet on DailyReportClass {
   date
   approved
   crew {
-    _id
-    name
-    employees {
-      _id
-      name
-    }
-    vehicles {
-      _id
-      name
-      vehicleCode
-      vehicleType
-    }
+    ...CrewFullSnippet
   }
   employeeWork {
     ...EmployeeWorkCardSnippet

@@ -1,0 +1,17 @@
+# Source: https://www.digitalocean.com/community/tutorials/how-to-set-up-an-elasticsearch-fluentd-and-kibana-efk-logging-stack-on-kubernetes
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: kube-devops
+  labels:
+    app: elasticsearch
+spec:
+  selector:
+    app: elasticsearch
+  ports:
+    - port: 9200
+      name: rest
+    - port: 9300
+      name: inter-node

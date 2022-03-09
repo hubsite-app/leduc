@@ -8,6 +8,7 @@ interface ITextLink extends LinkProps {
   link: string;
   title?: string;
   isExternal?: boolean;
+  newTab?: boolean;
 }
 
 const TextLink = ({
@@ -15,6 +16,7 @@ const TextLink = ({
   link,
   children,
   isExternal,
+  newTab,
   ...rest
 }: ITextLink) => {
   const linkProps: any = {
@@ -27,12 +29,21 @@ const TextLink = ({
     "-moz-outline-style": "none",
   };
 
+  let newTabProps = {};
+  if (newTab) {
+    newTabProps = {
+      target: "_blank",
+      rel: "noopener noreferrer",
+    };
+  }
+
   let content = (
     <Link href={link} passHref>
       <ChakraLink
         _active={activeAndFocusProps}
         _focus={activeAndFocusProps}
         {...linkProps}
+        {...newTabProps}
         {...rest}
       >
         {children}
@@ -48,6 +59,7 @@ const TextLink = ({
         title={title}
         isExternal
         {...linkProps}
+        {...newTabProps}
         {...rest}
       >
         {children}

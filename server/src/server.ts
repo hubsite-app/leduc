@@ -5,8 +5,6 @@ import * as dotenv from "dotenv";
 
 import seedDatabase from "./testing/seedDatabase";
 
-console.log(process.env.NODE_ENV);
-
 // Setup environment variables
 let notProduction = false;
 if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
@@ -16,9 +14,13 @@ if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
 
 import createApp from "./app";
 import updateDocuments from "@utils/updateDocuments";
+import saveAll from "@testing/saveAll";
+import elasticsearch from "./elasticsearch";
 
 const main = async () => {
   try {
+    await elasticsearch();
+
     if (process.env.NODE_ENV !== "test") {
       await mongoose.connect(process.env.MONGO_URI!, {
         useNewUrlParser: true,
@@ -28,6 +30,7 @@ const main = async () => {
 
       if (notProduction) {
         // await seedDatabase();
+        await saveAll();
       }
     }
 

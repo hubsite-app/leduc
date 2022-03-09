@@ -111,6 +111,14 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                     Approved
                   </Checkbox>
                 )}
+                <Text>
+                  <TextLink
+                    newTab
+                    link={`/daily-report/${data.dailyReport._id}/pdf`}
+                  >
+                    PDF Report
+                  </TextLink>
+                </Text>
               </Box>
               <Box>
                 <IconButton

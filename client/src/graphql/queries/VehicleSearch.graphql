@@ -1,0 +1,5 @@
+query VehicleSearch($searchString: String!, $options: SearchOptions) {
+  vehicleSearch(searchString: $searchString, options: $options) {
+    ...VehicleCardSnippet
+  }
+}

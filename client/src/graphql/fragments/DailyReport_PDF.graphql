@@ -5,6 +5,7 @@ fragment DailyReportPDFSnippet on DailyReportClass {
   }
   jobsite {
     name
+    jobcode
   }
   employeeWork {
     ...EmployeeWorkCardSnippet

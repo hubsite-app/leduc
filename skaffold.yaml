@@ -1,0 +1,71 @@
+apiVersion: skaffold/v2beta26
+kind: Config
+build:
+  local:
+    push: false # Setting false will not push the image to remote repository
+  tagPolicy:
+    gitCommit: {}
+  artifacts:
+    - image: itsdevin/bow-mark-client
+      context: client
+      docker:
+        dockerfile: Dockerfile.dev
+        # noCache: true
+      sync:
+        # Whenever these types of files are updated, inject into the pod (Mode 2)
+        # If any other files are changed, will fall back to Mode 1
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.ts"
+            dest: .
+          - src: "**/*.tsx"
+            dest: .
+          - src: "**/*.css"
+            dest: .
+          - src: "**/*.html"
+            dest: .
+    - image: itsdevin/bow-mark-server
+      context: server
+      docker:
+        dockerfile: Dockerfile.dev
+        # noCache: true
+      # Must be using nodemon
+      sync:
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.ts"
+            dest: .
+          - src: "**/*.graphql"
+            dest: .
+# Automatically apply config files, remove them when stopped
+deploy:
+  kubeContext: minikube
+  kubectl:
+    manifests:
+      - k8s-dev/kube-devops.yaml
+      - k8s-dev/es-master.yaml
+      - k8s-dev/es-data.yaml
+      - k8s-dev/es-client.yaml
+      - k8s-dev/kibana.yaml
+      - k8s-dev/server-deployment.yaml
+      - k8s-dev/client-deployment.yaml
+      - k8s-dev/server-cluster-ip-service.yaml
+      - k8s-dev/client-cluster-ip-service.yaml
+portForward:
+  - resourceType: Service
+    resourceName: server-cluster-ip-service
+    namespace: default
+    port: 8080
+    localPort: 8080
+  - resourceType: Service
+    resourceName: client-cluster-ip-service
+    namespace: default
+    port: 3000
+    localPort: 3000
+  - resourceType: Service
+    resourceName: kibana
+    namespace: kube-devops
+    port: 5601
+    localPort: 5601
