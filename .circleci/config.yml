@@ -4,7 +4,7 @@ jobs:
     docker:
       - image: circleci/buildpack-deps:stretch
     environment:
-      API_IMAGE_NAME: itsdevin/bow-mark-server
+      SERVER_IMAGE_NAME: itsdevin/bow-mark-server
       CLIENT_IMAGE_NAME: itsdevin/bow-mark-client
     working_directory: ~/app
     steps:
@@ -14,15 +14,15 @@ jobs:
       - run:
           name: Build Docker images
           command: |
-            docker build -t $API_IMAGE_NAME:latest ./api
+            docker build -t $SERVER_IMAGE_NAME:latest ./api
             docker build -t $CLIENT_IMAGE_NAME:latest ./client
       - run:
           name: Push Docker Images
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker tag $API_IMAGE_NAME:latest $API_IMAGE_NAME:$CIRCLE_SHA1
-            docker push $API_IMAGE_NAME:latest
-            docker push $API_IMAGE_NAME:$CIRCLE_SHA1
+            docker tag $SERVER_IMAGE_NAME:latest $SERVER_IMAGE_NAME:$CIRCLE_SHA1
+            docker push $SERVER_IMAGE_NAME:latest
+            docker push $SERVER_IMAGE_NAME:$CIRCLE_SHA1
             docker tag $CLIENT_IMAGE_NAME:latest $CLIENT_IMAGE_NAME:$CIRCLE_SHA1
             docker push $CLIENT_IMAGE_NAME:latest
             docker push $CLIENT_IMAGE_NAME:$CIRCLE_SHA1

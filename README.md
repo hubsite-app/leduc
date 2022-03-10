@@ -40,3 +40,15 @@ Docker Hub references with your own Docker Hub images.
 - `kubectl apply -f ./k8s-es/kibana.yaml`
 
 - `kubectl apply -f ./k8s-es/ingress.yaml`
+
+## App Deployment
+
+- Create CircleCI project and add necessary environment variables (DOCKERHUB_PASS, DOCKERHUB_USERNAME, KUBERNETES_CLUSTER_CERTIFICATE, KUBERNETES_SERVER, KUBERNETES_TOKEN)
+
+- Ensure .circleci/config.yaml has the correct Image Names for SERVER_IMAGE_NAME and CLIENT_IMAGE_NAME
+
+- Create required secrets
+
+  - `kubectl create secret generic server-secrets --from-literal=mongoURI=<value> --from-literal=jwtSecret=<value> --from-literal=elasticsearchPassword=<value>`
+
+- Deploy to your branch and ensure CircleCI passes
