@@ -62,9 +62,8 @@ spec:
           image: docker.elastic.co/elasticsearch/elasticsearch:7.16.0
           resources:
             limits:
-              cpu: 1000m
-            requests:
-              cpu: 100m
+              cpu: "0.25"
+              memory: "0.25"
           env:
             - name: CLUSTER_NAME
               value: elasticsearch
