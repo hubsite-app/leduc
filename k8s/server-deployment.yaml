@@ -17,6 +17,10 @@ spec:
           image: itsdevin/bow-mark-server:$COMMIT_SHA1
           ports:
             - containerPort: 8080
+          resources:
+            limits:
+              cpu: "1"
+              memory: "5"
           env:
             - name: NODE_ENV
               value: production

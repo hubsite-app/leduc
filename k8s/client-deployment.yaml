@@ -14,6 +14,10 @@ spec:
     spec:
       containers:
         - name: client
-          image: agoraplatform/client:$COMMIT_SHA1
+          image: itsdevin/bow-mark-client:$COMMIT_SHA1
+          resources:
+            limits:
+              cpu: "1"
+              memory: "5"
           ports:
             - containerPort: 3000
