@@ -1,0 +1,5 @@
+query VehicleSSR($id: String!) {
+  vehicle(id: $id) {
+    ...VehicleSSRSnippet
+  }
+}

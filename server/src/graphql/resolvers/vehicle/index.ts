@@ -37,7 +37,9 @@ export default class VehicleResolver {
     @Arg("options", () => SearchOptions, { nullable: true })
     options?: SearchOptions
   ) {
-    return Vehicle.search(searchString, options);
+    return (await Vehicle.search(searchString, options)).map(
+      (object) => object.vehicle
+    );
   }
 
   /**

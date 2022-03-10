@@ -1,0 +1,5 @@
+query EmployeeSSR($id: String!) {
+  employee(id: $id) {
+    ...EmployeeSSRSnippet
+  }
+}

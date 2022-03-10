@@ -1,3 +1,4 @@
+import { SearchOptions } from "@graphql/types/query";
 import {
   CrewClass,
   DailyReportClass,
@@ -30,5 +31,16 @@ export default class JobsiteResolver {
   @Query(() => JobsiteClass)
   async jobsite(@Arg("id") id: string) {
     return Jobsite.getById(id);
+  }
+
+  @Query(() => [JobsiteClass])
+  async jobsiteSearch(
+    @Arg("searchString") searchString: string,
+    @Arg("options", () => SearchOptions, { nullable: true })
+    options: SearchOptions
+  ) {
+    return (await Jobsite.search(searchString, options)).map(
+      (object) => object.jobsite
+    );
   }
 }

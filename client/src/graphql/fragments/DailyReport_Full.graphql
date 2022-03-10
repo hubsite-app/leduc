@@ -2,6 +2,10 @@ fragment DailyReportFullSnippet on DailyReportClass {
   _id
   date
   approved
+  jobsite {
+    _id
+    name
+  }
   crew {
     ...CrewFullSnippet
   }

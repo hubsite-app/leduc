@@ -1,0 +1,4 @@
+fragment CrewCardSnippet on CrewClass {
+  _id
+  name
+}

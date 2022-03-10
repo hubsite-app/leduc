@@ -5,6 +5,8 @@ import {
   CrewDocument,
   EmployeeDocument,
   EmployeeModel,
+  Signup,
+  SignupDocument,
   User,
   UserDocument,
 } from "@models";
@@ -12,6 +14,7 @@ import { GetByIDOptions, ISearchOptions } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 import ElasticsearchClient from "@elasticsearch/client";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
+import { IEmployeeSearchObject } from "@typescript/employee";
 
 /**
  * ----- Static Methods -----
@@ -47,7 +50,7 @@ const search = (
   searchString: string,
   options?: ISearchOptions
 ) => {
-  return new Promise<EmployeeDocument[]>(async (resolve, reject) => {
+  return new Promise<IEmployeeSearchObject[]>(async (resolve, reject) => {
     try {
       const res = await ElasticsearchClient.search({
         index: ElasticSearchIndices.Employee,
@@ -56,28 +59,36 @@ const search = (
             multi_match: {
               query: searchString.toLowerCase(),
               fuzziness: "AUTO",
-              fields: ["employee.name^2", "employee.jobTitle"],
+              fields: ["employee.name", "employee.jobTitle"],
             },
           },
         },
         size: options?.limit,
       });
 
-      let employeeIds: string[] = res.body.hits.hits.map(
-        (item: any) => item._id
-      );
+      let employeeObjects: { id: string; score: number }[] =
+        res.body.hits.hits.map((item: any) => {
+          return {
+            id: item._id,
+            score: item._score,
+          };
+        });
 
       // Filter out blacklisted ids
       if (options?.blacklistedIds) {
-        employeeIds = employeeIds.filter(
-          (id) => !options.blacklistedIds?.includes(id)
+        employeeObjects = employeeObjects.filter(
+          (object) => !options.blacklistedIds?.includes(object.id)
         );
       }
 
-      const employees: EmployeeDocument[] = [];
-      for (let i = 0; i < employeeIds.length; i++) {
-        const employee = await Employee.getById(employeeIds[i]);
-        if (employee) employees.push(employee);
+      const employees: IEmployeeSearchObject[] = [];
+      for (let i = 0; i < employeeObjects.length; i++) {
+        const employee = await Employee.getById(employeeObjects[i].id);
+        if (employee)
+          employees.push({
+            employee,
+            score: employeeObjects[i].score,
+          });
       }
 
       resolve(employees);
@@ -141,6 +152,18 @@ const crews = (employee: EmployeeDocument) => {
   });
 };
 
+const signup = (employee: EmployeeDocument) => {
+  return new Promise<SignupDocument | null>(async (resolve, reject) => {
+    try {
+      const signup = await Signup.getByEmployee(employee._id);
+
+      resolve(signup);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   byId,
   search,
@@ -148,4 +171,5 @@ export default {
   list,
   user,
   crews,
+  signup,
 };

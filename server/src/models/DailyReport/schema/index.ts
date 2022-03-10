@@ -1,6 +1,8 @@
 import SchemaVersions from "@constants/SchemaVersions";
+import { ES_updateDailyReport } from "@elasticsearch/helpers/dailyReport";
 import {
   CrewClass,
+  DailyReportDocument,
   EmployeeWorkClass,
   JobsiteClass,
   MaterialShipmentClass,
@@ -8,11 +10,14 @@ import {
   ReportNoteClass,
   VehicleWorkClass,
 } from "@models";
-import { prop, Ref } from "@typegoose/typegoose";
+import { post, prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
+@post<DailyReportDocument>("save", async (dailyReport) => {
+  await ES_updateDailyReport(dailyReport);
+})
 export class DailyReportSchema {
   @Field(() => ID, { nullable: false })
   public _id!: Types.ObjectId;

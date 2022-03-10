@@ -1,11 +1,15 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { CrewClass, DailyReportClass } from "@models";
-import { prop, Ref } from "@typegoose/typegoose";
+import { ES_updateJobsite } from "@elasticsearch/helpers/jobsite";
+import { CrewClass, DailyReportClass, JobsiteDocument } from "@models";
+import { post, prop, Ref } from "@typegoose/typegoose";
 import isUrl from "@validation/isUrl";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
+@post<JobsiteDocument>("save", async (jobsite) => {
+  await ES_updateJobsite(jobsite);
+})
 export class JobsiteSchema {
   @Field(() => ID, { nullable: false })
   public _id!: Types.ObjectId;

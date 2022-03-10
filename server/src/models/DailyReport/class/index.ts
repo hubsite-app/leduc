@@ -12,7 +12,12 @@ import {
 } from "@models";
 import { DailyReportSchema } from "../schema";
 import get from "./get";
-import { GetByIDOptions, Id, IListOptions } from "@typescript/models";
+import {
+  GetByIDOptions,
+  Id,
+  IListOptions,
+  ISearchOptions,
+} from "@typescript/models";
 import { IDailyReportUpdate } from "@typescript/dailyReport";
 import update from "./update";
 import remove from "./remove";
@@ -29,6 +34,14 @@ export class DailyReportClass extends DailyReportSchema {
     options?: GetByIDOptions
   ) {
     return get.byId(this, id, options);
+  }
+
+  public static async search(
+    this: DailyReportModel,
+    searchString: string,
+    options?: ISearchOptions
+  ) {
+    return get.search(this, searchString, options);
   }
 
   public static async getList(

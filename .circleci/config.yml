@@ -1,0 +1,48 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    environment:
+      API_IMAGE_NAME: itsdevin/bow-mark-server
+      CLIENT_IMAGE_NAME: itsdevin/bow-mark-client
+    working_directory: ~/app
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker images
+          command: |
+            docker build -t $API_IMAGE_NAME:latest ./api
+            docker build -t $CLIENT_IMAGE_NAME:latest ./client
+      - run:
+          name: Push Docker Images
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker tag $API_IMAGE_NAME:latest $API_IMAGE_NAME:$CIRCLE_SHA1
+            docker push $API_IMAGE_NAME:latest
+            docker push $API_IMAGE_NAME:$CIRCLE_SHA1
+            docker tag $CLIENT_IMAGE_NAME:latest $CLIENT_IMAGE_NAME:$CIRCLE_SHA1
+            docker push $CLIENT_IMAGE_NAME:latest
+            docker push $CLIENT_IMAGE_NAME:$CIRCLE_SHA1
+      - run:
+          name: Install envsubst
+          command: |
+            sudo apt-get update && sudo apt-get -y install gettext-base
+      - run:
+          name: Install kubectl
+          command: |
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+            chmod u+x ./kubectl
+      - run:
+          name: Deploy code
+          command: sh ./scripts/ci-deploy.sh
+workflows:
+  version: 2
+  build-master:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: refactor

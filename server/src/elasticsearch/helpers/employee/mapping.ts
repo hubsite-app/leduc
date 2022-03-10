@@ -33,7 +33,7 @@ export const ES_ensureEmployeeMapping = () => {
           await ElasticsearchClient.indices.getMapping({
             index: ElasticSearchIndices.Employee,
           })
-        ).body["employee"].mappings;
+        ).body[ElasticSearchIndices.Employee].mappings;
 
         if (
           !_.isEqual(

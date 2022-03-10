@@ -33,7 +33,7 @@ export const ES_ensureVehicleMapping = () => {
           await ElasticsearchClient.indices.getMapping({
             index: ElasticSearchIndices.Vehicle,
           })
-        ).body["vehicle"].mappings;
+        ).body[ElasticSearchIndices.Vehicle].mappings;
 
         if (
           !_.isEqual(

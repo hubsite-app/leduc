@@ -10,7 +10,7 @@ import {
   Resolver,
   Root,
 } from "type-graphql";
-import mutations, { LoginData } from "./mutations";
+import mutations, { LoginData, SignupData } from "./mutations";
 
 @Resolver(() => UserClass)
 export default class UserResolver {
@@ -43,7 +43,21 @@ export default class UserResolver {
    */
 
   @Mutation(() => String)
+  async signup(
+    @Arg("signupId") signupId: string,
+    @Arg("data", () => SignupData) data: SignupData
+  ) {
+    return mutations.signup(signupId, data);
+  }
+
+  @Mutation(() => String)
   async login(@Arg("data") data: LoginData) {
     return mutations.login(data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => UserClass)
+  async userAdmin(@Arg("id") id: string, @Arg("isAdmin") isAdmin: boolean) {
+    return mutations.admin(id, isAdmin);
   }
 }

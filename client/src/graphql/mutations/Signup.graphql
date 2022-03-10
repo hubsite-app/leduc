@@ -1,0 +1,3 @@
+mutation Signup($signupId: String!, $data: SignupData!) {
+  signup(signupId: $signupId, data: $data)
+}

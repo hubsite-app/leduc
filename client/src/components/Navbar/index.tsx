@@ -8,6 +8,7 @@ import { useMediaQuery } from "@chakra-ui/media-query";
 import TextLink from "../Common/TextLink";
 import useMounted from "../../hooks/useMounted";
 import NavbarAccount from "./views/Account";
+import NavbarSearch from "./views/Search";
 
 const Navbar = () => {
   const { hasMounted } = useMounted();
@@ -42,7 +43,7 @@ const Navbar = () => {
         >
           <Heading
             as="h4"
-            fontSize={["2xl", "2xl", "3xl"]}
+            fontSize={["xl", "2xl", "3xl"]}
             h="100%"
             p="auto"
             mt={[1, 0]}
@@ -50,6 +51,7 @@ const Navbar = () => {
             Bow Mark
           </Heading>
         </TextLink>
+        <NavbarSearch />
         <Stack
           spacing={isLarger ? 6 : 2}
           direction="row"

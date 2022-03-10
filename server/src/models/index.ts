@@ -6,6 +6,7 @@ export * from "./Jobsite";
 export * from "./MaterialShipment";
 export * from "./Production";
 export * from "./ReportNote";
+export * from "./Signup";
 export * from "./User";
 export * from "./Vehicle";
 export * from "./VehicleWork";
@@ -132,6 +133,20 @@ export interface ReportNoteModel
 
 export const ReportNote = getModelForClass(ReportNoteClass, {
   schemaOptions: { collection: "reportnotes" },
+});
+
+/**
+ * ----- Signup -----
+ */
+
+import { SignupClass } from "./Signup/class";
+
+export interface SignupDocument extends DocumentType<SignupClass> {}
+
+export interface SignupModel extends ReturnModelType<typeof SignupClass> {}
+
+export const Signup = getModelForClass(SignupClass, {
+  schemaOptions: { collection: "signups" },
 });
 
 /**

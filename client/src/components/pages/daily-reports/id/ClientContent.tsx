@@ -22,6 +22,7 @@ import {
   useDailyReportFullQuery,
   useDailyReportUpdateMutation,
 } from "../../../../generated/graphql";
+import createLink from "../../../../utils/createLink";
 
 import Card from "../../../Common/Card";
 import Checkbox from "../../../Common/forms/Checkbox";
@@ -89,9 +90,19 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                 </Text>
                 <Text>
                   <Text as="span" fontWeight="bold">
+                    Jobsite:{" "}
+                  </Text>
+                  <TextLink
+                    link={createLink.jobsite(data?.dailyReport.jobsite._id)}
+                  >
+                    {data?.dailyReport.jobsite.name}
+                  </TextLink>
+                </Text>
+                <Text>
+                  <Text as="span" fontWeight="bold">
                     Crew:{" "}
                   </Text>
-                  <TextLink link={`/crew/${data?.dailyReport.crew._id}`}>
+                  <TextLink link={createLink.crew(data?.dailyReport.crew._id)}>
                     {data?.dailyReport.crew.name}
                   </TextLink>
                 </Text>

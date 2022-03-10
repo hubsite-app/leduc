@@ -1,0 +1,5 @@
+fragment JobsiteSSRSnippet on JobsiteClass {
+  _id
+  name
+  jobcode
+}

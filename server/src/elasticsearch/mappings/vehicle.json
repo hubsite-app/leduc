@@ -1,6 +1,6 @@
 {
   "properties": {
-    "employee": {
+    "vehicle": {
       "properties": {
         "name": {
           "type": "text",

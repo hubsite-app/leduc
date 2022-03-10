@@ -16,9 +16,12 @@ import JobsiteResolver from "@graphql/resolvers/jobsite";
 import MaterialShipmentResolver from "@graphql/resolvers/materialShipment";
 import ProductionResolver from "@graphql/resolvers/production";
 import ReportNoteResolver from "@graphql/resolvers/reportNote";
+import SignupResolver from "@graphql/resolvers/signup";
 import UserResolver from "@graphql/resolvers/user";
 import VehicleResolver from "@graphql/resolvers/vehicle";
 import VehicleWorkResolver from "@graphql/resolvers/vehicleWork";
+
+import SearchResolver from "@graphql/resolvers/search";
 
 import { User, UserDocument } from "@models";
 import authChecker from "@utils/authChecker";
@@ -40,6 +43,8 @@ const createApp = async () => {
       MaterialShipmentResolver,
       ProductionResolver,
       ReportNoteResolver,
+      SearchResolver,
+      SignupResolver,
       UserResolver,
       VehicleResolver,
       VehicleWorkResolver,

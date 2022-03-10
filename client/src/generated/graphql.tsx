@@ -60,7 +60,8 @@ export type EmployeeClass = {
   jobTitle?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   schemaVersion: Scalars['Float'];
-  user: UserClass;
+  signup?: Maybe<SignupClass>;
+  user?: Maybe<UserClass>;
 };
 
 export type EmployeeCreateData = {
@@ -180,6 +181,9 @@ export type Mutation = {
   productionCreate: ProductionClass;
   productionDelete: Scalars['String'];
   productionUpdate: ProductionClass;
+  signup: Scalars['String'];
+  signupCreate: SignupClass;
+  userAdmin: UserClass;
   vehicleCreate: VehicleClass;
   vehicleWorkCreate: Array<VehicleWorkClass>;
   vehicleWorkDelete: Scalars['String'];
@@ -291,6 +295,23 @@ export type MutationProductionUpdateArgs = {
 };
 
 
+export type MutationSignupArgs = {
+  data: SignupData;
+  signupId: Scalars['String'];
+};
+
+
+export type MutationSignupCreateArgs = {
+  employeeId: Scalars['String'];
+};
+
+
+export type MutationUserAdminArgs = {
+  id: Scalars['String'];
+  isAdmin: Scalars['Boolean'];
+};
+
+
 export type MutationVehicleCreateArgs = {
   crewId?: InputMaybe<Scalars['String']>;
   data: VehicleCreateData;
@@ -351,9 +372,13 @@ export type Query = {
   currentUser: UserClass;
   dailyReport: DailyReportClass;
   dailyReports: Array<DailyReportClass>;
+  dailyReportSearch: Array<DailyReportClass>;
   employee: EmployeeClass;
   employeeSearch: Array<EmployeeClass>;
   jobsite: JobsiteClass;
+  jobsiteSearch: Array<JobsiteClass>;
+  search: Array<SearchClass>;
+  signup: SignupClass;
   user: UserClass;
   vehicle: VehicleClass;
   vehicleSearch: Array<VehicleClass>;
@@ -375,6 +400,12 @@ export type QueryDailyReportsArgs = {
 };
 
 
+export type QueryDailyReportSearchArgs = {
+  options?: InputMaybe<SearchOptions>;
+  searchString: Scalars['String'];
+};
+
+
 export type QueryEmployeeArgs = {
   id: Scalars['String'];
 };
@@ -387,6 +418,22 @@ export type QueryEmployeeSearchArgs = {
 
 
 export type QueryJobsiteArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryJobsiteSearchArgs = {
+  options?: InputMaybe<SearchOptions>;
+  searchString: Scalars['String'];
+};
+
+
+export type QuerySearchArgs = {
+  searchString: Scalars['String'];
+};
+
+
+export type QuerySignupArgs = {
   id: Scalars['String'];
 };
 
@@ -414,9 +461,32 @@ export type ReportNoteClass = {
   schemaVersion: Scalars['Float'];
 };
 
+export type SearchClass = {
+  __typename?: 'SearchClass';
+  dailyReport?: Maybe<DailyReportClass>;
+  employee?: Maybe<EmployeeClass>;
+  jobsite?: Maybe<JobsiteClass>;
+  score: Scalars['Float'];
+  vehicle?: Maybe<VehicleClass>;
+};
+
 export type SearchOptions = {
   blacklistedIds?: InputMaybe<Array<Scalars['String']>>;
   limit?: InputMaybe<Scalars['Float']>;
+};
+
+export type SignupClass = {
+  __typename?: 'SignupClass';
+  _id: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  employee: EmployeeClass;
+  schemaVersion: Scalars['Float'];
+};
+
+export type SignupData = {
+  email: Scalars['String'];
+  name: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type UserClass = {
@@ -487,13 +557,15 @@ export type VehicleWorkUpdateData = {
   jobTitle: Scalars['String'];
 };
 
+export type CrewCardSnippetFragment = { __typename?: 'CrewClass', _id: string, name: string };
+
 export type CrewFullSnippetFragment = { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> };
 
 export type CrewSsrSnippetFragment = { __typename?: 'CrewClass', _id: string, name: string, type: string };
 
 export type DailyReportCardSnippetFragment = { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } };
 
-export type DailyReportFullSnippetFragment = { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null };
+export type DailyReportFullSnippetFragment = { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null };
 
 export type DailyReportPdfSnippetFragment = { __typename?: 'DailyReportClass', date: any, crew: { __typename?: 'CrewClass', name: string }, jobsite: { __typename?: 'JobsiteClass', name: string, jobcode?: string | null }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null };
 
@@ -503,17 +575,33 @@ export type EmployeeWorkCardSnippetFragment = { __typename?: 'EmployeeWorkClass'
 
 export type EmployeeCardSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null };
 
+export type EmployeeFullSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, user?: { __typename?: 'UserClass', _id: string, name: string, email: string, admin: boolean } | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, signup?: { __typename?: 'SignupClass', _id: string } | null };
+
+export type EmployeeSsrSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null };
+
+export type JobsiteFullSnippetFragment = { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null, description?: string | null, location_url?: string | null, active: boolean, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, dailyReports: Array<{ __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } }> };
+
+export type JobsiteSsrSnippetFragment = { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null };
+
 export type MaterialShipmentCardSnippetFragment = { __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null };
 
 export type ProductionCardSnippetFragment = { __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string };
 
 export type ReportNoteFullSnippetFragment = { __typename?: 'ReportNoteClass', note: string };
 
+export type SearchSnippetFragment = { __typename?: 'SearchClass', score: number, employee?: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null } | null, vehicle?: { __typename?: 'VehicleClass', _id: string, name: string, vehicleType: string, vehicleCode: string } | null, jobsite?: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } | null, dailyReport?: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } } | null };
+
+export type SignupFullSnippetFragment = { __typename?: 'SignupClass', _id: string, employee: { __typename?: 'EmployeeClass', _id: string, name: string } };
+
+export type UserCardSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, admin: boolean };
+
 export type FullUserSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', name: string, jobTitle?: string | null } };
 
 export type VehicleWorkCardSnippetFragment = { __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } };
 
 export type VehicleCardSnippetFragment = { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string };
+
+export type VehicleSsrSnippetFragment = { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string };
 
 export type CrewAddEmployeeMutationVariables = Exact<{
   crewId: Scalars['String'];
@@ -553,7 +641,7 @@ export type DailyReportApprovalUpdateMutationVariables = Exact<{
 }>;
 
 
-export type DailyReportApprovalUpdateMutation = { __typename?: 'Mutation', dailyReportApprovalUpdate: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null } };
+export type DailyReportApprovalUpdateMutation = { __typename?: 'Mutation', dailyReportApprovalUpdate: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null } };
 
 export type DailyReportNoteUpdateMutationVariables = Exact<{
   id: Scalars['String'];
@@ -561,7 +649,7 @@ export type DailyReportNoteUpdateMutationVariables = Exact<{
 }>;
 
 
-export type DailyReportNoteUpdateMutation = { __typename?: 'Mutation', dailyReportNoteUpdate: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null } };
+export type DailyReportNoteUpdateMutation = { __typename?: 'Mutation', dailyReportNoteUpdate: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null } };
 
 export type DailyReportUpdateMutationVariables = Exact<{
   id: Scalars['String'];
@@ -569,7 +657,7 @@ export type DailyReportUpdateMutationVariables = Exact<{
 }>;
 
 
-export type DailyReportUpdateMutation = { __typename?: 'Mutation', dailyReportUpdate: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null } };
+export type DailyReportUpdateMutation = { __typename?: 'Mutation', dailyReportUpdate: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null } };
 
 export type EmployeeCreateMutationVariables = Exact<{
   data: EmployeeCreateData;
@@ -655,6 +743,29 @@ export type ProductionUpdateMutationVariables = Exact<{
 
 export type ProductionUpdateMutation = { __typename?: 'Mutation', productionUpdate: { __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string } };
 
+export type SignupMutationVariables = Exact<{
+  signupId: Scalars['String'];
+  data: SignupData;
+}>;
+
+
+export type SignupMutation = { __typename?: 'Mutation', signup: string };
+
+export type SignupCreateMutationVariables = Exact<{
+  employeeId: Scalars['String'];
+}>;
+
+
+export type SignupCreateMutation = { __typename?: 'Mutation', signupCreate: { __typename?: 'SignupClass', _id: string } };
+
+export type UserAdminMutationVariables = Exact<{
+  id: Scalars['String'];
+  isAdmin: Scalars['Boolean'];
+}>;
+
+
+export type UserAdminMutation = { __typename?: 'Mutation', userAdmin: { __typename?: 'UserClass', _id: string, name: string, email: string, admin: boolean } };
+
 export type VehicleCreateMutationVariables = Exact<{
   data: VehicleCreateData;
   crewId?: InputMaybe<Scalars['String']>;
@@ -710,7 +821,7 @@ export type DailyReportFullQueryVariables = Exact<{
 }>;
 
 
-export type DailyReportFullQuery = { __typename?: 'Query', dailyReport: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null } };
+export type DailyReportFullQuery = { __typename?: 'Query', dailyReport: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null } };
 
 export type DailyReportPdfQueryVariables = Exact<{
   id: Scalars['String'];
@@ -741,6 +852,48 @@ export type EmployeeSearchQueryVariables = Exact<{
 
 export type EmployeeSearchQuery = { __typename?: 'Query', employeeSearch: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }> };
 
+export type EmployeeFullQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type EmployeeFullQuery = { __typename?: 'Query', employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, user?: { __typename?: 'UserClass', _id: string, name: string, email: string, admin: boolean } | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, signup?: { __typename?: 'SignupClass', _id: string } | null } };
+
+export type EmployeeSsrQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type EmployeeSsrQuery = { __typename?: 'Query', employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null } };
+
+export type JobsiteFullQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type JobsiteFullQuery = { __typename?: 'Query', jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null, description?: string | null, location_url?: string | null, active: boolean, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, dailyReports: Array<{ __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } }> } };
+
+export type JobsiteSsrQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type JobsiteSsrQuery = { __typename?: 'Query', jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } };
+
+export type SearchQueryVariables = Exact<{
+  searchString: Scalars['String'];
+}>;
+
+
+export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'SearchClass', score: number, employee?: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null } | null, vehicle?: { __typename?: 'VehicleClass', _id: string, name: string, vehicleType: string, vehicleCode: string } | null, jobsite?: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } | null, dailyReport?: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } } | null }> };
+
+export type SignupSsrQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type SignupSsrQuery = { __typename?: 'Query', signup: { __typename?: 'SignupClass', _id: string, employee: { __typename?: 'EmployeeClass', _id: string, name: string } } };
+
 export type VehicleSearchQueryVariables = Exact<{
   searchString: Scalars['String'];
   options?: InputMaybe<SearchOptions>;
@@ -749,21 +902,13 @@ export type VehicleSearchQueryVariables = Exact<{
 
 export type VehicleSearchQuery = { __typename?: 'Query', vehicleSearch: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> };
 
-export const DailyReportCardSnippetFragmentDoc = gql`
-    fragment DailyReportCardSnippet on DailyReportClass {
-  _id
-  date
-  approved
-  jobsite {
-    _id
-    name
-  }
-  crew {
-    _id
-    name
-  }
-}
-    `;
+export type VehicleSsrQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type VehicleSsrQuery = { __typename?: 'Query', vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string } };
+
 export const CrewSsrSnippetFragmentDoc = gql`
     fragment CrewSSRSnippet on CrewClass {
   _id
@@ -859,6 +1004,10 @@ export const DailyReportFullSnippetFragmentDoc = gql`
   _id
   date
   approved
+  jobsite {
+    _id
+    name
+  }
   crew {
     ...CrewFullSnippet
   }
@@ -925,6 +1074,116 @@ export const DailyReportSsrSnippetFragmentDoc = gql`
   }
 }
     `;
+export const UserCardSnippetFragmentDoc = gql`
+    fragment UserCardSnippet on UserClass {
+  _id
+  name
+  email
+  admin
+}
+    `;
+export const EmployeeFullSnippetFragmentDoc = gql`
+    fragment EmployeeFullSnippet on EmployeeClass {
+  _id
+  name
+  jobTitle
+  user {
+    ...UserCardSnippet
+  }
+  crews {
+    _id
+    name
+  }
+  signup {
+    _id
+  }
+}
+    ${UserCardSnippetFragmentDoc}`;
+export const EmployeeSsrSnippetFragmentDoc = gql`
+    fragment EmployeeSSRSnippet on EmployeeClass {
+  _id
+  name
+  jobTitle
+}
+    `;
+export const CrewCardSnippetFragmentDoc = gql`
+    fragment CrewCardSnippet on CrewClass {
+  _id
+  name
+}
+    `;
+export const DailyReportCardSnippetFragmentDoc = gql`
+    fragment DailyReportCardSnippet on DailyReportClass {
+  _id
+  date
+  approved
+  jobsite {
+    _id
+    name
+  }
+  crew {
+    _id
+    name
+  }
+}
+    `;
+export const JobsiteFullSnippetFragmentDoc = gql`
+    fragment JobsiteFullSnippet on JobsiteClass {
+  _id
+  name
+  jobcode
+  description
+  location_url
+  active
+  crews {
+    ...CrewCardSnippet
+  }
+  dailyReports {
+    ...DailyReportCardSnippet
+  }
+}
+    ${CrewCardSnippetFragmentDoc}
+${DailyReportCardSnippetFragmentDoc}`;
+export const JobsiteSsrSnippetFragmentDoc = gql`
+    fragment JobsiteSSRSnippet on JobsiteClass {
+  _id
+  name
+  jobcode
+}
+    `;
+export const SearchSnippetFragmentDoc = gql`
+    fragment SearchSnippet on SearchClass {
+  score
+  employee {
+    _id
+    name
+    jobTitle
+  }
+  vehicle {
+    _id
+    name
+    vehicleType
+    vehicleCode
+  }
+  jobsite {
+    _id
+    name
+    jobcode
+  }
+  dailyReport {
+    ...DailyReportCardSnippet
+  }
+}
+    ${DailyReportCardSnippetFragmentDoc}`;
+export const SignupFullSnippetFragmentDoc = gql`
+    fragment SignupFullSnippet on SignupClass {
+  _id
+  employee {
+    _id
+    name
+  }
+}
+    `;
 export const FullUserSnippetFragmentDoc = gql`
     fragment FullUserSnippet on UserClass {
   _id
@@ -936,6 +1195,14 @@ export const FullUserSnippetFragmentDoc = gql`
     name
     jobTitle
   }
+}
+    `;
+export const VehicleSsrSnippetFragmentDoc = gql`
+    fragment VehicleSSRSnippet on VehicleClass {
+  _id
+  name
+  vehicleCode
+  vehicleType
 }
     `;
 export const CrewAddEmployeeDocument = gql`
@@ -1538,6 +1805,105 @@ export function useProductionUpdateMutation(baseOptions?: Apollo.MutationHookOpt
 export type ProductionUpdateMutationHookResult = ReturnType<typeof useProductionUpdateMutation>;
 export type ProductionUpdateMutationResult = Apollo.MutationResult<ProductionUpdateMutation>;
 export type ProductionUpdateMutationOptions = Apollo.BaseMutationOptions<ProductionUpdateMutation, ProductionUpdateMutationVariables>;
+export const SignupDocument = gql`
+    mutation Signup($signupId: String!, $data: SignupData!) {
+  signup(signupId: $signupId, data: $data)
+}
+    `;
+export type SignupMutationFn = Apollo.MutationFunction<SignupMutation, SignupMutationVariables>;
+
+/**
+ * __useSignupMutation__
+ *
+ * To run a mutation, you first call `useSignupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signupMutation, { data, loading, error }] = useSignupMutation({
+ *   variables: {
+ *      signupId: // value for 'signupId'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSignupMutation(baseOptions?: Apollo.MutationHookOptions<SignupMutation, SignupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignupMutation, SignupMutationVariables>(SignupDocument, options);
+      }
+export type SignupMutationHookResult = ReturnType<typeof useSignupMutation>;
+export type SignupMutationResult = Apollo.MutationResult<SignupMutation>;
+export type SignupMutationOptions = Apollo.BaseMutationOptions<SignupMutation, SignupMutationVariables>;
+export const SignupCreateDocument = gql`
+    mutation SignupCreate($employeeId: String!) {
+  signupCreate(employeeId: $employeeId) {
+    _id
+  }
+}
+    `;
+export type SignupCreateMutationFn = Apollo.MutationFunction<SignupCreateMutation, SignupCreateMutationVariables>;
+
+/**
+ * __useSignupCreateMutation__
+ *
+ * To run a mutation, you first call `useSignupCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignupCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signupCreateMutation, { data, loading, error }] = useSignupCreateMutation({
+ *   variables: {
+ *      employeeId: // value for 'employeeId'
+ *   },
+ * });
+ */
+export function useSignupCreateMutation(baseOptions?: Apollo.MutationHookOptions<SignupCreateMutation, SignupCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignupCreateMutation, SignupCreateMutationVariables>(SignupCreateDocument, options);
+      }
+export type SignupCreateMutationHookResult = ReturnType<typeof useSignupCreateMutation>;
+export type SignupCreateMutationResult = Apollo.MutationResult<SignupCreateMutation>;
+export type SignupCreateMutationOptions = Apollo.BaseMutationOptions<SignupCreateMutation, SignupCreateMutationVariables>;
+export const UserAdminDocument = gql`
+    mutation UserAdmin($id: String!, $isAdmin: Boolean!) {
+  userAdmin(id: $id, isAdmin: $isAdmin) {
+    ...UserCardSnippet
+  }
+}
+    ${UserCardSnippetFragmentDoc}`;
+export type UserAdminMutationFn = Apollo.MutationFunction<UserAdminMutation, UserAdminMutationVariables>;
+
+/**
+ * __useUserAdminMutation__
+ *
+ * To run a mutation, you first call `useUserAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUserAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [userAdminMutation, { data, loading, error }] = useUserAdminMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      isAdmin: // value for 'isAdmin'
+ *   },
+ * });
+ */
+export function useUserAdminMutation(baseOptions?: Apollo.MutationHookOptions<UserAdminMutation, UserAdminMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UserAdminMutation, UserAdminMutationVariables>(UserAdminDocument, options);
+      }
+export type UserAdminMutationHookResult = ReturnType<typeof useUserAdminMutation>;
+export type UserAdminMutationResult = Apollo.MutationResult<UserAdminMutation>;
+export type UserAdminMutationOptions = Apollo.BaseMutationOptions<UserAdminMutation, UserAdminMutationVariables>;
 export const VehicleCreateDocument = gql`
     mutation VehicleCreate($data: VehicleCreateData!, $crewId: String) {
   vehicleCreate(data: $data, crewId: $crewId) {
@@ -1951,6 +2317,216 @@ export function useEmployeeSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type EmployeeSearchQueryHookResult = ReturnType<typeof useEmployeeSearchQuery>;
 export type EmployeeSearchLazyQueryHookResult = ReturnType<typeof useEmployeeSearchLazyQuery>;
 export type EmployeeSearchQueryResult = Apollo.QueryResult<EmployeeSearchQuery, EmployeeSearchQueryVariables>;
+export const EmployeeFullDocument = gql`
+    query EmployeeFull($id: String!) {
+  employee(id: $id) {
+    ...EmployeeFullSnippet
+  }
+}
+    ${EmployeeFullSnippetFragmentDoc}`;
+
+/**
+ * __useEmployeeFullQuery__
+ *
+ * To run a query within a React component, call `useEmployeeFullQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEmployeeFullQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEmployeeFullQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEmployeeFullQuery(baseOptions: Apollo.QueryHookOptions<EmployeeFullQuery, EmployeeFullQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EmployeeFullQuery, EmployeeFullQueryVariables>(EmployeeFullDocument, options);
+      }
+export function useEmployeeFullLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EmployeeFullQuery, EmployeeFullQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EmployeeFullQuery, EmployeeFullQueryVariables>(EmployeeFullDocument, options);
+        }
+export type EmployeeFullQueryHookResult = ReturnType<typeof useEmployeeFullQuery>;
+export type EmployeeFullLazyQueryHookResult = ReturnType<typeof useEmployeeFullLazyQuery>;
+export type EmployeeFullQueryResult = Apollo.QueryResult<EmployeeFullQuery, EmployeeFullQueryVariables>;
+export const EmployeeSsrDocument = gql`
+    query EmployeeSSR($id: String!) {
+  employee(id: $id) {
+    ...EmployeeSSRSnippet
+  }
+}
+    ${EmployeeSsrSnippetFragmentDoc}`;
+
+/**
+ * __useEmployeeSsrQuery__
+ *
+ * To run a query within a React component, call `useEmployeeSsrQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEmployeeSsrQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEmployeeSsrQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEmployeeSsrQuery(baseOptions: Apollo.QueryHookOptions<EmployeeSsrQuery, EmployeeSsrQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EmployeeSsrQuery, EmployeeSsrQueryVariables>(EmployeeSsrDocument, options);
+      }
+export function useEmployeeSsrLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EmployeeSsrQuery, EmployeeSsrQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EmployeeSsrQuery, EmployeeSsrQueryVariables>(EmployeeSsrDocument, options);
+        }
+export type EmployeeSsrQueryHookResult = ReturnType<typeof useEmployeeSsrQuery>;
+export type EmployeeSsrLazyQueryHookResult = ReturnType<typeof useEmployeeSsrLazyQuery>;
+export type EmployeeSsrQueryResult = Apollo.QueryResult<EmployeeSsrQuery, EmployeeSsrQueryVariables>;
+export const JobsiteFullDocument = gql`
+    query JobsiteFull($id: String!) {
+  jobsite(id: $id) {
+    ...JobsiteFullSnippet
+  }
+}
+    ${JobsiteFullSnippetFragmentDoc}`;
+
+/**
+ * __useJobsiteFullQuery__
+ *
+ * To run a query within a React component, call `useJobsiteFullQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJobsiteFullQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJobsiteFullQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useJobsiteFullQuery(baseOptions: Apollo.QueryHookOptions<JobsiteFullQuery, JobsiteFullQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<JobsiteFullQuery, JobsiteFullQueryVariables>(JobsiteFullDocument, options);
+      }
+export function useJobsiteFullLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<JobsiteFullQuery, JobsiteFullQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<JobsiteFullQuery, JobsiteFullQueryVariables>(JobsiteFullDocument, options);
+        }
+export type JobsiteFullQueryHookResult = ReturnType<typeof useJobsiteFullQuery>;
+export type JobsiteFullLazyQueryHookResult = ReturnType<typeof useJobsiteFullLazyQuery>;
+export type JobsiteFullQueryResult = Apollo.QueryResult<JobsiteFullQuery, JobsiteFullQueryVariables>;
+export const JobsiteSsrDocument = gql`
+    query JobsiteSSR($id: String!) {
+  jobsite(id: $id) {
+    ...JobsiteSSRSnippet
+  }
+}
+    ${JobsiteSsrSnippetFragmentDoc}`;
+
+/**
+ * __useJobsiteSsrQuery__
+ *
+ * To run a query within a React component, call `useJobsiteSsrQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJobsiteSsrQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJobsiteSsrQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useJobsiteSsrQuery(baseOptions: Apollo.QueryHookOptions<JobsiteSsrQuery, JobsiteSsrQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<JobsiteSsrQuery, JobsiteSsrQueryVariables>(JobsiteSsrDocument, options);
+      }
+export function useJobsiteSsrLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<JobsiteSsrQuery, JobsiteSsrQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<JobsiteSsrQuery, JobsiteSsrQueryVariables>(JobsiteSsrDocument, options);
+        }
+export type JobsiteSsrQueryHookResult = ReturnType<typeof useJobsiteSsrQuery>;
+export type JobsiteSsrLazyQueryHookResult = ReturnType<typeof useJobsiteSsrLazyQuery>;
+export type JobsiteSsrQueryResult = Apollo.QueryResult<JobsiteSsrQuery, JobsiteSsrQueryVariables>;
+export const SearchDocument = gql`
+    query Search($searchString: String!) {
+  search(searchString: $searchString) {
+    ...SearchSnippet
+  }
+}
+    ${SearchSnippetFragmentDoc}`;
+
+/**
+ * __useSearchQuery__
+ *
+ * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchQuery({
+ *   variables: {
+ *      searchString: // value for 'searchString'
+ *   },
+ * });
+ */
+export function useSearchQuery(baseOptions: Apollo.QueryHookOptions<SearchQuery, SearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
+      }
+export function useSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchQuery, SearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchQuery, SearchQueryVariables>(SearchDocument, options);
+        }
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
+export type SearchQueryResult = Apollo.QueryResult<SearchQuery, SearchQueryVariables>;
+export const SignupSsrDocument = gql`
+    query SignupSSR($id: String!) {
+  signup(id: $id) {
+    ...SignupFullSnippet
+  }
+}
+    ${SignupFullSnippetFragmentDoc}`;
+
+/**
+ * __useSignupSsrQuery__
+ *
+ * To run a query within a React component, call `useSignupSsrQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSignupSsrQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSignupSsrQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useSignupSsrQuery(baseOptions: Apollo.QueryHookOptions<SignupSsrQuery, SignupSsrQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SignupSsrQuery, SignupSsrQueryVariables>(SignupSsrDocument, options);
+      }
+export function useSignupSsrLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SignupSsrQuery, SignupSsrQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SignupSsrQuery, SignupSsrQueryVariables>(SignupSsrDocument, options);
+        }
+export type SignupSsrQueryHookResult = ReturnType<typeof useSignupSsrQuery>;
+export type SignupSsrLazyQueryHookResult = ReturnType<typeof useSignupSsrLazyQuery>;
+export type SignupSsrQueryResult = Apollo.QueryResult<SignupSsrQuery, SignupSsrQueryVariables>;
 export const VehicleSearchDocument = gql`
     query VehicleSearch($searchString: String!, $options: SearchOptions) {
   vehicleSearch(searchString: $searchString, options: $options) {
@@ -1987,3 +2563,38 @@ export function useVehicleSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type VehicleSearchQueryHookResult = ReturnType<typeof useVehicleSearchQuery>;
 export type VehicleSearchLazyQueryHookResult = ReturnType<typeof useVehicleSearchLazyQuery>;
 export type VehicleSearchQueryResult = Apollo.QueryResult<VehicleSearchQuery, VehicleSearchQueryVariables>;
+export const VehicleSsrDocument = gql`
+    query VehicleSSR($id: String!) {
+  vehicle(id: $id) {
+    ...VehicleSSRSnippet
+  }
+}
+    ${VehicleSsrSnippetFragmentDoc}`;
+
+/**
+ * __useVehicleSsrQuery__
+ *
+ * To run a query within a React component, call `useVehicleSsrQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVehicleSsrQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVehicleSsrQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVehicleSsrQuery(baseOptions: Apollo.QueryHookOptions<VehicleSsrQuery, VehicleSsrQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<VehicleSsrQuery, VehicleSsrQueryVariables>(VehicleSsrDocument, options);
+      }
+export function useVehicleSsrLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<VehicleSsrQuery, VehicleSsrQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<VehicleSsrQuery, VehicleSsrQueryVariables>(VehicleSsrDocument, options);
+        }
+export type VehicleSsrQueryHookResult = ReturnType<typeof useVehicleSsrQuery>;
+export type VehicleSsrLazyQueryHookResult = ReturnType<typeof useVehicleSsrLazyQuery>;
+export type VehicleSsrQueryResult = Apollo.QueryResult<VehicleSsrQuery, VehicleSsrQueryVariables>;

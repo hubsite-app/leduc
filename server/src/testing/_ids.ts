@@ -74,6 +74,11 @@ const _ids = {
       _id: Types.ObjectId("62166ef0c9f15a5eab653a30"),
     },
   },
+  signups: {
+    base_laborer_3_signup: {
+      _id: Types.ObjectId("6228ffc52185c765f07a6d51"),
+    },
+  },
 };
 
 export default _ids;

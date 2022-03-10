@@ -25,6 +25,7 @@ import mutations, {
   DailyReportNoteUpdateData,
   DailyReportUpdateData,
 } from "./mutations";
+import { SearchOptions } from "@graphql/types/query";
 
 @Resolver(() => DailyReportClass)
 export default class DailyReportResolver {
@@ -82,6 +83,17 @@ export default class DailyReportResolver {
     options?: ListOptionData
   ) {
     return DailyReport.getList(options);
+  }
+
+  @Query(() => [DailyReportClass])
+  async dailyReportSearch(
+    @Arg("searchString") searchString: string,
+    @Arg("options", () => SearchOptions, { nullable: true })
+    options: SearchOptions
+  ) {
+    return (await DailyReport.search(searchString, options)).map(
+      (object) => object.dailyReport
+    );
   }
 
   /**

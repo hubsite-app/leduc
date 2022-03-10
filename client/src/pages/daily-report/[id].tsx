@@ -1,7 +1,7 @@
+import { Heading } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import ClientOnly from "../../components/Common/ClientOnly";
 import Container from "../../components/Common/Container";
-import TextLink from "../../components/Common/TextLink";
 import DailyReportClientContent from "../../components/pages/daily-reports/id/ClientContent";
 import {
   PageDailyReportSsrComp,
@@ -11,9 +11,9 @@ import {
 const DailyReport: PageDailyReportSsrComp = ({ data }) => {
   return (
     <Container>
-      <TextLink link={"/"} fontWeight="bold" fontSize="4xl">
+      <Heading>
         {data?.dailyReport.jobsite.jobcode}: {data?.dailyReport.jobsite.name}
-      </TextLink>
+      </Heading>
       <ClientOnly>
         <DailyReportClientContent id={data?.dailyReport._id!} />
       </ClientOnly>

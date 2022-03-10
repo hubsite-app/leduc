@@ -18,8 +18,15 @@ import {
   VehicleWork,
   VehicleWorkDocument,
 } from "@models";
-import { GetByIDOptions, IListOptions } from "@typescript/models";
+import {
+  GetByIDOptions,
+  IListOptions,
+  ISearchOptions,
+} from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
+import ElasticsearchClient from "@elasticsearch/client";
+import { IDailyReportSearchObject } from "@typescript/dailyReport";
+import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 
 /**
  * ----- Static Methods -----
@@ -44,6 +51,64 @@ const byId = (
       }
 
       resolve(dailyReport);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const search = (
+  DailyReport: DailyReportModel,
+  searchString: string,
+  options?: ISearchOptions
+) => {
+  return new Promise<IDailyReportSearchObject[]>(async (resolve, reject) => {
+    try {
+      const res = await ElasticsearchClient.search({
+        index: ElasticSearchIndices.DailyReport,
+        body: {
+          query: {
+            multi_match: {
+              query: searchString.toLowerCase(),
+              type: "cross_fields",
+              fields: [
+                "daily_report.jobsiteName",
+                "daily_report.jobsiteCode",
+                "daily_report.crewName^2",
+                // "daily_report.date",
+              ],
+            },
+          },
+        },
+        size: options?.limit,
+      });
+
+      let dailyReportObjects: { id: string; score: number }[] =
+        res.body.hits.hits.map((item: any) => {
+          return {
+            id: item._id,
+            score: item._score,
+          };
+        });
+
+      // Filter out blacklisted ids
+      if (options?.blacklistedIds) {
+        dailyReportObjects = dailyReportObjects.filter(
+          (object) => !options.blacklistedIds?.includes(object.id)
+        );
+      }
+
+      const dailyReports: IDailyReportSearchObject[] = [];
+      for (let i = 0; i < dailyReportObjects.length; i++) {
+        const dailyReport = await DailyReport.getById(dailyReportObjects[i].id);
+        if (dailyReport)
+          dailyReports.push({
+            dailyReport,
+            score: dailyReportObjects[i].score,
+          });
+      }
+
+      resolve(dailyReports);
     } catch (e) {
       reject(e);
     }
@@ -197,6 +262,7 @@ const reportNote = (dailyReport: DailyReportDocument) => {
 
 export default {
   byId,
+  search,
   list,
   jobsite,
   crew,

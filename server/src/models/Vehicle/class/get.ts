@@ -5,6 +5,7 @@ import { GetByIDOptions, ISearchOptions } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 import ElasticsearchClient from "@elasticsearch/client";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
+import { IVehicleSearchObject } from "@typescript/vehicle";
 
 /**
  * ----- Static Methods -----
@@ -40,7 +41,7 @@ const search = (
   searchString: string,
   options?: ISearchOptions
 ) => {
-  return new Promise<VehicleDocument[]>(async (resolve, reject) => {
+  return new Promise<IVehicleSearchObject[]>(async (resolve, reject) => {
     try {
       const res = await ElasticsearchClient.search({
         index: ElasticSearchIndices.Vehicle,
@@ -50,8 +51,8 @@ const search = (
               query: searchString.toLowerCase(),
               fuzziness: "AUTO",
               fields: [
-                "vehicle.name^2",
-                "vehicle.vehicleCode^2",
+                "vehicle.name",
+                "vehicle.vehicleCode",
                 "vehicle.vehicleType",
               ],
             },
@@ -60,21 +61,29 @@ const search = (
         size: options?.limit,
       });
 
-      let vehicleIds: string[] = res.body.hits.hits.map(
-        (item: any) => item._id
-      );
+      let vehicleObjects: { id: string; score: number }[] =
+        res.body.hits.hits.map((item: any) => {
+          return {
+            id: item._id,
+            score: item._score,
+          };
+        });
 
       // Filter out blacklisted ids
       if (options?.blacklistedIds) {
-        vehicleIds = vehicleIds.filter(
-          (id) => !options.blacklistedIds?.includes(id)
+        vehicleObjects = vehicleObjects.filter(
+          (object) => !options.blacklistedIds?.includes(object.id)
         );
       }
 
-      const vehicles: VehicleDocument[] = [];
-      for (let i = 0; i < vehicleIds.length; i++) {
-        const vehicle = await Vehicle.getById(vehicleIds[i]);
-        if (vehicle) vehicles.push(vehicle);
+      const vehicles: IVehicleSearchObject[] = [];
+      for (let i = 0; i < vehicleObjects.length; i++) {
+        const vehicle = await Vehicle.getById(vehicleObjects[i].id);
+        if (vehicle)
+          vehicles.push({
+            vehicle,
+            score: vehicleObjects[i].score,
+          });
       }
 
       resolve(vehicles);

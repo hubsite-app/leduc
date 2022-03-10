@@ -9,7 +9,7 @@ import {
 } from "react-hook-form";
 import * as yup from "yup";
 
-import { LoginData } from "../generated/graphql";
+import { LoginData, SignupData } from "../generated/graphql";
 import TextField from "../components/Common/forms/TextField";
 import Checkbox from "../components/Common/forms/Checkbox";
 
@@ -47,6 +47,7 @@ export const useUserLoginForm = (options?: UseFormProps) => {
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
+                type="email"
                 label="Email"
                 errorMessage={fieldState.error?.message}
                 isDisabled={isLoading}
@@ -87,6 +88,125 @@ export const useUserLoginForm = (options?: UseFormProps) => {
               <Checkbox {...field} isDisabled={isLoading}>
                 Remember Me
               </Checkbox>
+            )}
+          />
+        ),
+        [isLoading]
+      ),
+  };
+
+  return {
+    FormComponents,
+    ...form,
+  };
+};
+
+const UserSignupSchema = yup
+  .object()
+  .shape({
+    name: yup.string().required("please provide a name"),
+    email: yup
+      .string()
+      .email("please provide a valid email")
+      .required("please provide an email"),
+    password: yup.string().required("please provide a password"),
+    confirmPassword: yup
+      .string()
+      .required("please confirm your password")
+      .oneOf([yup.ref("password"), null], "passwords must match"),
+  })
+  .required();
+
+export const useUserSignupForm = (options?: UseFormProps) => {
+  const form = useForm({
+    resolver: yupResolver(UserSignupSchema),
+    ...options,
+  });
+
+  const { handleSubmit, control } = form;
+
+  const FormComponents = {
+    Form: ({
+      children,
+      submitHandler,
+    }: {
+      children: React.ReactNode;
+      submitHandler: SubmitHandler<SignupData>;
+    }) => <form onSubmit={handleSubmit(submitHandler)}>{children}</form>,
+    Name: ({ isLoading }: { isLoading?: boolean }) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="name"
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                label="Name"
+                errorMessage={fieldState.error?.message}
+                isDisabled={isLoading}
+                bgColor="white"
+              />
+            )}
+          />
+        ),
+        [isLoading]
+      ),
+    Email: ({ isLoading }: { isLoading?: boolean }) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="email"
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                type="email"
+                label="Email"
+                errorMessage={fieldState.error?.message}
+                isDisabled={isLoading}
+                bgColor="white"
+              />
+            )}
+          />
+        ),
+        [isLoading]
+      ),
+    Password: ({ isLoading }: { isLoading?: boolean }) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="password"
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                label="Password"
+                type="password"
+                errorMessage={fieldState.error?.message}
+                isDisabled={isLoading}
+                bgColor="white"
+              />
+            )}
+          />
+        ),
+        [isLoading]
+      ),
+    ConfirmPassword: ({ isLoading }: { isLoading?: boolean }) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="confirmPassword"
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                label="Confirm Password"
+                type="password"
+                errorMessage={fieldState.error?.message}
+                isDisabled={isLoading}
+                bgColor="white"
+              />
             )}
           />
         ),

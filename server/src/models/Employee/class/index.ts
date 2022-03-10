@@ -46,6 +46,10 @@ export class EmployeeClass extends EmployeeSchema {
     return get.crews(this);
   }
 
+  public async getSignup(this: EmployeeDocument) {
+    return get.signup(this);
+  }
+
   /**
    * ----- Create -----
    */

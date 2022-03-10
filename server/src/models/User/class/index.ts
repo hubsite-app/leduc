@@ -1,11 +1,14 @@
 import { Types } from "mongoose";
 
-import { UserDocument, UserModel } from "@models";
+import { SignupDocument, UserDocument, UserModel } from "@models";
 import { UserSchema } from "..";
 import interact from "./interact";
 import { GetByIDOptions } from "@typescript/models";
 import get from "./get";
 import { ObjectType } from "type-graphql";
+import { IUserCreate } from "@typescript/user";
+import create from "./create";
+import update from "./update";
 
 @ObjectType()
 export class UserClass extends UserSchema {
@@ -30,6 +33,18 @@ export class UserClass extends UserSchema {
   }
 
   /**
+   * ----- Create -----
+   */
+
+  public static async createDocument(
+    this: UserModel,
+    signup: SignupDocument,
+    data: IUserCreate
+  ) {
+    return create.document(this, signup, data);
+  }
+
+  /**
    * ----- Interact -----
    */
 
@@ -44,5 +59,13 @@ export class UserClass extends UserSchema {
 
   public async checkPassword(this: UserDocument, password: string) {
     return interact.checkPassword(this, password);
+  }
+
+  /**
+   * ----- Update -----
+   */
+
+  public async isAdmin(this: UserDocument, isAdmin: boolean) {
+    return update.admin(this, isAdmin);
   }
 }

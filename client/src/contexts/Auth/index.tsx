@@ -193,7 +193,11 @@ const AuthProvider = ({ children }: IAuthProvider) => {
 
   // Go to login page if not logged in
   React.useEffect(() => {
-    if (state.user === null && router.pathname !== "/login") {
+    if (
+      state.user === null &&
+      router.pathname !== "/login" &&
+      !router.pathname.includes("/signup")
+    ) {
       router.push("/login");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

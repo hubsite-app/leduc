@@ -1,4 +1,6 @@
+import { ES_ensureDailyReportIndex } from "./helpers/dailyReport";
 import { ES_ensureEmployeeIndex } from "./helpers/employee";
+import { ES_ensureJobsiteIndex } from "./helpers/jobsite";
 import { ES_ensureVehicleIndex } from "./helpers/vehicle";
 
 const elasticsearch = () => {
@@ -7,6 +9,10 @@ const elasticsearch = () => {
       await ES_ensureEmployeeIndex();
 
       await ES_ensureVehicleIndex();
+
+      await ES_ensureJobsiteIndex();
+
+      await ES_ensureDailyReportIndex();
 
       resolve();
     } catch (e) {

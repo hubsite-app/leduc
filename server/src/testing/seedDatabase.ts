@@ -14,6 +14,7 @@ import createMaterialShipments, {
 } from "./documents/materialShipments";
 import createProductions, { SeededProduction } from "./documents/productions";
 import createReportNotes, { SeededReportNotes } from "./documents/reportNotes";
+import createSignups, { SeededSignups } from "./documents/signups";
 import createUsers, { SeededUsers } from "./documents/users";
 import createVehicles, { SeededVehicles } from "./documents/vehicles";
 import createVehicleWork, { SeededVehicleWork } from "./documents/vehicleWork";
@@ -27,6 +28,7 @@ export interface SeededDatabase {
   materialShipments: SeededMaterialShipments;
   productions: SeededProduction;
   reportNotes: SeededReportNotes;
+  signups: SeededSignups;
   users: SeededUsers;
   vehicles: SeededVehicles;
   vehicleWork: SeededVehicleWork;
@@ -50,6 +52,7 @@ const seedDatabase = () => {
       const materialShipments = await createMaterialShipments();
       const productions = await createProductions();
       const reportNotes = await createReportNotes();
+      const signups = await createSignups();
       const users = await createUsers();
       const vehicles = await createVehicles();
       const vehicleWork = await createVehicleWork();
@@ -63,6 +66,7 @@ const seedDatabase = () => {
         materialShipments,
         productions,
         reportNotes,
+        signups,
         users,
         vehicles,
         vehicleWork,

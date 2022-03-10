@@ -11,7 +11,6 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useAuth } from "../../../contexts/Auth";
-import { FiUser } from "react-icons/fi";
 import Loading from "../../Common/Loading";
 
 const NavbarAccount = () => {

@@ -4,6 +4,7 @@ import {
   Employee,
   EmployeeClass,
   EmployeeDocument,
+  SignupClass,
   UserClass,
 } from "@models";
 import {
@@ -22,7 +23,7 @@ export default class EmployeeResolver {
    * ----- Field Resolver -----
    */
 
-  @FieldResolver(() => UserClass)
+  @FieldResolver(() => UserClass, { nullable: true })
   async user(@Root() employee: EmployeeDocument) {
     return employee.getUser();
   }
@@ -30,6 +31,11 @@ export default class EmployeeResolver {
   @FieldResolver(() => [CrewClass])
   async crews(@Root() employee: EmployeeDocument) {
     return employee.getCrews();
+  }
+
+  @FieldResolver(() => SignupClass, { nullable: true })
+  async signup(@Root() employee: EmployeeDocument) {
+    return employee.getSignup();
   }
 
   /**
@@ -47,7 +53,9 @@ export default class EmployeeResolver {
     @Arg("options", () => SearchOptions, { nullable: true })
     options: SearchOptions
   ) {
-    return Employee.search(searchString, options);
+    return (await Employee.search(searchString, options)).map(
+      (object) => object.employee
+    );
   }
 
   /**

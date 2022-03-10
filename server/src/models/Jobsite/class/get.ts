@@ -5,11 +5,15 @@ import {
   CrewDocument,
   DailyReport,
   DailyReportDocument,
+  Jobsite,
   JobsiteDocument,
   JobsiteModel,
 } from "@models";
-import { GetByIDOptions } from "@typescript/models";
+import { GetByIDOptions, ISearchOptions } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
+import { IJobsiteSearchObject } from "@typescript/jobsite";
+import ElasticsearchClient from "@elasticsearch/client";
+import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 
 /**
  * ----- Static Methods -----
@@ -34,6 +38,59 @@ const byId = (
       }
 
       resolve(jobsite);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const search = (
+  Employee: JobsiteModel,
+  searchString: string,
+  options?: ISearchOptions
+) => {
+  return new Promise<IJobsiteSearchObject[]>(async (resolve, reject) => {
+    try {
+      const res = await ElasticsearchClient.search({
+        index: ElasticSearchIndices.Jobsite,
+        body: {
+          query: {
+            multi_match: {
+              query: searchString.toLowerCase(),
+              fuzziness: "AUTO",
+              fields: ["jobsite.name", "jobsite.jobcode"],
+            },
+          },
+        },
+        size: options?.limit,
+      });
+
+      let jobsiteObjects: { id: string; score: number }[] =
+        res.body.hits.hits.map((item: any) => {
+          return {
+            id: item._id,
+            score: item._score,
+          };
+        });
+
+      // Filter out blacklisted ids
+      if (options?.blacklistedIds) {
+        jobsiteObjects = jobsiteObjects.filter(
+          (object) => !options.blacklistedIds?.includes(object.id)
+        );
+      }
+
+      const jobsites: IJobsiteSearchObject[] = [];
+      for (let i = 0; i < jobsiteObjects.length; i++) {
+        const jobsite = await Jobsite.getById(jobsiteObjects[i].id);
+        if (jobsite)
+          jobsites.push({
+            jobsite,
+            score: jobsiteObjects[i].score,
+          });
+      }
+
+      resolve(jobsites);
     } catch (e) {
       reject(e);
     }
@@ -82,6 +139,7 @@ const dailyReports = (jobsite: JobsiteDocument) => {
 
 export default {
   byId,
+  search,
   byCrew,
   crews,
   dailyReports,

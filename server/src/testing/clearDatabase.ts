@@ -7,6 +7,7 @@ import {
   MaterialShipment,
   Production,
   ReportNote,
+  Signup,
   User,
   Vehicle,
   VehicleWork,
@@ -24,6 +25,7 @@ const clearDatabase = () => {
         await MaterialShipment.deleteMany({});
         await Production.deleteMany({});
         await ReportNote.deleteMany({});
+        await Signup.deleteMany({});
         await User.deleteMany({});
         await Vehicle.deleteMany({});
         await VehicleWork.deleteMany({});
