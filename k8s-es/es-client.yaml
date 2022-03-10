@@ -63,7 +63,7 @@ spec:
           resources:
             limits:
               cpu: "0.25"
-              memory: "0.25"
+              memory: 250Mi
           env:
             - name: CLUSTER_NAME
               value: elasticsearch
