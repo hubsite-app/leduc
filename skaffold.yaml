@@ -25,6 +25,8 @@ build:
             dest: .
           - src: "**/*.html"
             dest: .
+          - src: "**/*.graphql"
+            dest: .
     - image: itsdevin/bow-mark-server
       context: server
       docker:
@@ -36,8 +38,6 @@ build:
           - src: "**/*.js"
             dest: .
           - src: "**/*.ts"
-            dest: .
-          - src: "**/*.graphql"
             dest: .
 # Automatically apply config files, remove them when stopped
 deploy:
@@ -58,14 +58,11 @@ portForward:
     resourceName: server-cluster-ip-service
     namespace: default
     port: 8080
-    localPort: 8080
   - resourceType: Service
     resourceName: client-cluster-ip-service
     namespace: default
     port: 3000
-    localPort: 3000
   - resourceType: Service
     resourceName: kibana
     namespace: kube-devops
     port: 5601
-    localPort: 5601

@@ -17,7 +17,7 @@ spec:
           image: itsdevin/bow-mark-client:$COMMIT_SHA1
           resources:
             limits:
-              cpu: "0.5"
-              memory: "0.5"
+              cpu: "0.25"
+              memory: "0.25"
           ports:
             - containerPort: 3000
