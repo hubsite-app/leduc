@@ -5,6 +5,8 @@ import isEmpty from "@utils/isEmpty";
 const saveAll = () => {
   return new Promise<void>(async (resolve, reject) => {
     try {
+      console.log("Saving all documents");
+
       // Employee
       const employees = await Employee.find();
       logger.info(`Saving ${employees.length} employee documents`);
