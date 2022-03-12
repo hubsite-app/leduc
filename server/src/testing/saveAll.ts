@@ -30,7 +30,6 @@ const saveAll = () => {
       const dailyReports = await DailyReport.find();
       logger.info(`Saving ${dailyReports.length} dailyReport documents`);
       for (let i = 0; i < dailyReports.length; i++) {
-        console.log(dailyReports[i].reportNote);
         if (isEmpty(dailyReports[i].reportNote)) {
           dailyReports[i].reportNote = undefined;
         }
