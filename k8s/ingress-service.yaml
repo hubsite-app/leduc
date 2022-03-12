@@ -18,7 +18,7 @@ spec:
     - hosts:
         - bow-mark.hiits.dev
         - bow-mark-es.hiits.dev
-      secretName: agora-tls
+      secretName: bow-mark-tls
   rules:
     - host: bow-mark.hiits.dev
       http:

@@ -61,9 +61,12 @@ spec:
         - name: elasticsearch-client
           image: docker.elastic.co/elasticsearch/elasticsearch:7.16.0
           resources:
+            requests:
+              cpu: "175m"
+              memory: "250Mi"
             limits:
-              cpu: "0.25"
-              memory: 250Mi
+              cpu: "625m"
+              memory: "1250Mi"
           env:
             - name: CLUSTER_NAME
               value: elasticsearch

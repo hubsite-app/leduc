@@ -62,3 +62,8 @@ spec:
                 secretKeyRef:
                   name: server-secrets
                   key: elasticsearchPassword
+            - name: ELASTICSEARCH_URL
+              valueFrom:
+                secretKeyRef:
+                  key: elasticsearchUrl
+                  name: server-secrets
