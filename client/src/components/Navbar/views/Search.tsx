@@ -29,7 +29,7 @@ const NavbarSearch = () => {
 
             switch (extraData.type) {
               case "employee": {
-                router.push(createLink.jobsite(value.value));
+                router.push(createLink.employee(value.value));
                 break;
               }
               case "vehicle": {
