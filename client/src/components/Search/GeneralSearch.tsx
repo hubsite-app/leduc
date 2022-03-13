@@ -139,6 +139,7 @@ const GeneralSearch = ({
       onOptionSelection={(value, extraData) => itemSelected(value, extraData!)}
       handleSubmit={() => handleSubmit && handleSubmit(searchString)}
       selectOptionsWithEnter
+      isLoading={loading}
       {...props}
     />
   );

@@ -4,6 +4,7 @@ import { useOutsideClick } from "@chakra-ui/hooks";
 import { Box, BoxProps, Heading, Stack } from "@chakra-ui/layout";
 import TextField, { ITextField } from "./TextField";
 import TextLink from "../TextLink";
+import Loading from "../Loading";
 
 export interface IOptions<ExtraData> {
   value: string;
@@ -26,6 +27,7 @@ interface ITextDropdown<ExtraData> extends ITextField {
   containerId?: string;
   dropdownProps?: BoxProps;
   selectOptionsWithEnter?: boolean;
+  isLoading?: boolean;
 }
 
 const TextDropdown = <ExtraData extends object>({
@@ -36,6 +38,7 @@ const TextDropdown = <ExtraData extends object>({
   containerId,
   dropdownProps,
   selectOptionsWithEnter = false,
+  isLoading,
   ...props
 }: ITextDropdown<ExtraData>) => {
   /**
@@ -185,8 +188,6 @@ const TextDropdown = <ExtraData extends object>({
     setSelectedIndex(undefined);
   }, [options, groupedOptions]);
 
-  let dropdownJSX;
-  let rootIndex = 0;
   const groupedOptionsPopulated = React.useMemo(() => {
     let populated = false;
     if (groupedOptions)
@@ -205,130 +206,192 @@ const TextDropdown = <ExtraData extends object>({
    * ----- Rendering -----
    */
 
-  if (dropdown && groupedOptionsPopulated) {
-    dropdownJSX = (
-      <Box
-        id="options-container"
-        borderRadius="0 0 0.375rem 0.375rem"
-        position="absolute"
-        top={
-          `${
-            (inputRef.current?.getBoundingClientRect().height || 8) / 1.09
-          }px` || "2.25em"
-        }
-        border="1px solid"
-        borderColor="inherit"
-        borderTop="none"
-        paddingTop={2}
-        zIndex={9999}
-        backgroundColor="white"
-        w="100%"
-        maxH="25vh"
-        overflowY="scroll"
-        {...dropdownProps}
-      >
-        <Box h="1px" w="95%" backgroundColor="gray.400" mx="auto" mb={2}></Box>
-        <Stack>
-          {Object.values(groupedOptions!).map((value, i) => {
-            if (value && value.length > 0)
-              return (
-                <Box key={i}>
-                  <Heading size="sm" w="100%" backgroundColor="gray.300" p={2}>
-                    {Object.keys(groupedOptions!)[i].toUpperCase()}
-                  </Heading>
-                  <Stack>
-                    {value.map((option) => {
-                      const index = rootIndex;
-                      rootIndex += 1;
+  const dropdownJSX = React.useMemo(() => {
+    let rootIndex = 0;
+    if (isLoading && (!options || options?.length === 0)) {
+      return (
+        <Box
+          id="options-container"
+          borderRadius="0 0 0.375rem 0.375rem"
+          position="absolute"
+          top={
+            `${
+              (inputRef.current?.getBoundingClientRect().height || 8) / 1.09
+            }px` || "2.25em"
+          }
+          border="1px solid"
+          borderColor="inherit"
+          borderTop="none"
+          paddingTop={2}
+          zIndex={9999}
+          backgroundColor="white"
+          w="100%"
+          maxH="25vh"
+          minH="3em"
+          overflowY="scroll"
+          {...dropdownProps}
+        >
+          <Box
+            h="1px"
+            w="95%"
+            backgroundColor="gray.400"
+            mx="auto"
+            mb={2}
+          ></Box>
+          <Loading my="auto" />
+        </Box>
+      );
+    } else if (dropdown && groupedOptionsPopulated) {
+      return (
+        <Box
+          id="options-container"
+          borderRadius="0 0 0.375rem 0.375rem"
+          position="absolute"
+          top={
+            `${
+              (inputRef.current?.getBoundingClientRect().height || 8) / 1.09
+            }px` || "2.25em"
+          }
+          border="1px solid"
+          borderColor="inherit"
+          borderTop="none"
+          paddingTop={2}
+          zIndex={9999}
+          backgroundColor="white"
+          w="100%"
+          maxH="25vh"
+          overflowY="scroll"
+          {...dropdownProps}
+        >
+          <Box
+            h="1px"
+            w="95%"
+            backgroundColor="gray.400"
+            mx="auto"
+            mb={2}
+          ></Box>
+          <Stack>
+            {Object.values(groupedOptions!).map((value, i) => {
+              if (value && value.length > 0)
+                return (
+                  <Box key={i}>
+                    <Heading
+                      size="sm"
+                      w="100%"
+                      backgroundColor="gray.300"
+                      p={2}
+                    >
+                      {Object.keys(groupedOptions!)[i].toUpperCase()}
+                    </Heading>
+                    <Stack>
+                      {value.map((option) => {
+                        const index = rootIndex;
+                        rootIndex += 1;
 
-                      return (
-                        <Box
-                          id={`option-${index}`}
-                          as="span"
-                          cursor="pointer"
-                          onMouseOver={() => {
-                            setSelectedIndex(index);
-                          }}
-                          onMouseLeave={() => setSelectedIndex(undefined)}
-                          padding={1}
-                          paddingLeft="1rem"
-                          onClick={() => {
-                            setDropdown(false);
-                            handleOptionSelection(option, option.extraData);
-                          }}
-                          key={index}
-                          fontWeight={index === selectedIndex ? "bold" : ""}
-                        >
-                          {/** @ts-expect-error */}
-                          {!!option.extraData?.link ? (
-                            <TextLink
-                              // @ts-expect-error
-                              link={option.extraData.link || ""}
-                              color="black"
-                            >
-                              {option.label}
-                            </TextLink>
-                          ) : (
-                            option.label
-                          )}
-                        </Box>
-                      );
-                    })}
-                  </Stack>
-                </Box>
-              );
-            else return null;
-          })}
-        </Stack>
-      </Box>
-    );
-  } else if (dropdown && options && options.length > 0) {
-    dropdownJSX = (
-      <Box
-        id="options-container"
-        borderRadius="0 0 0.375rem 0.375rem"
-        position="absolute"
-        top={
-          `${
-            (inputRef.current?.getBoundingClientRect().height || 8) / 1.09
-          }px` || "2.25em"
-        }
-        border="1px solid"
-        borderColor="inherit"
-        borderTop="none"
-        paddingTop={2}
-        zIndex={9999}
-        backgroundColor="white"
-        w="100%"
-        maxH="25vh"
-        overflowY="scroll"
-        {...dropdownProps}
-      >
-        <Box h="1px" w="95%" backgroundColor="gray.400" mx="auto" mb={2}></Box>
-        <Stack>
-          {options.map((option, index) => (
-            <Box
-              as="span"
-              cursor="pointer"
-              id={`option-${index}`}
-              onMouseOver={() => setSelectedIndex(index)}
-              onMouseLeave={() => setSelectedIndex(undefined)}
-              padding={1}
-              paddingLeft="1rem"
-              onClick={() => {
-                setDropdown(false);
-                handleOptionSelection(option, option.extraData);
-              }}
-              key={index}
-              fontWeight={selectedIndex === index ? "bold" : ""}
-            >
-              {option.label}
-            </Box>
-          ))}
-        </Stack>
-      </Box>
-    );
-  }
+                        return (
+                          <Box
+                            id={`option-${index}`}
+                            as="span"
+                            cursor="pointer"
+                            onMouseOver={() => {
+                              setSelectedIndex(index);
+                            }}
+                            onMouseLeave={() => setSelectedIndex(undefined)}
+                            padding={1}
+                            paddingLeft="1rem"
+                            onClick={() => {
+                              setDropdown(false);
+                              handleOptionSelection(option, option.extraData);
+                            }}
+                            key={index}
+                            fontWeight={index === selectedIndex ? "bold" : ""}
+                          >
+                            {/** @ts-expect-error */}
+                            {!!option.extraData?.link ? (
+                              <TextLink
+                                // @ts-expect-error
+                                link={option.extraData.link || ""}
+                                color="black"
+                              >
+                                {option.label}
+                              </TextLink>
+                            ) : (
+                              option.label
+                            )}
+                          </Box>
+                        );
+                      })}
+                    </Stack>
+                  </Box>
+                );
+              else return null;
+            })}
+          </Stack>
+        </Box>
+      );
+    } else if (dropdown && options && options.length > 0) {
+      return (
+        <Box
+          id="options-container"
+          borderRadius="0 0 0.375rem 0.375rem"
+          position="absolute"
+          top={
+            `${
+              (inputRef.current?.getBoundingClientRect().height || 8) / 1.09
+            }px` || "2.25em"
+          }
+          border="1px solid"
+          borderColor="inherit"
+          borderTop="none"
+          paddingTop={2}
+          zIndex={9999}
+          backgroundColor="white"
+          w="100%"
+          maxH="25vh"
+          overflowY="scroll"
+          {...dropdownProps}
+        >
+          <Box
+            h="1px"
+            w="95%"
+            backgroundColor="gray.400"
+            mx="auto"
+            mb={2}
+          ></Box>
+          <Stack>
+            {options.map((option, index) => (
+              <Box
+                as="span"
+                cursor="pointer"
+                id={`option-${index}`}
+                onMouseOver={() => setSelectedIndex(index)}
+                onMouseLeave={() => setSelectedIndex(undefined)}
+                padding={1}
+                paddingLeft="1rem"
+                onClick={() => {
+                  setDropdown(false);
+                  handleOptionSelection(option, option.extraData);
+                }}
+                key={index}
+                fontWeight={selectedIndex === index ? "bold" : ""}
+              >
+                {option.label}
+              </Box>
+            ))}
+          </Stack>
+        </Box>
+      );
+    }
+  }, [
+    dropdown,
+    dropdownProps,
+    groupedOptions,
+    groupedOptionsPopulated,
+    handleOptionSelection,
+    isLoading,
+    options,
+    selectedIndex,
+  ]);
 
   return (
     <div ref={inputRef} style={{ position: "relative" }} id={containerId}>
