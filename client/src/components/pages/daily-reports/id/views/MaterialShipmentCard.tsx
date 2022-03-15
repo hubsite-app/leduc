@@ -4,7 +4,7 @@ import { Box, Flex, IconButton, SimpleGrid, Text } from "@chakra-ui/react";
 import {
   DailyReportFullDocument,
   MaterialShipmentCardSnippetFragment,
-  MaterialShipmentUpdateData,
+  MaterialShipmentShipmentData,
   useMaterialShipmentDeleteMutation,
   useMaterialShipmentUpdateMutation,
 } from "../../../../../generated/graphql";
@@ -54,7 +54,7 @@ const MaterialShipmentCard = ({
    */
 
   const submitUpdate = React.useCallback(
-    (data: MaterialShipmentUpdateData) => {
+    (data: MaterialShipmentShipmentData) => {
       let startTime = data.startTime;
       if (startTime && !dayjs(startTime).isValid()) {
         startTime = convertHourToDate(data.startTime, dailyReportDate);

@@ -10,7 +10,7 @@ import {
 import * as yup from "yup";
 import {
   MaterialShipmentCreateData,
-  MaterialShipmentUpdateData,
+  MaterialShipmentShipmentData,
 } from "../generated/graphql";
 
 import TextField, { ITextField } from "../components/Common/forms/TextField";
@@ -270,7 +270,7 @@ export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
       submitHandler,
     }: {
       children: React.ReactNode;
-      submitHandler: SubmitHandler<MaterialShipmentUpdateData>;
+      submitHandler: SubmitHandler<MaterialShipmentShipmentData>;
     }) => <form onSubmit={handleSubmit(submitHandler)}>{children}</form>,
     ShipmentType: ({ isLoading, ...props }: IFormProps<ITextField>) =>
       React.useMemo(
