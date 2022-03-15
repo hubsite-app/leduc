@@ -5,6 +5,7 @@ export const MaterialShipmentVehicleTypes = [
   "Sidewinder",
   "Wagon",
   "Delivered",
+  "Live Bottom",
 ];
 
 export const CrewTypes = [
