@@ -8,11 +8,7 @@ import {
   UseFormProps,
 } from "react-hook-form";
 import * as yup from "yup";
-import {
-  DailyReportNoteUpdateData,
-  MaterialShipmentCreateData,
-  MaterialShipmentUpdateData,
-} from "../generated/graphql";
+import { DailyReportNoteUpdateData } from "../generated/graphql";
 
 import { IFormProps } from "../typescript/forms";
 import TextArea, { ITextArea } from "../components/Common/forms/TextArea";
