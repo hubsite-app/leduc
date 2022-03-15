@@ -14,7 +14,7 @@ import {
 } from "@models";
 import mutations, {
   MaterialShipmentCreateData,
-  MaterialShipmentUpdateData,
+  MaterialShipmentShipmentData,
 } from "./mutations";
 
 @Resolver(() => MaterialShipmentClass)
@@ -33,10 +33,11 @@ export default class MaterialShipmentResolver {
    */
 
   @Authorized()
-  @Mutation(() => MaterialShipmentClass)
+  @Mutation(() => [MaterialShipmentClass])
   async materialShipmentCreate(
     @Arg("dailyReportId") dailyReportId: string,
-    @Arg("data") data: MaterialShipmentCreateData
+    @Arg("data", () => [MaterialShipmentCreateData])
+    data: MaterialShipmentCreateData[]
   ) {
     return mutations.create(dailyReportId, data);
   }
@@ -45,7 +46,7 @@ export default class MaterialShipmentResolver {
   @Mutation(() => MaterialShipmentClass)
   async materialShipmentUpdate(
     @Arg("id") id: string,
-    @Arg("data") data: MaterialShipmentUpdateData
+    @Arg("data") data: MaterialShipmentShipmentData
   ) {
     return mutations.update(id, data);
   }

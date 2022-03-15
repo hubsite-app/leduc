@@ -156,16 +156,11 @@ export type MaterialShipmentClass = {
 };
 
 export type MaterialShipmentCreateData = {
-  endTime?: InputMaybe<Scalars['DateTime']>;
-  quantity: Scalars['Float'];
-  shipmentType: Scalars['String'];
-  startTime?: InputMaybe<Scalars['DateTime']>;
-  supplier: Scalars['String'];
-  unit: Scalars['String'];
+  shipments: Array<MaterialShipmentShipmentData>;
   vehicleObject: MaterialShipmentVehicleObjectData;
 };
 
-export type MaterialShipmentUpdateData = {
+export type MaterialShipmentShipmentData = {
   endTime?: InputMaybe<Scalars['DateTime']>;
   quantity: Scalars['Float'];
   shipmentType: Scalars['String'];
@@ -199,7 +194,7 @@ export type Mutation = {
   employeeWorkUpdate: EmployeeWorkClass;
   jobsiteCreate: JobsiteClass;
   login: Scalars['String'];
-  materialShipmentCreate: MaterialShipmentClass;
+  materialShipmentCreate: Array<MaterialShipmentClass>;
   materialShipmentDelete: Scalars['String'];
   materialShipmentUpdate: MaterialShipmentClass;
   productionCreate: ProductionClass;
@@ -314,7 +309,7 @@ export type MutationLoginArgs = {
 
 export type MutationMaterialShipmentCreateArgs = {
   dailyReportId: Scalars['String'];
-  data: MaterialShipmentCreateData;
+  data: Array<MaterialShipmentCreateData>;
 };
 
 
@@ -324,7 +319,7 @@ export type MutationMaterialShipmentDeleteArgs = {
 
 
 export type MutationMaterialShipmentUpdateArgs = {
-  data: MaterialShipmentUpdateData;
+  data: MaterialShipmentShipmentData;
   id: Scalars['String'];
 };
 
@@ -796,11 +791,11 @@ export type LoginMutation = { __typename?: 'Mutation', login: string };
 
 export type MaterialShipmentCreateMutationVariables = Exact<{
   dailyReportId: Scalars['String'];
-  data: MaterialShipmentCreateData;
+  data: Array<MaterialShipmentCreateData> | MaterialShipmentCreateData;
 }>;
 
 
-export type MaterialShipmentCreateMutation = { __typename?: 'Mutation', materialShipmentCreate: { __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null } };
+export type MaterialShipmentCreateMutation = { __typename?: 'Mutation', materialShipmentCreate: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }> };
 
 export type MaterialShipmentDeleteMutationVariables = Exact<{
   id: Scalars['String'];
@@ -811,7 +806,7 @@ export type MaterialShipmentDeleteMutation = { __typename?: 'Mutation', material
 
 export type MaterialShipmentUpdateMutationVariables = Exact<{
   id: Scalars['String'];
-  data: MaterialShipmentUpdateData;
+  data: MaterialShipmentShipmentData;
 }>;
 
 
@@ -1902,7 +1897,7 @@ export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const MaterialShipmentCreateDocument = gql`
-    mutation MaterialShipmentCreate($dailyReportId: String!, $data: MaterialShipmentCreateData!) {
+    mutation MaterialShipmentCreate($dailyReportId: String!, $data: [MaterialShipmentCreateData!]!) {
   materialShipmentCreate(dailyReportId: $dailyReportId, data: $data) {
     ...MaterialShipmentCardSnippet
   }
@@ -1967,7 +1962,7 @@ export type MaterialShipmentDeleteMutationHookResult = ReturnType<typeof useMate
 export type MaterialShipmentDeleteMutationResult = Apollo.MutationResult<MaterialShipmentDeleteMutation>;
 export type MaterialShipmentDeleteMutationOptions = Apollo.BaseMutationOptions<MaterialShipmentDeleteMutation, MaterialShipmentDeleteMutationVariables>;
 export const MaterialShipmentUpdateDocument = gql`
-    mutation MaterialShipmentUpdate($id: String!, $data: MaterialShipmentUpdateData!) {
+    mutation MaterialShipmentUpdate($id: String!, $data: MaterialShipmentShipmentData!) {
   materialShipmentUpdate(id: $id, data: $data) {
     ...MaterialShipmentCardSnippet
   }

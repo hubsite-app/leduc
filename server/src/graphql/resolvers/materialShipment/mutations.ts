@@ -6,7 +6,7 @@ import {
 import { Field, Float, InputType } from "type-graphql";
 
 @InputType()
-export class MaterialShipmentUpdateData {
+export class MaterialShipmentShipmentData {
   @Field({ nullable: false })
   public shipmentType!: string;
 
@@ -39,35 +39,51 @@ export class MaterialShipmentVehicleObjectData {
 }
 
 @InputType()
-export class MaterialShipmentCreateData extends MaterialShipmentUpdateData {
+export class MaterialShipmentCreateData {
+  @Field(() => [MaterialShipmentShipmentData])
+  public shipments!: MaterialShipmentShipmentData[];
+
   @Field(() => MaterialShipmentVehicleObjectData, { nullable: false })
   public vehicleObject!: MaterialShipmentVehicleObjectData;
 }
 
-const create = (dailyReportId: string, data: MaterialShipmentCreateData) => {
-  return new Promise<MaterialShipmentDocument>(async (resolve, reject) => {
+const create = (dailyReportId: string, data: MaterialShipmentCreateData[]) => {
+  return new Promise<MaterialShipmentDocument[]>(async (resolve, reject) => {
     try {
       const dailyReport = (await DailyReport.getById(dailyReportId, {
         throwError: true,
       }))!;
 
-      const materialShipment = await MaterialShipment.createDocument({
-        ...data,
-        dailyReport,
-      });
+      const materialShipments: MaterialShipmentDocument[] = [];
 
-      await materialShipment.save();
+      for (let i = 0; i < data.length; i++) {
+        const currentData = data[i];
+
+        for (let j = 0; j < currentData.shipments.length; j++) {
+          materialShipments.push(
+            await MaterialShipment.createDocument({
+              vehicleObject: currentData.vehicleObject,
+              ...currentData.shipments[j],
+              dailyReport,
+            })
+          );
+        }
+      }
+
+      for (let i = 0; i < materialShipments.length; i++) {
+        await materialShipments[i].save();
+      }
 
       await dailyReport.save();
 
-      resolve(materialShipment);
+      resolve(materialShipments);
     } catch (e) {
       reject(e);
     }
   });
 };
 
-const update = (id: string, data: MaterialShipmentUpdateData) => {
+const update = (id: string, data: MaterialShipmentShipmentData) => {
   return new Promise<MaterialShipmentDocument>(async (resolve, reject) => {
     try {
       const materialShipment = (await MaterialShipment.getById(id, {

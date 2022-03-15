@@ -11,6 +11,24 @@ import {
 import convertHourToDate from "../../../../../utils/convertHourToDate";
 import SubmitButton from "../../../../Common/forms/SubmitButton";
 
+type ShipmentErrors = {
+  shipmentType?: string;
+  supplier?: string;
+  quantity?: string;
+  unit?: string;
+  startTime?: string;
+  endTime?: string;
+};
+
+type FormErrors = {
+  shipments: ShipmentErrors[];
+  vehicleObject: {
+    source?: string;
+    vehicleCode?: string;
+    vehicleType?: string;
+  };
+}[];
+
 interface IMaterialShipmentCreateForm {
   dailyReport: DailyReportFullSnippetFragment;
   closeForm?: () => void;
@@ -20,11 +38,39 @@ const MaterialShipmentCreateForm = ({
   dailyReport,
   closeForm,
 }: IMaterialShipmentCreateForm) => {
+  const initialShipment = React.useMemo(() => {
+    return {
+      shipmentType: "",
+      supplier: "",
+      quantity: 0,
+      unit: "",
+      startTime: undefined,
+      endTime: undefined,
+    };
+  }, []);
+
   /**
    * ----- Hook Initialization -----
    */
 
   const toast = useToast();
+
+  const [formData, setFormData] = React.useState<MaterialShipmentCreateData[]>([
+    {
+      vehicleObject: {
+        source: "",
+        vehicleCode: "",
+        vehicleType: "",
+      },
+      shipments: [initialShipment],
+    },
+  ]);
+
+  const [generalError, setGeneralError] = React.useState<string>();
+
+  const [formErrors, setFormErrors] = React.useState<FormErrors>([]);
+
+  const [hasTriedSubmit, setHasTriedSubmit] = React.useState(false);
 
   const [create, { loading }] = useMaterialShipmentCreateMutation({
     refetchQueries: [DailyReportFullDocument],

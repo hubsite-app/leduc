@@ -1,6 +1,6 @@
 mutation MaterialShipmentCreate(
   $dailyReportId: String!
-  $data: MaterialShipmentCreateData!
+  $data: [MaterialShipmentCreateData!]!
 ) {
   materialShipmentCreate(dailyReportId: $dailyReportId, data: $data) {
     ...MaterialShipmentCardSnippet
