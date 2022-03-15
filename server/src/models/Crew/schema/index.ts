@@ -1,11 +1,20 @@
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
-import { prop, Ref } from "@typegoose/typegoose";
+import { post, prop, Ref } from "@typegoose/typegoose";
 import { CrewTypes } from "@typescript/crew";
-import { EmployeeClass, JobsiteClass, VehicleClass } from "@models";
+import {
+  CrewDocument,
+  EmployeeClass,
+  JobsiteClass,
+  VehicleClass,
+} from "@models";
 import SchemaVersions from "@constants/SchemaVersions";
+import { ES_updateCrew } from "@elasticsearch/helpers/crew";
 
 @ObjectType()
+@post<CrewDocument>("save", async (crew) => {
+  await ES_updateCrew(crew);
+})
 export class CrewSchema {
   @Field(() => ID, { nullable: false })
   public _id!: Types.ObjectId;
@@ -15,8 +24,8 @@ export class CrewSchema {
   public name!: string;
 
   @Field({ nullable: false })
-  @prop({ required: true, enum: CrewTypes })
-  public type!: CrewTypes;
+  @prop({ required: true })
+  public type!: string;
 
   @Field(() => [EmployeeClass])
   @prop({ ref: () => EmployeeClass, default: [] })

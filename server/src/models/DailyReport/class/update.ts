@@ -1,9 +1,11 @@
 import {
   DailyReportDocument,
+  EmployeeDocument,
   EmployeeWorkDocument,
   MaterialShipmentDocument,
   ProductionDocument,
   ReportNoteDocument,
+  VehicleDocument,
   VehicleWorkDocument,
 } from "@models";
 import { IDailyReportUpdate } from "@typescript/dailyReport";
@@ -136,6 +138,52 @@ const setReportNote = (
   });
 };
 
+const addTemporaryEmployee = (
+  dailyReport: DailyReportDocument,
+  employee: EmployeeDocument
+) => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      const crew = await dailyReport.getCrew();
+      if (crew.employees.includes(employee._id.toString()))
+        throw new Error(
+          "dailyReport.addTemporaryEmployee: this employee already belongs to the crew"
+        );
+
+      if (!dailyReport.temporaryEmployees.includes(employee._id.toString())) {
+        dailyReport.temporaryEmployees.push(employee._id);
+      }
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const addTemporaryVehicle = (
+  dailyReport: DailyReportDocument,
+  vehicle: VehicleDocument
+) => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      const crew = await dailyReport.getCrew();
+      if (crew.vehicles.includes(vehicle._id.toString()))
+        throw new Error(
+          "dailyReport.addTemporaryVehicle: this vehicle already belongs to the crew"
+        );
+
+      if (!dailyReport.temporaryVehicles.includes(vehicle._id.toString())) {
+        dailyReport.temporaryVehicles.push(vehicle._id);
+      }
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   document,
   date,
@@ -145,4 +193,6 @@ export default {
   addProduction,
   addMaterialShipment,
   setReportNote,
+  addTemporaryEmployee,
+  addTemporaryVehicle,
 };

@@ -5,6 +5,8 @@ import {
   CrewDocument,
   DailyReportDocument,
   DailyReportModel,
+  Employee,
+  EmployeeDocument,
   EmployeeWork,
   EmployeeWorkDocument,
   Jobsite,
@@ -15,11 +17,14 @@ import {
   ProductionDocument,
   ReportNote,
   ReportNoteDocument,
+  Vehicle,
+  VehicleDocument,
   VehicleWork,
   VehicleWorkDocument,
 } from "@models";
 import {
   GetByIDOptions,
+  Id,
   IListOptions,
   ISearchOptions,
 } from "@typescript/models";
@@ -27,6 +32,7 @@ import populateOptions from "@utils/populateOptions";
 import ElasticsearchClient from "@elasticsearch/client";
 import { IDailyReportSearchObject } from "@typescript/dailyReport";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
+import dayjs from "dayjs";
 
 /**
  * ----- Static Methods -----
@@ -146,6 +152,30 @@ const list = (
   });
 };
 
+const existingReport = (
+  DailyReport: DailyReportModel,
+  jobsiteId: Id,
+  crewId: Id,
+  date: Date
+) => {
+  return new Promise<DailyReportDocument | null>(async (resolve, reject) => {
+    try {
+      const dailyReport = await DailyReport.findOne({
+        crew: crewId,
+        jobsite: jobsiteId,
+        date: {
+          $gte: dayjs(date).startOf("day").toDate(),
+          $lt: dayjs(date).endOf("day").toDate(),
+        },
+      });
+
+      resolve(dailyReport);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 /**
  * ----- Methods -----
  */
@@ -253,7 +283,35 @@ const reportNote = (dailyReport: DailyReportDocument) => {
         const reportNote = await ReportNote.getById(dailyReport.reportNote);
 
         resolve(reportNote);
-      } else return null;
+      } else resolve(null);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const temporaryEmployees = (dailyReport: DailyReportDocument) => {
+  return new Promise<EmployeeDocument[]>(async (resolve, reject) => {
+    try {
+      const employees = await Employee.find({
+        _id: { $in: dailyReport.temporaryEmployees },
+      });
+
+      resolve(employees);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const temporaryVehicles = (dailyReport: DailyReportDocument) => {
+  return new Promise<VehicleDocument[]>(async (resolve, reject) => {
+    try {
+      const vehicles = await Vehicle.find({
+        _id: { $in: dailyReport.temporaryVehicles },
+      });
+
+      resolve(vehicles);
     } catch (e) {
       reject(e);
     }
@@ -264,6 +322,7 @@ export default {
   byId,
   search,
   list,
+  existingReport,
   jobsite,
   crew,
   employeeWork,
@@ -271,4 +330,6 @@ export default {
   production,
   materialShipments,
   reportNote,
+  temporaryEmployees,
+  temporaryVehicles,
 };

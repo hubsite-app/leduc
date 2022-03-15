@@ -1,3 +1,4 @@
+import { SearchOptions } from "@graphql/types/query";
 import {
   Crew,
   CrewClass,
@@ -8,13 +9,14 @@ import {
 } from "@models";
 import {
   Arg,
+  Authorized,
   FieldResolver,
   Mutation,
   Query,
   Resolver,
   Root,
 } from "type-graphql";
-import mutations from "./mutations";
+import mutations, { CrewCreateData } from "./mutations";
 
 @Resolver(() => CrewClass)
 export default class CrewResolver {
@@ -51,9 +53,26 @@ export default class CrewResolver {
     return Crew.getList();
   }
 
+  @Query(() => [CrewClass])
+  async crewSearch(
+    @Arg("searchString") searchString: string,
+    @Arg("options", () => SearchOptions, { nullable: true })
+    options: SearchOptions
+  ) {
+    return (await Crew.search(searchString, options)).map(
+      (object) => object.crew
+    );
+  }
+
   /**
    * ----- Mutations -----
    */
+
+  @Authorized()
+  @Mutation(() => CrewClass)
+  async crewCreate(@Arg("data") data: CrewCreateData) {
+    return mutations.create(data);
+  }
 
   @Mutation(() => CrewClass)
   async crewAddEmployee(

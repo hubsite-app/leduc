@@ -27,6 +27,12 @@ const _ids = {
     base_laborer_3: {
       _id: Types.ObjectId("6215623f22057ba3cfbd959a"),
     },
+    temp_1: {
+      _id: Types.ObjectId("622fcce9e0f9c395301fd290"),
+    },
+    temp_2: {
+      _id: Types.ObjectId("622fcdf33c054c0d1a5f6efc"),
+    },
   },
   vehicles: {
     personnel_truck_1: {
@@ -37,6 +43,12 @@ const _ids = {
     },
     gravel_truck_1: {
       _id: Types.ObjectId("621565c67fbbbddff42b17e0"),
+    },
+    temp_1: {
+      _id: Types.ObjectId("622fd2be8e227b86fa70011b"),
+    },
+    temp_2: {
+      _id: Types.ObjectId("622fd2f7def783383cb5382d"),
     },
   },
   jobsites: {

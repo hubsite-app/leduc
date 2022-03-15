@@ -8,7 +8,7 @@ import TextDropdown from "../Common/forms/TextDropdown";
 import { ITextField } from "../Common/forms/TextField";
 
 interface IVehicleSearch extends ITextField {
-  vehicleSelected: (question: { _id: string }) => void;
+  vehicleSelected: (crew: { _id: string }) => void;
   handleSubmit?: (name: string) => void;
   blacklistedIds?: string[];
 }

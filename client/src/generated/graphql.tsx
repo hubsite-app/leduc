@@ -28,6 +28,11 @@ export type CrewClass = {
   vehicles: Array<VehicleClass>;
 };
 
+export type CrewCreateData = {
+  name: Scalars['String'];
+  type: Scalars['String'];
+};
+
 export type DailyReportClass = {
   __typename?: 'DailyReportClass';
   _id: Scalars['ID'];
@@ -42,7 +47,15 @@ export type DailyReportClass = {
   productions: Array<ProductionClass>;
   reportNote?: Maybe<ReportNoteClass>;
   schemaVersion: Scalars['Float'];
+  temporaryEmployees: Array<EmployeeClass>;
+  temporaryVehicles: Array<VehicleClass>;
   vehicleWork: Array<VehicleWorkClass>;
+};
+
+export type DailyReportCreateData = {
+  crewId: Scalars['String'];
+  date: Scalars['DateTime'];
+  jobsiteId: Scalars['String'];
 };
 
 export type DailyReportNoteUpdateData = {
@@ -110,6 +123,12 @@ export type JobsiteClass = {
   schemaVersion: Scalars['Float'];
 };
 
+export type JobsiteCreateData = {
+  description?: InputMaybe<Scalars['String']>;
+  jobcode: Scalars['String'];
+  name: Scalars['String'];
+};
+
 export type ListOptionData = {
   offset?: InputMaybe<Scalars['Float']>;
   pageLimit?: InputMaybe<Scalars['Float']>;
@@ -165,15 +184,20 @@ export type Mutation = {
   __typename?: 'Mutation';
   crewAddEmployee: CrewClass;
   crewAddVehicle: CrewClass;
+  crewCreate: CrewClass;
   crewRemoveEmployee: CrewClass;
   crewRemoveVehicle: CrewClass;
+  dailyReportAddTemporaryEmployee: DailyReportClass;
+  dailyReportAddTemporaryVehicle: DailyReportClass;
   dailyReportApprovalUpdate: DailyReportClass;
+  dailyReportCreate: DailyReportClass;
   dailyReportNoteUpdate: DailyReportClass;
   dailyReportUpdate: DailyReportClass;
   employeeCreate: EmployeeClass;
   employeeWorkCreate: Array<EmployeeWorkClass>;
   employeeWorkDelete: Scalars['String'];
   employeeWorkUpdate: EmployeeWorkClass;
+  jobsiteCreate: JobsiteClass;
   login: Scalars['String'];
   materialShipmentCreate: MaterialShipmentClass;
   materialShipmentDelete: Scalars['String'];
@@ -203,6 +227,11 @@ export type MutationCrewAddVehicleArgs = {
 };
 
 
+export type MutationCrewCreateArgs = {
+  data: CrewCreateData;
+};
+
+
 export type MutationCrewRemoveEmployeeArgs = {
   crewId: Scalars['String'];
   employeeId: Scalars['String'];
@@ -215,9 +244,26 @@ export type MutationCrewRemoveVehicleArgs = {
 };
 
 
+export type MutationDailyReportAddTemporaryEmployeeArgs = {
+  employeeId: Scalars['String'];
+  id: Scalars['String'];
+};
+
+
+export type MutationDailyReportAddTemporaryVehicleArgs = {
+  id: Scalars['String'];
+  vehicleId: Scalars['String'];
+};
+
+
 export type MutationDailyReportApprovalUpdateArgs = {
   approved: Scalars['Boolean'];
   id: Scalars['String'];
+};
+
+
+export type MutationDailyReportCreateArgs = {
+  data: DailyReportCreateData;
 };
 
 
@@ -253,6 +299,11 @@ export type MutationEmployeeWorkDeleteArgs = {
 export type MutationEmployeeWorkUpdateArgs = {
   data: EmployeeWorkUpdateData;
   id: Scalars['String'];
+};
+
+
+export type MutationJobsiteCreateArgs = {
+  data: JobsiteCreateData;
 };
 
 
@@ -369,6 +420,7 @@ export type Query = {
   __typename?: 'Query';
   crew: CrewClass;
   crewList: Array<CrewClass>;
+  crewSearch: Array<CrewClass>;
   currentUser: UserClass;
   dailyReport: DailyReportClass;
   dailyReports: Array<DailyReportClass>;
@@ -387,6 +439,12 @@ export type Query = {
 
 export type QueryCrewArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryCrewSearchArgs = {
+  options?: InputMaybe<SearchOptions>;
+  searchString: Scalars['String'];
 };
 
 
@@ -565,7 +623,7 @@ export type CrewSsrSnippetFragment = { __typename?: 'CrewClass', _id: string, na
 
 export type DailyReportCardSnippetFragment = { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } };
 
-export type DailyReportFullSnippetFragment = { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null };
+export type DailyReportFullSnippetFragment = { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null, temporaryEmployees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, temporaryVehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> };
 
 export type DailyReportPdfSnippetFragment = { __typename?: 'DailyReportClass', date: any, crew: { __typename?: 'CrewClass', name: string }, jobsite: { __typename?: 'JobsiteClass', name: string, jobcode?: string | null }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null };
 
@@ -578,6 +636,8 @@ export type EmployeeCardSnippetFragment = { __typename?: 'EmployeeClass', _id: s
 export type EmployeeFullSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, user?: { __typename?: 'UserClass', _id: string, name: string, email: string, admin: boolean } | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, signup?: { __typename?: 'SignupClass', _id: string } | null };
 
 export type EmployeeSsrSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null };
+
+export type JobsiteCardSnippetFragment = { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null };
 
 export type JobsiteFullSnippetFragment = { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null, description?: string | null, location_url?: string | null, active: boolean, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, dailyReports: Array<{ __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } }> };
 
@@ -619,6 +679,13 @@ export type CrewAddVehicleMutationVariables = Exact<{
 
 export type CrewAddVehicleMutation = { __typename?: 'Mutation', crewAddVehicle: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> } };
 
+export type CrewCreateMutationVariables = Exact<{
+  data: CrewCreateData;
+}>;
+
+
+export type CrewCreateMutation = { __typename?: 'Mutation', crewCreate: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> } };
+
 export type CrewRemoveEmployeeMutationVariables = Exact<{
   crewId: Scalars['String'];
   employeeId: Scalars['String'];
@@ -635,13 +702,36 @@ export type CrewRemoveVehicleMutationVariables = Exact<{
 
 export type CrewRemoveVehicleMutation = { __typename?: 'Mutation', crewRemoveVehicle: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> } };
 
+export type DailyReportAddTemporaryEmployeeMutationVariables = Exact<{
+  id: Scalars['String'];
+  employeeId: Scalars['String'];
+}>;
+
+
+export type DailyReportAddTemporaryEmployeeMutation = { __typename?: 'Mutation', dailyReportAddTemporaryEmployee: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null, temporaryEmployees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, temporaryVehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> } };
+
+export type DailyReportAddTemporaryVehicleMutationVariables = Exact<{
+  id: Scalars['String'];
+  vehicleId: Scalars['String'];
+}>;
+
+
+export type DailyReportAddTemporaryVehicleMutation = { __typename?: 'Mutation', dailyReportAddTemporaryVehicle: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null, temporaryEmployees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, temporaryVehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> } };
+
 export type DailyReportApprovalUpdateMutationVariables = Exact<{
   id: Scalars['String'];
   approved: Scalars['Boolean'];
 }>;
 
 
-export type DailyReportApprovalUpdateMutation = { __typename?: 'Mutation', dailyReportApprovalUpdate: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null } };
+export type DailyReportApprovalUpdateMutation = { __typename?: 'Mutation', dailyReportApprovalUpdate: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null, temporaryEmployees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, temporaryVehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> } };
+
+export type DailyReportCreateMutationVariables = Exact<{
+  data: DailyReportCreateData;
+}>;
+
+
+export type DailyReportCreateMutation = { __typename?: 'Mutation', dailyReportCreate: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null, temporaryEmployees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, temporaryVehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> } };
 
 export type DailyReportNoteUpdateMutationVariables = Exact<{
   id: Scalars['String'];
@@ -649,7 +739,7 @@ export type DailyReportNoteUpdateMutationVariables = Exact<{
 }>;
 
 
-export type DailyReportNoteUpdateMutation = { __typename?: 'Mutation', dailyReportNoteUpdate: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null } };
+export type DailyReportNoteUpdateMutation = { __typename?: 'Mutation', dailyReportNoteUpdate: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null, temporaryEmployees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, temporaryVehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> } };
 
 export type DailyReportUpdateMutationVariables = Exact<{
   id: Scalars['String'];
@@ -657,7 +747,7 @@ export type DailyReportUpdateMutationVariables = Exact<{
 }>;
 
 
-export type DailyReportUpdateMutation = { __typename?: 'Mutation', dailyReportUpdate: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null } };
+export type DailyReportUpdateMutation = { __typename?: 'Mutation', dailyReportUpdate: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null, temporaryEmployees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, temporaryVehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> } };
 
 export type EmployeeCreateMutationVariables = Exact<{
   data: EmployeeCreateData;
@@ -689,6 +779,13 @@ export type EmployeeWorkUpdateMutationVariables = Exact<{
 
 
 export type EmployeeWorkUpdateMutation = { __typename?: 'Mutation', employeeWorkUpdate: { __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } } };
+
+export type JobsiteCreateMutationVariables = Exact<{
+  data: JobsiteCreateData;
+}>;
+
+
+export type JobsiteCreateMutation = { __typename?: 'Mutation', jobsiteCreate: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null, description?: string | null, location_url?: string | null, active: boolean, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, dailyReports: Array<{ __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } }> } };
 
 export type LoginMutationVariables = Exact<{
   data: LoginData;
@@ -797,6 +894,14 @@ export type VehicleWorkUpdateMutationVariables = Exact<{
 
 export type VehicleWorkUpdateMutation = { __typename?: 'Mutation', vehicleWorkUpdate: { __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } } };
 
+export type CrewSearchQueryVariables = Exact<{
+  searchString: Scalars['String'];
+  options?: InputMaybe<SearchOptions>;
+}>;
+
+
+export type CrewSearchQuery = { __typename?: 'Query', crewSearch: Array<{ __typename?: 'CrewClass', _id: string, name: string }> };
+
 export type CrewFullQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -821,7 +926,7 @@ export type DailyReportFullQueryVariables = Exact<{
 }>;
 
 
-export type DailyReportFullQuery = { __typename?: 'Query', dailyReport: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null } };
+export type DailyReportFullQuery = { __typename?: 'Query', dailyReport: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: string, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle: { __typename?: 'VehicleClass', _id: string, name: string } }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', note: string } | null, temporaryEmployees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null }>, temporaryVehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> } };
 
 export type DailyReportPdfQueryVariables = Exact<{
   id: Scalars['String'];
@@ -865,6 +970,14 @@ export type EmployeeSsrQueryVariables = Exact<{
 
 
 export type EmployeeSsrQuery = { __typename?: 'Query', employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null } };
+
+export type JobsiteSearchQueryVariables = Exact<{
+  searchString: Scalars['String'];
+  options?: InputMaybe<SearchOptions>;
+}>;
+
+
+export type JobsiteSearchQuery = { __typename?: 'Query', jobsiteSearch: Array<{ __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null }> };
 
 export type JobsiteFullQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1026,13 +1139,21 @@ export const DailyReportFullSnippetFragmentDoc = gql`
   reportNote {
     ...ReportNoteFullSnippet
   }
+  temporaryEmployees {
+    ...EmployeeCardSnippet
+  }
+  temporaryVehicles {
+    ...VehicleCardSnippet
+  }
 }
     ${CrewFullSnippetFragmentDoc}
 ${EmployeeWorkCardSnippetFragmentDoc}
 ${VehicleWorkCardSnippetFragmentDoc}
 ${ProductionCardSnippetFragmentDoc}
 ${MaterialShipmentCardSnippetFragmentDoc}
-${ReportNoteFullSnippetFragmentDoc}`;
+${ReportNoteFullSnippetFragmentDoc}
+${EmployeeCardSnippetFragmentDoc}
+${VehicleCardSnippetFragmentDoc}`;
 export const DailyReportPdfSnippetFragmentDoc = gql`
     fragment DailyReportPDFSnippet on DailyReportClass {
   date
@@ -1151,6 +1272,13 @@ export const JobsiteSsrSnippetFragmentDoc = gql`
   jobcode
 }
     `;
+export const JobsiteCardSnippetFragmentDoc = gql`
+    fragment JobsiteCardSnippet on JobsiteClass {
+  _id
+  name
+  jobcode
+}
+    `;
 export const SearchSnippetFragmentDoc = gql`
     fragment SearchSnippet on SearchClass {
   score
@@ -1166,15 +1294,14 @@ export const SearchSnippetFragmentDoc = gql`
     vehicleCode
   }
   jobsite {
-    _id
-    name
-    jobcode
+    ...JobsiteCardSnippet
   }
   dailyReport {
     ...DailyReportCardSnippet
   }
 }
-    ${DailyReportCardSnippetFragmentDoc}`;
+    ${JobsiteCardSnippetFragmentDoc}
+${DailyReportCardSnippetFragmentDoc}`;
 export const SignupFullSnippetFragmentDoc = gql`
     fragment SignupFullSnippet on SignupClass {
   _id
@@ -1273,6 +1400,39 @@ export function useCrewAddVehicleMutation(baseOptions?: Apollo.MutationHookOptio
 export type CrewAddVehicleMutationHookResult = ReturnType<typeof useCrewAddVehicleMutation>;
 export type CrewAddVehicleMutationResult = Apollo.MutationResult<CrewAddVehicleMutation>;
 export type CrewAddVehicleMutationOptions = Apollo.BaseMutationOptions<CrewAddVehicleMutation, CrewAddVehicleMutationVariables>;
+export const CrewCreateDocument = gql`
+    mutation CrewCreate($data: CrewCreateData!) {
+  crewCreate(data: $data) {
+    ...CrewFullSnippet
+  }
+}
+    ${CrewFullSnippetFragmentDoc}`;
+export type CrewCreateMutationFn = Apollo.MutationFunction<CrewCreateMutation, CrewCreateMutationVariables>;
+
+/**
+ * __useCrewCreateMutation__
+ *
+ * To run a mutation, you first call `useCrewCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCrewCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [crewCreateMutation, { data, loading, error }] = useCrewCreateMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCrewCreateMutation(baseOptions?: Apollo.MutationHookOptions<CrewCreateMutation, CrewCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CrewCreateMutation, CrewCreateMutationVariables>(CrewCreateDocument, options);
+      }
+export type CrewCreateMutationHookResult = ReturnType<typeof useCrewCreateMutation>;
+export type CrewCreateMutationResult = Apollo.MutationResult<CrewCreateMutation>;
+export type CrewCreateMutationOptions = Apollo.BaseMutationOptions<CrewCreateMutation, CrewCreateMutationVariables>;
 export const CrewRemoveEmployeeDocument = gql`
     mutation CrewRemoveEmployee($crewId: String!, $employeeId: String!) {
   crewRemoveEmployee(crewId: $crewId, employeeId: $employeeId) {
@@ -1341,6 +1501,74 @@ export function useCrewRemoveVehicleMutation(baseOptions?: Apollo.MutationHookOp
 export type CrewRemoveVehicleMutationHookResult = ReturnType<typeof useCrewRemoveVehicleMutation>;
 export type CrewRemoveVehicleMutationResult = Apollo.MutationResult<CrewRemoveVehicleMutation>;
 export type CrewRemoveVehicleMutationOptions = Apollo.BaseMutationOptions<CrewRemoveVehicleMutation, CrewRemoveVehicleMutationVariables>;
+export const DailyReportAddTemporaryEmployeeDocument = gql`
+    mutation DailyReportAddTemporaryEmployee($id: String!, $employeeId: String!) {
+  dailyReportAddTemporaryEmployee(id: $id, employeeId: $employeeId) {
+    ...DailyReportFullSnippet
+  }
+}
+    ${DailyReportFullSnippetFragmentDoc}`;
+export type DailyReportAddTemporaryEmployeeMutationFn = Apollo.MutationFunction<DailyReportAddTemporaryEmployeeMutation, DailyReportAddTemporaryEmployeeMutationVariables>;
+
+/**
+ * __useDailyReportAddTemporaryEmployeeMutation__
+ *
+ * To run a mutation, you first call `useDailyReportAddTemporaryEmployeeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDailyReportAddTemporaryEmployeeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [dailyReportAddTemporaryEmployeeMutation, { data, loading, error }] = useDailyReportAddTemporaryEmployeeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      employeeId: // value for 'employeeId'
+ *   },
+ * });
+ */
+export function useDailyReportAddTemporaryEmployeeMutation(baseOptions?: Apollo.MutationHookOptions<DailyReportAddTemporaryEmployeeMutation, DailyReportAddTemporaryEmployeeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DailyReportAddTemporaryEmployeeMutation, DailyReportAddTemporaryEmployeeMutationVariables>(DailyReportAddTemporaryEmployeeDocument, options);
+      }
+export type DailyReportAddTemporaryEmployeeMutationHookResult = ReturnType<typeof useDailyReportAddTemporaryEmployeeMutation>;
+export type DailyReportAddTemporaryEmployeeMutationResult = Apollo.MutationResult<DailyReportAddTemporaryEmployeeMutation>;
+export type DailyReportAddTemporaryEmployeeMutationOptions = Apollo.BaseMutationOptions<DailyReportAddTemporaryEmployeeMutation, DailyReportAddTemporaryEmployeeMutationVariables>;
+export const DailyReportAddTemporaryVehicleDocument = gql`
+    mutation DailyReportAddTemporaryVehicle($id: String!, $vehicleId: String!) {
+  dailyReportAddTemporaryVehicle(id: $id, vehicleId: $vehicleId) {
+    ...DailyReportFullSnippet
+  }
+}
+    ${DailyReportFullSnippetFragmentDoc}`;
+export type DailyReportAddTemporaryVehicleMutationFn = Apollo.MutationFunction<DailyReportAddTemporaryVehicleMutation, DailyReportAddTemporaryVehicleMutationVariables>;
+
+/**
+ * __useDailyReportAddTemporaryVehicleMutation__
+ *
+ * To run a mutation, you first call `useDailyReportAddTemporaryVehicleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDailyReportAddTemporaryVehicleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [dailyReportAddTemporaryVehicleMutation, { data, loading, error }] = useDailyReportAddTemporaryVehicleMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      vehicleId: // value for 'vehicleId'
+ *   },
+ * });
+ */
+export function useDailyReportAddTemporaryVehicleMutation(baseOptions?: Apollo.MutationHookOptions<DailyReportAddTemporaryVehicleMutation, DailyReportAddTemporaryVehicleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DailyReportAddTemporaryVehicleMutation, DailyReportAddTemporaryVehicleMutationVariables>(DailyReportAddTemporaryVehicleDocument, options);
+      }
+export type DailyReportAddTemporaryVehicleMutationHookResult = ReturnType<typeof useDailyReportAddTemporaryVehicleMutation>;
+export type DailyReportAddTemporaryVehicleMutationResult = Apollo.MutationResult<DailyReportAddTemporaryVehicleMutation>;
+export type DailyReportAddTemporaryVehicleMutationOptions = Apollo.BaseMutationOptions<DailyReportAddTemporaryVehicleMutation, DailyReportAddTemporaryVehicleMutationVariables>;
 export const DailyReportApprovalUpdateDocument = gql`
     mutation DailyReportApprovalUpdate($id: String!, $approved: Boolean!) {
   dailyReportApprovalUpdate(id: $id, approved: $approved) {
@@ -1375,6 +1603,39 @@ export function useDailyReportApprovalUpdateMutation(baseOptions?: Apollo.Mutati
 export type DailyReportApprovalUpdateMutationHookResult = ReturnType<typeof useDailyReportApprovalUpdateMutation>;
 export type DailyReportApprovalUpdateMutationResult = Apollo.MutationResult<DailyReportApprovalUpdateMutation>;
 export type DailyReportApprovalUpdateMutationOptions = Apollo.BaseMutationOptions<DailyReportApprovalUpdateMutation, DailyReportApprovalUpdateMutationVariables>;
+export const DailyReportCreateDocument = gql`
+    mutation DailyReportCreate($data: DailyReportCreateData!) {
+  dailyReportCreate(data: $data) {
+    ...DailyReportFullSnippet
+  }
+}
+    ${DailyReportFullSnippetFragmentDoc}`;
+export type DailyReportCreateMutationFn = Apollo.MutationFunction<DailyReportCreateMutation, DailyReportCreateMutationVariables>;
+
+/**
+ * __useDailyReportCreateMutation__
+ *
+ * To run a mutation, you first call `useDailyReportCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDailyReportCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [dailyReportCreateMutation, { data, loading, error }] = useDailyReportCreateMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useDailyReportCreateMutation(baseOptions?: Apollo.MutationHookOptions<DailyReportCreateMutation, DailyReportCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DailyReportCreateMutation, DailyReportCreateMutationVariables>(DailyReportCreateDocument, options);
+      }
+export type DailyReportCreateMutationHookResult = ReturnType<typeof useDailyReportCreateMutation>;
+export type DailyReportCreateMutationResult = Apollo.MutationResult<DailyReportCreateMutation>;
+export type DailyReportCreateMutationOptions = Apollo.BaseMutationOptions<DailyReportCreateMutation, DailyReportCreateMutationVariables>;
 export const DailyReportNoteUpdateDocument = gql`
     mutation DailyReportNoteUpdate($id: String!, $data: DailyReportNoteUpdateData!) {
   dailyReportNoteUpdate(id: $id, data: $data) {
@@ -1576,6 +1837,39 @@ export function useEmployeeWorkUpdateMutation(baseOptions?: Apollo.MutationHookO
 export type EmployeeWorkUpdateMutationHookResult = ReturnType<typeof useEmployeeWorkUpdateMutation>;
 export type EmployeeWorkUpdateMutationResult = Apollo.MutationResult<EmployeeWorkUpdateMutation>;
 export type EmployeeWorkUpdateMutationOptions = Apollo.BaseMutationOptions<EmployeeWorkUpdateMutation, EmployeeWorkUpdateMutationVariables>;
+export const JobsiteCreateDocument = gql`
+    mutation JobsiteCreate($data: JobsiteCreateData!) {
+  jobsiteCreate(data: $data) {
+    ...JobsiteFullSnippet
+  }
+}
+    ${JobsiteFullSnippetFragmentDoc}`;
+export type JobsiteCreateMutationFn = Apollo.MutationFunction<JobsiteCreateMutation, JobsiteCreateMutationVariables>;
+
+/**
+ * __useJobsiteCreateMutation__
+ *
+ * To run a mutation, you first call `useJobsiteCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJobsiteCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [jobsiteCreateMutation, { data, loading, error }] = useJobsiteCreateMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useJobsiteCreateMutation(baseOptions?: Apollo.MutationHookOptions<JobsiteCreateMutation, JobsiteCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<JobsiteCreateMutation, JobsiteCreateMutationVariables>(JobsiteCreateDocument, options);
+      }
+export type JobsiteCreateMutationHookResult = ReturnType<typeof useJobsiteCreateMutation>;
+export type JobsiteCreateMutationResult = Apollo.MutationResult<JobsiteCreateMutation>;
+export type JobsiteCreateMutationOptions = Apollo.BaseMutationOptions<JobsiteCreateMutation, JobsiteCreateMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($data: LoginData!) {
   login(data: $data)
@@ -2037,6 +2331,42 @@ export function useVehicleWorkUpdateMutation(baseOptions?: Apollo.MutationHookOp
 export type VehicleWorkUpdateMutationHookResult = ReturnType<typeof useVehicleWorkUpdateMutation>;
 export type VehicleWorkUpdateMutationResult = Apollo.MutationResult<VehicleWorkUpdateMutation>;
 export type VehicleWorkUpdateMutationOptions = Apollo.BaseMutationOptions<VehicleWorkUpdateMutation, VehicleWorkUpdateMutationVariables>;
+export const CrewSearchDocument = gql`
+    query CrewSearch($searchString: String!, $options: SearchOptions) {
+  crewSearch(searchString: $searchString, options: $options) {
+    ...CrewCardSnippet
+  }
+}
+    ${CrewCardSnippetFragmentDoc}`;
+
+/**
+ * __useCrewSearchQuery__
+ *
+ * To run a query within a React component, call `useCrewSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCrewSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCrewSearchQuery({
+ *   variables: {
+ *      searchString: // value for 'searchString'
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useCrewSearchQuery(baseOptions: Apollo.QueryHookOptions<CrewSearchQuery, CrewSearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CrewSearchQuery, CrewSearchQueryVariables>(CrewSearchDocument, options);
+      }
+export function useCrewSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CrewSearchQuery, CrewSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CrewSearchQuery, CrewSearchQueryVariables>(CrewSearchDocument, options);
+        }
+export type CrewSearchQueryHookResult = ReturnType<typeof useCrewSearchQuery>;
+export type CrewSearchLazyQueryHookResult = ReturnType<typeof useCrewSearchLazyQuery>;
+export type CrewSearchQueryResult = Apollo.QueryResult<CrewSearchQuery, CrewSearchQueryVariables>;
 export const CrewFullDocument = gql`
     query CrewFull($id: String!) {
   crew(id: $id) {
@@ -2387,6 +2717,42 @@ export function useEmployeeSsrLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type EmployeeSsrQueryHookResult = ReturnType<typeof useEmployeeSsrQuery>;
 export type EmployeeSsrLazyQueryHookResult = ReturnType<typeof useEmployeeSsrLazyQuery>;
 export type EmployeeSsrQueryResult = Apollo.QueryResult<EmployeeSsrQuery, EmployeeSsrQueryVariables>;
+export const JobsiteSearchDocument = gql`
+    query JobsiteSearch($searchString: String!, $options: SearchOptions) {
+  jobsiteSearch(searchString: $searchString, options: $options) {
+    ...JobsiteCardSnippet
+  }
+}
+    ${JobsiteCardSnippetFragmentDoc}`;
+
+/**
+ * __useJobsiteSearchQuery__
+ *
+ * To run a query within a React component, call `useJobsiteSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJobsiteSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJobsiteSearchQuery({
+ *   variables: {
+ *      searchString: // value for 'searchString'
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useJobsiteSearchQuery(baseOptions: Apollo.QueryHookOptions<JobsiteSearchQuery, JobsiteSearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<JobsiteSearchQuery, JobsiteSearchQueryVariables>(JobsiteSearchDocument, options);
+      }
+export function useJobsiteSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<JobsiteSearchQuery, JobsiteSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<JobsiteSearchQuery, JobsiteSearchQueryVariables>(JobsiteSearchDocument, options);
+        }
+export type JobsiteSearchQueryHookResult = ReturnType<typeof useJobsiteSearchQuery>;
+export type JobsiteSearchLazyQueryHookResult = ReturnType<typeof useJobsiteSearchLazyQuery>;
+export type JobsiteSearchQueryResult = Apollo.QueryResult<JobsiteSearchQuery, JobsiteSearchQueryVariables>;
 export const JobsiteFullDocument = gql`
     query JobsiteFull($id: String!) {
   jobsite(id: $id) {

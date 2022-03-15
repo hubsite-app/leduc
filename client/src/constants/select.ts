@@ -6,3 +6,12 @@ export const MaterialShipmentVehicleTypes = [
   "Wagon",
   "Delivered",
 ];
+
+export const CrewTypes = [
+  "Base",
+  "Paving",
+  "Tech",
+  "Shop",
+  "Patch",
+  "Concrete",
+];

@@ -5,6 +5,8 @@ export interface SeededVehicles {
   personnel_truck_1: VehicleDocument;
   skidsteer_1: VehicleDocument;
   gravel_truck_1: VehicleDocument;
+  temp_1: VehicleDocument;
+  temp_2: VehicleDocument;
 }
 
 const createVehicles = () => {
@@ -34,10 +36,26 @@ const createVehicles = () => {
         crews: [_ids.crews.base_1._id],
       });
 
+      const temp_1 = new Vehicle({
+        _id: _ids.vehicles.temp_1._id,
+        name: "temp-1",
+        vehicleCode: "tmp-1",
+        vehicleType: "Truck",
+      });
+
+      const temp_2 = new Vehicle({
+        _id: _ids.vehicles.temp_2._id,
+        name: "temp-2",
+        vehicleCode: "tmp-2",
+        vehicleType: "Truck",
+      });
+
       const vehicles = {
         personnel_truck_1,
         skidsteer_1,
         gravel_truck_1,
+        temp_1,
+        temp_2,
       };
 
       for (let i = 0; i < Object.values(vehicles).length; i++) {

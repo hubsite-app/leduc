@@ -2,6 +2,7 @@ import {
   Box,
   Checkbox,
   Flex,
+  Heading,
   IconButton,
   SimpleGrid,
   Text,
@@ -14,12 +15,14 @@ import { FiPlus, FiX } from "react-icons/fi";
 import {
   DailyReportFullDocument,
   DailyReportFullSnippetFragment,
+  useDailyReportAddTemporaryVehicleMutation,
   useVehicleWorkCreateMutation,
   VehicleWorkCreateData,
 } from "../../../../../generated/graphql";
 import ErrorMessage from "../../../../Common/ErrorMessage";
 import SubmitButton from "../../../../Common/forms/SubmitButton";
 import TextField from "../../../../Common/forms/TextField";
+import VehicleSearch from "../../../../Search/VehicleSearch";
 
 type JobErrors = { jobTitle?: string; hours?: string };
 
@@ -60,6 +63,9 @@ const VehicleWorkCreateForm = ({
   const [formErrors, setFormErrors] = React.useState<FormErrors>([]);
 
   const [hasTriedSubmit, setHasTriedSubmit] = React.useState(false);
+
+  const [addTempVehicle, { loading: tempVehicleLoading }] =
+    useDailyReportAddTemporaryVehicleMutation();
 
   const [create, { loading }] = useVehicleWorkCreateMutation({
     refetchQueries: [DailyReportFullDocument],
@@ -324,7 +330,10 @@ const VehicleWorkCreateForm = ({
             />
           </Box>
 
-          {/* EMPLOYEES */}
+          {/* VEHICLES */}
+          <Heading ml={2} pt={2} size="sm" color="gray.600">
+            Crew
+          </Heading>
           {formErrors[dataIndex]?.vehicles && (
             <Text color="red.500">{formErrors[dataIndex]?.vehicles}</Text>
           )}
@@ -334,6 +343,37 @@ const VehicleWorkCreateForm = ({
                 key={vehicle._id}
                 isChecked={data.vehicles.includes(vehicle._id)}
                 onChange={() => toggleVehicle(vehicle._id, dataIndex)}
+                isDisabled={loading}
+              >
+                {vehicle.name}
+              </Checkbox>
+            ))}
+          </SimpleGrid>
+
+          {/* TEMPORARY VEHICLES */}
+          <Heading ml={2} pt={2} size="sm" color="gray.600">
+            Temporary Vehicles
+          </Heading>
+          <Box my={2} mx={4}>
+            <VehicleSearch
+              placeholder="Add temporary vehicle"
+              vehicleSelected={(vehicle) =>
+                addTempVehicle({
+                  variables: {
+                    id: dailyReport._id,
+                    vehicleId: vehicle._id,
+                  },
+                })
+              }
+              isDisabled={tempVehicleLoading}
+            />
+          </Box>
+          <SimpleGrid columns={[2, 2, 4]} m={2} spacing={2}>
+            {dailyReport.temporaryVehicles.map((vehicle) => (
+              <Checkbox
+                isChecked={data.vehicles.includes(vehicle._id)}
+                onChange={() => toggleVehicle(vehicle._id, dataIndex)}
+                key={vehicle._id}
                 isDisabled={loading}
               >
                 {vehicle.name}

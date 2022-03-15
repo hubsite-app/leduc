@@ -10,7 +10,7 @@ const createDailyReports = () => {
     try {
       const jobsite_1_base_1_1 = new DailyReport({
         _id: _ids.dailyReports.jobsite_1_base_1_1._id,
-        date: new Date("2022-02-23"),
+        date: new Date("2022-02-23 7:00 am"),
         jobsite: _ids.jobsites.jobsite_1._id,
         crew: _ids.crews.base_1._id,
         approved: true,
@@ -21,6 +21,8 @@ const createDailyReports = () => {
           _ids.materialShipments.jobsite_1_base_1_1_shipment_1._id,
         ],
         reportNote: [_ids.reportNotes.jobsite_1_base_1_1_note_1._id],
+        temporaryEmployees: [_ids.employees.temp_1._id],
+        temporaryVehicles: [_ids.vehicles.temp_1._id],
       });
 
       const dailyReports = {

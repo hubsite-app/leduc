@@ -4,10 +4,12 @@ import { ObjectType } from "type-graphql";
 import {
   DailyReportDocument,
   DailyReportModel,
+  EmployeeDocument,
   EmployeeWorkDocument,
   MaterialShipmentDocument,
   ProductionDocument,
   ReportNoteDocument,
+  VehicleDocument,
   VehicleWorkDocument,
 } from "@models";
 import { DailyReportSchema } from "../schema";
@@ -18,9 +20,13 @@ import {
   IListOptions,
   ISearchOptions,
 } from "@typescript/models";
-import { IDailyReportUpdate } from "@typescript/dailyReport";
+import {
+  IDailyReportCreate,
+  IDailyReportUpdate,
+} from "@typescript/dailyReport";
 import update from "./update";
 import remove from "./remove";
+import create from "./create";
 
 @ObjectType()
 export class DailyReportClass extends DailyReportSchema {
@@ -51,6 +57,15 @@ export class DailyReportClass extends DailyReportSchema {
     return get.list(this, options);
   }
 
+  public static async getExistingReport(
+    this: DailyReportModel,
+    jobsiteId: Id,
+    crewId: Id,
+    date: Date
+  ) {
+    return get.existingReport(this, jobsiteId, crewId, date);
+  }
+
   public async getJobsite(this: DailyReportDocument) {
     return get.jobsite(this);
   }
@@ -77,6 +92,25 @@ export class DailyReportClass extends DailyReportSchema {
 
   public async getReportNote(this: DailyReportDocument) {
     return get.reportNote(this);
+  }
+
+  public async getTemporaryEmployees(this: DailyReportDocument) {
+    return get.temporaryEmployees(this);
+  }
+
+  public async getTemporaryVehicles(this: DailyReportDocument) {
+    return get.temporaryVehicles(this);
+  }
+
+  /**
+   * ----- Create -----
+   */
+
+  public static async createDocument(
+    this: DailyReportModel,
+    data: IDailyReportCreate
+  ) {
+    return create.document(this, data);
   }
 
   /**
@@ -131,6 +165,20 @@ export class DailyReportClass extends DailyReportSchema {
     reportNote: ReportNoteDocument
   ) {
     return update.setReportNote(this, reportNote);
+  }
+
+  public async addTemporaryEmployee(
+    this: DailyReportDocument,
+    employee: EmployeeDocument
+  ) {
+    return update.addTemporaryEmployee(this, employee);
+  }
+
+  public async addTemporaryVehicle(
+    this: DailyReportDocument,
+    vehicle: VehicleDocument
+  ) {
+    return update.addTemporaryVehicle(this, vehicle);
   }
 
   /**

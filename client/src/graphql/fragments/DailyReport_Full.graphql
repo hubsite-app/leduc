@@ -24,4 +24,10 @@ fragment DailyReportFullSnippet on DailyReportClass {
   reportNote {
     ...ReportNoteFullSnippet
   }
+  temporaryEmployees {
+    ...EmployeeCardSnippet
+  }
+  temporaryVehicles {
+    ...VehicleCardSnippet
+  }
 }

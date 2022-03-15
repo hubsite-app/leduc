@@ -7,11 +7,13 @@ import {
   IconButton,
   useToast,
   Text,
+  Heading,
 } from "@chakra-ui/react";
 import {
   DailyReportFullDocument,
   DailyReportFullSnippetFragment,
   EmployeeWorkCreateData,
+  useDailyReportAddTemporaryEmployeeMutation,
   useEmployeeWorkCreateMutation,
 } from "../../../../../generated/graphql";
 import TextField from "../../../../Common/forms/TextField";
@@ -22,6 +24,7 @@ import SubmitButton from "../../../../Common/forms/SubmitButton";
 import ErrorMessage from "../../../../Common/ErrorMessage";
 import dayjs from "dayjs";
 import isEmpty from "../../../../../utils/isEmpty";
+import EmployeeSearch from "../../../../Search/EmployeeSearch";
 
 type JobErrors = { jobTitle?: string; startTime?: string; endTime?: string };
 
@@ -67,6 +70,9 @@ const EmployeeHourCreateForm = ({
   const [formErrors, setFormErrors] = React.useState<FormErrors>([]);
 
   const [hasTriedSubmit, setHasTriedSubmit] = React.useState(false);
+
+  const [addTempEmployee, { loading: tempEmployeeLoading }] =
+    useDailyReportAddTemporaryEmployeeMutation();
 
   const [create, { loading }] = useEmployeeWorkCreateMutation({
     refetchQueries: [DailyReportFullDocument],
@@ -368,11 +374,45 @@ const EmployeeHourCreateForm = ({
           </Box>
 
           {/* EMPLOYEES */}
+          <Heading ml={2} pt={2} size="sm" color="gray.600">
+            Crew
+          </Heading>
           {formErrors[dataIndex]?.employees && (
             <Text color="red.500">{formErrors[dataIndex]?.employees}</Text>
           )}
           <SimpleGrid columns={[2, 2, 4]} m={2} spacing={2}>
             {dailyReport.crew.employees.map((employee) => (
+              <Checkbox
+                isChecked={data.employees.includes(employee._id)}
+                onChange={() => toggleEmployee(employee._id, dataIndex)}
+                key={employee._id}
+                isDisabled={loading}
+              >
+                {employee.name}
+              </Checkbox>
+            ))}
+          </SimpleGrid>
+
+          {/* TEMPORARY EMPLOYEES */}
+          <Heading ml={2} pt={2} size="sm" color="gray.600">
+            Temporary Employees
+          </Heading>
+          <Box my={2} mx={4}>
+            <EmployeeSearch
+              placeholder="Add temporary employee"
+              employeeSelected={(employee) =>
+                addTempEmployee({
+                  variables: {
+                    id: dailyReport._id,
+                    employeeId: employee._id,
+                  },
+                })
+              }
+              isDisabled={tempEmployeeLoading}
+            />
+          </Box>
+          <SimpleGrid columns={[2, 2, 4]} m={2} spacing={2}>
+            {dailyReport.temporaryEmployees.map((employee) => (
               <Checkbox
                 isChecked={data.employees.includes(employee._id)}
                 onChange={() => toggleEmployee(employee._id, dataIndex)}

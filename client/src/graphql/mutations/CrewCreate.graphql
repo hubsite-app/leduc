@@ -1,0 +1,5 @@
+mutation CrewCreate($data: CrewCreateData!) {
+  crewCreate(data: $data) {
+    ...CrewFullSnippet
+  }
+}

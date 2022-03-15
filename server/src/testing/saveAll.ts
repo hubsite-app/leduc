@@ -1,5 +1,5 @@
 import { logger } from "@logger";
-import { DailyReport, Employee, Jobsite, Vehicle } from "@models";
+import { Crew, DailyReport, Employee, Jobsite, Vehicle } from "@models";
 import isEmpty from "@utils/isEmpty";
 
 const saveAll = () => {
@@ -37,6 +37,13 @@ const saveAll = () => {
         }
 
         await dailyReports[i].save();
+      }
+
+      // Crew
+      const crews = await Crew.find();
+      logger.info(`Saving ${crews.length} crew documents`);
+      for (let i = 0; i < crews.length; i++) {
+        await crews[i].save();
       }
 
       resolve();

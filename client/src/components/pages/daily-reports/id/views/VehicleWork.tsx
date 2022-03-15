@@ -1,6 +1,6 @@
 import { Flex, Heading, IconButton } from "@chakra-ui/react";
 import React from "react";
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiX } from "react-icons/fi";
 
 import { DailyReportFullSnippetFragment } from "../../../../../generated/graphql";
 import Card from "../../../../Common/Card";
@@ -30,7 +30,7 @@ const VehicleWork = ({ dailyReport }: IVehicleWork) => {
           Vehicle Hours ({dailyReport.vehicleWork.length || 0})
         </Heading>
         <IconButton
-          icon={<FiPlus />}
+          icon={addForm ? <FiX /> : <FiPlus />}
           aria-label="add"
           backgroundColor="transparent"
           onClick={() => setAddForm(!addForm)}

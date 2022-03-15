@@ -12,9 +12,7 @@ fragment SearchSnippet on SearchClass {
     vehicleCode
   }
   jobsite {
-    _id
-    name
-    jobcode
+    ...JobsiteCardSnippet
   }
   dailyReport {
     ...DailyReportCardSnippet

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Box, Stack, Heading } from "@chakra-ui/react";
+import { Box, Stack, Heading, Icon } from "@chakra-ui/react";
 
 import { navbarHeight } from "../../constants/styles";
 import { useMediaQuery } from "@chakra-ui/media-query";
@@ -9,8 +9,14 @@ import TextLink from "../Common/TextLink";
 import useMounted from "../../hooks/useMounted";
 import NavbarAccount from "./views/Account";
 import NavbarSearch from "./views/Search";
+import { useAuth } from "../../contexts/Auth";
+import { FiPlusSquare } from "react-icons/fi";
+import NavbarCreate from "./views/Create";
 
 const Navbar = () => {
+  const {
+    state: { user },
+  } = useAuth();
   const { hasMounted } = useMounted();
   const [isLargerThan480] = useMediaQuery("(min-width: 580px)");
 
@@ -48,7 +54,7 @@ const Navbar = () => {
             p="auto"
             mt={[1, 0]}
           >
-            Bow Mark
+            {isLarger ? "Bow Mark" : "BM"}
           </Heading>
         </TextLink>
         <NavbarSearch />
@@ -59,6 +65,8 @@ const Navbar = () => {
           height="100%"
           pt={isLarger ? 1 : 1}
         >
+          <NavbarCreate />
+
           <NavbarAccount />
         </Stack>
       </Box>

@@ -8,7 +8,7 @@ import TextDropdown from "../Common/forms/TextDropdown";
 import { ITextField } from "../Common/forms/TextField";
 
 interface IEmployeeSearch extends ITextField {
-  employeeSelected: (question: { _id: string }) => void;
+  employeeSelected: (crew: { _id: string }) => void;
   handleSubmit?: (name: string) => void;
   blacklistedIds?: string[];
 }

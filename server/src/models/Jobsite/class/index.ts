@@ -5,6 +5,8 @@ import { CrewDocument, JobsiteDocument, JobsiteModel } from "@models";
 import { JobsiteSchema } from "..";
 import get from "./get";
 import { GetByIDOptions, ISearchOptions } from "@typescript/models";
+import { IJobsiteCreate } from "@typescript/jobsite";
+import create from "./create";
 
 @ObjectType()
 export class JobsiteClass extends JobsiteSchema {
@@ -38,5 +40,13 @@ export class JobsiteClass extends JobsiteSchema {
 
   public async getDailyReports(this: JobsiteDocument) {
     return get.dailyReports(this);
+  }
+
+  /**
+   * ----- Create -----
+   */
+
+  public static async createDocument(this: JobsiteModel, data: IJobsiteCreate) {
+    return create.document(this, data);
   }
 }

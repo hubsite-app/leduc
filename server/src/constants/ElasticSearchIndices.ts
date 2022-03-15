@@ -3,4 +3,5 @@ export default {
   Vehicle: "vehicle",
   Jobsite: "jobsite",
   DailyReport: "daily_report",
+  Crew: "crew",
 };

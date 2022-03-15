@@ -9,6 +9,8 @@ import {
   ProductionClass,
   ReportNoteClass,
   VehicleWorkClass,
+  EmployeeClass,
+  VehicleClass,
 } from "@models";
 import { post, prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
@@ -57,6 +59,14 @@ export class DailyReportSchema {
   @Field(() => ReportNoteClass, { nullable: true })
   @prop({ ref: () => ReportNoteClass })
   public reportNote!: Ref<ReportNoteClass>;
+
+  @Field(() => [EmployeeClass])
+  @prop({ ref: () => EmployeeClass, default: [] })
+  public temporaryEmployees!: Ref<EmployeeClass>[];
+
+  @Field(() => [VehicleClass])
+  @prop({ ref: () => VehicleClass, default: [] })
+  public temporaryVehicles!: Ref<VehicleClass>[];
 
   @Field()
   @prop({ required: true, default: SchemaVersions.DailyReport })

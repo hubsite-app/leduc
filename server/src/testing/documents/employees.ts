@@ -7,6 +7,8 @@ export interface SeededEmployees {
   base_laborer_1: EmployeeDocument;
   base_laborer_2: EmployeeDocument;
   base_laborer_3: EmployeeDocument;
+  temp_1: EmployeeDocument;
+  temp_2: EmployeeDocument;
 }
 
 const createEmployees = () => {
@@ -47,12 +49,26 @@ const createEmployees = () => {
         crews: [_ids.crews.base_1._id],
       });
 
+      const temp_1 = new Employee({
+        _id: _ids.employees.temp_1._id,
+        name: "Temporary Employee 1",
+        jobTitle: "Laborer",
+      });
+
+      const temp_2 = new Employee({
+        _id: _ids.employees.temp_2._id,
+        name: "Temporary Employee 2",
+        jobTitle: "Laborer",
+      });
+
       const employees = {
         base_foreman_1,
         base_operator_1,
         base_laborer_1,
         base_laborer_2,
         base_laborer_3,
+        temp_1,
+        temp_2,
       };
 
       for (let i = 0; i < Object.values(employees).length; i++) {

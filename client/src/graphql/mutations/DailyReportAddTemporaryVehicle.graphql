@@ -1,0 +1,5 @@
+mutation DailyReportAddTemporaryVehicle($id: String!, $vehicleId: String!) {
+  dailyReportAddTemporaryVehicle(id: $id, vehicleId: $vehicleId) {
+    ...DailyReportFullSnippet
+  }
+}

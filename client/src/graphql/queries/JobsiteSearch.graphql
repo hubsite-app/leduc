@@ -1,0 +1,5 @@
+query JobsiteSearch($searchString: String!, $options: SearchOptions) {
+  jobsiteSearch(searchString: $searchString, options: $options) {
+    ...JobsiteCardSnippet
+  }
+}

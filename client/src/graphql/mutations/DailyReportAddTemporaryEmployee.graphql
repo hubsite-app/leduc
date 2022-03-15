@@ -1,0 +1,5 @@
+mutation DailyReportAddTemporaryEmployee($id: String!, $employeeId: String!) {
+  dailyReportAddTemporaryEmployee(id: $id, employeeId: $employeeId) {
+    ...DailyReportFullSnippet
+  }
+}

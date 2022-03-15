@@ -4,9 +4,11 @@ import { CrewDocument, CrewModel, VehicleDocument } from "@models";
 import { ObjectType } from "type-graphql";
 import { CrewSchema } from "../schema";
 import get from "./get";
-import { GetByIDOptions, Id } from "@typescript/models";
+import { GetByIDOptions, Id, ISearchOptions } from "@typescript/models";
 import remove from "./remove";
 import update from "./update";
+import { ICrewCreate } from "@typescript/crew";
+import create from "./create";
 
 @ObjectType()
 export class CrewClass extends CrewSchema {
@@ -20,6 +22,14 @@ export class CrewClass extends CrewSchema {
     options?: GetByIDOptions
   ) {
     return get.byId(this, id, options);
+  }
+
+  public static async search(
+    this: CrewModel,
+    searchString: string,
+    options?: ISearchOptions
+  ) {
+    return get.search(this, searchString, options);
   }
 
   public static async getList(this: CrewModel) {
@@ -40,6 +50,14 @@ export class CrewClass extends CrewSchema {
 
   public async getJobsites(this: CrewDocument) {
     return get.jobsites(this);
+  }
+
+  /**
+   * ----- Create -----
+   */
+
+  public static async createDocument(this: CrewModel, data: ICrewCreate) {
+    return create.document(this, data);
   }
 
   /**

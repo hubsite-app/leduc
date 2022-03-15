@@ -23,17 +23,12 @@ export interface ISelect extends SelectProps {
 
 const Select = React.forwardRef<HTMLSelectElement, ISelect>(
   ({ options, errorMessage, helperText, label, error, ...rest }, ref) => {
-    /**
-     * Determine if error
-     */
-    const isError = errorMessage !== undefined || error;
-
     return (
       <FormControl
         id={rest.name}
         isRequired={rest.isRequired}
         isDisabled={rest.isDisabled}
-        isInvalid={isError}
+        isInvalid={!!errorMessage}
         isReadOnly={rest.isReadOnly}
       >
         {label && (
@@ -48,9 +43,7 @@ const Select = React.forwardRef<HTMLSelectElement, ISelect>(
             </option>
           ))}
         </S>
-        {errorMessage && (
-          <FormErrorMessage color="red">{errorMessage}</FormErrorMessage>
-        )}
+        {errorMessage && <FormErrorMessage>{errorMessage}</FormErrorMessage>}
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
       </FormControl>
     );

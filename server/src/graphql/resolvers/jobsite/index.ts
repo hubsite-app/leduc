@@ -6,7 +6,15 @@ import {
   JobsiteClass,
   JobsiteDocument,
 } from "@models";
-import { Arg, FieldResolver, Query, Resolver, Root } from "type-graphql";
+import {
+  Arg,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from "type-graphql";
+import mutations, { JobsiteCreateData } from "./mutations";
 
 @Resolver(() => JobsiteClass)
 export default class JobsiteResolver {
@@ -42,5 +50,14 @@ export default class JobsiteResolver {
     return (await Jobsite.search(searchString, options)).map(
       (object) => object.jobsite
     );
+  }
+
+  /**
+   * ----- Mutations -----
+   */
+
+  @Mutation(() => JobsiteClass)
+  async jobsiteCreate(@Arg("data") data: JobsiteCreateData) {
+    return mutations.create(data);
   }
 }

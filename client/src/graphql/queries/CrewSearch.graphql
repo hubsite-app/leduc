@@ -1,0 +1,5 @@
+query CrewSearch($searchString: String!, $options: SearchOptions) {
+  crewSearch(searchString: $searchString, options: $options) {
+    ...CrewCardSnippet
+  }
+}

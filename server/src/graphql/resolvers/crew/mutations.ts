@@ -1,5 +1,30 @@
 import { Crew, CrewDocument } from "@models";
+import { CrewTypes } from "@typescript/crew";
 import { Id } from "@typescript/models";
+import { Field, InputType } from "type-graphql";
+
+@InputType()
+export class CrewCreateData {
+  @Field({ nullable: false })
+  public name!: string;
+
+  @Field({ nullable: false })
+  public type!: CrewTypes;
+}
+
+const create = (data: CrewCreateData) => {
+  return new Promise<CrewDocument>(async (resolve, reject) => {
+    try {
+      const crew = await Crew.createDocument(data);
+
+      await crew.save();
+
+      resolve(crew);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 
 const addEmployee = (crewId: Id, employeeId: Id) => {
   return new Promise<CrewDocument>(async (resolve, reject) => {
@@ -66,6 +91,7 @@ const removeVehicle = (crewId: Id, vehicleId: Id) => {
 };
 
 export default {
+  create,
   addEmployee,
   addVehicle,
   removeEmployee,

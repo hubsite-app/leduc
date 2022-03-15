@@ -13,15 +13,18 @@ import {
   DailyReport,
   DailyReportClass,
   DailyReportDocument,
+  EmployeeClass,
   EmployeeWorkClass,
   JobsiteClass,
   MaterialShipmentClass,
   ProductionClass,
   ReportNoteClass,
+  VehicleClass,
   VehicleWorkClass,
 } from "@models";
 import { ListOptionData } from "@typescript/graphql";
 import mutations, {
+  DailyReportCreateData,
   DailyReportNoteUpdateData,
   DailyReportUpdateData,
 } from "./mutations";
@@ -68,6 +71,16 @@ export default class DailyReportResolver {
     return dailyReport.getReportNote();
   }
 
+  @FieldResolver(() => [EmployeeClass])
+  async temporaryEmployees(@Root() dailyReport: DailyReportDocument) {
+    return dailyReport.getTemporaryEmployees();
+  }
+
+  @FieldResolver(() => [VehicleClass])
+  async temporaryVehicles(@Root() dailyReport: DailyReportDocument) {
+    return dailyReport.getTemporaryVehicles();
+  }
+
   /**
    * ----- Queries -----
    */
@@ -102,6 +115,12 @@ export default class DailyReportResolver {
 
   @Authorized()
   @Mutation(() => DailyReportClass)
+  async dailyReportCreate(@Arg("data") data: DailyReportCreateData) {
+    return mutations.create(data);
+  }
+
+  @Authorized()
+  @Mutation(() => DailyReportClass)
   async dailyReportUpdate(
     @Arg("id") id: string,
     @Arg("data") data: DailyReportUpdateData
@@ -125,5 +144,23 @@ export default class DailyReportResolver {
     @Arg("approved") approved: boolean
   ) {
     return mutations.updateApproval(id, approved);
+  }
+
+  @Authorized()
+  @Mutation(() => DailyReportClass)
+  async dailyReportAddTemporaryEmployee(
+    @Arg("id") id: string,
+    @Arg("employeeId") employeeId: string
+  ) {
+    return mutations.addTemporaryEmployee(id, employeeId);
+  }
+
+  @Authorized()
+  @Mutation(() => DailyReportClass)
+  async dailyReportAddTemporaryVehicle(
+    @Arg("id") id: string,
+    @Arg("vehicleId") vehicleId: string
+  ) {
+    return mutations.addTemporaryVehicle(id, vehicleId);
   }
 }
