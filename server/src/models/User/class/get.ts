@@ -45,6 +45,18 @@ const byEmail = (User: UserModel, email: string) => {
   });
 };
 
+const byResetPasswordToken = (User: UserModel, token: string) => {
+  return new Promise<UserDocument | null>(async (resolve, reject) => {
+    try {
+      const user = await User.findOne({ resetPasswordToken: token });
+
+      resolve(user);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 /**
  * ----- Methods -----
  */
@@ -77,5 +89,6 @@ const employee = (user: UserDocument) => {
 export default {
   byId,
   byEmail,
+  byResetPasswordToken,
   employee,
 };

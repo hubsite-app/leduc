@@ -191,12 +191,15 @@ const AuthProvider = ({ children }: IAuthProvider) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deauthorizeSession, state.user, token]);
 
-  // Go to login page if not logged in
+  /**
+   * @desc go to login page if not logged in
+   */
   React.useEffect(() => {
     if (
       state.user === null &&
       router.pathname !== "/login" &&
-      !router.pathname.includes("/signup")
+      !router.pathname.includes("/signup") &&
+      !router.pathname.includes("/password-reset")
     ) {
       router.push("/login");
     }

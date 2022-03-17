@@ -8,7 +8,7 @@ import TextDropdown, { IOptions } from "../Common/forms/TextDropdown";
 import { ITextField } from "../Common/forms/TextField";
 
 interface IExtraData {
-  type: "employee" | "vehicle" | "jobsite" | "dailyReport";
+  type: "employee" | "vehicle" | "jobsite" | "dailyReport" | "crew";
 }
 
 interface IGeneralSearch extends Omit<ITextField, "onChange"> {
@@ -109,6 +109,14 @@ const GeneralSearch = ({
             type: "dailyReport",
           },
         };
+      } else if (!!item.crew) {
+        return {
+          value: item.crew._id,
+          label: item.crew.name,
+          extraData: {
+            type: "crew"
+          }
+        }
       } else {
         return {
           value: "error",

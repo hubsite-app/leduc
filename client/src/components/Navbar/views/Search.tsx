@@ -44,6 +44,10 @@ const NavbarSearch = () => {
                 router.push(createLink.dailyReport(value.value));
                 break;
               }
+              case "crew": {
+                router.push(createLink.crew(value.value))
+                break;
+              }
             }
           }}
           _focus={{ boxShadow: "none" }}

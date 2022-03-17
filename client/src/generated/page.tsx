@@ -37,6 +37,8 @@ import { getApolloClient , ApolloClientContext} from '../withApollo';
 
 
 
+
+
 export async function getServerPageCrewSearch
     (options: Omit<Apollo.QueryOptions<Types.CrewSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -596,6 +598,41 @@ export const ssrSignupSsr = {
       getServerPage: getServerPageSignupSsr,
       withPage: withPageSignupSsr,
       usePage: useSignupSsr,
+    }
+export async function getServerPageUserForPasswordReset
+    (options: Omit<Apollo.QueryOptions<Types.UserForPasswordResetQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.UserForPasswordResetQuery>({ ...options, query: Operations.UserForPasswordResetDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useUserForPasswordReset = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.UserForPasswordResetQuery, Types.UserForPasswordResetQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.UserForPasswordResetDocument, options);
+};
+export type PageUserForPasswordResetComp = React.FC<{data?: Types.UserForPasswordResetQuery, error?: Apollo.ApolloError}>;
+export const withPageUserForPasswordReset = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.UserForPasswordResetQuery, Types.UserForPasswordResetQueryVariables>) => (WrappedComponent:PageUserForPasswordResetComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.UserForPasswordResetDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrUserForPasswordReset = {
+      getServerPage: getServerPageUserForPasswordReset,
+      withPage: withPageUserForPasswordReset,
+      usePage: useUserForPasswordReset,
     }
 export async function getServerPageVehicleSearch
     (options: Omit<Apollo.QueryOptions<Types.VehicleSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){

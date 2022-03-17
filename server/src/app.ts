@@ -25,6 +25,7 @@ import SearchResolver from "@graphql/resolvers/search";
 
 import { User, UserDocument } from "@models";
 import authChecker from "@utils/authChecker";
+import { logger } from "@logger";
 
 const createApp = async () => {
   const app = express();
@@ -82,15 +83,15 @@ const createApp = async () => {
         requestDidStart: () => {
           return {
             didEncounterErrors: (context) => {
-              console.error(context.errors);
-              // logger.error({
-              //   message: context.errors[0].message || "Apollo request error",
-              //   meta: {
-              //     variables: context.request.variables,
-              //     errors: context.errors,
-              //     operationName: context.operationName,
-              //   },
-              // });
+              if (process.env.NODE_ENV !== "test")
+                logger.error({
+                  message: context.errors[0].message || "Apollo request error",
+                  meta: {
+                    variables: context.request.variables,
+                    errors: context.errors,
+                    operationName: context.operationName,
+                  },
+                });
             },
           };
         },

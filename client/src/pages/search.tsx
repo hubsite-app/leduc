@@ -4,6 +4,7 @@ import Card from "../components/Common/Card";
 
 import Container from "../components/Common/Container";
 import DailyReportCard from "../components/Common/DailyReportCard";
+import CrewSearchCard from "../components/pages/search/CrewCard";
 import EmployeeSearchCard from "../components/pages/search/EmployeeCard";
 import JobsiteSearchCard from "../components/pages/search/JobsiteCard";
 import VehicleSearchCard from "../components/pages/search/VehicleCard";
@@ -26,6 +27,8 @@ const Search: PageSearchComp = ({ data }) => {
         return <JobsiteSearchCard jobsite={result.jobsite} />;
       } else if (result.dailyReport) {
         return <DailyReportCard dailyReport={result.dailyReport} />;
+      } else if (result.crew) {
+        return <CrewSearchCard crew={result.crew} />
       } else {
         return <Card>Error</Card>;
       }

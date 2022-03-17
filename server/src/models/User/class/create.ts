@@ -1,6 +1,5 @@
 import { SignupDocument, UserDocument, UserModel } from "@models";
 import { IUserCreate } from "@typescript/user";
-import hashPassword from "@utils/hashPassword";
 
 const document = (
   User: UserModel,
@@ -14,8 +13,9 @@ const document = (
       const user = new User({
         ...data,
         employee: employee._id,
-        password: await hashPassword(data.password),
       });
+
+      await user.updatePassword(data.password);
 
       resolve(user);
     } catch (e) {

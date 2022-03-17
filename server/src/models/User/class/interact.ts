@@ -1,5 +1,6 @@
 import { UserDocument, UserModel } from "@models";
 import createJWT from "@utils/createJWT";
+import sendEmail, { IEmailData } from "@utils/sendEmail";
 import bcrypt from "bcryptjs";
 
 /**
@@ -53,7 +54,20 @@ const checkPassword = (user: UserDocument, password: string) => {
   });
 };
 
+const email = (user: UserDocument, data: IEmailData) => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      await sendEmail(user.email, data);
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   login,
+  email,
   checkPassword,
 };

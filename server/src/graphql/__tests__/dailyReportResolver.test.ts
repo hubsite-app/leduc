@@ -71,7 +71,7 @@ describe("DailyReport Resolver", () => {
                 name
               }
             }
-            reportNotes {
+            reportNote {
               note
             }
           }
@@ -126,7 +126,7 @@ describe("DailyReport Resolver", () => {
             documents.vehicles.gravel_truck_1.name
           );
 
-          expect(dailyReport.reportNotes).toBeDefined();
+          expect(dailyReport.reportNote).toBeDefined();
         });
       });
     });

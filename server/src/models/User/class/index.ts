@@ -9,6 +9,7 @@ import { ObjectType } from "type-graphql";
 import { IUserCreate } from "@typescript/user";
 import create from "./create";
 import update from "./update";
+import { IEmailData } from "@utils/sendEmail";
 
 @ObjectType()
 export class UserClass extends UserSchema {
@@ -22,6 +23,10 @@ export class UserClass extends UserSchema {
     options?: GetByIDOptions
   ) {
     return get.byId(this, id, options);
+  }
+
+  public static async getByResetPasswordToken(this: UserModel, token: string) {
+    return get.byResetPasswordToken(this, token);
   }
 
   public static async getByEmail(this: UserModel, email: string) {
@@ -61,11 +66,23 @@ export class UserClass extends UserSchema {
     return interact.checkPassword(this, password);
   }
 
+  public async sendEmail(this: UserDocument, data: IEmailData) {
+    return interact.email(this, data);
+  }
+
   /**
    * ----- Update -----
    */
 
   public async isAdmin(this: UserDocument, isAdmin: boolean) {
     return update.admin(this, isAdmin);
+  }
+
+  public async updatePassword(this: UserDocument, password: string) {
+    return update.password(this, password);
+  }
+
+  public async setResetPasswordToken(this: UserDocument) {
+    return update.resetPasswordToken(this);
   }
 }

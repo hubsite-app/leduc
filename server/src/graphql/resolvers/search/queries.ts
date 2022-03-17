@@ -1,5 +1,5 @@
 import { SearchClass } from "@graphql/types/search";
-import { DailyReport, Employee, Jobsite, Vehicle } from "@models";
+import { Crew, DailyReport, Employee, Jobsite, Vehicle } from "@models";
 
 const search = (searchString: string) => {
   return new Promise<SearchClass[]>(async (resolve, reject) => {
@@ -12,11 +12,14 @@ const search = (searchString: string) => {
 
       const dailyReportObjects = await DailyReport.search(searchString);
 
+      const crewReportObjects = await Crew.search(searchString);
+
       const searchObjects: SearchClass[] = [
         ...employeeObjects,
         ...vehicleObjects,
         ...jobsiteObjects,
         ...dailyReportObjects,
+        ...crewReportObjects,
       ];
 
       searchObjects.sort((a, b) => b.score - a.score);

@@ -8,3 +8,12 @@ export class SearchOptions {
   @Field(() => [String], { nullable: true })
   public blacklistedIds?: string[];
 }
+
+@InputType()
+export class UserQuery {
+  @Field({ nullable: true })
+  public id?: string;
+
+  @Field({ nullable: true })
+  public resetPasswordToken?: string;
+}

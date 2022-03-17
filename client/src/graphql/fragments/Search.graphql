@@ -17,4 +17,7 @@ fragment SearchSnippet on SearchClass {
   dailyReport {
     ...DailyReportCardSnippet
   }
+  crew {
+    ...CrewCardSnippet
+  }
 }

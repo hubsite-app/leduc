@@ -6,6 +6,7 @@ import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 import createApp from "../../app";
 import _ids from "@testing/_ids";
 import { Signup } from "@models";
+import jestLogin from "@testing/jestLogin";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -54,14 +55,22 @@ describe("Signup Resolver", () => {
 
       describe("success", () => {
         test("should successfully create a signup for an employee w/ an existing document", async () => {
+          const token = await jestLogin(
+            app,
+            documents.users.base_foreman_1_user.email
+          );
+
           const employeeId = _ids.employees.base_laborer_3._id;
 
-          const res = await request(app).post("/graphql").send({
-            query: signupCreate,
-            variables: {
-              employeeId,
-            },
-          });
+          const res = await request(app)
+            .post("/graphql")
+            .send({
+              query: signupCreate,
+              variables: {
+                employeeId,
+              },
+            })
+            .set("Authorization", token);
 
           expect(res.status).toBe(200);
 

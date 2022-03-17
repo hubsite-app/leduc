@@ -7,6 +7,7 @@ import createApp from "../../app";
 import _ids from "@testing/_ids";
 import { SignupData } from "@graphql/resolvers/user/mutations";
 import { Signup, User } from "@models";
+import { decode } from "jsonwebtoken";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -39,11 +40,97 @@ afterAll(async (done) => {
 });
 
 describe("User Resolver", () => {
+  describe("INTEGRATION TESTS", () => {
+    describe("password reset", () => {
+      const passwordResetRequest = `
+        mutation UserPasswordResetRequest($email: String!) {
+          userPasswordResetRequest(email: $email)
+        }
+      `;
+
+      const userByPasswordResetToken = `
+        query UserByPasswordRequestToken($query: UserQuery!) {
+          user(query: $query) {
+            _id
+            name
+          }
+        }
+      `;
+
+      const userPasswordReset = `
+        mutation UserPasswordReset($password: String!, $token: String!) {
+          userPasswordReset(password: $password, token: $token)
+        }
+      `;
+
+      describe("success", () => {
+        test("should successfully reset password", async () => {
+          // Request password reset
+
+          const passwordRequestResponse = await request(app)
+            .post("/graphql")
+            .send({
+              query: passwordResetRequest,
+              variables: {
+                email: documents.users.base_foreman_1_user.email,
+              },
+            });
+
+          expect(passwordRequestResponse.status).toBe(200);
+
+          expect(
+            passwordRequestResponse.body.data.userPasswordResetRequest
+          ).toBe(true);
+
+          // get user
+
+          let user = await User.getById(
+            documents.users.base_foreman_1_user._id
+          );
+          expect(user?.resetPasswordToken).toBeDefined();
+
+          const userByTokenResponse = await request(app)
+            .post("/graphql")
+            .send({
+              query: userByPasswordResetToken,
+              variables: {
+                query: {
+                  resetPasswordToken: user?.resetPasswordToken,
+                },
+              },
+            });
+
+          expect(userByTokenResponse.status).toBe(200);
+          expect(userByTokenResponse.body.data.user.name).toBe(
+            documents.users.base_foreman_1_user.name
+          );
+
+          const passwordResetResponse = await request(app)
+            .post("/graphql")
+            .send({
+              query: userPasswordReset,
+              variables: {
+                password: "newpassword",
+                token: user?.resetPasswordToken,
+              },
+            });
+
+          expect(passwordResetResponse.status).toBe(200);
+          expect(passwordResetResponse.body.data.userPasswordReset).toBe(true);
+
+          user = await User.getById(documents.users.base_foreman_1_user._id);
+
+          expect(await user?.checkPassword("newpassword")).toBe(true);
+        });
+      });
+    });
+  });
+
   describe("QUERIES", () => {
     describe("user", () => {
       const userQuery = `
-        query User($id: String!) {
-          user(id: $id) {
+        query User($query: UserQuery!) {
+          user(query: $query) {
             _id 
             name
             email
@@ -62,7 +149,9 @@ describe("User Resolver", () => {
             .send({
               query: userQuery,
               variables: {
-                id: _ids.users.base_foreman_1_user._id,
+                query: {
+                  id: _ids.users.base_foreman_1_user._id,
+                },
               },
             });
 
@@ -85,14 +174,7 @@ describe("User Resolver", () => {
     describe("signup", () => {
       const signupMutation = `
         mutation Signup($signupId: String!, $data: SignupData!) {
-          signup(signupId: $signupId, data: $data) {
-            _id
-            name
-            email
-            employee {
-              _id
-            }
-          }
+          signup(signupId: $signupId, data: $data)
         }
       `;
 
@@ -117,16 +199,19 @@ describe("User Resolver", () => {
           expect(res.status).toBe(200);
 
           expect(res.body.data.signup).toBeDefined();
-          const user = res.body.data.signup;
 
-          expect(user.employee._id).toBe(
+          const user = (await User.getById(
+            (decode(res.body.data.signup!) as any).userId!
+          ))!;
+
+          const employee = await user.getEmployee();
+          expect(employee!._id.toString()).toBe(
             _ids.employees.base_laborer_3._id.toString()
           );
 
-          const fetchedUser = await User.getById(user._id);
-          expect(fetchedUser).toBeDefined();
+          expect(user).toBeDefined();
 
-          const passwordMatch = await fetchedUser?.checkPassword(data.password);
+          const passwordMatch = await user?.checkPassword(data.password);
           expect(passwordMatch).toBeTruthy();
 
           const signup = await Signup.getById(signupId);

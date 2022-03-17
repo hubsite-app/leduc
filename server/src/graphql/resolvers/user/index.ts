@@ -1,3 +1,4 @@
+import { UserQuery } from "@graphql/types/query";
 import { EmployeeClass, User, UserClass, UserDocument } from "@models";
 import { IContext } from "@typescript/graphql";
 import {
@@ -33,9 +34,15 @@ export default class UserResolver {
     return context.user!;
   }
 
-  @Query(() => UserClass)
-  async user(@Arg("id") id: string) {
-    return User.getById(id);
+  @Query(() => UserClass, { nullable: true })
+  async user(@Arg("query") query: UserQuery) {
+    if (query.id) {
+      return User.getById(query.id);
+    } else if (query.resetPasswordToken) {
+      return User.getByResetPasswordToken(query.resetPasswordToken);
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -59,5 +66,18 @@ export default class UserResolver {
   @Mutation(() => UserClass)
   async userAdmin(@Arg("id") id: string, @Arg("isAdmin") isAdmin: boolean) {
     return mutations.admin(id, isAdmin);
+  }
+
+  @Mutation(() => Boolean)
+  async userPasswordResetRequest(@Arg("email") email: string) {
+    return mutations.passwordResetRequest(email);
+  }
+
+  @Mutation(() => Boolean)
+  async userPasswordReset(
+    @Arg("password") password: string,
+    @Arg("token") token: string
+  ) {
+    return mutations.passwordReset(password, token);
   }
 }

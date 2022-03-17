@@ -1,6 +1,7 @@
 import { Field, InputType } from "type-graphql";
 
 import { Signup, User, UserDocument } from "@models";
+import { decode, JwtPayload } from "jsonwebtoken";
 
 @InputType()
 export class LoginData {
@@ -66,8 +67,57 @@ const admin = (id: string, isAdmin: boolean) => {
   });
 };
 
+const passwordResetRequest = (email: string) => {
+  return new Promise<boolean>(async (resolve, reject) => {
+    try {
+      const user = await User.getByEmail(email);
+      if (!user) throw new Error("Unable to find user with that email");
+
+      const token = await user.setResetPasswordToken();
+
+      await user.save();
+
+      await user.sendEmail({
+        subject: "Bow Mark - Password Reset",
+        html: `Follow link to reset password: ${token}`,
+        plainText: `Follow link to reset password: ${token}`,
+      });
+
+      resolve(true);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const passwordReset = (password: string, token: string) => {
+  return new Promise<boolean>(async (resolve, reject) => {
+    try {
+      const user = await User.getByResetPasswordToken(token);
+      if (!user) throw new Error("Invalid token, please try the process again");
+
+      const decoded = decode(token) as JwtPayload;
+
+      if (decoded.exp! * 1000 < new Date().getTime())
+        throw new Error(
+          "Your reset link has expired, pleas try the proocess again"
+        );
+
+      await user.updatePassword(password);
+
+      await user.save();
+
+      resolve(true);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   login,
   signup,
   admin,
+  passwordResetRequest,
+  passwordReset,
 };

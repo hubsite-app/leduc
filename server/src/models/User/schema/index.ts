@@ -31,13 +31,9 @@ export class UserSchema {
   @prop({ required: true })
   public password!: string;
 
-  @Field()
-  @prop()
+  @Field({ nullable: true })
+  @prop({ trim: true })
   public resetPasswordToken?: string;
-
-  @Field()
-  @prop()
-  public resetPasswordExpires?: Date;
 
   @Field({ nullable: false })
   @prop({ required: true, default: false })
@@ -54,4 +50,11 @@ export class UserSchema {
   @Field()
   @prop({ required: true, default: SchemaVersions.User })
   public schemaVersion!: number;
+
+  /**
+   * @deprecated token is now a JWT that will hold the expirey info
+   */
+  @Field()
+  @prop()
+  public resetPasswordExpires?: Date;
 }

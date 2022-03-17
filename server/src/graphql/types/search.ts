@@ -1,4 +1,5 @@
 import {
+  CrewClass,
   DailyReportClass,
   EmployeeClass,
   JobsiteClass,
@@ -22,4 +23,7 @@ export class SearchClass {
 
   @Field(() => DailyReportClass, { nullable: true })
   public dailyReport?: DailyReportClass;
+
+  @Field(() => CrewClass, { nullable: true })
+  public crew?: CrewClass;
 }

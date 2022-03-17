@@ -203,6 +203,8 @@ export type Mutation = {
   signup: Scalars['String'];
   signupCreate: SignupClass;
   userAdmin: UserClass;
+  userPasswordReset: Scalars['Boolean'];
+  userPasswordResetRequest: Scalars['Boolean'];
   vehicleCreate: VehicleClass;
   vehicleWorkCreate: Array<VehicleWorkClass>;
   vehicleWorkDelete: Scalars['String'];
@@ -358,6 +360,17 @@ export type MutationUserAdminArgs = {
 };
 
 
+export type MutationUserPasswordResetArgs = {
+  password: Scalars['String'];
+  token: Scalars['String'];
+};
+
+
+export type MutationUserPasswordResetRequestArgs = {
+  email: Scalars['String'];
+};
+
+
 export type MutationVehicleCreateArgs = {
   crewId?: InputMaybe<Scalars['String']>;
   data: VehicleCreateData;
@@ -426,7 +439,7 @@ export type Query = {
   jobsiteSearch: Array<JobsiteClass>;
   search: Array<SearchClass>;
   signup: SignupClass;
-  user: UserClass;
+  user?: Maybe<UserClass>;
   vehicle: VehicleClass;
   vehicleSearch: Array<VehicleClass>;
 };
@@ -492,7 +505,7 @@ export type QuerySignupArgs = {
 
 
 export type QueryUserArgs = {
-  id: Scalars['String'];
+  query: UserQuery;
 };
 
 
@@ -516,6 +529,7 @@ export type ReportNoteClass = {
 
 export type SearchClass = {
   __typename?: 'SearchClass';
+  crew?: Maybe<CrewClass>;
   dailyReport?: Maybe<DailyReportClass>;
   employee?: Maybe<EmployeeClass>;
   jobsite?: Maybe<JobsiteClass>;
@@ -552,8 +566,13 @@ export type UserClass = {
   password: Scalars['String'];
   projectManager: Scalars['Boolean'];
   resetPasswordExpires: Scalars['DateTime'];
-  resetPasswordToken: Scalars['String'];
+  resetPasswordToken?: Maybe<Scalars['String']>;
   schemaVersion: Scalars['Float'];
+};
+
+export type UserQuery = {
+  id?: InputMaybe<Scalars['String']>;
+  resetPasswordToken?: InputMaybe<Scalars['String']>;
 };
 
 export type VehicleClass = {
@@ -644,7 +663,7 @@ export type ProductionCardSnippetFragment = { __typename?: 'ProductionClass', _i
 
 export type ReportNoteFullSnippetFragment = { __typename?: 'ReportNoteClass', note: string };
 
-export type SearchSnippetFragment = { __typename?: 'SearchClass', score: number, employee?: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null } | null, vehicle?: { __typename?: 'VehicleClass', _id: string, name: string, vehicleType: string, vehicleCode: string } | null, jobsite?: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } | null, dailyReport?: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } } | null };
+export type SearchSnippetFragment = { __typename?: 'SearchClass', score: number, employee?: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null } | null, vehicle?: { __typename?: 'VehicleClass', _id: string, name: string, vehicleType: string, vehicleCode: string } | null, jobsite?: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } | null, dailyReport?: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } } | null, crew?: { __typename?: 'CrewClass', _id: string, name: string } | null };
 
 export type SignupFullSnippetFragment = { __typename?: 'SignupClass', _id: string, employee: { __typename?: 'EmployeeClass', _id: string, name: string } };
 
@@ -858,6 +877,21 @@ export type UserAdminMutationVariables = Exact<{
 
 export type UserAdminMutation = { __typename?: 'Mutation', userAdmin: { __typename?: 'UserClass', _id: string, name: string, email: string, admin: boolean } };
 
+export type UserPasswordResetMutationVariables = Exact<{
+  password: Scalars['String'];
+  token: Scalars['String'];
+}>;
+
+
+export type UserPasswordResetMutation = { __typename?: 'Mutation', userPasswordReset: boolean };
+
+export type UserPasswordResetRequestMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type UserPasswordResetRequestMutation = { __typename?: 'Mutation', userPasswordResetRequest: boolean };
+
 export type VehicleCreateMutationVariables = Exact<{
   data: VehicleCreateData;
   crewId?: InputMaybe<Scalars['String']>;
@@ -993,7 +1027,7 @@ export type SearchQueryVariables = Exact<{
 }>;
 
 
-export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'SearchClass', score: number, employee?: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null } | null, vehicle?: { __typename?: 'VehicleClass', _id: string, name: string, vehicleType: string, vehicleCode: string } | null, jobsite?: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } | null, dailyReport?: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } } | null }> };
+export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'SearchClass', score: number, employee?: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null } | null, vehicle?: { __typename?: 'VehicleClass', _id: string, name: string, vehicleType: string, vehicleCode: string } | null, jobsite?: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } | null, dailyReport?: { __typename?: 'DailyReportClass', _id: string, date: any, approved: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } } | null, crew?: { __typename?: 'CrewClass', _id: string, name: string } | null }> };
 
 export type SignupSsrQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1001,6 +1035,13 @@ export type SignupSsrQueryVariables = Exact<{
 
 
 export type SignupSsrQuery = { __typename?: 'Query', signup: { __typename?: 'SignupClass', _id: string, employee: { __typename?: 'EmployeeClass', _id: string, name: string } } };
+
+export type UserForPasswordResetQueryVariables = Exact<{
+  query: UserQuery;
+}>;
+
+
+export type UserForPasswordResetQuery = { __typename?: 'Query', user?: { __typename?: 'UserClass', _id: string, name: string } | null };
 
 export type VehicleSearchQueryVariables = Exact<{
   searchString: Scalars['String'];
@@ -1294,9 +1335,13 @@ export const SearchSnippetFragmentDoc = gql`
   dailyReport {
     ...DailyReportCardSnippet
   }
+  crew {
+    ...CrewCardSnippet
+  }
 }
     ${JobsiteCardSnippetFragmentDoc}
-${DailyReportCardSnippetFragmentDoc}`;
+${DailyReportCardSnippetFragmentDoc}
+${CrewCardSnippetFragmentDoc}`;
 export const SignupFullSnippetFragmentDoc = gql`
     fragment SignupFullSnippet on SignupClass {
   _id
@@ -2193,6 +2238,69 @@ export function useUserAdminMutation(baseOptions?: Apollo.MutationHookOptions<Us
 export type UserAdminMutationHookResult = ReturnType<typeof useUserAdminMutation>;
 export type UserAdminMutationResult = Apollo.MutationResult<UserAdminMutation>;
 export type UserAdminMutationOptions = Apollo.BaseMutationOptions<UserAdminMutation, UserAdminMutationVariables>;
+export const UserPasswordResetDocument = gql`
+    mutation UserPasswordReset($password: String!, $token: String!) {
+  userPasswordReset(password: $password, token: $token)
+}
+    `;
+export type UserPasswordResetMutationFn = Apollo.MutationFunction<UserPasswordResetMutation, UserPasswordResetMutationVariables>;
+
+/**
+ * __useUserPasswordResetMutation__
+ *
+ * To run a mutation, you first call `useUserPasswordResetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUserPasswordResetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [userPasswordResetMutation, { data, loading, error }] = useUserPasswordResetMutation({
+ *   variables: {
+ *      password: // value for 'password'
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useUserPasswordResetMutation(baseOptions?: Apollo.MutationHookOptions<UserPasswordResetMutation, UserPasswordResetMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UserPasswordResetMutation, UserPasswordResetMutationVariables>(UserPasswordResetDocument, options);
+      }
+export type UserPasswordResetMutationHookResult = ReturnType<typeof useUserPasswordResetMutation>;
+export type UserPasswordResetMutationResult = Apollo.MutationResult<UserPasswordResetMutation>;
+export type UserPasswordResetMutationOptions = Apollo.BaseMutationOptions<UserPasswordResetMutation, UserPasswordResetMutationVariables>;
+export const UserPasswordResetRequestDocument = gql`
+    mutation UserPasswordResetRequest($email: String!) {
+  userPasswordResetRequest(email: $email)
+}
+    `;
+export type UserPasswordResetRequestMutationFn = Apollo.MutationFunction<UserPasswordResetRequestMutation, UserPasswordResetRequestMutationVariables>;
+
+/**
+ * __useUserPasswordResetRequestMutation__
+ *
+ * To run a mutation, you first call `useUserPasswordResetRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUserPasswordResetRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [userPasswordResetRequestMutation, { data, loading, error }] = useUserPasswordResetRequestMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useUserPasswordResetRequestMutation(baseOptions?: Apollo.MutationHookOptions<UserPasswordResetRequestMutation, UserPasswordResetRequestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UserPasswordResetRequestMutation, UserPasswordResetRequestMutationVariables>(UserPasswordResetRequestDocument, options);
+      }
+export type UserPasswordResetRequestMutationHookResult = ReturnType<typeof useUserPasswordResetRequestMutation>;
+export type UserPasswordResetRequestMutationResult = Apollo.MutationResult<UserPasswordResetRequestMutation>;
+export type UserPasswordResetRequestMutationOptions = Apollo.BaseMutationOptions<UserPasswordResetRequestMutation, UserPasswordResetRequestMutationVariables>;
 export const VehicleCreateDocument = gql`
     mutation VehicleCreate($data: VehicleCreateData!, $crewId: String) {
   vehicleCreate(data: $data, crewId: $crewId) {
@@ -2888,6 +2996,42 @@ export function useSignupSsrLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type SignupSsrQueryHookResult = ReturnType<typeof useSignupSsrQuery>;
 export type SignupSsrLazyQueryHookResult = ReturnType<typeof useSignupSsrLazyQuery>;
 export type SignupSsrQueryResult = Apollo.QueryResult<SignupSsrQuery, SignupSsrQueryVariables>;
+export const UserForPasswordResetDocument = gql`
+    query UserForPasswordReset($query: UserQuery!) {
+  user(query: $query) {
+    _id
+    name
+  }
+}
+    `;
+
+/**
+ * __useUserForPasswordResetQuery__
+ *
+ * To run a query within a React component, call `useUserForPasswordResetQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserForPasswordResetQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserForPasswordResetQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useUserForPasswordResetQuery(baseOptions: Apollo.QueryHookOptions<UserForPasswordResetQuery, UserForPasswordResetQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserForPasswordResetQuery, UserForPasswordResetQueryVariables>(UserForPasswordResetDocument, options);
+      }
+export function useUserForPasswordResetLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserForPasswordResetQuery, UserForPasswordResetQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserForPasswordResetQuery, UserForPasswordResetQueryVariables>(UserForPasswordResetDocument, options);
+        }
+export type UserForPasswordResetQueryHookResult = ReturnType<typeof useUserForPasswordResetQuery>;
+export type UserForPasswordResetLazyQueryHookResult = ReturnType<typeof useUserForPasswordResetLazyQuery>;
+export type UserForPasswordResetQueryResult = Apollo.QueryResult<UserForPasswordResetQuery, UserForPasswordResetQueryVariables>;
 export const VehicleSearchDocument = gql`
     query VehicleSearch($searchString: String!, $options: SearchOptions) {
   vehicleSearch(searchString: $searchString, options: $options) {
