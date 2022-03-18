@@ -32,7 +32,7 @@ const main = async () => {
         // await seedDatabase();
         // await saveAll();
       } else {
-        await saveAll();
+        // await saveAll();
       }
     }
 
