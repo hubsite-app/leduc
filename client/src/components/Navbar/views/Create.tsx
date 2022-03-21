@@ -20,6 +20,7 @@ import createLink from "../../../utils/createLink";
 import CrewCreateForm from "../../Forms/CrewCreate";
 import DailyReportCreateForm from "../../Forms/DailyReportCreate";
 import JobsiteCreateForm from "../../Forms/JobsiteCreate";
+import MaterialCreateForm from "../../Forms/MaterialCreate";
 
 const NavbarCreate = () => {
   /**
@@ -32,7 +33,9 @@ const NavbarCreate = () => {
 
   const router = useRouter();
 
-  const [form, setForm] = React.useState<"dailyReport" | "jobsite" | "crew">();
+  const [form, setForm] = React.useState<
+    "dailyReport" | "jobsite" | "crew" | "material"
+  >();
 
   /**
    * ----- Rendering
@@ -68,6 +71,9 @@ const NavbarCreate = () => {
                     Jobsite
                   </MenuItem>
                   <MenuItem onClick={() => setForm("crew")}>Crew</MenuItem>
+                  <MenuItem onClick={() => setForm("material")}>
+                    Material
+                  </MenuItem>
                 </>
               )}
             </MenuList>
@@ -118,6 +124,24 @@ const NavbarCreate = () => {
                   onSuccess={(crew) => {
                     setForm(undefined);
                     router.push(createLink.crew(crew._id));
+                  }}
+                />
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+          {/* MATERIAL */}
+          <Modal
+            isOpen={form === "material"}
+            onClose={() => setForm(undefined)}
+          >
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Material</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <MaterialCreateForm
+                  onSuccess={() => {
+                    setForm(undefined);
                   }}
                 />
               </ModalBody>

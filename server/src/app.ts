@@ -13,6 +13,7 @@ import DailyReportResolver from "@graphql/resolvers/dailyReport";
 import EmployeeResolver from "@graphql/resolvers/employee";
 import EmployeeWorkResolver from "@graphql/resolvers/employeeWork";
 import JobsiteResolver from "@graphql/resolvers/jobsite";
+import MaterialResolver from "@graphql/resolvers/material";
 import MaterialShipmentResolver from "@graphql/resolvers/materialShipment";
 import ProductionResolver from "@graphql/resolvers/production";
 import ReportNoteResolver from "@graphql/resolvers/reportNote";
@@ -41,6 +42,7 @@ const createApp = async () => {
       EmployeeResolver,
       EmployeeWorkResolver,
       JobsiteResolver,
+      MaterialResolver,
       MaterialShipmentResolver,
       ProductionResolver,
       ReportNoteResolver,

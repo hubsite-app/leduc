@@ -91,6 +91,14 @@ const _ids = {
       _id: Types.ObjectId("6228ffc52185c765f07a6d51"),
     },
   },
+  materials: {
+    material_1: {
+      _id: Types.ObjectId("6238b5c46503b1eece33f067"),
+    },
+    material_2: {
+      _id: Types.ObjectId("6238bdbc28c679f033f05ebf"),
+    },
+  },
 };
 
 export default _ids;

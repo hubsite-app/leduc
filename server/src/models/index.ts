@@ -3,6 +3,7 @@ export * from "./DailyReport";
 export * from "./Employee";
 export * from "./EmployeeWork";
 export * from "./Jobsite";
+export * from "./Material";
 export * from "./MaterialShipment";
 export * from "./Production";
 export * from "./ReportNote";
@@ -87,6 +88,20 @@ export interface JobsiteModel extends ReturnModelType<typeof JobsiteClass> {}
 
 export const Jobsite = getModelForClass(JobsiteClass, {
   schemaOptions: { collection: "jobsites" },
+});
+
+/**
+ * ----- Material -----
+ */
+
+import { MaterialClass } from "./Material/class";
+
+export interface MaterialDocument extends DocumentType<MaterialClass> {}
+
+export interface MaterialModel extends ReturnModelType<typeof MaterialClass> {}
+
+export const Material = getModelForClass(MaterialClass, {
+  schemaOptions: { collection: "materials" },
 });
 
 /**

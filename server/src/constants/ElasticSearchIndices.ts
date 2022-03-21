@@ -4,4 +4,5 @@ export default {
   Jobsite: "jobsite",
   DailyReport: "daily_report",
   Crew: "crew",
+  Material: "material",
 };

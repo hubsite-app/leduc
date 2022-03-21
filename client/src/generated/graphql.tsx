@@ -140,6 +140,17 @@ export type LoginData = {
   rememberMe: Scalars['Boolean'];
 };
 
+export type MaterialClass = {
+  __typename?: 'MaterialClass';
+  _id: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  name: Scalars['String'];
+};
+
+export type MaterialCreateData = {
+  name: Scalars['String'];
+};
+
 export type MaterialShipmentClass = {
   __typename?: 'MaterialShipmentClass';
   _id: Scalars['ID'];
@@ -194,6 +205,7 @@ export type Mutation = {
   employeeWorkUpdate: EmployeeWorkClass;
   jobsiteCreate: JobsiteClass;
   login: Scalars['String'];
+  materialCreate: MaterialClass;
   materialShipmentCreate: Array<MaterialShipmentClass>;
   materialShipmentDelete: Scalars['String'];
   materialShipmentUpdate: MaterialShipmentClass;
@@ -306,6 +318,11 @@ export type MutationJobsiteCreateArgs = {
 
 export type MutationLoginArgs = {
   data: LoginData;
+};
+
+
+export type MutationMaterialCreateArgs = {
+  data: MaterialCreateData;
 };
 
 
@@ -437,6 +454,9 @@ export type Query = {
   employeeSearch: Array<EmployeeClass>;
   jobsite: JobsiteClass;
   jobsiteSearch: Array<JobsiteClass>;
+  material: MaterialClass;
+  materials: Array<MaterialClass>;
+  materialSearch: Array<MaterialClass>;
   search: Array<SearchClass>;
   signup: SignupClass;
   user?: Maybe<UserClass>;
@@ -489,6 +509,22 @@ export type QueryJobsiteArgs = {
 
 
 export type QueryJobsiteSearchArgs = {
+  options?: InputMaybe<SearchOptions>;
+  searchString: Scalars['String'];
+};
+
+
+export type QueryMaterialArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryMaterialsArgs = {
+  options?: InputMaybe<ListOptionData>;
+};
+
+
+export type QueryMaterialSearchArgs = {
   options?: InputMaybe<SearchOptions>;
   searchString: Scalars['String'];
 };
@@ -659,6 +695,10 @@ export type JobsiteSsrSnippetFragment = { __typename?: 'JobsiteClass', _id: stri
 
 export type MaterialShipmentCardSnippetFragment = { __typename?: 'MaterialShipmentClass', _id: string, shipmentType: string, supplier: string, quantity: number, unit: string, startTime?: any | null, endTime?: any | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null };
 
+export type MaterialCardSnippetFragment = { __typename?: 'MaterialClass', _id: string, name: string };
+
+export type MaterialFullSnippetFragment = { __typename?: 'MaterialClass', _id: string, name: string };
+
 export type ProductionCardSnippetFragment = { __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string };
 
 export type ReportNoteFullSnippetFragment = { __typename?: 'ReportNoteClass', note: string };
@@ -807,6 +847,13 @@ export type LoginMutationVariables = Exact<{
 
 
 export type LoginMutation = { __typename?: 'Mutation', login: string };
+
+export type MaterialCreateMutationVariables = Exact<{
+  data: MaterialCreateData;
+}>;
+
+
+export type MaterialCreateMutation = { __typename?: 'Mutation', materialCreate: { __typename?: 'MaterialClass', _id: string, name: string } };
 
 export type MaterialShipmentCreateMutationVariables = Exact<{
   dailyReportId: Scalars['String'];
@@ -1021,6 +1068,21 @@ export type JobsiteSsrQueryVariables = Exact<{
 
 
 export type JobsiteSsrQuery = { __typename?: 'Query', jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } };
+
+export type MaterialSearchQueryVariables = Exact<{
+  searchString: Scalars['String'];
+  options?: InputMaybe<SearchOptions>;
+}>;
+
+
+export type MaterialSearchQuery = { __typename?: 'Query', materialSearch: Array<{ __typename?: 'MaterialClass', _id: string, name: string }> };
+
+export type MaterialsQueryVariables = Exact<{
+  options?: InputMaybe<ListOptionData>;
+}>;
+
+
+export type MaterialsQuery = { __typename?: 'Query', materials: Array<{ __typename?: 'MaterialClass', _id: string, name: string }> };
 
 export type SearchQueryVariables = Exact<{
   searchString: Scalars['String'];
@@ -1308,6 +1370,17 @@ export const JobsiteSsrSnippetFragmentDoc = gql`
   jobcode
 }
     `;
+export const MaterialCardSnippetFragmentDoc = gql`
+    fragment MaterialCardSnippet on MaterialClass {
+  _id
+  name
+}
+    `;
+export const MaterialFullSnippetFragmentDoc = gql`
+    fragment MaterialFullSnippet on MaterialClass {
+  ...MaterialCardSnippet
+}
+    ${MaterialCardSnippetFragmentDoc}`;
 export const JobsiteCardSnippetFragmentDoc = gql`
     fragment JobsiteCardSnippet on JobsiteClass {
   _id
@@ -1941,6 +2014,39 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const MaterialCreateDocument = gql`
+    mutation MaterialCreate($data: MaterialCreateData!) {
+  materialCreate(data: $data) {
+    ...MaterialFullSnippet
+  }
+}
+    ${MaterialFullSnippetFragmentDoc}`;
+export type MaterialCreateMutationFn = Apollo.MutationFunction<MaterialCreateMutation, MaterialCreateMutationVariables>;
+
+/**
+ * __useMaterialCreateMutation__
+ *
+ * To run a mutation, you first call `useMaterialCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMaterialCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [materialCreateMutation, { data, loading, error }] = useMaterialCreateMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useMaterialCreateMutation(baseOptions?: Apollo.MutationHookOptions<MaterialCreateMutation, MaterialCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MaterialCreateMutation, MaterialCreateMutationVariables>(MaterialCreateDocument, options);
+      }
+export type MaterialCreateMutationHookResult = ReturnType<typeof useMaterialCreateMutation>;
+export type MaterialCreateMutationResult = Apollo.MutationResult<MaterialCreateMutation>;
+export type MaterialCreateMutationOptions = Apollo.BaseMutationOptions<MaterialCreateMutation, MaterialCreateMutationVariables>;
 export const MaterialShipmentCreateDocument = gql`
     mutation MaterialShipmentCreate($dailyReportId: String!, $data: [MaterialShipmentCreateData!]!) {
   materialShipmentCreate(dailyReportId: $dailyReportId, data: $data) {
@@ -2926,6 +3032,77 @@ export function useJobsiteSsrLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type JobsiteSsrQueryHookResult = ReturnType<typeof useJobsiteSsrQuery>;
 export type JobsiteSsrLazyQueryHookResult = ReturnType<typeof useJobsiteSsrLazyQuery>;
 export type JobsiteSsrQueryResult = Apollo.QueryResult<JobsiteSsrQuery, JobsiteSsrQueryVariables>;
+export const MaterialSearchDocument = gql`
+    query MaterialSearch($searchString: String!, $options: SearchOptions) {
+  materialSearch(searchString: $searchString, options: $options) {
+    ...MaterialCardSnippet
+  }
+}
+    ${MaterialCardSnippetFragmentDoc}`;
+
+/**
+ * __useMaterialSearchQuery__
+ *
+ * To run a query within a React component, call `useMaterialSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMaterialSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMaterialSearchQuery({
+ *   variables: {
+ *      searchString: // value for 'searchString'
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useMaterialSearchQuery(baseOptions: Apollo.QueryHookOptions<MaterialSearchQuery, MaterialSearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MaterialSearchQuery, MaterialSearchQueryVariables>(MaterialSearchDocument, options);
+      }
+export function useMaterialSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MaterialSearchQuery, MaterialSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MaterialSearchQuery, MaterialSearchQueryVariables>(MaterialSearchDocument, options);
+        }
+export type MaterialSearchQueryHookResult = ReturnType<typeof useMaterialSearchQuery>;
+export type MaterialSearchLazyQueryHookResult = ReturnType<typeof useMaterialSearchLazyQuery>;
+export type MaterialSearchQueryResult = Apollo.QueryResult<MaterialSearchQuery, MaterialSearchQueryVariables>;
+export const MaterialsDocument = gql`
+    query Materials($options: ListOptionData) {
+  materials(options: $options) {
+    ...MaterialCardSnippet
+  }
+}
+    ${MaterialCardSnippetFragmentDoc}`;
+
+/**
+ * __useMaterialsQuery__
+ *
+ * To run a query within a React component, call `useMaterialsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMaterialsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMaterialsQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useMaterialsQuery(baseOptions?: Apollo.QueryHookOptions<MaterialsQuery, MaterialsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MaterialsQuery, MaterialsQueryVariables>(MaterialsDocument, options);
+      }
+export function useMaterialsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MaterialsQuery, MaterialsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MaterialsQuery, MaterialsQueryVariables>(MaterialsDocument, options);
+        }
+export type MaterialsQueryHookResult = ReturnType<typeof useMaterialsQuery>;
+export type MaterialsLazyQueryHookResult = ReturnType<typeof useMaterialsLazyQuery>;
+export type MaterialsQueryResult = Apollo.QueryResult<MaterialsQuery, MaterialsQueryVariables>;
 export const SearchDocument = gql`
     query Search($searchString: String!) {
   search(searchString: $searchString) {

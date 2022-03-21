@@ -1,0 +1,4 @@
+fragment MaterialCardSnippet on MaterialClass {
+  _id
+  name
+}

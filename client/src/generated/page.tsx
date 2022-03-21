@@ -39,6 +39,7 @@ import { getApolloClient , ApolloClientContext} from '../withApollo';
 
 
 
+
 export async function getServerPageCrewSearch
     (options: Omit<Apollo.QueryOptions<Types.CrewSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -528,6 +529,76 @@ export const ssrJobsiteSsr = {
       getServerPage: getServerPageJobsiteSsr,
       withPage: withPageJobsiteSsr,
       usePage: useJobsiteSsr,
+    }
+export async function getServerPageMaterialSearch
+    (options: Omit<Apollo.QueryOptions<Types.MaterialSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.MaterialSearchQuery>({ ...options, query: Operations.MaterialSearchDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useMaterialSearch = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MaterialSearchQuery, Types.MaterialSearchQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.MaterialSearchDocument, options);
+};
+export type PageMaterialSearchComp = React.FC<{data?: Types.MaterialSearchQuery, error?: Apollo.ApolloError}>;
+export const withPageMaterialSearch = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MaterialSearchQuery, Types.MaterialSearchQueryVariables>) => (WrappedComponent:PageMaterialSearchComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.MaterialSearchDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrMaterialSearch = {
+      getServerPage: getServerPageMaterialSearch,
+      withPage: withPageMaterialSearch,
+      usePage: useMaterialSearch,
+    }
+export async function getServerPageMaterials
+    (options: Omit<Apollo.QueryOptions<Types.MaterialsQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.MaterialsQuery>({ ...options, query: Operations.MaterialsDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useMaterials = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MaterialsQuery, Types.MaterialsQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.MaterialsDocument, options);
+};
+export type PageMaterialsComp = React.FC<{data?: Types.MaterialsQuery, error?: Apollo.ApolloError}>;
+export const withPageMaterials = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MaterialsQuery, Types.MaterialsQueryVariables>) => (WrappedComponent:PageMaterialsComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.MaterialsDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrMaterials = {
+      getServerPage: getServerPageMaterials,
+      withPage: withPageMaterials,
+      usePage: useMaterials,
     }
 export async function getServerPageSearch
     (options: Omit<Apollo.QueryOptions<Types.SearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){

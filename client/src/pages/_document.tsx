@@ -23,7 +23,7 @@ export default class MyDocument extends Document {
             type="image/png"
             sizes="32x32"
           />
-          <link rel="apple-touch-icon" href="/apple-icon.png"></link>
+          <link rel="apple-touch-icon" href="/icons/apple-icon.png"></link>
           <meta name="theme-color" content="#ef2e25" />
         </Head>
         <body>

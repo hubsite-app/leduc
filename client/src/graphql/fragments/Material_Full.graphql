@@ -1,0 +1,3 @@
+fragment MaterialFullSnippet on MaterialClass {
+  ...MaterialCardSnippet
+}

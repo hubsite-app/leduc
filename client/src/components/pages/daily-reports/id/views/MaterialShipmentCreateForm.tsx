@@ -14,6 +14,7 @@ import ErrorMessage from "../../../../Common/ErrorMessage";
 import Select from "../../../../Common/forms/Select";
 import SubmitButton from "../../../../Common/forms/SubmitButton";
 import TextField from "../../../../Common/forms/TextField";
+import MaterialSearch from "../../../../Search/MaterialSearch";
 
 type ShipmentErrors = {
   shipmentType?: string;
@@ -414,8 +415,11 @@ const MaterialShipmentCreateForm = ({
                 </Flex>
               )}
               <SimpleGrid spacing={2} columns={[1, 1, 2]}>
-                <TextField
-                  label="Shipment Type"
+                <MaterialSearch
+                  materialSelected={(material) =>
+                    updateShipmentType(material.name, dataIndex, shipmentIndex)
+                  }
+                  label="Material"
                   isDisabled={loading}
                   value={shipment.shipmentType}
                   errorMessage={

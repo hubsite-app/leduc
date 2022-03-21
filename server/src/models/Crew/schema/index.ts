@@ -1,7 +1,6 @@
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import { post, prop, Ref } from "@typegoose/typegoose";
-import { CrewTypes } from "@typescript/crew";
 import {
   CrewDocument,
   EmployeeClass,

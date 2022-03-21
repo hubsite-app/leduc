@@ -12,6 +12,7 @@ import {
 import {
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
 } from "@chakra-ui/form-control";
 import dayjs from "dayjs";
@@ -19,6 +20,7 @@ import dayjs from "dayjs";
 export interface ITextField extends InputProps {
   label?: string;
   errorMessage?: string;
+  helperText?: string;
   inputLeftAddon?: React.ReactNode;
   inputRightAddon?: React.ReactNode;
   inputLeftElement?: React.ReactNode;
@@ -31,6 +33,7 @@ const TextField = React.forwardRef<HTMLInputElement, ITextField>(
     {
       label,
       errorMessage,
+      helperText,
       inputLeftAddon,
       inputLeftElement,
       inputRightAddon,
@@ -74,6 +77,7 @@ const TextField = React.forwardRef<HTMLInputElement, ITextField>(
           )}
         </InputGroup>
         {errorMessage && <FormErrorMessage>{errorMessage}</FormErrorMessage>}
+        {helperText && <FormHelperText>{helperText}</FormHelperText>}
       </FormControl>
     );
   }

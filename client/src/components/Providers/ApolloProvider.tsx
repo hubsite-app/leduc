@@ -40,6 +40,12 @@ export default function MyApolloProvider({
                 return [...existing, ...incoming];
               },
             },
+            materials: {
+              keyArgs: [],
+              merge: (existing = [], incoming) => {
+                return [...existing, ...incoming];
+              },
+            },
           },
         },
       },
