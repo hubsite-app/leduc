@@ -97,6 +97,7 @@ const ReportNotes = ({ dailyReport }: IReportNotes) => {
             },
           },
         });
+        setFileForm(false);
         setFileView(true);
       } catch (e: any) {
         toast({
