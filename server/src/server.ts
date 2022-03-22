@@ -30,9 +30,9 @@ const main = async () => {
 
       if (notProduction) {
         // await seedDatabase();
-        await saveAll();
-      } else {
         // await saveAll();
+      } else {
+        await saveAll();
       }
     }
 

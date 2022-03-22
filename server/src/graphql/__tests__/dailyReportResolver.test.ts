@@ -5,6 +5,9 @@ import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 
 import createApp from "../../app";
 import _ids from "@testing/_ids";
+import jestLogin from "@testing/jestLogin";
+import { FileCreateData } from "@graphql/resolvers/file/mutations";
+import path from "path";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -127,6 +130,130 @@ describe("DailyReport Resolver", () => {
           );
 
           expect(dailyReport.reportNote).toBeDefined();
+        });
+      });
+    });
+  });
+
+  describe("MUTATIONS", () => {
+    describe("dailyReportAddNoteFile", () => {
+      const addFileMutation = `
+        mutation AddFile($id: String!, $data: FileCreateData!) {
+          dailyReportAddNoteFile(id: $id, data: $data) {
+            _id 
+            reportNote {
+              note
+              files {
+                mimetype
+                buffer
+                description
+              }
+            }
+          }
+        }
+      `;
+
+      describe("success", () => {
+        test("should successfully add a file to report note", async () => {
+          const token = await jestLogin(
+            app,
+            documents.users.base_foreman_1_user.email
+          );
+
+          const data: FileCreateData = {
+            description: "A Description",
+            // @ts-expect-error
+            file: null,
+          };
+
+          const filename = "concrete.jpg";
+          const res = await request(app)
+            .post("/graphql")
+            .field(
+              "operations",
+              JSON.stringify({
+                query: addFileMutation,
+                variables: {
+                  id: documents.dailyReports.jobsite_1_base_1_1._id,
+                  data,
+                },
+              })
+            )
+            .field(
+              "map",
+              JSON.stringify({
+                1: ["variables.data.file"],
+              })
+            )
+            .attach(
+              "1",
+              path.resolve(__dirname, `../../testing/assets/${filename}`)
+            )
+            .set("Authorization", token);
+
+          expect(res.status).toBe(200);
+
+          expect(res.body.data.dailyReportAddNoteFile.reportNote).toBeDefined();
+          const reportNote = res.body.data.dailyReportAddNoteFile.reportNote;
+
+          expect(reportNote.files.length).toBe(2);
+
+          const file = reportNote.files[1];
+          expect(file.description).toBe(data.description);
+          expect(file.buffer).toBeDefined();
+          expect(file.mimetype).toBe("image/jpeg");
+        });
+
+        test("should successfully add a file a non-existant report note", async () => {
+          const token = await jestLogin(
+            app,
+            documents.users.base_foreman_1_user.email
+          );
+
+          const data: FileCreateData = {
+            description: "A Description 2",
+            // @ts-expect-error
+            file: null,
+          };
+
+          const filename = "concrete.jpg";
+          const res = await request(app)
+            .post("/graphql")
+            .field(
+              "operations",
+              JSON.stringify({
+                query: addFileMutation,
+                variables: {
+                  id: documents.dailyReports.jobsite_1_base_1_2._id,
+                  data,
+                },
+              })
+            )
+            .field(
+              "map",
+              JSON.stringify({
+                1: ["variables.data.file"],
+              })
+            )
+            .attach(
+              "1",
+              path.resolve(__dirname, `../../testing/assets/${filename}`)
+            )
+            .set("Authorization", token);
+
+          expect(res.status).toBe(200);
+
+          console.log(res.body);
+
+          expect(res.body.data.dailyReportAddNoteFile.reportNote).toBeDefined();
+          const reportNote = res.body.data.dailyReportAddNoteFile.reportNote;
+
+          expect(reportNote.files.length).toBe(1);
+
+          const file = reportNote.files[0];
+          expect(file.description).toBe(data.description);
+          expect(file.buffer).toBeDefined();
+          expect(file.mimetype).toBe("image/jpeg");
         });
       });
     });

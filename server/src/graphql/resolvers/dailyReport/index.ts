@@ -29,6 +29,7 @@ import mutations, {
   DailyReportUpdateData,
 } from "./mutations";
 import { SearchOptions } from "@graphql/types/query";
+import { FileCreateData } from "../file/mutations";
 
 @Resolver(() => DailyReportClass)
 export default class DailyReportResolver {
@@ -162,5 +163,14 @@ export default class DailyReportResolver {
     @Arg("vehicleId") vehicleId: string
   ) {
     return mutations.addTemporaryVehicle(id, vehicleId);
+  }
+
+  @Authorized()
+  @Mutation(() => DailyReportClass)
+  async dailyReportAddNoteFile(
+    @Arg("id") id: string,
+    @Arg("data") data: FileCreateData
+  ) {
+    return mutations.addNoteFile(id, data);
   }
 }

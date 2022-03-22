@@ -8,6 +8,7 @@ import createEmployees, { SeededEmployees } from "./documents/employees";
 import createEmployeeWork, {
   SeededEmployeeWork,
 } from "./documents/employeeWork";
+import createFiles, { SeededFiles } from "./documents/files";
 import createJobsites, { SeededJobsites } from "./documents/jobsites";
 import createMaterials, { SeededMaterials } from "./documents/materials";
 import createMaterialShipments, {
@@ -25,6 +26,7 @@ export interface SeededDatabase {
   dailyReports: SeededDailyReports;
   employees: SeededEmployees;
   employeeWork: SeededEmployeeWork;
+  files: SeededFiles;
   jobsites: SeededJobsites;
   materials: SeededMaterials;
   materialShipments: SeededMaterialShipments;
@@ -50,6 +52,7 @@ const seedDatabase = () => {
       const dailyReports = await createDailyReports();
       const employees = await createEmployees();
       const employeeWork = await createEmployeeWork();
+      const files = await createFiles();
       const jobsites = await createJobsites();
       const materials = await createMaterials();
       const materialShipments = await createMaterialShipments();
@@ -65,6 +68,7 @@ const seedDatabase = () => {
         dailyReports,
         employees,
         employeeWork,
+        files,
         jobsites,
         materials,
         materialShipments,

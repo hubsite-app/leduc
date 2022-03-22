@@ -1,4 +1,9 @@
-import { ReportNoteDocument, ReportNoteModel } from "@models";
+import {
+  File,
+  FileDocument,
+  ReportNoteDocument,
+  ReportNoteModel,
+} from "@models";
 import { GetByIDOptions, Id } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 
@@ -31,6 +36,25 @@ const byId = (
   });
 };
 
+/**
+ * ----- Methods -----
+ */
+
+const files = (reportNote: ReportNoteDocument) => {
+  return new Promise<FileDocument[]>(async (resolve, reject) => {
+    try {
+      const files = await File.find({
+        _id: { $in: reportNote.files },
+      });
+
+      resolve(files);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   byId,
+  files,
 };

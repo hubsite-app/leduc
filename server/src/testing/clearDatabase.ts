@@ -3,7 +3,9 @@ import {
   DailyReport,
   Employee,
   EmployeeWork,
+  File,
   Jobsite,
+  Material,
   MaterialShipment,
   Production,
   ReportNote,
@@ -22,6 +24,7 @@ const clearDatabase = () => {
         await Employee.deleteMany({});
         await EmployeeWork.deleteMany({});
         await Jobsite.deleteMany({});
+        await Material.deleteMany({});
         await MaterialShipment.deleteMany({});
         await Production.deleteMany({});
         await ReportNote.deleteMany({});
@@ -29,6 +32,8 @@ const clearDatabase = () => {
         await User.deleteMany({});
         await Vehicle.deleteMany({});
         await VehicleWork.deleteMany({});
+
+        await File.removeAll();
       } else {
         throw new Error(
           "clearDatabase: This function cannot be used in production"

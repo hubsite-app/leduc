@@ -37,26 +37,26 @@ spec:
                 secretKeyRef:
                   name: server-secrets
                   key: jwtSecret
-            # - name: SPACES_NAME
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: server-secrets
-            #       key: spacesName
-            # - name: SPACES_REGION
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: server-secrets
-            #       key: spacesRegion
-            # - name: SPACES_KEY
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: server-secrets
-            #       key: spacesKey
-            # - name: SPACES_SECRET
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: server-secrets
-            #       key: spacesSecret
+            - name: SPACES_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: server-secrets
+                  key: spacesName
+            - name: SPACES_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: server-secrets
+                  key: spacesRegion
+            - name: SPACES_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: server-secrets
+                  key: spacesKey
+            - name: SPACES_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: server-secrets
+                  key: spacesSecret
             - name: ELASTICSEARCH_PASSWORD
               valueFrom:
                 secretKeyRef:

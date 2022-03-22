@@ -1,3 +1,4 @@
+import SchemaVersions from "@constants/SchemaVersions";
 import { ES_updateMaterial } from "@elasticsearch/helpers/material";
 import { MaterialDocument } from "@models";
 import { post, prop } from "@typegoose/typegoose";
@@ -20,6 +21,10 @@ export class MaterialSchema {
     unique: true,
   })
   public name!: string;
+
+  @Field()
+  @prop({ required: true, default: SchemaVersions.Material })
+  public schemaVersion!: number;
 
   @Field({ nullable: false })
   @prop({ required: true, default: Date.now })

@@ -25,6 +25,7 @@ yarn-error.log*
 # Server
 /server/.env.development
 /server/dist
+/server/src/testing/globalSetup.ts
 
 # Client
 /client/build

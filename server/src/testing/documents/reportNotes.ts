@@ -11,6 +11,7 @@ const createReportNotes = () => {
       const jobsite_1_base_1_1_note_1 = new ReportNote({
         _id: _ids.reportNotes.jobsite_1_base_1_1_note_1._id,
         note: "This is a note for the first day on Jobsite 1",
+        files: [_ids.files.jobsite_1_base_1_1_file_1._id],
       });
 
       const reportNotes = {

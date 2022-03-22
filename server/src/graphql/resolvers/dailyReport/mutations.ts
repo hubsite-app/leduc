@@ -3,11 +3,14 @@ import {
   DailyReport,
   DailyReportDocument,
   Employee,
+  File,
   Jobsite,
   ReportNote,
   Vehicle,
 } from "@models";
+import { Id } from "@typescript/models";
 import { Field, InputType } from "type-graphql";
+import { FileCreateData } from "../file/mutations";
 
 @InputType()
 export class DailyReportUpdateData {
@@ -179,10 +182,47 @@ const addTemporaryVehicle = (id: string, vehicleId: string) => {
   });
 };
 
+const addNoteFile = (id: Id, data: FileCreateData) => {
+  return new Promise<DailyReportDocument>(async (resolve, reject) => {
+    try {
+      const dailyReport = (await DailyReport.getById(id, {
+        throwError: true,
+      }))!;
+
+      let reportNote = await dailyReport.getReportNote();
+      if (!reportNote) {
+        reportNote = await ReportNote.createDocument({
+          dailyReport,
+          note: "",
+        });
+      }
+
+      const fileStream = await data.file;
+
+      const file = await File.createDocument({
+        description: data.description,
+        mimetype: fileStream.mimetype,
+        stream: fileStream.createReadStream(),
+      });
+
+      await reportNote.addFile(file);
+
+      await reportNote.save();
+
+      await dailyReport.save();
+
+      resolve(dailyReport);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   create,
   update,
   updateNote,
+  addNoteFile,
   updateApproval,
   addTemporaryEmployee,
   addTemporaryVehicle,

@@ -60,6 +60,9 @@ const _ids = {
     jobsite_1_base_1_1: {
       _id: Types.ObjectId("621664558c026b7ac8fb32ef"),
     },
+    jobsite_1_base_1_2: {
+      _id: Types.ObjectId("62391e90ec22ce6458bd2d18"),
+    },
   },
   employeeWork: {
     jobsite_1_base_1_1_base_foreman_1: {
@@ -97,6 +100,11 @@ const _ids = {
     },
     material_2: {
       _id: Types.ObjectId("6238bdbc28c679f033f05ebf"),
+    },
+  },
+  files: {
+    jobsite_1_base_1_1_file_1: {
+      _id: Types.ObjectId("623930a9601034ef3cd7efc3"),
     },
   },
 };

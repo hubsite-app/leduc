@@ -1,10 +1,11 @@
-import { ReportNoteDocument, ReportNoteModel } from "@models";
+import { FileDocument, ReportNoteDocument, ReportNoteModel } from "@models";
 import { GetByIDOptions, Id } from "@typescript/models";
 import { IReportNoteCreate, IReportNoteUpdate } from "@typescript/reportNote";
 import { ObjectType } from "type-graphql";
 import { ReportNoteSchema } from "..";
 import create from "./create";
 import get from "./get";
+import remove from "./remove";
 import update from "./update";
 
 @ObjectType()
@@ -19,6 +20,10 @@ export class ReportNoteClass extends ReportNoteSchema {
     options?: GetByIDOptions
   ) {
     return get.byId(this, id, options);
+  }
+
+  public async getFiles(this: ReportNoteDocument) {
+    return get.files(this);
   }
 
   /**
@@ -41,5 +46,17 @@ export class ReportNoteClass extends ReportNoteSchema {
     data: IReportNoteUpdate
   ) {
     return update.document(this, data);
+  }
+
+  public async addFile(this: ReportNoteDocument, file: FileDocument) {
+    return update.addFile(this, file);
+  }
+
+  /**
+   * ----- Remove -----
+   */
+
+  public async removeFile(this: ReportNoteDocument, file: FileDocument) {
+    return remove.file(this, file);
   }
 }

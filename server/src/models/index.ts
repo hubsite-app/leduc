@@ -2,6 +2,7 @@ export * from "./Crew";
 export * from "./DailyReport";
 export * from "./Employee";
 export * from "./EmployeeWork";
+export * from "./File";
 export * from "./Jobsite";
 export * from "./Material";
 export * from "./MaterialShipment";
@@ -74,6 +75,20 @@ export interface EmployeeWorkModel
 
 export const EmployeeWork = getModelForClass(EmployeeWorkClass, {
   schemaOptions: { collection: "employeeworks" },
+});
+
+/**
+ * ----- File -----
+ */
+
+import { FileClass } from "./File/class";
+
+export interface FileDocument extends DocumentType<FileClass> {}
+
+export interface FileModel extends ReturnModelType<typeof FileClass> {}
+
+export const File = getModelForClass(FileClass, {
+  schemaOptions: { collection: "files" },
 });
 
 /**

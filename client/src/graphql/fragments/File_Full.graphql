@@ -1,0 +1,6 @@
+fragment FileFullSnippet on FileClass {
+  _id
+  mimetype
+  buffer
+  description
+}

@@ -3,6 +3,7 @@ import _ids from "@testing/_ids";
 
 export interface SeededDailyReports {
   jobsite_1_base_1_1: DailyReportDocument;
+  jobsite_1_base_1_2: DailyReportDocument;
 }
 
 const createDailyReports = () => {
@@ -20,13 +21,28 @@ const createDailyReports = () => {
         materialShipment: [
           _ids.materialShipments.jobsite_1_base_1_1_shipment_1._id,
         ],
-        reportNote: [_ids.reportNotes.jobsite_1_base_1_1_note_1._id],
+        reportNote: _ids.reportNotes.jobsite_1_base_1_1_note_1._id,
         temporaryEmployees: [_ids.employees.temp_1._id],
         temporaryVehicles: [_ids.vehicles.temp_1._id],
       });
 
+      const jobsite_1_base_1_2 = new DailyReport({
+        _id: _ids.dailyReports.jobsite_1_base_1_2._id,
+        date: new Date("2022-02-24 7:00 am"),
+        jobsite: _ids.jobsites.jobsite_1._id,
+        crew: _ids.crews.base_1._id,
+        approved: true,
+        employeeWork: [],
+        vehicleWork: [],
+        production: [],
+        materialShipment: [],
+        temporaryEmployees: [],
+        temporaryVehicles: [],
+      });
+
       const dailyReports = {
         jobsite_1_base_1_1,
+        jobsite_1_base_1_2,
       };
 
       for (let i = 0; i < Object.values(dailyReports).length; i++) {
