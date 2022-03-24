@@ -27,6 +27,8 @@ spec:
           env:
             - name: NODE_ENV
               value: production
+            - name: ELASTICSEARCH_GROUP
+              value: bow-mark-paving
             - name: MONGO_URI
               valueFrom:
                 secretKeyRef:

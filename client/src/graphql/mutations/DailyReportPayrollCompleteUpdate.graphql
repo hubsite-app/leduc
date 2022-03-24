@@ -1,0 +1,5 @@
+mutation DailyReportPayrollCompleteUpdate($id: String!, $complete: Boolean!) {
+  dailyReportPayrollCompleteUpdate(id: $id, complete: $complete) {
+    ...DailyReportFullSnippet
+  }
+}

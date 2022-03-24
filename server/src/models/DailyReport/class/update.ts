@@ -46,10 +46,28 @@ const date = (dailyReport: DailyReportDocument, date: Date) => {
   );
 };
 
-const approval = (dailyReport: DailyReportDocument, approved: boolean) => {
+const jobCodeApproval = (
+  dailyReport: DailyReportDocument,
+  approved: boolean
+) => {
   return new Promise<void>(async (resolve, reject) => {
     try {
       dailyReport.approved = approved;
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const payrollComplete = (
+  dailyReport: DailyReportDocument,
+  complete: boolean
+) => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      dailyReport.payrollComplete = complete;
 
       resolve();
     } catch (e) {
@@ -187,7 +205,8 @@ const addTemporaryVehicle = (
 export default {
   document,
   date,
-  approval,
+  jobCodeApproval,
+  payrollComplete,
   addEmployeeWork,
   addVehicleWork,
   addProduction,

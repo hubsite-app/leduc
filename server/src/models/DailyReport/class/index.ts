@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { ObjectType } from "type-graphql";
 
 import {
@@ -128,8 +127,18 @@ export class DailyReportClass extends DailyReportSchema {
     return update.date(this, date);
   }
 
-  public async updateApproval(this: DailyReportDocument, approved: boolean) {
-    return update.approval(this, approved);
+  public async updateJobCostApproval(
+    this: DailyReportDocument,
+    approved: boolean
+  ) {
+    return update.jobCodeApproval(this, approved);
+  }
+
+  public async updatePayrollComplete(
+    this: DailyReportDocument,
+    complete: boolean
+  ) {
+    return update.payrollComplete(this, complete);
   }
 
   public async addEmployeeWork(

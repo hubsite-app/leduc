@@ -1,7 +1,8 @@
 fragment DailyReportFullSnippet on DailyReportClass {
   _id
   date
-  approved
+  jobCostApproved
+  payrollComplete
   jobsite {
     _id
     name

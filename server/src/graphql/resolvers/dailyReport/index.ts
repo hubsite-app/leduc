@@ -152,11 +152,20 @@ export default class DailyReportResolver {
 
   @Authorized(["ADMIN"])
   @Mutation(() => DailyReportClass)
-  async dailyReportApprovalUpdate(
+  async dailyReportJobCostApprovalUpdate(
     @Arg("id") id: string,
     @Arg("approved") approved: boolean
   ) {
-    return mutations.updateApproval(id, approved);
+    return mutations.updateJobCostApproval(id, approved);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => DailyReportClass)
+  async dailyReportPayrollCompleteUpdate(
+    @Arg("id") id: string,
+    @Arg("complete") complete: boolean
+  ) {
+    return mutations.updatePayrollComplete(id, complete);
   }
 
   @Authorized()

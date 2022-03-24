@@ -36,9 +36,13 @@ export class DailyReportSchema {
   @prop({ ref: () => CrewClass, required: true })
   public crew!: Ref<CrewClass>;
 
-  @Field({ nullable: false })
+  @Field({ nullable: false, name: "jobCostApproved" })
   @prop({ required: true, default: false })
   public approved!: boolean;
+
+  @Field({ nullable: false })
+  @prop({ required: true, default: false })
+  public payrollComplete!: boolean;
 
   @Field(() => [EmployeeWorkClass])
   @prop({ ref: () => EmployeeWorkClass, default: [] })

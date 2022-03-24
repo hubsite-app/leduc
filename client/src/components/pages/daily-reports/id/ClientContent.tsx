@@ -19,11 +19,13 @@ import { FiEdit } from "react-icons/fi";
 import { useAuth } from "../../../../contexts/Auth";
 import { useDailyReportUpdateForm } from "../../../../forms/dailyReport";
 import {
-  useDailyReportApprovalUpdateMutation,
   useDailyReportFullQuery,
+  useDailyReportJobCostApprovalUpdateMutation,
+  useDailyReportPayrollCompleteUpdateMutation,
   useDailyReportUpdateMutation,
 } from "../../../../generated/graphql";
 import createLink from "../../../../utils/createLink";
+import AdminOnly from "../../../Common/AdminOnly";
 
 import Card from "../../../Common/Card";
 import Checkbox from "../../../Common/forms/Checkbox";
@@ -64,7 +66,10 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
   const [update, { loading }] = useDailyReportUpdateMutation();
 
   const [updateApproval, { loading: approvalLoading }] =
-    useDailyReportApprovalUpdateMutation();
+    useDailyReportJobCostApprovalUpdateMutation();
+
+  const [updatePayrollComplete, { loading: payrollLoading }] =
+    useDailyReportPayrollCompleteUpdateMutation();
 
   const { FormComponents } = useDailyReportUpdateForm();
 
@@ -107,22 +112,38 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                     {data?.dailyReport.crew.name}
                   </TextLink>
                 </Text>
-                {user?.admin && (
-                  <Checkbox
-                    isDisabled={approvalLoading}
-                    isChecked={data?.dailyReport.approved}
-                    onChange={(e) => {
-                      updateApproval({
-                        variables: {
-                          id: data?.dailyReport._id,
-                          approved: e.target.checked,
-                        },
-                      });
-                    }}
-                  >
-                    Approved
-                  </Checkbox>
-                )}
+                <AdminOnly>
+                  <Flex flexDir="column">
+                    <Checkbox
+                      isDisabled={approvalLoading}
+                      isChecked={data?.dailyReport.jobCostApproved}
+                      onChange={(e) => {
+                        updateApproval({
+                          variables: {
+                            id: data?.dailyReport._id,
+                            approved: e.target.checked,
+                          },
+                        });
+                      }}
+                    >
+                      Job Cost Approval
+                    </Checkbox>
+                    <Checkbox
+                      isDisabled={payrollLoading}
+                      isChecked={data?.dailyReport.payrollComplete}
+                      onChange={(e) => {
+                        updatePayrollComplete({
+                          variables: {
+                            id: data?.dailyReport._id,
+                            complete: e.target.checked,
+                          },
+                        });
+                      }}
+                    >
+                      Pay Roll Complete
+                    </Checkbox>
+                  </Flex>
+                </AdminOnly>
                 <Text>
                   <TextLink
                     newTab
@@ -204,10 +225,11 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
     loading,
     onEditModalClose,
     onEditModalOpen,
+    payrollLoading,
     toast,
     update,
     updateApproval,
-    user?.admin,
+    updatePayrollComplete,
   ]);
 
   return content;

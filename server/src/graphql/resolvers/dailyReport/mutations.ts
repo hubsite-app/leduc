@@ -120,14 +120,32 @@ const updateNote = (id: string, data: DailyReportNoteUpdateData) => {
   });
 };
 
-const updateApproval = (id: string, approved: boolean) => {
+const updateJobCostApproval = (id: string, approved: boolean) => {
   return new Promise<DailyReportDocument>(async (resolve, reject) => {
     try {
       const dailyReport = (await DailyReport.getById(id, {
         throwError: true,
       }))!;
 
-      await dailyReport.updateApproval(approved);
+      await dailyReport.updateJobCostApproval(approved);
+
+      await dailyReport.save();
+
+      resolve(dailyReport);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const updatePayrollComplete = (id: string, complete: boolean) => {
+  return new Promise<DailyReportDocument>(async (resolve, reject) => {
+    try {
+      const dailyReport = (await DailyReport.getById(id, {
+        throwError: true,
+      }))!;
+
+      await dailyReport.updatePayrollComplete(complete);
 
       await dailyReport.save();
 
@@ -223,7 +241,8 @@ export default {
   update,
   updateNote,
   addNoteFile,
-  updateApproval,
+  updateJobCostApproval,
+  updatePayrollComplete,
   addTemporaryEmployee,
   addTemporaryVehicle,
 };
