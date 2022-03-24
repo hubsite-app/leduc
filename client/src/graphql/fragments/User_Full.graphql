@@ -5,7 +5,11 @@ fragment FullUserSnippet on UserClass {
   admin
   projectManager
   employee {
+    _id
     name
     jobTitle
+    crews {
+      ...CrewCardSnippet
+    }
   }
 }

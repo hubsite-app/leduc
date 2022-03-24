@@ -427,6 +427,41 @@ export const ssrEmployeeSsr = {
       withPage: withPageEmployeeSsr,
       usePage: useEmployeeSsr,
     }
+export async function getServerPageFileFull
+    (options: Omit<Apollo.QueryOptions<Types.FileFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.FileFullQuery>({ ...options, query: Operations.FileFullDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useFileFull = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.FileFullQuery, Types.FileFullQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.FileFullDocument, options);
+};
+export type PageFileFullComp = React.FC<{data?: Types.FileFullQuery, error?: Apollo.ApolloError}>;
+export const withPageFileFull = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.FileFullQuery, Types.FileFullQueryVariables>) => (WrappedComponent:PageFileFullComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.FileFullDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrFileFull = {
+      getServerPage: getServerPageFileFull,
+      withPage: withPageFileFull,
+      usePage: useFileFull,
+    }
 export async function getServerPageJobsiteSearch
     (options: Omit<Apollo.QueryOptions<Types.JobsiteSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);

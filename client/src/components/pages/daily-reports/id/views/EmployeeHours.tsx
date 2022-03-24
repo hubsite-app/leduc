@@ -19,7 +19,7 @@ const EmployeeHours = ({ dailyReport }: IEmployeeHours) => {
   const [collapsed, setCollapsed] = React.useState(true);
 
   return (
-    <Card>
+    <Card h="fit-content">
       <Flex flexDir="row" justifyContent="space-between">
         <Heading
           w="100%"

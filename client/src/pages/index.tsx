@@ -4,6 +4,7 @@ import Container from "../components/Common/Container";
 import DailyReportCard from "../components/Common/DailyReportCard";
 import InfiniteScroll from "../components/Common/InfiniteScroll";
 import Loading from "../components/Common/Loading";
+import { useAuth } from "../contexts/Auth";
 
 import { useDailyReportsQuery } from "../generated/graphql";
 
@@ -12,7 +13,23 @@ const Home = () => {
    * ----- Hook Initialization -----
    */
 
-  const { data, loading, fetchMore } = useDailyReportsQuery();
+  const {
+    state: { user },
+  } = useAuth();
+
+  const crews = React.useMemo(() => {
+    if (user && user.admin === false) {
+      return user.employee.crews.map((crew) => crew._id);
+    } else return [];
+  }, [user]);
+
+  const { data, loading, fetchMore } = useDailyReportsQuery({
+    variables: {
+      options: {
+        crews,
+      },
+    },
+  });
 
   const [finished, setFinished] = React.useState(false);
 
@@ -26,13 +43,14 @@ const Home = () => {
         variables: {
           options: {
             offset: data?.dailyReports.length,
+            crews,
           },
         },
       }).then((data) => {
         if (data.data.dailyReports.length === 0) setFinished(true);
       });
     }
-  }, [data?.dailyReports.length, fetchMore, finished, loading]);
+  }, [crews, data?.dailyReports.length, fetchMore, finished, loading]);
 
   /**
    * ----- Rendering -----

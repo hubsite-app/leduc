@@ -1,6 +1,4 @@
 fragment FileFullSnippet on FileClass {
-  _id
-  mimetype
+  ...FilePreloadSnippet
   buffer
-  description
 }

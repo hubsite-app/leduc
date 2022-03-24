@@ -1,0 +1,5 @@
+fragment FilePreloadSnippet on FileClass {
+  _id
+  mimetype
+  description
+}

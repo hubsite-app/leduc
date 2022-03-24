@@ -38,12 +38,10 @@ export const ES_updateDailyReport = (dailyReport: DailyReportDocument) => {
           id: dailyReport._id.toString(),
           body: {
             doc: {
-              daily_report: {
-                date: dailyReport.date,
-                jobsiteName: jobsite?.name || "",
-                jobsiteCode: jobsite?.jobcode || "",
-                crewName: crew?.name || "",
-              },
+              date: dailyReport.date,
+              jobsiteName: jobsite?.name || "",
+              jobsiteCode: jobsite?.jobcode || "",
+              crewName: crew?.name || "",
             },
             doc_as_upsert: true,
           },

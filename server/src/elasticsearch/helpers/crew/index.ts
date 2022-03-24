@@ -28,9 +28,7 @@ export const ES_updateCrew = (crew: CrewDocument) => {
           id: crew._id.toString(),
           body: {
             doc: {
-              crew: {
-                name: crew.name,
-              },
+              name: crew.name,
             },
             doc_as_upsert: true,
           },

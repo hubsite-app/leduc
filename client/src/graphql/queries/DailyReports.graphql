@@ -1,4 +1,4 @@
-query DailyReports($options: ListOptionData) {
+query DailyReports($options: DailyReportListOptionData) {
   dailyReports(options: $options) {
     ...DailyReportCardSnippet
   }

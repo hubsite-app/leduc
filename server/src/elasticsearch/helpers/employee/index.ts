@@ -28,10 +28,8 @@ export const ES_updateEmployee = (employee: EmployeeDocument) => {
           id: employee._id.toString(),
           body: {
             doc: {
-              employee: {
-                name: employee.name,
-                jobTitle: employee.jobTitle,
-              },
+              name: employee.name,
+              jobTitle: employee.jobTitle,
             },
             doc_as_upsert: true,
           },

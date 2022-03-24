@@ -1,44 +1,40 @@
 {
   "properties": {
-    "daily_report": {
-      "properties": {
-        "jobsiteName": {
-          "type": "text",
-          "analyzer": "autocomplete",
-          "search_analyzer": "autocomplete_search",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
-        },
-        "jobsiteCode": {
-          "type": "text",
-          "analyzer": "autocomplete",
-          "search_analyzer": "autocomplete_search",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
-        },
-        "crewName": {
-          "type": "text",
-          "analyzer": "autocomplete",
-          "search_analyzer": "autocomplete_search",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
-        },
-        "date": {
-          "type": "date"
+    "jobsiteName": {
+      "type": "text",
+      "analyzer": "autocomplete",
+      "search_analyzer": "autocomplete_search",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
         }
       }
+    },
+    "jobsiteCode": {
+      "type": "text",
+      "analyzer": "autocomplete",
+      "search_analyzer": "autocomplete_search",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "crewName": {
+      "type": "text",
+      "analyzer": "autocomplete",
+      "search_analyzer": "autocomplete_search",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "date": {
+      "type": "date"
     }
   }
 }

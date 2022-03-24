@@ -18,7 +18,7 @@ export default class VehicleWorkResolver {
    * ----- Field Resolvers -----
    */
 
-  @FieldResolver(() => VehicleClass)
+  @FieldResolver(() => VehicleClass, { nullable: true })
   async vehicle(@Root() vehicleWork: VehicleWorkDocument) {
     return vehicleWork.getVehicle();
   }

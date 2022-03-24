@@ -70,7 +70,7 @@ const VehicleWorkCard = ({ vehicleWork }: IVehicleWorkCard) => {
             <Text as="span" fontWeight="bold">
               {vehicleWork.jobTitle}
             </Text>{" "}
-            - {vehicleWork.vehicle.name}
+            - {vehicleWork.vehicle ? vehicleWork.vehicle.name : "Not Found"}
           </Text>
           <Text>
             {vehicleWork.hours} {hourString(vehicleWork.hours)}

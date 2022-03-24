@@ -58,7 +58,7 @@ const search = (
             multi_match: {
               query: searchString.toLowerCase(),
               fuzziness: "AUTO",
-              fields: ["jobsite.name", "jobsite.jobcode"],
+              fields: ["name", "jobcode"],
             },
           },
         },

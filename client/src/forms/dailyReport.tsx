@@ -13,10 +13,12 @@ import TextField, { ITextField } from "../components/Common/forms/TextField";
 import {
   DailyReportCreateData,
   DailyReportUpdateData,
+  FullUserSnippetFragment,
 } from "../generated/graphql";
 import { IFormProps } from "../typescript/forms";
 import CrewSearch from "../components/Search/CrewSearch";
 import JobsiteSearch from "../components/Search/JobsiteSearch";
+import Select from "../components/Common/forms/Select";
 
 const DailyReportCreate = yup
   .object()
@@ -69,26 +71,55 @@ export const useDailyReportCreateForm = (options?: UseFormProps) => {
         ),
         [defaultValue, isLoading]
       ),
-    Crew: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+    Crew: ({
+      isLoading,
+      user,
+      ...props
+    }: IFormProps<ITextField> & {
+      user: FullUserSnippetFragment | null | undefined;
+    }) =>
       React.useMemo(
         () => (
           <Controller
             control={control}
             name="crewId"
-            render={({ field, fieldState }) => (
-              <CrewSearch
-                {...props}
-                name={field.name}
-                onBlur={field.onBlur}
-                label="Crew"
-                crewSelected={(crew) => field.onChange(crew._id)}
-                errorMessage={fieldState.error?.message}
-                isDisabled={isLoading}
-              />
-            )}
+            render={({ field, fieldState }) => {
+              if (
+                user &&
+                user.admin === false &&
+                user.employee.crews.length > 0
+              ) {
+                return (
+                  <Select
+                    {...field}
+                    defaultValue={user.employee.crews[0]._id}
+                    label="Select Crew"
+                    name="crewId"
+                    errorMessage={fieldState.error?.message}
+                    options={user.employee.crews.map((crew) => {
+                      return {
+                        value: crew._id,
+                        title: crew.name,
+                      };
+                    })}
+                  />
+                );
+              } else
+                return (
+                  <CrewSearch
+                    {...props}
+                    name={field.name}
+                    onBlur={field.onBlur}
+                    label="Crew"
+                    crewSelected={(crew) => field.onChange(crew._id)}
+                    errorMessage={fieldState.error?.message}
+                    isDisabled={isLoading}
+                  />
+                );
+            }}
           />
         ),
-        [isLoading, props]
+        [isLoading, props, user]
       ),
     Jobsite: ({ isLoading, ...props }: IFormProps<ITextField>) =>
       React.useMemo(

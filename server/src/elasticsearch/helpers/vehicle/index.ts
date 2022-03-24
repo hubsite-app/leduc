@@ -28,11 +28,9 @@ export const ES_updateVehicle = (vehicle: VehicleDocument) => {
           id: vehicle._id.toString(),
           body: {
             doc: {
-              vehicle: {
-                name: vehicle.name,
-                vehicleCode: vehicle.vehicleCode,
-                vehicleType: vehicle.vehicleType,
-              },
+              name: vehicle.name,
+              vehicleCode: vehicle.vehicleCode,
+              vehicleType: vehicle.vehicleType,
             },
             doc_as_upsert: true,
           },

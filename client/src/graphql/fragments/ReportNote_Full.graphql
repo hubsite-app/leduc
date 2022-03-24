@@ -2,6 +2,6 @@ fragment ReportNoteFullSnippet on ReportNoteClass {
   _id
   note
   files {
-    ...FileFullSnippet
+    ...FilePreloadSnippet
   }
 }

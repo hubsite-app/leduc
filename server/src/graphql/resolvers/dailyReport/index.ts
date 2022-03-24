@@ -30,6 +30,8 @@ import mutations, {
 } from "./mutations";
 import { SearchOptions } from "@graphql/types/query";
 import { FileCreateData } from "../file/mutations";
+import { DailyReportListOptionData } from "./queries";
+import { FilterQuery } from "mongoose";
 
 @Resolver(() => DailyReportClass)
 export default class DailyReportResolver {
@@ -93,10 +95,20 @@ export default class DailyReportResolver {
 
   @Query(() => [DailyReportClass])
   async dailyReports(
-    @Arg("options", () => ListOptionData, { nullable: true })
-    options?: ListOptionData
+    @Arg("options", () => DailyReportListOptionData, { nullable: true })
+    options?: DailyReportListOptionData
   ) {
-    return DailyReport.getList(options);
+    let query: FilterQuery<DailyReportDocument> = {};
+    if (options?.crews && options.crews.length > 0) {
+      query = {
+        crew: { $in: options.crews },
+      };
+    }
+
+    return DailyReport.getList({
+      ...options,
+      query,
+    });
   }
 
   @Query(() => [DailyReportClass])

@@ -8,6 +8,7 @@ import {
   useDailyReportCreateMutation,
 } from "../../generated/graphql";
 import SubmitButton from "../Common/forms/SubmitButton";
+import { useAuth } from "../../contexts/Auth";
 
 interface IDailyReportCreateForm {
   onSuccess?: (dailyReport: DailyReportFullSnippetFragment) => void;
@@ -18,11 +19,16 @@ const DailyReportCreateForm = ({ onSuccess }: IDailyReportCreateForm) => {
    * ----- Hook Initialization -----
    */
 
+  const {
+    state: { user },
+  } = useAuth();
+
   const toast = useToast();
 
   const { FormComponents } = useDailyReportCreateForm({
     defaultValues: {
       date: new Date(),
+      crewId: user?.employee.crews[0]._id,
     },
   });
 
@@ -67,7 +73,7 @@ const DailyReportCreateForm = ({ onSuccess }: IDailyReportCreateForm) => {
     <FormComponents.Form submitHandler={submitHandler}>
       <Stack spacing={2}>
         <FormComponents.Date isLoading={loading} />
-        <FormComponents.Crew isLoading={loading} />
+        <FormComponents.Crew isLoading={loading} user={user} />
         <FormComponents.Jobsite isLoading={loading} />
         <SubmitButton isLoading={loading} />
       </Stack>

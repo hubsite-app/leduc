@@ -1,39 +1,35 @@
 {
   "properties": {
-    "vehicle": {
-      "properties": {
-        "name": {
-          "type": "text",
-          "analyzer": "autocomplete",
-          "search_analyzer": "autocomplete_search",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
-        },
-        "vehicleCode": {
-          "type": "text",
-          "analyzer": "autocomplete",
-          "search_analyzer": "autocomplete_search",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
-        },
-        "vehicleType": {
-          "type": "text",
-          "analyzer": "autocomplete",
-          "search_analyzer": "autocomplete_search",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
+    "name": {
+      "type": "text",
+      "analyzer": "autocomplete",
+      "search_analyzer": "autocomplete_search",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "vehicleCode": {
+      "type": "text",
+      "analyzer": "autocomplete",
+      "search_analyzer": "autocomplete_search",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
+    },
+    "vehicleType": {
+      "type": "text",
+      "analyzer": "autocomplete",
+      "search_analyzer": "autocomplete_search",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
         }
       }
     }

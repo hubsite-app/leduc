@@ -17,7 +17,7 @@ const MaterialShipments = ({ dailyReport }: IMaterialShipments) => {
   const [collapsed, setCollapsed] = React.useState(true);
 
   return (
-    <Card>
+    <Card h="fit-content">
       <Flex flexDir="row" justifyContent="space-between">
         <Heading
           my="auto"

@@ -8,6 +8,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  SimpleGrid,
   Text,
   useDisclosure,
   useToast,
@@ -142,13 +143,15 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
             </Flex>
           </Card>
 
-          <EmployeeHours dailyReport={data.dailyReport} />
+          <SimpleGrid columns={[1, 1, 1, 2]} spacingX={4} spacingY={2}>
+            <EmployeeHours dailyReport={data.dailyReport} />
 
-          <VehicleWork dailyReport={data.dailyReport} />
+            <VehicleWork dailyReport={data.dailyReport} />
 
-          <Production dailyReport={data.dailyReport} />
+            <Production dailyReport={data.dailyReport} />
 
-          <MaterialShipments dailyReport={data.dailyReport} />
+            <MaterialShipments dailyReport={data.dailyReport} />
+          </SimpleGrid>
 
           <ReportNotes dailyReport={data.dailyReport} />
 

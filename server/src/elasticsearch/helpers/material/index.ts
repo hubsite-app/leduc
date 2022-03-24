@@ -28,9 +28,7 @@ export const ES_updateMaterial = (material: MaterialDocument) => {
           id: material._id.toString(),
           body: {
             doc: {
-              material: {
-                name: material.name,
-              },
+              name: material.name,
             },
             doc_as_upsert: true,
           },

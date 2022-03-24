@@ -28,10 +28,8 @@ export const ES_updateJobsite = (jobsite: JobsiteDocument) => {
           id: jobsite._id.toString(),
           body: {
             doc: {
-              jobsite: {
-                name: jobsite.name,
-                jobcode: jobsite.jobcode,
-              },
+              name: jobsite.name,
+              jobcode: jobsite.jobcode,
             },
             doc_as_upsert: true,
           },
