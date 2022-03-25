@@ -28,7 +28,7 @@ afterAll(async () => {
   await disconnectAndStopServer(mongoServer);
 });
 
-describe("Crew Class", () => {
+describe("Material Class", () => {
   describe("CREATE", () => {
     describe("success", () => {
       test("should successfully create a new unique material", async () => {

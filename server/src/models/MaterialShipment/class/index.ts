@@ -1,7 +1,14 @@
-import { MaterialShipmentDocument, MaterialShipmentModel } from "@models";
+import {
+  DailyReportDocument,
+  JobsiteMaterialDocument,
+  MaterialShipmentDocument,
+  MaterialShipmentModel,
+} from "@models";
 import {
   IMaterialShipmentCreate,
+  IMaterialShipmentCreateV1,
   IMaterialShipmentUpdate,
+  IMaterialShipmentUpdateV1,
 } from "@typescript/materialShipment";
 import { GetByIDOptions, Id } from "@typescript/models";
 import { ObjectType } from "type-graphql";
@@ -33,6 +40,10 @@ export class MaterialShipmentClass extends MaterialShipmentSchema {
     return get.dailyReport(this);
   }
 
+  public async getJobsiteMaterial(this: MaterialShipmentDocument) {
+    return get.jobsiteMaterial(this);
+  }
+
   /**
    * ----- Create -----
    */
@@ -42,6 +53,13 @@ export class MaterialShipmentClass extends MaterialShipmentSchema {
     data: IMaterialShipmentCreate
   ) {
     return create.document(this, data);
+  }
+
+  public static async createDocumentV1(
+    this: MaterialShipmentModel,
+    data: IMaterialShipmentCreateV1
+  ) {
+    return create.documentV1(this, data);
   }
 
   /**
@@ -55,8 +73,23 @@ export class MaterialShipmentClass extends MaterialShipmentSchema {
     return update.document(this, data);
   }
 
+  public async updateDocumentV1(
+    this: MaterialShipmentDocument,
+    data: IMaterialShipmentUpdateV1
+  ) {
+    return update.documentV1(this, data);
+  }
+
   public async updateDate(this: MaterialShipmentDocument, date: Date) {
     return update.date(this, date);
+  }
+
+  public async updateJobsiteMaterial(
+    this: MaterialShipmentDocument,
+    jobsiteMaterial: JobsiteMaterialDocument,
+    dailyReport: DailyReportDocument
+  ) {
+    return update.jobsiteMaterial(this, jobsiteMaterial, dailyReport);
   }
 
   /**

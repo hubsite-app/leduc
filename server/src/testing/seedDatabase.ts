@@ -1,4 +1,5 @@
 import clearDatabase from "./clearDatabase";
+import createCompanies, { SeededCompanies } from "./documents/company";
 
 import createCrews, { SeededCrews } from "./documents/crews";
 import createDailyReports, {
@@ -9,6 +10,9 @@ import createEmployeeWork, {
   SeededEmployeeWork,
 } from "./documents/employeeWork";
 import createFiles, { SeededFiles } from "./documents/files";
+import createJobsiteMaterials, {
+  SeededJobsiteMaterials,
+} from "./documents/jobsiteMaterials";
 import createJobsites, { SeededJobsites } from "./documents/jobsites";
 import createMaterials, { SeededMaterials } from "./documents/materials";
 import createMaterialShipments, {
@@ -22,12 +26,14 @@ import createVehicles, { SeededVehicles } from "./documents/vehicles";
 import createVehicleWork, { SeededVehicleWork } from "./documents/vehicleWork";
 
 export interface SeededDatabase {
+  companies: SeededCompanies;
   crews: SeededCrews;
   dailyReports: SeededDailyReports;
   employees: SeededEmployees;
   employeeWork: SeededEmployeeWork;
   files: SeededFiles;
   jobsites: SeededJobsites;
+  jobsiteMaterials: SeededJobsiteMaterials;
   materials: SeededMaterials;
   materialShipments: SeededMaterialShipments;
   productions: SeededProduction;
@@ -48,12 +54,14 @@ const seedDatabase = () => {
 
       // Create documents
 
+      const companies = await createCompanies();
       const crews = await createCrews();
       const dailyReports = await createDailyReports();
       const employees = await createEmployees();
       const employeeWork = await createEmployeeWork();
       const files = await createFiles();
       const jobsites = await createJobsites();
+      const jobsiteMaterials = await createJobsiteMaterials();
       const materials = await createMaterials();
       const materialShipments = await createMaterialShipments();
       const productions = await createProductions();
@@ -64,12 +72,14 @@ const seedDatabase = () => {
       const vehicleWork = await createVehicleWork();
 
       resolve({
+        companies,
         crews,
         dailyReports,
         employees,
         employeeWork,
         files,
         jobsites,
+        jobsiteMaterials,
         materials,
         materialShipments,
         productions,

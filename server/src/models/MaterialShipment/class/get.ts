@@ -1,6 +1,8 @@
 import {
   DailyReport,
   DailyReportDocument,
+  JobsiteMaterial,
+  JobsiteMaterialDocument,
   MaterialShipmentDocument,
   MaterialShipmentModel,
   Vehicle,
@@ -64,8 +66,25 @@ const dailyReport = (materialShipment: MaterialShipmentDocument) => {
   });
 };
 
+const jobsiteMaterial = (materialShipment: MaterialShipmentDocument) => {
+  return new Promise<JobsiteMaterialDocument | null>(
+    async (resolve, reject) => {
+      try {
+        const jobsiteMaterial = await JobsiteMaterial.getById(
+          materialShipment.jobsiteMaterial?.toString() || ""
+        );
+
+        resolve(jobsiteMaterial);
+      } catch (e) {
+        reject(e);
+      }
+    }
+  );
+};
+
 export default {
   byId,
   vehicle,
   dailyReport,
+  jobsiteMaterial,
 };

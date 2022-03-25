@@ -4,6 +4,7 @@ import _ids from "@testing/_ids";
 export interface SeededDailyReports {
   jobsite_1_base_1_1: DailyReportDocument;
   jobsite_1_base_1_2: DailyReportDocument;
+  jobsite_2_base_1_1: DailyReportDocument;
 }
 
 const createDailyReports = () => {
@@ -40,9 +41,17 @@ const createDailyReports = () => {
         temporaryVehicles: [],
       });
 
+      const jobsite_2_base_1_1 = new DailyReport({
+        _id: _ids.dailyReports.jobsite_2_base_1_1._id,
+        date: new Date("2022-02-25 7:00 am"),
+        jobsite: _ids.jobsites.jobsite_2._id,
+        crew: _ids.crews.base_1._id,
+      });
+
       const dailyReports = {
         jobsite_1_base_1_1,
         jobsite_1_base_1_2,
+        jobsite_2_base_1_1,
       };
 
       for (let i = 0; i < Object.values(dailyReports).length; i++) {

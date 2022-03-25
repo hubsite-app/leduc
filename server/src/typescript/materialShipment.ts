@@ -1,12 +1,8 @@
-import { DailyReportDocument } from "@models";
+import { DailyReportDocument, JobsiteMaterialDocument } from "@models";
 
-export interface IMaterialShipmentCreate {
-  shipmentType: string;
-  quantity: number;
-  unit: string;
+interface IMaterialShipmentCreateBase {
   startTime?: Date;
   endTime?: Date;
-  supplier?: string;
   vehicleObject: {
     source: string;
     vehicleType: string;
@@ -15,7 +11,26 @@ export interface IMaterialShipmentCreate {
   dailyReport: DailyReportDocument;
 }
 
+export interface IMaterialShipmentCreate extends IMaterialShipmentCreateBase {
+  quantity: number;
+  jobsiteMaterial: JobsiteMaterialDocument;
+}
+
+export interface IMaterialShipmentCreateV1 extends IMaterialShipmentCreateBase {
+  shipmentType: string;
+  quantity: number;
+  unit: string;
+  supplier?: string;
+}
+
 export interface IMaterialShipmentUpdate {
+  jobsiteMaterial: JobsiteMaterialDocument;
+  quantity: number;
+  startTime?: Date;
+  endTime?: Date;
+}
+
+export interface IMaterialShipmentUpdateV1 {
   shipmentType: string;
   quantity: number;
   unit: string;

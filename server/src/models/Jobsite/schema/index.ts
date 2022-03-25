@@ -1,6 +1,12 @@
 import SchemaVersions from "@constants/SchemaVersions";
 import { ES_updateJobsite } from "@elasticsearch/helpers/jobsite";
-import { CrewClass, DailyReportClass, JobsiteDocument } from "@models";
+import {
+  CrewClass,
+  DailyReportClass,
+  JobsiteDocument,
+  InvoiceClass,
+  JobsiteMaterialClass,
+} from "@models";
 import { post, prop, Ref } from "@typegoose/typegoose";
 import isUrl from "@validation/isUrl";
 import { Types } from "mongoose";
@@ -39,6 +45,20 @@ export class JobsiteSchema {
   @Field({ nullable: false })
   @prop({ default: false, required: true })
   public active!: boolean;
+
+  /**
+   * @version 2
+   */
+  @Field(() => JobsiteMaterialClass)
+  @prop({ ref: () => JobsiteMaterialClass, default: [] })
+  public materials!: Ref<JobsiteMaterialClass>[];
+
+  /**
+   * @version 2
+   */
+  @Field(() => InvoiceClass)
+  @prop({ ref: () => InvoiceClass, default: [] })
+  public invoices!: Ref<InvoiceClass>[];
 
   @Field(() => [CrewClass])
   @prop({ ref: () => CrewClass, default: [] })

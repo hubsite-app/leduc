@@ -8,12 +8,15 @@ import jwt from "jsonwebtoken";
 
 import { IContext } from "@typescript/graphql";
 
+import CompanyResolver from "@graphql/resolvers/company";
 import CrewResolver from "@graphql/resolvers/crew";
 import DailyReportResolver from "@graphql/resolvers/dailyReport";
 import EmployeeResolver from "@graphql/resolvers/employee";
 import EmployeeWorkResolver from "@graphql/resolvers/employeeWork";
 import FileResolver from "@graphql/resolvers/file";
+import InvoiceResolver from "@graphql/resolvers/invoice";
 import JobsiteResolver from "@graphql/resolvers/jobsite";
+import JobsiteMaterialResolver from "@graphql/resolvers/jobsiteMaterial";
 import MaterialResolver from "@graphql/resolvers/material";
 import MaterialShipmentResolver from "@graphql/resolvers/materialShipment";
 import ProductionResolver from "@graphql/resolvers/production";
@@ -38,12 +41,15 @@ const createApp = async () => {
 
   const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
     resolvers: [
+      CompanyResolver,
       CrewResolver,
       DailyReportResolver,
       EmployeeResolver,
       EmployeeWorkResolver,
       FileResolver,
+      InvoiceResolver,
       JobsiteResolver,
+      JobsiteMaterialResolver,
       MaterialResolver,
       MaterialShipmentResolver,
       ProductionResolver,

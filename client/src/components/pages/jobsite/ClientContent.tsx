@@ -1,9 +1,12 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
 import React from "react";
 import { useJobsiteFullQuery } from "../../../generated/graphql";
+import AdminOnly from "../../Common/AdminOnly";
 import Card from "../../Common/Card";
+import DailyReportListCard from "../../Common/DailyReport/DailyReportListCard";
 import DailyReportCard from "../../Common/DailyReportCard";
 import Loading from "../../Common/Loading";
+import JobsiteMaterialsCosting from "./views/MaterialsCosting";
 
 interface IJobsiteClientContent {
   id: string;
@@ -44,17 +47,10 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
               </Text>
             )}
           </Card>
-          {jobsite.dailyReports.length > 0 && (
-            <Card>
-              <Heading size="md">Daily Reports</Heading>
-              {jobsite.dailyReports.map((dailyReport) => (
-                <DailyReportCard
-                  dailyReport={dailyReport}
-                  key={dailyReport._id}
-                />
-              ))}
-            </Card>
-          )}
+          <AdminOnly>
+            <JobsiteMaterialsCosting jobsite={jobsite} />
+          </AdminOnly>
+          <DailyReportListCard dailyReports={jobsite.dailyReports} />
         </Box>
       );
     } else return <Loading />;

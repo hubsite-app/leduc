@@ -2,18 +2,22 @@ import { SearchOptions } from "@graphql/types/query";
 import {
   CrewClass,
   DailyReportClass,
+  InvoiceClass,
   Jobsite,
   JobsiteClass,
   JobsiteDocument,
+  JobsiteMaterialClass,
 } from "@models";
 import {
   Arg,
+  Authorized,
   FieldResolver,
   Mutation,
   Query,
   Resolver,
   Root,
 } from "type-graphql";
+import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
 import mutations, { JobsiteCreateData } from "./mutations";
 
 @Resolver(() => JobsiteClass)
@@ -30,6 +34,16 @@ export default class JobsiteResolver {
   @FieldResolver(() => [DailyReportClass])
   async dailyReports(@Root() jobsite: JobsiteDocument) {
     return jobsite.getDailyReports();
+  }
+
+  @FieldResolver(() => [JobsiteMaterialClass])
+  async materials(@Root() jobsite: JobsiteDocument) {
+    return jobsite.getMaterials();
+  }
+
+  @FieldResolver(() => [InvoiceClass])
+  async invoices(@Root() jobsite: JobsiteDocument) {
+    return jobsite.getInvoices();
   }
 
   /**
@@ -56,8 +70,18 @@ export default class JobsiteResolver {
    * ----- Mutations -----
    */
 
+  @Authorized()
   @Mutation(() => JobsiteClass)
   async jobsiteCreate(@Arg("data") data: JobsiteCreateData) {
     return mutations.create(data);
+  }
+
+  @Authorized()
+  @Mutation(() => JobsiteClass)
+  async jobsiteAddMaterial(
+    @Arg("jobsiteId") jobsiteId: string,
+    @Arg("data") data: JobsiteMaterialCreateData
+  ) {
+    return mutations.addMaterial(jobsiteId, data);
   }
 }

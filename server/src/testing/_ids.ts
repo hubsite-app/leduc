@@ -55,6 +55,12 @@ const _ids = {
     jobsite_1: {
       _id: Types.ObjectId("6215691ccb7aa6ac216ee294"),
     },
+    jobsite_2: {
+      _id: Types.ObjectId("623e0c5d2afef82206a0ddab"),
+    },
+    jobsite_3: {
+      _id: Types.ObjectId("623e1a1089ebc16dedabb5a6"),
+    },
   },
   dailyReports: {
     jobsite_1_base_1_1: {
@@ -62,6 +68,9 @@ const _ids = {
     },
     jobsite_1_base_1_2: {
       _id: Types.ObjectId("62391e90ec22ce6458bd2d18"),
+    },
+    jobsite_2_base_1_1: {
+      _id: Types.ObjectId("623e0f6a31d677c42489c429"),
     },
   },
   employeeWork: {
@@ -82,6 +91,9 @@ const _ids = {
   materialShipments: {
     jobsite_1_base_1_1_shipment_1: {
       _id: Types.ObjectId("62166e38ef63bebc19532513"),
+    },
+    jobsite_2_base_1_1_shipment_1: {
+      _id: Types.ObjectId("623e1409a3978a439d410d37"),
     },
   },
   reportNotes: {
@@ -105,6 +117,19 @@ const _ids = {
   files: {
     jobsite_1_base_1_1_file_1: {
       _id: Types.ObjectId("623930a9601034ef3cd7efc3"),
+    },
+  },
+  companies: {
+    company_1: {
+      _id: Types.ObjectId("623ce5b096c3254a9ebe55a6"),
+    },
+  },
+  jobsiteMaterials: {
+    jobsite_2_material_1: {
+      _id: Types.ObjectId("623e0c5d2afef82206a0ddab"),
+    },
+    jobsite_3_material_1: {
+      _id: Types.ObjectId("623e1a391900170e516390e7"),
     },
   },
 };

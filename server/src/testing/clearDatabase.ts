@@ -1,10 +1,12 @@
 import {
+  Company,
   Crew,
   DailyReport,
   Employee,
   EmployeeWork,
   File,
   Jobsite,
+  JobsiteMaterial,
   Material,
   MaterialShipment,
   Production,
@@ -19,11 +21,13 @@ const clearDatabase = () => {
   return new Promise<void>(async (resolve, reject) => {
     try {
       if (process.env.NODE_ENV !== "production") {
+        await Company.deleteMany({});
         await Crew.deleteMany({});
         await DailyReport.deleteMany({});
         await Employee.deleteMany({});
         await EmployeeWork.deleteMany({});
         await Jobsite.deleteMany({});
+        await JobsiteMaterial.deleteMany({});
         await Material.deleteMany({});
         await MaterialShipment.deleteMany({});
         await Production.deleteMany({});

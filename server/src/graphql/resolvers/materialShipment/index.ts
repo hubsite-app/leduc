@@ -8,13 +8,16 @@ import {
 } from "type-graphql";
 
 import {
+  JobsiteMaterialClass,
   MaterialShipmentClass,
   MaterialShipmentDocument,
   VehicleClass,
 } from "@models";
 import mutations, {
   MaterialShipmentCreateData,
+  MaterialShipmentCreateDataV1,
   MaterialShipmentShipmentData,
+  MaterialShipmentShipmentDataV1,
 } from "./mutations";
 
 @Resolver(() => MaterialShipmentClass)
@@ -26,6 +29,11 @@ export default class MaterialShipmentResolver {
   @FieldResolver(() => VehicleClass, { nullable: true })
   async vehicle(@Root() materialShipment: MaterialShipmentDocument) {
     return materialShipment.getVehicle();
+  }
+
+  @FieldResolver(() => JobsiteMaterialClass, { nullable: true })
+  async jobsiteMaterial(@Root() materialShipment: MaterialShipmentDocument) {
+    return materialShipment.getJobsiteMaterial();
   }
 
   /**
@@ -43,12 +51,31 @@ export default class MaterialShipmentResolver {
   }
 
   @Authorized()
+  @Mutation(() => [MaterialShipmentClass])
+  async materialShipmentCreateV1(
+    @Arg("dailyReportId") dailyReportId: string,
+    @Arg("data", () => [MaterialShipmentCreateDataV1])
+    data: MaterialShipmentCreateDataV1[]
+  ) {
+    return mutations.createV1(dailyReportId, data);
+  }
+
+  @Authorized()
   @Mutation(() => MaterialShipmentClass)
   async materialShipmentUpdate(
     @Arg("id") id: string,
     @Arg("data") data: MaterialShipmentShipmentData
   ) {
     return mutations.update(id, data);
+  }
+
+  @Authorized()
+  @Mutation(() => MaterialShipmentClass)
+  async materialShipmentUpdateV1(
+    @Arg("id") id: string,
+    @Arg("data") data: MaterialShipmentShipmentDataV1
+  ) {
+    return mutations.updateV1(id, data);
   }
 
   @Authorized()

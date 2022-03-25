@@ -1,9 +1,12 @@
+export * from "./Company";
 export * from "./Crew";
 export * from "./DailyReport";
 export * from "./Employee";
 export * from "./EmployeeWork";
 export * from "./File";
+export * from "./Invoice";
 export * from "./Jobsite";
+export * from "./JobsiteMaterial";
 export * from "./Material";
 export * from "./MaterialShipment";
 export * from "./Production";
@@ -18,6 +21,20 @@ import {
   DocumentType,
   ReturnModelType,
 } from "@typegoose/typegoose";
+
+/**
+ * ----- Company -----
+ */
+
+import { CompanyClass } from "./Company/class";
+
+export interface CompanyDocument extends DocumentType<CompanyClass> {}
+
+export interface CompanyModel extends ReturnModelType<typeof CompanyClass> {}
+
+export const Company = getModelForClass(CompanyClass, {
+  schemaOptions: { collection: "companies" },
+});
 
 /**
  * ----- Crew -----
@@ -92,6 +109,20 @@ export const File = getModelForClass(FileClass, {
 });
 
 /**
+ * ----- Invoice -----
+ */
+
+import { InvoiceClass } from "./Invoice/class";
+
+export interface InvoiceDocument extends DocumentType<InvoiceClass> {}
+
+export interface InvoiceModel extends ReturnModelType<typeof InvoiceClass> {}
+
+export const Invoice = getModelForClass(InvoiceClass, {
+  schemaOptions: { collection: "invoices" },
+});
+
+/**
  * ----- Jobsite -----
  */
 
@@ -103,6 +134,22 @@ export interface JobsiteModel extends ReturnModelType<typeof JobsiteClass> {}
 
 export const Jobsite = getModelForClass(JobsiteClass, {
   schemaOptions: { collection: "jobsites" },
+});
+
+/**
+ * ----- Jobsite Material -----
+ */
+
+import { JobsiteMaterialClass } from "./JobsiteMaterial/class";
+
+export interface JobsiteMaterialDocument
+  extends DocumentType<JobsiteMaterialClass> {}
+
+export interface JobsiteMaterialModel
+  extends ReturnModelType<typeof JobsiteMaterialClass> {}
+
+export const JobsiteMaterial = getModelForClass(JobsiteMaterialClass, {
+  schemaOptions: { collection: "jobsiteMaterials" },
 });
 
 /**

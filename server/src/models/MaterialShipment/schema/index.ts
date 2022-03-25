@@ -1,5 +1,5 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { DailyReportClass, VehicleClass } from "@models";
+import { DailyReportClass, VehicleClass, JobsiteMaterialClass } from "@models";
 import { prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
@@ -10,17 +10,37 @@ export class MaterialShipmentSchema {
   @Field(() => ID, { nullable: false })
   public _id!: Types.ObjectId;
 
-  @Field({ nullable: false })
-  @prop({ required: true })
+  /**
+   * @version 1
+   */
+  @Field({ nullable: true })
+  @prop({ required: false })
   public shipmentType!: string;
+
+  /**
+   * @version 1
+   */
+  @Field()
+  @prop({ trim: true })
+  public supplier?: string;
+
+  /**
+   * @version 1
+   */
+  @Field({ nullable: true })
+  @prop({ required: false })
+  public unit!: string;
 
   @Field({ nullable: false })
   @prop({ required: true })
   public quantity!: number;
 
-  @Field({ nullable: false })
-  @prop({ required: true })
-  public unit!: string;
+  /**
+   * @version 2
+   */
+  @Field(() => JobsiteMaterialClass, { nullable: true })
+  @prop({ ref: () => JobsiteMaterialClass, required: false })
+  public jobsiteMaterial?: Ref<JobsiteMaterialClass>;
 
   @Field({ nullable: true })
   @prop()
@@ -30,10 +50,6 @@ export class MaterialShipmentSchema {
   @prop()
   public endTime?: Date;
 
-  @Field()
-  @prop({ trim: true })
-  public supplier?: string;
-
   @Field(() => VehicleClass, { nullable: true })
   @prop({ ref: () => VehicleClass })
   public vehicle?: Ref<VehicleClass>;
@@ -41,6 +57,13 @@ export class MaterialShipmentSchema {
   @Field(() => VehicleObjectClass, { nullable: true })
   @prop({ type: () => VehicleObjectClass })
   public vehicleObject?: VehicleObjectClass;
+
+  /**
+   * @desc if a legacy document, which version was this made in
+   */
+  @Field({ nullable: true })
+  @prop()
+  public legacyVersion?: number;
 
   @Field()
   @prop({ required: true, default: SchemaVersions.MaterialShipment })

@@ -1,12 +1,19 @@
 import { Types } from "mongoose";
 import { ObjectType } from "type-graphql";
 
-import { CrewDocument, JobsiteDocument, JobsiteModel } from "@models";
+import {
+  CrewDocument,
+  InvoiceDocument,
+  JobsiteDocument,
+  JobsiteMaterialDocument,
+  JobsiteModel,
+} from "@models";
 import { JobsiteSchema } from "..";
 import get from "./get";
 import { GetByIDOptions, ISearchOptions } from "@typescript/models";
 import { IJobsiteCreate } from "@typescript/jobsite";
 import create from "./create";
+import update from "./update";
 
 @ObjectType()
 export class JobsiteClass extends JobsiteSchema {
@@ -42,11 +49,34 @@ export class JobsiteClass extends JobsiteSchema {
     return get.dailyReports(this);
   }
 
+  public async getMaterials(this: JobsiteDocument) {
+    return get.materials(this);
+  }
+
+  public async getInvoices(this: JobsiteDocument) {
+    return get.invoices(this);
+  }
+
   /**
    * ----- Create -----
    */
 
   public static async createDocument(this: JobsiteModel, data: IJobsiteCreate) {
     return create.document(this, data);
+  }
+
+  /**
+   * ----- Update -----
+   */
+
+  public async addMaterial(
+    this: JobsiteDocument,
+    jobsiteMaterial: JobsiteMaterialDocument
+  ) {
+    return update.addMaterial(this, jobsiteMaterial);
+  }
+
+  public async addInvoice(this: JobsiteDocument, invoice: InvoiceDocument) {
+    return update.addInvoice(this, invoice);
   }
 }

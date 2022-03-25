@@ -5,8 +5,12 @@ import {
   CrewDocument,
   DailyReport,
   DailyReportDocument,
+  Invoice,
+  InvoiceDocument,
   Jobsite,
   JobsiteDocument,
+  JobsiteMaterial,
+  JobsiteMaterialDocument,
   JobsiteModel,
 } from "@models";
 import { GetByIDOptions, ISearchOptions } from "@typescript/models";
@@ -137,10 +141,40 @@ const dailyReports = (jobsite: JobsiteDocument) => {
   });
 };
 
+const materials = (jobsite: JobsiteDocument) => {
+  return new Promise<JobsiteMaterialDocument[]>(async (resolve, reject) => {
+    try {
+      const jobsiteMaterials = await JobsiteMaterial.find({
+        _id: { $in: jobsite.materials },
+      });
+
+      resolve(jobsiteMaterials);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const invoices = (jobsite: JobsiteDocument) => {
+  return new Promise<InvoiceDocument[]>(async (resolve, reject) => {
+    try {
+      const invoices = await Invoice.find({
+        _id: { $in: jobsite.invoices },
+      });
+
+      resolve(invoices);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   byId,
   search,
   byCrew,
   crews,
   dailyReports,
+  materials,
+  invoices,
 };
