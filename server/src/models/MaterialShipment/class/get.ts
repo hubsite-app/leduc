@@ -70,11 +70,13 @@ const jobsiteMaterial = (materialShipment: MaterialShipmentDocument) => {
   return new Promise<JobsiteMaterialDocument | null>(
     async (resolve, reject) => {
       try {
-        const jobsiteMaterial = await JobsiteMaterial.getById(
-          materialShipment.jobsiteMaterial?.toString() || ""
-        );
+        if (materialShipment.jobsiteMaterial) {
+          const jobsiteMaterial = await JobsiteMaterial.getById(
+            materialShipment.jobsiteMaterial?.toString() || ""
+          );
 
-        resolve(jobsiteMaterial);
+          resolve(jobsiteMaterial);
+        } else resolve(null);
       } catch (e) {
         reject(e);
       }

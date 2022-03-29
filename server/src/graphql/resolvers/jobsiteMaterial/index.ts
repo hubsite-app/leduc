@@ -4,7 +4,14 @@ import {
   JobsiteMaterialDocument,
   MaterialClass,
 } from "@models";
-import { Arg, FieldResolver, Mutation, Resolver, Root } from "type-graphql";
+import {
+  Arg,
+  FieldResolver,
+  Float,
+  Mutation,
+  Resolver,
+  Root,
+} from "type-graphql";
 import mutations, { JobsiteMaterialUpdateData } from "./mutations";
 
 @Resolver(() => JobsiteMaterialClass)
@@ -21,6 +28,11 @@ export default class JobsiteMaterialResolver {
   @FieldResolver(() => CompanyClass)
   async supplier(@Root() jobsiteMaterial: JobsiteMaterialDocument) {
     return jobsiteMaterial.getSupplier();
+  }
+
+  @FieldResolver(() => Float, { nullable: false })
+  async completedQuantity(@Root() jobsiteMaterial: JobsiteMaterialDocument) {
+    return jobsiteMaterial.getCompletedQuantity();
   }
 
   /**

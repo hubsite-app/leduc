@@ -11,4 +11,10 @@ fragment JobsiteFullSnippet on JobsiteClass {
   dailyReports {
     ...DailyReportCardSnippet
   }
+  materials {
+    ...JobsiteMaterialCardSnippet
+  }
+  invoices {
+    ...InvoiceCardSnippet
+  }
 }

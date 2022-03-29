@@ -7,7 +7,7 @@ const document = (
 ) => {
   return new Promise<void>(async (resolve, reject) => {
     try {
-      jobsiteMaterial.supplier = data.supplier;
+      jobsiteMaterial.supplier = data.supplier._id;
 
       jobsiteMaterial.quantity = data.quantity;
 

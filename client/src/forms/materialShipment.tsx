@@ -8,13 +8,13 @@ import {
   UseFormProps,
 } from "react-hook-form";
 import * as yup from "yup";
-import { MaterialShipmentShipmentData } from "../generated/graphql";
+import { MaterialShipmentShipmentDataV1 } from "../generated/graphql";
 
 import TextField, { ITextField } from "../components/Common/forms/TextField";
 import { IFormProps } from "../typescript/forms";
 import MaterialSearch from "../components/Search/MaterialSearch";
 
-const MaterialShipmentUpdate = yup
+const MaterialShipmentUpdateV1 = yup
   .object()
   .shape({
     shipmentType: yup.string().required(),
@@ -26,9 +26,9 @@ const MaterialShipmentUpdate = yup
   })
   .required();
 
-export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
+export const useMaterialShipmentUpdateFormV1 = (options?: UseFormProps) => {
   const form = useForm({
-    resolver: yupResolver(MaterialShipmentUpdate),
+    resolver: yupResolver(MaterialShipmentUpdateV1),
     ...options,
   });
 
@@ -40,7 +40,7 @@ export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
       submitHandler,
     }: {
       children: React.ReactNode;
-      submitHandler: SubmitHandler<MaterialShipmentShipmentData>;
+      submitHandler: SubmitHandler<MaterialShipmentShipmentDataV1>;
     }) => <form onSubmit={handleSubmit(submitHandler)}>{children}</form>,
     ShipmentType: ({ isLoading, ...props }: IFormProps<ITextField>) =>
       React.useMemo(

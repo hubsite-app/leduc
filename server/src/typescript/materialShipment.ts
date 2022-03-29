@@ -16,13 +16,6 @@ export interface IMaterialShipmentCreate extends IMaterialShipmentCreateBase {
   jobsiteMaterial: JobsiteMaterialDocument;
 }
 
-export interface IMaterialShipmentCreateV1 extends IMaterialShipmentCreateBase {
-  shipmentType: string;
-  quantity: number;
-  unit: string;
-  supplier?: string;
-}
-
 export interface IMaterialShipmentUpdate {
   jobsiteMaterial: JobsiteMaterialDocument;
   quantity: number;

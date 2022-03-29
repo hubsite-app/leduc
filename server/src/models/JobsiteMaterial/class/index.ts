@@ -32,6 +32,14 @@ export class JobsiteMaterialClass extends JobsiteMaterialSchema {
     return get.supplier(this);
   }
 
+  public async getJobsite(this: JobsiteMaterialDocument) {
+    return get.jobsite(this);
+  }
+
+  public async getCompletedQuantity(this: JobsiteMaterialDocument) {
+    return get.completedQuantity(this);
+  }
+
   /**
    * ----- Create -----
    */

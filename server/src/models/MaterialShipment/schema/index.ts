@@ -20,7 +20,7 @@ export class MaterialShipmentSchema {
   /**
    * @version 1
    */
-  @Field()
+  @Field({ nullable: true })
   @prop({ trim: true })
   public supplier?: string;
 

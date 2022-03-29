@@ -1,13 +1,13 @@
 import { useToast } from "@chakra-ui/react";
 import React from "react";
-import { useCrewCreateForm } from "../../forms/crew";
+import { useCrewCreateForm } from "../../../forms/crew";
 
 import {
   CrewCreateData,
   CrewFullSnippetFragment,
   useCrewCreateMutation,
-} from "../../generated/graphql";
-import SubmitButton from "../Common/forms/SubmitButton";
+} from "../../../generated/graphql";
+import SubmitButton from "../../Common/forms/SubmitButton";
 
 interface ICrewCreateForm {
   onSuccess?: (crew: CrewFullSnippetFragment) => void;

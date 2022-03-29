@@ -243,8 +243,6 @@ describe("DailyReport Resolver", () => {
 
           expect(res.status).toBe(200);
 
-          console.log(res.body);
-
           expect(res.body.data.dailyReportAddNoteFile.reportNote).toBeDefined();
           const reportNote = res.body.data.dailyReportAddNoteFile.reportNote;
 

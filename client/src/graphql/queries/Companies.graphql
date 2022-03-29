@@ -1,0 +1,5 @@
+query Companies($options: ListOptionData) {
+  companies(options: $options) {
+    ...CompanyCardSnippet
+  }
+}

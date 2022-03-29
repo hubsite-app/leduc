@@ -1,12 +1,11 @@
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import React from "react";
 import { useJobsiteFullQuery } from "../../../generated/graphql";
 import AdminOnly from "../../Common/AdminOnly";
 import Card from "../../Common/Card";
 import DailyReportListCard from "../../Common/DailyReport/DailyReportListCard";
-import DailyReportCard from "../../Common/DailyReportCard";
 import Loading from "../../Common/Loading";
-import JobsiteMaterialsCosting from "./views/MaterialsCosting";
+import JobsiteMaterialsCosting from "./views/JobsiteMaterials";
 
 interface IJobsiteClientContent {
   id: string;

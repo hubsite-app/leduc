@@ -4,6 +4,7 @@ import hashPassword from "@utils/hashPassword";
 
 export interface SeededUsers {
   base_foreman_1_user: UserDocument;
+  admin_user: UserDocument;
 }
 
 const createUsers = () => {
@@ -17,8 +18,18 @@ const createUsers = () => {
         employee: _ids.employees.base_foreman_1._id,
       });
 
+      const admin_user = new User({
+        _id: _ids.users.admin_user._id,
+        name: "Admin User",
+        email: "admin@bowmark.ca",
+        password: await hashPassword("password"),
+        employee: _ids.employees.office_admin._id,
+        admin: true,
+      });
+
       const users = {
         base_foreman_1_user,
+        admin_user,
       };
 
       for (let i = 0; i < Object.values(users).length; i++) {

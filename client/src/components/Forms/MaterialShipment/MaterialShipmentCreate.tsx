@@ -1,26 +1,23 @@
 import { Box, Flex, IconButton, SimpleGrid, useToast } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
-import { MaterialShipmentVehicleTypes } from "../../../../../constants/select";
+import { MaterialShipmentVehicleTypes } from "../../../constants/select";
 import {
   DailyReportFullDocument,
   DailyReportFullSnippetFragment,
   MaterialShipmentCreateData,
   useMaterialShipmentCreateMutation,
-} from "../../../../../generated/graphql";
-import convertHourToDate from "../../../../../utils/convertHourToDate";
-import isEmpty from "../../../../../utils/isEmpty";
-import ErrorMessage from "../../../../Common/ErrorMessage";
-import Select from "../../../../Common/forms/Select";
-import SubmitButton from "../../../../Common/forms/SubmitButton";
-import TextField from "../../../../Common/forms/TextField";
-import MaterialSearch from "../../../../Search/MaterialSearch";
+} from "../../../generated/graphql";
+import convertHourToDate from "../../../utils/convertHourToDate";
+import isEmpty from "../../../utils/isEmpty";
+import ErrorMessage from "../../Common/ErrorMessage";
+import Select from "../../Common/forms/Select";
+import SubmitButton from "../../Common/forms/SubmitButton";
+import TextField from "../../Common/forms/TextField";
 
 type ShipmentErrors = {
-  shipmentType?: string;
-  supplier?: string;
+  jobsiteMaterialId?: string;
   quantity?: string;
-  unit?: string;
   startTime?: string;
   endTime?: string;
 };
@@ -34,25 +31,23 @@ type FormErrors = {
   };
 }[];
 
-interface IMaterialShipmentCreateForm {
+interface IMaterialShipmentCreate {
   dailyReport: DailyReportFullSnippetFragment;
-  closeForm?: () => void;
+  onSuccess?: () => void;
 }
 
-const MaterialShipmentCreateForm = ({
+const MaterialShipmentCreate = ({
   dailyReport,
-  closeForm,
-}: IMaterialShipmentCreateForm) => {
+  onSuccess,
+}: IMaterialShipmentCreate) => {
   const initialShipment = React.useMemo(() => {
     return {
-      shipmentType: "",
-      supplier: "",
+      jobsiteMaterialId: dailyReport.jobsite.materials[0]._id || "",
       quantity: 0,
-      unit: "",
       startTime: undefined,
       endTime: undefined,
     };
-  }, []);
+  }, [dailyReport.jobsite.materials]);
 
   const initialVehicleObject = React.useMemo(() => {
     return {
@@ -89,13 +84,14 @@ const MaterialShipmentCreateForm = ({
    * ----- Functions -----
    */
 
-  const updateShipmentType = React.useCallback(
-    (value: string, dataIndex: number, shipmentIndex: number) => {
+  const updateJobsiteMaterial = React.useCallback(
+    (jobsiteMaterialId: string, dataIndex: number, shipmentIndex: number) => {
       const formDataCopy: MaterialShipmentCreateData[] = JSON.parse(
         JSON.stringify(formData)
       );
 
-      formDataCopy[dataIndex].shipments[shipmentIndex].shipmentType = value;
+      formDataCopy[dataIndex].shipments[shipmentIndex].jobsiteMaterialId =
+        jobsiteMaterialId;
 
       setFormData(formDataCopy);
     },
@@ -109,32 +105,6 @@ const MaterialShipmentCreateForm = ({
       );
 
       formDataCopy[dataIndex].shipments[shipmentIndex].quantity = value;
-
-      setFormData(formDataCopy);
-    },
-    [formData]
-  );
-
-  const updateUnit = React.useCallback(
-    (value: string, dataIndex: number, shipmentIndex: number) => {
-      const formDataCopy: MaterialShipmentCreateData[] = JSON.parse(
-        JSON.stringify(formData)
-      );
-
-      formDataCopy[dataIndex].shipments[shipmentIndex].unit = value;
-
-      setFormData(formDataCopy);
-    },
-    [formData]
-  );
-
-  const updateSupplier = React.useCallback(
-    (value: string, dataIndex: number, shipmentIndex: number) => {
-      const formDataCopy: MaterialShipmentCreateData[] = JSON.parse(
-        JSON.stringify(formData)
-      );
-
-      formDataCopy[dataIndex].shipments[shipmentIndex].supplier = value;
 
       setFormData(formDataCopy);
     },
@@ -277,31 +247,19 @@ const MaterialShipmentCreateForm = ({
 
       for (let j = 0; j < formData[i].shipments.length; j++) {
         shipments[j] = {
-          shipmentType: undefined,
+          jobsiteMaterialId: undefined,
           quantity: undefined,
-          unit: undefined,
-          supplier: undefined,
           startTime: undefined,
           endTime: undefined,
         };
 
-        if (isEmpty(formData[i].shipments[j].shipmentType)) {
-          shipments[j].shipmentType = "please provide a shipment type";
+        if (isEmpty(formData[i].shipments[j].jobsiteMaterialId)) {
+          shipments[j].jobsiteMaterialId = "please select a material";
           valid = false;
         }
 
         if (isEmpty(formData[i].shipments[j].quantity)) {
           shipments[j].quantity = "please provide a quantity";
-          valid = false;
-        }
-
-        if (isEmpty(formData[i].shipments[j].unit)) {
-          shipments[j].unit = "please provide a unit";
-          valid = false;
-        }
-
-        if (isEmpty(formData[i].shipments[j].supplier)) {
-          shipments[j].supplier = "please provide a supplier";
           valid = false;
         }
       }
@@ -350,13 +308,13 @@ const MaterialShipmentCreateForm = ({
             status: "success",
           });
           setGeneralError(undefined);
-          if (closeForm) closeForm();
+          if (onSuccess) onSuccess();
         })
         .catch((err) => {
           setGeneralError(err.message);
         });
     }
-  }, [checkErrors, closeForm, create, dailyReport._id, formData, toast]);
+  }, [checkErrors, onSuccess, create, dailyReport._id, formData, toast]);
 
   /**
    * ----- Use-effects and other logic -----
@@ -415,34 +373,31 @@ const MaterialShipmentCreateForm = ({
                 </Flex>
               )}
               <SimpleGrid spacing={2} columns={[1, 1, 2]}>
-                <MaterialSearch
-                  materialSelected={(material) =>
-                    updateShipmentType(material.name, dataIndex, shipmentIndex)
-                  }
+                <Select
+                  name="jobsiteMaterialId"
+                  options={dailyReport.jobsite.materials.map(
+                    (jobsiteMaterial) => {
+                      return {
+                        title: `${jobsiteMaterial.material.name} - ${jobsiteMaterial.supplier.name}`,
+                        value: jobsiteMaterial._id,
+                      };
+                    }
+                  )}
                   label="Material"
                   isDisabled={loading}
-                  value={shipment.shipmentType}
+                  value={shipment.jobsiteMaterialId}
                   errorMessage={
                     formErrors[dataIndex]?.shipments[shipmentIndex]
-                      ?.shipmentType
+                      ?.jobsiteMaterialId
                   }
                   onChange={(e) =>
-                    updateShipmentType(e.target.value, dataIndex, shipmentIndex)
+                    updateJobsiteMaterial(
+                      e.target.value,
+                      dataIndex,
+                      shipmentIndex
+                    )
                   }
                 />
-                <TextField
-                  label="Supplier"
-                  isDisabled={loading}
-                  value={shipment.supplier}
-                  errorMessage={
-                    formErrors[dataIndex]?.shipments[shipmentIndex]?.supplier
-                  }
-                  onChange={(e) =>
-                    updateSupplier(e.target.value, dataIndex, shipmentIndex)
-                  }
-                />
-              </SimpleGrid>
-              <SimpleGrid spacing={2} columns={[1, 1, 2]}>
                 <TextField
                   label="Quantity"
                   isDisabled={loading}
@@ -457,17 +412,6 @@ const MaterialShipmentCreateForm = ({
                       dataIndex,
                       shipmentIndex
                     )
-                  }
-                />
-                <TextField
-                  label="Unit"
-                  isDisabled={loading}
-                  value={shipment.unit}
-                  errorMessage={
-                    formErrors[dataIndex]?.shipments[shipmentIndex]?.unit
-                  }
-                  onChange={(e) =>
-                    updateUnit(e.target.value, dataIndex, shipmentIndex)
                   }
                 />
               </SimpleGrid>
@@ -560,4 +504,4 @@ const MaterialShipmentCreateForm = ({
   );
 };
 
-export default MaterialShipmentCreateForm;
+export default MaterialShipmentCreate;

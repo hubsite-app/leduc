@@ -38,37 +38,5 @@ describe("Crew Class", () => {
         });
       });
     });
-
-    describe("getVehicles", () => {
-      describe("success", () => {
-        test("should get array of all vehicles", async () => {
-          const vehicles = await documents.crews.base_1.getVehicles();
-
-          expect(vehicles.length).toBe(3);
-        });
-      });
-    });
-
-    describe("getJobsites", () => {
-      describe("success", () => {
-        test("should get array of all jobsites", async () => {
-          const jobsites = await documents.crews.base_1.getJobsites();
-
-          expect(jobsites.length).toBe(1);
-        });
-      });
-    });
-
-    describe("getByVehicle", () => {
-      describe("success", () => {
-        test("should get crews that contain this vehicle", async () => {
-          const crews = await Crew.getByVehicle(
-            documents.vehicles.gravel_truck_1
-          );
-
-          expect(crews.length).toBe(1);
-        });
-      });
-    });
   });
 });

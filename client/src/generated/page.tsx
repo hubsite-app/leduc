@@ -43,6 +43,79 @@ import { getApolloClient , ApolloClientContext} from '../withApollo';
 
 
 
+
+
+
+export async function getServerPageCompanies
+    (options: Omit<Apollo.QueryOptions<Types.CompaniesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.CompaniesQuery>({ ...options, query: Operations.CompaniesDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useCompanies = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CompaniesQuery, Types.CompaniesQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.CompaniesDocument, options);
+};
+export type PageCompaniesComp = React.FC<{data?: Types.CompaniesQuery, error?: Apollo.ApolloError}>;
+export const withPageCompanies = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CompaniesQuery, Types.CompaniesQueryVariables>) => (WrappedComponent:PageCompaniesComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.CompaniesDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrCompanies = {
+      getServerPage: getServerPageCompanies,
+      withPage: withPageCompanies,
+      usePage: useCompanies,
+    }
+export async function getServerPageCompanySearch
+    (options: Omit<Apollo.QueryOptions<Types.CompanySearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.CompanySearchQuery>({ ...options, query: Operations.CompanySearchDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useCompanySearch = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CompanySearchQuery, Types.CompanySearchQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.CompanySearchDocument, options);
+};
+export type PageCompanySearchComp = React.FC<{data?: Types.CompanySearchQuery, error?: Apollo.ApolloError}>;
+export const withPageCompanySearch = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CompanySearchQuery, Types.CompanySearchQueryVariables>) => (WrappedComponent:PageCompanySearchComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.CompanySearchDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrCompanySearch = {
+      getServerPage: getServerPageCompanySearch,
+      withPage: withPageCompanySearch,
+      usePage: useCompanySearch,
+    }
 export async function getServerPageCrewSearch
     (options: Omit<Apollo.QueryOptions<Types.CrewSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);

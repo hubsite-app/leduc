@@ -6,6 +6,9 @@ fragment DailyReportFullSnippet on DailyReportClass {
   jobsite {
     _id
     name
+    materials {
+      ...JobsiteMaterialCardSnippet
+    }
   }
   crew {
     ...CrewFullSnippet

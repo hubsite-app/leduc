@@ -105,43 +105,6 @@ const create = (dailyReportId: string, data: MaterialShipmentCreateData[]) => {
         await materialShipments[i].save();
       }
 
-      resolve(materialShipments);
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
-
-const createV1 = (
-  dailyReportId: string,
-  data: MaterialShipmentCreateDataV1[]
-) => {
-  return new Promise<MaterialShipmentDocument[]>(async (resolve, reject) => {
-    try {
-      const dailyReport = (await DailyReport.getById(dailyReportId, {
-        throwError: true,
-      }))!;
-
-      const materialShipments: MaterialShipmentDocument[] = [];
-
-      for (let i = 0; i < data.length; i++) {
-        const currentData = data[i];
-
-        for (let j = 0; j < currentData.shipments.length; j++) {
-          materialShipments.push(
-            await MaterialShipment.createDocumentV1({
-              vehicleObject: currentData.vehicleObject,
-              ...currentData.shipments[j],
-              dailyReport,
-            })
-          );
-        }
-      }
-
-      for (let i = 0; i < materialShipments.length; i++) {
-        await materialShipments[i].save();
-      }
-
       await dailyReport.save();
 
       resolve(materialShipments);
@@ -213,7 +176,6 @@ const remove = (id: string) => {
 
 export default {
   create,
-  createV1,
   update,
   updateV1,
   remove,

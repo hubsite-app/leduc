@@ -6,9 +6,13 @@ fragment MaterialShipmentCardSnippet on MaterialShipmentClass {
   unit
   startTime
   endTime
+  jobsiteMaterial {
+    ...JobsiteMaterialCardSnippet
+  }
   vehicleObject {
     source
     vehicleType
     vehicleCode
   }
+  schemaVersion
 }

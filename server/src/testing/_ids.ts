@@ -5,6 +5,9 @@ const _ids = {
     base_foreman_1_user: {
       _id: Types.ObjectId("621680482564b66de7083a1b"),
     },
+    admin_user: {
+      _id: Types.ObjectId("6241f81d8b757d1c8ae18b13"),
+    },
   },
   crews: {
     base_1: {
@@ -32,6 +35,9 @@ const _ids = {
     },
     temp_2: {
       _id: Types.ObjectId("622fcdf33c054c0d1a5f6efc"),
+    },
+    office_admin: {
+      _id: Types.ObjectId("6241f83c8542b250a1b765ba"),
     },
   },
   vehicles: {
@@ -130,6 +136,11 @@ const _ids = {
     },
     jobsite_3_material_1: {
       _id: Types.ObjectId("623e1a391900170e516390e7"),
+    },
+  },
+  invoices: {
+    jobsite_3_invoice_1: {
+      _id: Types.ObjectId("6241fc1132d9ce63e6fbf373"),
     },
   },
 };

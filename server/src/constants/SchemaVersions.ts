@@ -6,7 +6,7 @@ export default {
   EmployeeWork: 1,
   File: 1,
   Invoice: 1,
-  Jobsite: 2,
+  Jobsite: 1,
   JobsiteMaterial: 1,
   Material: 1,
   MaterialShipment: 2,

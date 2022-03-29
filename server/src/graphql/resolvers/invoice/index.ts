@@ -1,5 +1,13 @@
 import { CompanyClass, InvoiceClass, InvoiceDocument } from "@models";
-import { FieldResolver, Resolver, Root } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  FieldResolver,
+  Mutation,
+  Resolver,
+  Root,
+} from "type-graphql";
+import mutations, { InvoiceData } from "./mutations";
 
 @Resolver(() => InvoiceClass)
 export default class InvoiceResolver {
@@ -10,5 +18,15 @@ export default class InvoiceResolver {
   @FieldResolver(() => CompanyClass)
   async company(@Root() invoice: InvoiceDocument) {
     return invoice.getCompany();
+  }
+
+  /**
+   * ----- Mutations -----
+   */
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => InvoiceClass)
+  async invoiceUpdate(@Arg("id") id: string, @Arg("data") data: InvoiceData) {
+    return mutations.update(id, data);
   }
 }

@@ -19,7 +19,7 @@ export class InvoiceSchema {
 
   @Field({ nullable: false })
   @prop({ required: true })
-  public cost!: string;
+  public cost!: number;
 
   @Field({ nullable: true })
   @prop({ trim: true })

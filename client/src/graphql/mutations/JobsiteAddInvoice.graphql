@@ -1,0 +1,5 @@
+mutation JobsiteAddInvoice($jobsiteId: String!, $data: InvoiceData!) {
+  jobsiteAddInvoice(jobsiteId: $jobsiteId, data: $data) {
+    ...JobsiteFullSnippet
+  }
+}

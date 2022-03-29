@@ -17,6 +17,7 @@ import {
   Resolver,
   Root,
 } from "type-graphql";
+import { InvoiceData } from "../invoice/mutations";
 import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
 import mutations, { JobsiteCreateData } from "./mutations";
 
@@ -70,18 +71,27 @@ export default class JobsiteResolver {
    * ----- Mutations -----
    */
 
-  @Authorized()
+  @Authorized(["ADMIN"])
   @Mutation(() => JobsiteClass)
   async jobsiteCreate(@Arg("data") data: JobsiteCreateData) {
     return mutations.create(data);
   }
 
-  @Authorized()
+  @Authorized(["ADMIN"])
   @Mutation(() => JobsiteClass)
   async jobsiteAddMaterial(
     @Arg("jobsiteId") jobsiteId: string,
     @Arg("data") data: JobsiteMaterialCreateData
   ) {
     return mutations.addMaterial(jobsiteId, data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => JobsiteClass)
+  async jobsiteAddInvoice(
+    @Arg("jobsiteId") jobsiteId: string,
+    @Arg("data") data: InvoiceData
+  ) {
+    return mutations.addInvoice(jobsiteId, data);
   }
 }

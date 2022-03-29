@@ -6,7 +6,6 @@ import {
 } from "@models";
 import {
   IMaterialShipmentCreate,
-  IMaterialShipmentCreateV1,
   IMaterialShipmentUpdate,
   IMaterialShipmentUpdateV1,
 } from "@typescript/materialShipment";
@@ -53,13 +52,6 @@ export class MaterialShipmentClass extends MaterialShipmentSchema {
     data: IMaterialShipmentCreate
   ) {
     return create.document(this, data);
-  }
-
-  public static async createDocumentV1(
-    this: MaterialShipmentModel,
-    data: IMaterialShipmentCreateV1
-  ) {
-    return create.documentV1(this, data);
   }
 
   /**

@@ -4,8 +4,8 @@ import { FiPlus, FiX } from "react-icons/fi";
 
 import { DailyReportFullSnippetFragment } from "../../../../../generated/graphql";
 import Card from "../../../../Common/Card";
+import MaterialShipmentCreate from "../../../../Forms/MaterialShipment/MaterialShipmentCreate";
 import MaterialShipmentCard from "./MaterialShipmentCard";
-import MaterialShipmentCreateForm from "./MaterialShipmentCreateForm";
 
 interface IMaterialShipments {
   dailyReport: DailyReportFullSnippetFragment;
@@ -37,9 +37,9 @@ const MaterialShipments = ({ dailyReport }: IMaterialShipments) => {
         />
       </Flex>
       {addForm && (
-        <MaterialShipmentCreateForm
+        <MaterialShipmentCreate
           dailyReport={dailyReport}
-          closeForm={() => setAddForm(false)}
+          onSuccess={() => setAddForm(false)}
         />
       )}
       {!collapsed && (

@@ -1,40 +1,40 @@
 import React from "react";
 
-import { toast, useToast } from "@chakra-ui/react";
-import { useMaterialCreateForm } from "../../forms/material";
+import { useToast } from "@chakra-ui/react";
+import { useCompanyCreateForm } from "../../../forms/company";
 import {
-  MaterialCreateData,
-  MaterialFullSnippetFragment,
-  useMaterialCreateMutation,
-} from "../../generated/graphql";
-import SubmitButton from "../Common/forms/SubmitButton";
+  CompanyCreateData,
+  CompanyCardSnippetFragment,
+  useCompanyCreateMutation,
+} from "../../../generated/graphql";
+import SubmitButton from "../../Common/forms/SubmitButton";
 
-interface IMaterialCreateForm {
-  onSuccess?: (material: MaterialFullSnippetFragment) => void;
+interface ICompanyCreateForm {
+  onSuccess?: (company: CompanyCardSnippetFragment) => void;
 }
 
-const MaterialCreateForm = ({ onSuccess }: IMaterialCreateForm) => {
+const CompanyCreateForm = ({ onSuccess }: ICompanyCreateForm) => {
   /**
    * ----- Hook Initialization -----
    */
 
   const toast = useToast();
 
-  const { FormComponents } = useMaterialCreateForm();
+  const { FormComponents } = useCompanyCreateForm();
 
-  const [create, { loading }] = useMaterialCreateMutation();
+  const [create, { loading }] = useCompanyCreateMutation();
 
   /**
    * ----- Functions -----
    */
 
   const submitHandler = React.useCallback(
-    async (data: MaterialCreateData) => {
+    async (data: CompanyCreateData) => {
       try {
         const res = await create({ variables: { data } });
 
-        if (res.data?.materialCreate) {
-          if (onSuccess) onSuccess(res.data.materialCreate);
+        if (res.data?.companyCreate) {
+          if (onSuccess) onSuccess(res.data.companyCreate);
         } else {
           toast({
             status: "error",
@@ -67,4 +67,4 @@ const MaterialCreateForm = ({ onSuccess }: IMaterialCreateForm) => {
   );
 };
 
-export default MaterialCreateForm;
+export default CompanyCreateForm;

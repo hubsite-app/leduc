@@ -1,40 +1,40 @@
-import { useToast } from "@chakra-ui/react";
 import React from "react";
 
-import { useJobsiteCreateForm } from "../../forms/jobsite";
+import { toast, useToast } from "@chakra-ui/react";
+import { useMaterialCreateForm } from "../../../forms/material";
 import {
-  JobsiteCreateData,
-  JobsiteFullSnippetFragment,
-  useJobsiteCreateMutation,
-} from "../../generated/graphql";
-import SubmitButton from "../Common/forms/SubmitButton";
+  MaterialCreateData,
+  MaterialFullSnippetFragment,
+  useMaterialCreateMutation,
+} from "../../../generated/graphql";
+import SubmitButton from "../../Common/forms/SubmitButton";
 
-interface IJobsiteCreateForm {
-  onSuccess?: (jobsite: JobsiteFullSnippetFragment) => void;
+interface IMaterialCreateForm {
+  onSuccess?: (material: MaterialFullSnippetFragment) => void;
 }
 
-const JobsiteCreateForm = ({ onSuccess }: IJobsiteCreateForm) => {
+const MaterialCreateForm = ({ onSuccess }: IMaterialCreateForm) => {
   /**
    * ----- Hook Initialization -----
    */
 
   const toast = useToast();
 
-  const { FormComponents } = useJobsiteCreateForm();
+  const { FormComponents } = useMaterialCreateForm();
 
-  const [create, { loading }] = useJobsiteCreateMutation();
+  const [create, { loading }] = useMaterialCreateMutation();
 
   /**
    * ----- Functions -----
    */
 
   const submitHandler = React.useCallback(
-    async (data: JobsiteCreateData) => {
+    async (data: MaterialCreateData) => {
       try {
         const res = await create({ variables: { data } });
 
-        if (res.data?.jobsiteCreate) {
-          if (onSuccess) onSuccess(res.data.jobsiteCreate);
+        if (res.data?.materialCreate) {
+          if (onSuccess) onSuccess(res.data.materialCreate);
         } else {
           toast({
             status: "error",
@@ -62,11 +62,9 @@ const JobsiteCreateForm = ({ onSuccess }: IJobsiteCreateForm) => {
   return (
     <FormComponents.Form submitHandler={submitHandler}>
       <FormComponents.Name isLoading={loading} />
-      <FormComponents.Jobcode isLoading={loading} />
-      <FormComponents.Description isLoading={loading} />
       <SubmitButton isLoading={loading} />
     </FormComponents.Form>
   );
 };
 
-export default JobsiteCreateForm;
+export default MaterialCreateForm;

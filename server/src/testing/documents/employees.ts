@@ -9,6 +9,7 @@ export interface SeededEmployees {
   base_laborer_3: EmployeeDocument;
   temp_1: EmployeeDocument;
   temp_2: EmployeeDocument;
+  office_admin: EmployeeDocument;
 }
 
 const createEmployees = () => {
@@ -61,6 +62,12 @@ const createEmployees = () => {
         jobTitle: "Laborer",
       });
 
+      const office_admin = new Employee({
+        _id: _ids.employees.office_admin._id,
+        name: "Office Employee",
+        jobTitle: "Admin",
+      });
+
       const employees = {
         base_foreman_1,
         base_operator_1,
@@ -69,6 +76,7 @@ const createEmployees = () => {
         base_laborer_3,
         temp_1,
         temp_2,
+        office_admin,
       };
 
       for (let i = 0; i < Object.values(employees).length; i++) {

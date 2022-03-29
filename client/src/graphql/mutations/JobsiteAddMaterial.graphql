@@ -1,0 +1,8 @@
+mutation JobsiteAddMaterial(
+  $jobsiteId: String!
+  $data: JobsiteMaterialCreateData!
+) {
+  jobsiteAddMaterial(jobsiteId: $jobsiteId, data: $data) {
+    ...JobsiteFullSnippet
+  }
+}

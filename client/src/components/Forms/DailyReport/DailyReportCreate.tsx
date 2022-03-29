@@ -1,14 +1,14 @@
 import React from "react";
 
 import { Stack, useToast } from "@chakra-ui/react";
-import { useDailyReportCreateForm } from "../../forms/dailyReport";
+import { useDailyReportCreateForm } from "../../../forms/dailyReport";
 import {
   DailyReportCreateData,
   DailyReportFullSnippetFragment,
   useDailyReportCreateMutation,
-} from "../../generated/graphql";
-import SubmitButton from "../Common/forms/SubmitButton";
-import { useAuth } from "../../contexts/Auth";
+} from "../../../generated/graphql";
+import SubmitButton from "../../Common/forms/SubmitButton";
+import { useAuth } from "../../../contexts/Auth";
 
 interface IDailyReportCreateForm {
   onSuccess?: (dailyReport: DailyReportFullSnippetFragment) => void;

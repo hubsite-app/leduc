@@ -15,7 +15,6 @@ import {
 } from "@models";
 import mutations, {
   MaterialShipmentCreateData,
-  MaterialShipmentCreateDataV1,
   MaterialShipmentShipmentData,
   MaterialShipmentShipmentDataV1,
 } from "./mutations";
@@ -48,16 +47,6 @@ export default class MaterialShipmentResolver {
     data: MaterialShipmentCreateData[]
   ) {
     return mutations.create(dailyReportId, data);
-  }
-
-  @Authorized()
-  @Mutation(() => [MaterialShipmentClass])
-  async materialShipmentCreateV1(
-    @Arg("dailyReportId") dailyReportId: string,
-    @Arg("data", () => [MaterialShipmentCreateDataV1])
-    data: MaterialShipmentCreateDataV1[]
-  ) {
-    return mutations.createV1(dailyReportId, data);
   }
 
   @Authorized()

@@ -1,10 +1,11 @@
 import { InvoiceDocument, InvoiceModel } from "@models";
-import { IInvoiceCreate } from "@typescript/invoice";
+import { IInvoiceCreate, IInvoiceUpdate } from "@typescript/invoice";
 import { GetByIDOptions, Id } from "@typescript/models";
 import { ObjectType } from "type-graphql";
 import { InvoiceSchema } from "../schema";
 import create from "./create";
 import get from "./get";
+import update from "./update";
 
 @ObjectType()
 export class InvoiceClass extends InvoiceSchema {
@@ -35,4 +36,8 @@ export class InvoiceClass extends InvoiceSchema {
   /**
    * ----- Update -----
    */
+
+  public async updateDocument(this: InvoiceDocument, data: IInvoiceUpdate) {
+    return update.document(this, data);
+  }
 }

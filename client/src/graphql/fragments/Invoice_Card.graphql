@@ -1,0 +1,10 @@
+fragment InvoiceCardSnippet on InvoiceClass {
+  _id
+  company {
+    ...CompanyCardSnippet
+  }
+  invoiceNumber
+  cost
+  description
+  internal
+}

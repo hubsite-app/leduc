@@ -1,18 +1,13 @@
 import React from "react";
 
-import { Box, Flex, IconButton, SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Text } from "@chakra-ui/react";
 import {
   DailyReportFullDocument,
   MaterialShipmentCardSnippetFragment,
-  MaterialShipmentShipmentData,
   useMaterialShipmentDeleteMutation,
-  useMaterialShipmentUpdateMutation,
 } from "../../../../../generated/graphql";
 import { FiEdit, FiTrash, FiX } from "react-icons/fi";
-import { useMaterialShipmentUpdateForm } from "../../../../../forms/materialShipment";
-import dayjs from "dayjs";
-import convertHourToDate from "../../../../../utils/convertHourToDate";
-import SubmitButton from "../../../../Common/forms/SubmitButton";
+import MaterialShipmentUpdateV1 from "../../../../Forms/MaterialShipment/MaterialShipmentUpdateV1";
 
 interface IMaterialShipmentCard {
   materialShipment: MaterialShipmentCardSnippetFragment;
@@ -29,8 +24,6 @@ const MaterialShipmentCard = ({
 
   const [edit, setEdit] = React.useState(false);
 
-  const [update, { loading }] = useMaterialShipmentUpdateMutation();
-
   const [remove] = useMaterialShipmentDeleteMutation({
     variables: {
       id: materialShipment._id,
@@ -38,62 +31,40 @@ const MaterialShipmentCard = ({
     refetchQueries: [DailyReportFullDocument],
   });
 
-  const { FormComponents } = useMaterialShipmentUpdateForm({
-    defaultValues: {
-      shipmentType: materialShipment.shipmentType,
-      supplier: materialShipment.supplier,
-      startTime: materialShipment.startTime,
-      endTime: materialShipment.endTime,
-      quantity: materialShipment.quantity,
-      unit: materialShipment.unit,
-    },
-  });
-
-  /**
-   * ----- Functions -----
-   */
-
-  const submitUpdate = React.useCallback(
-    (data: MaterialShipmentShipmentData) => {
-      let startTime = data.startTime;
-      if (startTime && !dayjs(startTime).isValid()) {
-        startTime = convertHourToDate(data.startTime, dailyReportDate);
-      }
-
-      let endTime = data.endTime;
-      if (endTime && !dayjs(endTime).isValid()) {
-        endTime = convertHourToDate(data.endTime, dailyReportDate);
-      }
-
-      update({
-        variables: {
-          id: materialShipment._id,
-          data: {
-            ...data,
-            startTime,
-            endTime,
-          },
-        },
-      }).then(() => setEdit(false));
-    },
-    [dailyReportDate, materialShipment._id, update]
-  );
-
   /**
    * ----- Rendering -----
    */
+
+  const content = React.useMemo(() => {
+    if (materialShipment.schemaVersion === 1) {
+      return (
+        <Text>
+          <Text as="span" fontWeight="bold">
+            {materialShipment.supplier} {materialShipment.shipmentType}
+          </Text>
+          {" - "}
+          {materialShipment.quantity} {materialShipment.unit}
+        </Text>
+      );
+    } else {
+      return (
+        <Text>
+          <Text as="span" fontWeight="bold">
+            {materialShipment.jobsiteMaterial?.supplier.name}{" "}
+            {materialShipment.jobsiteMaterial?.material.name}
+          </Text>
+          {" - "}
+          {materialShipment.quantity} {materialShipment.jobsiteMaterial?.unit}
+        </Text>
+      );
+    }
+  }, [materialShipment]);
 
   return (
     <Box p={2} w="100%" border="1px solid lightgray">
       <Flex flexDir="row" justifyContent="space-between">
         <Box>
-          <Text>
-            <Text as="span" fontWeight="bold">
-              {materialShipment.supplier} {materialShipment.shipmentType}
-            </Text>
-            {" - "}
-            {materialShipment.quantity} {materialShipment.unit}
-          </Text>
+          {content}
           {materialShipment.vehicleObject?.source}{" "}
           {materialShipment.vehicleObject?.vehicleType}{" "}
           {materialShipment.vehicleObject?.vehicleCode}
@@ -117,23 +88,15 @@ const MaterialShipmentCard = ({
       </Flex>
       {edit && (
         <Box backgroundColor="gray.200" p={2} borderRadius={4}>
-          <FormComponents.Form submitHandler={submitUpdate}>
-            <SimpleGrid columns={[1, 1, 2]} spacing={2}>
-              <FormComponents.ShipmentType isLoading={loading} />
-              <FormComponents.Supplier isLoading={loading} />
-            </SimpleGrid>
-
-            <SimpleGrid columns={[1, 1, 2]} spacing={2}>
-              <FormComponents.Quantity isLoading={loading} />
-              <FormComponents.Unit isLoading={loading} />
-            </SimpleGrid>
-
-            <SimpleGrid columns={[1, 1, 2]} spacing={2}>
-              <FormComponents.StartTime isLoading={loading} />
-              <FormComponents.EndTime isLoading={loading} />
-            </SimpleGrid>
-            <SubmitButton isLoading={loading} />
-          </FormComponents.Form>
+          {materialShipment.schemaVersion <= 1 ? (
+            <MaterialShipmentUpdateV1
+              materialShipment={materialShipment}
+              dailyReportDate={dailyReportDate}
+              onSuccess={() => setEdit(false)}
+            />
+          ) : (
+            "Update V > 1"
+          )}
         </Box>
       )}
     </Box>

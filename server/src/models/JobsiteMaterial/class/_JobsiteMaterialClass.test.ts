@@ -2,11 +2,7 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 
 import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 import { disconnectAndStopServer, prepareDatabase } from "@testing/jestDB";
-import { JobsiteMaterial, MaterialShipment } from "@models";
-import {
-  IMaterialShipmentCreate,
-  IMaterialShipmentCreateV1,
-} from "@typescript/materialShipment";
+import { Jobsite, JobsiteMaterial } from "@models";
 import { IJobsiteMaterialCreate } from "@typescript/jobsiteMaterial";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
@@ -33,6 +29,21 @@ afterAll(async () => {
 });
 
 describe("Jobsite Material Class", () => {
+  describe("GET", () => {
+    describe("getCompletedQuantity", () => {
+      describe("success", () => {
+        test("should successfully get completed quantity", async () => {
+          const completed =
+            await documents.jobsiteMaterials.jobsite_2_material_1.getCompletedQuantity();
+
+          expect(completed).toBe(
+            documents.materialShipments.jobsite_2_base_1_1_shipment_1.quantity
+          );
+        });
+      });
+    });
+  });
+
   describe("CREATE", () => {
     describe("createDocument", () => {
       describe("success", () => {

@@ -1,5 +1,6 @@
 import { logger } from "@logger";
 import {
+  Company,
   Crew,
   DailyReport,
   Employee,
@@ -35,16 +36,16 @@ const saveAll = () => {
         await jobsites[i].save();
       }
 
-      // DailyReport
-      const dailyReports = await DailyReport.find();
-      logger.info(`Saving ${dailyReports.length} dailyReport documents`);
-      for (let i = 0; i < dailyReports.length; i++) {
-        if (isEmpty(dailyReports[i].reportNote)) {
-          dailyReports[i].reportNote = undefined;
-        }
+      // // DailyReport
+      // const dailyReports = await DailyReport.find();
+      // logger.info(`Saving ${dailyReports.length} dailyReport documents`);
+      // for (let i = 0; i < dailyReports.length; i++) {
+      //   if (isEmpty(dailyReports[i].reportNote)) {
+      //     dailyReports[i].reportNote = undefined;
+      //   }
 
-        await dailyReports[i].save();
-      }
+      //   await dailyReports[i].save();
+      // }
 
       // Crew
       const crews = await Crew.find();
@@ -58,6 +59,13 @@ const saveAll = () => {
       logger.info(`Saving ${materials.length} material documents`);
       for (let i = 0; i < materials.length; i++) {
         await materials[i].save();
+      }
+
+      // Company
+      const companies = await Company.find();
+      logger.info(`Saving ${companies.length} company documents`);
+      for (let i = 0; i < companies.length; i++) {
+        await companies[i].save();
       }
 
       resolve();

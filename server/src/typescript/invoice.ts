@@ -6,5 +6,13 @@ export interface IInvoiceCreate {
   invoiceNumber: string;
   cost: number;
   description?: string;
-  internal?: boolean;
+  internal: boolean;
+}
+
+export interface IInvoiceUpdate {
+  company: CompanyDocument;
+  invoiceNumber: string;
+  cost: number;
+  description?: string;
+  internal: boolean;
 }

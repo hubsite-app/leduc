@@ -5,6 +5,7 @@ import {
   Employee,
   EmployeeWork,
   File,
+  Invoice,
   Jobsite,
   JobsiteMaterial,
   Material,
@@ -26,6 +27,7 @@ const clearDatabase = () => {
         await DailyReport.deleteMany({});
         await Employee.deleteMany({});
         await EmployeeWork.deleteMany({});
+        await Invoice.deleteMany({});
         await Jobsite.deleteMany({});
         await JobsiteMaterial.deleteMany({});
         await Material.deleteMany({});

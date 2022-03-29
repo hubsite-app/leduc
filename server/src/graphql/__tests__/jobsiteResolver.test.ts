@@ -7,7 +7,8 @@ import createApp from "../../app";
 import _ids from "@testing/_ids";
 import jestLogin from "@testing/jestLogin";
 import { JobsiteMaterialCreateData } from "@graphql/resolvers/jobsiteMaterial/mutations";
-import { Jobsite, JobsiteMaterial } from "@models";
+import { Invoice, Jobsite, JobsiteMaterial } from "@models";
+import { InvoiceData } from "@graphql/resolvers/invoice/mutations";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -113,10 +114,7 @@ describe("Jobsite Resolver", () => {
 
       describe("success", () => {
         test("should successfully create a jobsite material", async () => {
-          const token = await jestLogin(
-            app,
-            documents.users.base_foreman_1_user.email
-          );
+          const token = await jestLogin(app, documents.users.admin_user.email);
 
           const data: JobsiteMaterialCreateData = {
             materialId: documents.materials.material_1._id.toString(),
@@ -154,6 +152,69 @@ describe("Jobsite Resolver", () => {
           );
 
           expect(jobsiteMaterial!.supplier!.toString()).toBe(data.supplierId);
+        });
+      });
+    });
+
+    describe("jobsiteAddInvoice", () => {
+      const jobsiteAddInvoice = `
+        mutation JobsiteAddInvoice($jobsiteId: String!, $data: InvoiceData!) {
+          jobsiteAddInvoice(jobsiteId: $jobsiteId, data: $data) {
+            _id
+            invoices {
+              _id
+              cost
+              company {
+                name
+              }
+              invoiceNumber
+              internal
+              description
+            }
+          }
+        }
+      `;
+
+      describe("success", () => {
+        test("should successfully create an invoice", async () => {
+          const token = await jestLogin(app, documents.users.admin_user.email);
+
+          const data: InvoiceData = {
+            companyId: documents.companies.company_1._id.toString(),
+            cost: 100,
+            internal: false,
+            invoiceNumber: "12345",
+            description: "Description of invoice",
+          };
+
+          const res = await request(app)
+            .post("/graphql")
+            .send({
+              query: jobsiteAddInvoice,
+              variables: {
+                jobsiteId: documents.jobsites.jobsite_2._id,
+                data,
+              },
+            })
+            .set("Authorization", token);
+
+          expect(res.status).toBe(200);
+
+          expect(res.body.data.jobsiteAddInvoice._id).toBe(
+            documents.jobsites.jobsite_2._id.toString()
+          );
+
+          const jobsite = await Jobsite.getById(
+            documents.jobsites.jobsite_2._id
+          );
+
+          expect(jobsite?.invoices.length).toBe(1);
+
+          const invoice = await Invoice.getById(
+            jobsite!.invoices[0]!.toString()
+          );
+
+          expect(invoice!.company!.toString()).toBe(data.companyId);
         });
       });
     });

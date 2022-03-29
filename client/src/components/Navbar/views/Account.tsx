@@ -41,6 +41,9 @@ const NavbarAccount = () => {
               <MenuItem onClick={() => router.push("/materials")}>
                 Materials
               </MenuItem>
+              <MenuItem onClick={() => router.push("/companies")}>
+                Companies
+              </MenuItem>
               <MenuItem onClick={() => router.push(`/me`)}>Profile</MenuItem>
               <MenuDivider />
               <MenuItem onClick={() => logout()}>Logout</MenuItem>

@@ -1,0 +1,13 @@
+fragment JobsiteMaterialCardSnippet on JobsiteMaterialClass {
+  _id
+  material {
+    ...MaterialCardSnippet
+  }
+  supplier {
+    ...CompanyCardSnippet
+  }
+  quantity
+  completedQuantity
+  unit
+  rate
+}
