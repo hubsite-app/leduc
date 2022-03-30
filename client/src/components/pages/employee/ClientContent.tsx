@@ -14,6 +14,7 @@ import AdminOnly from "../../Common/AdminOnly";
 import Checkbox from "../../Common/forms/Checkbox";
 import CopyField from "../../Common/CopyField";
 import EmployeeRates from "./views/Rates";
+import createLink from "../../../utils/createLink";
 
 interface IEmployeeClientContent {
   id: string;
@@ -117,7 +118,10 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
               <Box m={2}>
                 {employee.crews.map((crew) => (
                   <Box key={crew._id} border="1px solid lightgray" p={2}>
-                    <TextLink fontWeight="bold" link={`/crew/${crew._id}`}>
+                    <TextLink
+                      fontWeight="bold"
+                      link={createLink.crew(crew._id)}
+                    >
                       {crew.name}
                     </TextLink>
                   </Box>

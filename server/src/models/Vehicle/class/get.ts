@@ -50,11 +50,7 @@ const search = (
             multi_match: {
               query: searchString.toLowerCase(),
               fuzziness: "AUTO",
-              fields: [
-                "vehicle.name",
-                "vehicle.vehicleCode",
-                "vehicle.vehicleType",
-              ],
+              fields: ["name", "vehicleCode", "vehicleType"],
             },
           },
         },

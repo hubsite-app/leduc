@@ -18,6 +18,7 @@ import {
   JobsiteMaterialUpdateData,
 } from "../generated/graphql";
 import Number, { INumber } from "../components/Common/forms/Number";
+import Units, { IUnit } from "../components/Common/forms/Unit";
 
 const JobsiteMaterialCreateSchema = yup
   .object()
@@ -234,14 +235,14 @@ export const useJobsiteMaterialUpdateForm = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
-    Unit: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+    Unit: ({ isLoading, ...props }: IFormProps<IUnit>) =>
       React.useMemo(
         () => (
           <Controller
             control={control}
             name="unit"
             render={({ field, fieldState }) => (
-              <TextField
+              <Units
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}

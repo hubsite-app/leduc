@@ -13,6 +13,7 @@ import {
   Production,
   ReportNote,
   Signup,
+  System,
   User,
   Vehicle,
   VehicleWork,
@@ -35,6 +36,7 @@ const clearDatabase = () => {
         await Production.deleteMany({});
         await ReportNote.deleteMany({});
         await Signup.deleteMany({});
+        await System.deleteMany({});
         await User.deleteMany({});
         await Vehicle.deleteMany({});
         await VehicleWork.deleteMany({});

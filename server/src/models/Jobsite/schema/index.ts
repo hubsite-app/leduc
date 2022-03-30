@@ -8,6 +8,7 @@ import {
   JobsiteMaterialClass,
 } from "@models";
 import { post, prop, Ref } from "@typegoose/typegoose";
+import { DefaultRateClass } from "@typescript/models";
 import isUrl from "@validation/isUrl";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
@@ -59,6 +60,13 @@ export class JobsiteSchema {
   @Field(() => InvoiceClass)
   @prop({ ref: () => InvoiceClass, default: [] })
   public invoices!: Ref<InvoiceClass>[];
+
+  /**
+   * @version 2
+   */
+  @Field(() => [DefaultRateClass])
+  @prop({ type: () => [DefaultRateClass], default: [] })
+  public truckingRates!: DefaultRateClass[];
 
   @Field(() => [CrewClass])
   @prop({ ref: () => CrewClass, default: [] })

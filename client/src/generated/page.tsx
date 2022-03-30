@@ -50,6 +50,8 @@ import { getApolloClient , ApolloClientContext} from '../withApollo';
 
 
 
+
+
 export async function getServerPageCompanies
     (options: Omit<Apollo.QueryOptions<Types.CompaniesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -784,6 +786,41 @@ export const ssrSignupSsr = {
       getServerPage: getServerPageSignupSsr,
       withPage: withPageSignupSsr,
       usePage: useSignupSsr,
+    }
+export async function getServerPageSystem
+    (options: Omit<Apollo.QueryOptions<Types.SystemQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.SystemQuery>({ ...options, query: Operations.SystemDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useSystem = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.SystemQuery, Types.SystemQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.SystemDocument, options);
+};
+export type PageSystemComp = React.FC<{data?: Types.SystemQuery, error?: Apollo.ApolloError}>;
+export const withPageSystem = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.SystemQuery, Types.SystemQueryVariables>) => (WrappedComponent:PageSystemComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.SystemDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrSystem = {
+      getServerPage: getServerPageSystem,
+      withPage: withPageSystem,
+      usePage: useSystem,
     }
 export async function getServerPageUserForPasswordReset
     (options: Omit<Apollo.QueryOptions<Types.UserForPasswordResetQueryVariables>, 'query'>, ctx: ApolloClientContext ){

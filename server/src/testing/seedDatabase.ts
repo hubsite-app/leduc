@@ -1,3 +1,4 @@
+import { System } from "@models";
 import clearDatabase from "./clearDatabase";
 import createCompanies, { SeededCompanies } from "./documents/company";
 
@@ -73,6 +74,8 @@ const seedDatabase = () => {
       const users = await createUsers();
       const vehicles = await createVehicles();
       const vehicleWork = await createVehicleWork();
+
+      await System.validateSystem();
 
       resolve({
         companies,

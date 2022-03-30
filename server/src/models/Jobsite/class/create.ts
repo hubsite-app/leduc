@@ -1,4 +1,4 @@
-import { JobsiteDocument, JobsiteModel } from "@models";
+import { JobsiteDocument, JobsiteModel, System } from "@models";
 import { IJobsiteCreate } from "@typescript/jobsite";
 
 const document = (Jobsite: JobsiteModel, data: IJobsiteCreate) => {
@@ -7,6 +7,9 @@ const document = (Jobsite: JobsiteModel, data: IJobsiteCreate) => {
       const jobsite = new Jobsite({
         ...data,
       });
+
+      const system = await System.getSystem();
+      jobsite.truckingRates = system.materialShipmentVehicleTypeDefaults;
 
       resolve(jobsite);
     } catch (e) {

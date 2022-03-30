@@ -48,7 +48,7 @@ const MaterialShipments = ({ dailyReport }: IMaterialShipments) => {
             <MaterialShipmentCard
               key={materialShipment._id}
               materialShipment={materialShipment}
-              dailyReportDate={dailyReport.date}
+              dailyReport={dailyReport}
             />
           ))}
         </Flex>

@@ -16,6 +16,7 @@ import createApp from "./app";
 import updateDocuments from "@utils/updateDocuments";
 import saveAll from "@testing/saveAll";
 import elasticsearch from "./elasticsearch";
+import { Company, System } from "@models";
 
 const main = async () => {
   try {
@@ -30,11 +31,14 @@ const main = async () => {
 
       if (notProduction) {
         // await seedDatabase();
-        await saveAll();
+        // await saveAll();
       } else {
         // await saveAll();
       }
     }
+
+    await System.validateSystem();
+    await Company.validateCompanies();
 
     await updateDocuments();
 

@@ -7,6 +7,7 @@ interface IMaterialShipmentCreateBase {
     source: string;
     vehicleType: string;
     vehicleCode: string;
+    truckingRateId: string;
   };
   dailyReport: DailyReportDocument;
 }

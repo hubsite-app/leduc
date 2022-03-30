@@ -7,8 +7,9 @@ import createApp from "../../app";
 import _ids from "@testing/_ids";
 import jestLogin from "@testing/jestLogin";
 import { JobsiteMaterialCreateData } from "@graphql/resolvers/jobsiteMaterial/mutations";
-import { Invoice, Jobsite, JobsiteMaterial } from "@models";
+import { Invoice, Jobsite, JobsiteMaterial, System } from "@models";
 import { InvoiceData } from "@graphql/resolvers/invoice/mutations";
+import { JobsiteCreateData } from "@graphql/resolvers/jobsite/mutations";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -91,6 +92,65 @@ describe("Jobsite Resolver", () => {
   });
 
   describe("MUTATIONS", () => {
+    describe("jobsiteCreate", () => {
+      const jobsiteCreate = `
+        mutation JobsiteCreate($data: JobsiteCreateData!) {
+          jobsiteCreate(data: $data) {
+            _id
+            name
+            truckingRates {
+              title
+              rate
+            }
+          }
+        }
+      `;
+
+      describe("success", () => {
+        test("should successfully create a jobsite", async () => {
+          const token = await jestLogin(app, documents.users.admin_user.email);
+
+          const data: JobsiteCreateData = {
+            jobcode: "1",
+            name: "test",
+            description: "description",
+          };
+
+          const res = await request(app)
+            .post("/graphql")
+            .send({
+              query: jobsiteCreate,
+              variables: {
+                data,
+              },
+            })
+            .set("Authorization", token);
+
+          expect(res.status).toBe(200);
+
+          expect(res.body.data.jobsiteCreate._id).toBeDefined();
+
+          const jobsite = (await Jobsite.getById(
+            res.body.data.jobsiteCreate._id,
+            { throwError: true }
+          ))!;
+
+          const system = await System.getSystem();
+
+          expect(jobsite.truckingRates.length).toBe(
+            system.materialShipmentVehicleTypeDefaults.length
+          );
+
+          expect(jobsite.truckingRates[0].title).toBe(
+            system.materialShipmentVehicleTypeDefaults[0].title
+          );
+          expect(jobsite.truckingRates[0].rate).toBe(
+            system.materialShipmentVehicleTypeDefaults[0].rate
+          );
+        });
+      });
+    });
+
     describe("jobsiteAddMaterial", () => {
       const jobsiteAddMaterial = `
         mutation JobsiteAddMaterial($jobsiteId: String!, $data: JobsiteMaterialCreateData!) {

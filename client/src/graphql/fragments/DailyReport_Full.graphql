@@ -9,6 +9,9 @@ fragment DailyReportFullSnippet on DailyReportClass {
     materials {
       ...JobsiteMaterialCardSnippet
     }
+    truckingRates {
+      ...DefaultRateSnippet
+    }
   }
   crew {
     ...CrewFullSnippet

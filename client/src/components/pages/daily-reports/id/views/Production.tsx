@@ -12,9 +12,17 @@ interface IProduction {
 }
 
 const Production = ({ dailyReport }: IProduction) => {
+  /**
+   * ----- Hook Initialization -----
+   */
+
   const [addForm, setAddForm] = React.useState(false);
 
   const [collapsed, setCollapsed] = React.useState(true);
+
+  /**
+   * ----- Rendering -----
+   */
 
   return (
     <Card h="fit-content">

@@ -12,6 +12,7 @@ export * from "./MaterialShipment";
 export * from "./Production";
 export * from "./ReportNote";
 export * from "./Signup";
+export * from "./System";
 export * from "./User";
 export * from "./Vehicle";
 export * from "./VehicleWork";
@@ -224,6 +225,20 @@ export interface SignupModel extends ReturnModelType<typeof SignupClass> {}
 
 export const Signup = getModelForClass(SignupClass, {
   schemaOptions: { collection: "signups" },
+});
+
+/**
+ * ----- System -----
+ */
+
+import { SystemClass } from "./System/class";
+
+export interface SystemDocument extends DocumentType<SystemClass> {}
+
+export interface SystemModel extends ReturnModelType<typeof SystemClass> {}
+
+export const System = getModelForClass(SystemClass, {
+  schemaOptions: { collection: "systems" },
 });
 
 /**

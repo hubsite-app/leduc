@@ -1,3 +1,4 @@
+import { DefaultRateData } from "@graphql/types/mutation";
 import { SearchOptions } from "@graphql/types/query";
 import {
   CrewClass,
@@ -93,5 +94,14 @@ export default class JobsiteResolver {
     @Arg("data") data: InvoiceData
   ) {
     return mutations.addInvoice(jobsiteId, data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => JobsiteClass)
+  async jobsiteSetTruckingRates(
+    @Arg("id") id: string,
+    @Arg("data", () => [DefaultRateData]) data: DefaultRateData[]
+  ) {
+    return mutations.setTruckingRates(id, data);
   }
 }

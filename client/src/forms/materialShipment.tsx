@@ -8,11 +8,19 @@ import {
   UseFormProps,
 } from "react-hook-form";
 import * as yup from "yup";
-import { MaterialShipmentShipmentDataV1 } from "../generated/graphql";
+import {
+  JobsiteMaterialCardSnippetFragment,
+  MaterialShipmentShipmentData,
+  MaterialShipmentShipmentDataV1,
+} from "../generated/graphql";
 
 import TextField, { ITextField } from "../components/Common/forms/TextField";
 import { IFormProps } from "../typescript/forms";
 import MaterialSearch from "../components/Search/MaterialSearch";
+import Select, { ISelect } from "../components/Common/forms/Select";
+import Unit, { IUnit } from "../components/Common/forms/Unit";
+import Number, { INumber } from "../components/Common/forms/Number";
+import CompanySearch from "../components/Search/CompanySearch";
 
 const MaterialShipmentUpdateV1 = yup
   .object()
@@ -71,12 +79,15 @@ export const useMaterialShipmentUpdateFormV1 = (options?: UseFormProps) => {
             control={control}
             name="supplier"
             render={({ field, fieldState }) => (
-              <TextField
+              <CompanySearch
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}
                 label="Supplier"
                 isDisabled={isLoading}
+                companySelected={(company) => {
+                  setValue("supplier", company.name);
+                }}
               />
             )}
           />
@@ -125,17 +136,16 @@ export const useMaterialShipmentUpdateFormV1 = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
-    Quantity: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+    Quantity: ({ isLoading, ...props }: IFormProps<INumber>) =>
       React.useMemo(
         () => (
           <Controller
             control={control}
             name="quantity"
             render={({ field, fieldState }) => (
-              <TextField
+              <Number
                 {...props}
                 {...field}
-                type="number"
                 errorMessage={fieldState.error?.message}
                 label="Quantity"
                 isDisabled={isLoading}
@@ -145,18 +155,144 @@ export const useMaterialShipmentUpdateFormV1 = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
-    Unit: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+    Unit: ({ isLoading, ...props }: IFormProps<IUnit>) =>
       React.useMemo(
         () => (
           <Controller
             control={control}
             name="unit"
             render={({ field, fieldState }) => (
-              <TextField
+              <Unit
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}
                 label="Unit"
+                isDisabled={isLoading}
+              />
+            )}
+          />
+        ),
+        [isLoading, props]
+      ),
+  };
+
+  return {
+    FormComponents,
+    ...form,
+  };
+};
+
+const MaterialShipmentUpdate = yup
+  .object()
+  .shape({
+    jobsiteMaterialId: yup.string().required(),
+    quantity: yup.number().required(),
+    startTime: yup.string().optional(),
+    endTime: yup.string().optional(),
+  })
+  .required();
+
+export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
+  const form = useForm({
+    resolver: yupResolver(MaterialShipmentUpdate),
+    ...options,
+  });
+
+  const { control, handleSubmit } = form;
+
+  const FormComponents = {
+    Form: ({
+      children,
+      submitHandler,
+    }: {
+      children: React.ReactNode;
+      submitHandler: SubmitHandler<MaterialShipmentShipmentData>;
+    }) => <form onSubmit={handleSubmit(submitHandler)}>{children}</form>,
+    JobsiteMaterial: ({
+      isLoading,
+      jobsiteMaterials,
+      ...props
+    }: IFormProps<Omit<ISelect, "options">> & {
+      jobsiteMaterials: JobsiteMaterialCardSnippetFragment[];
+    }) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="jobsiteMaterialId"
+            render={({ field, fieldState }) => (
+              <Select
+                {...props}
+                {...field}
+                options={jobsiteMaterials.map((material) => {
+                  return {
+                    title: `${material.material.name} - ${material.supplier.name}`,
+                    value: material._id,
+                  };
+                })}
+                errorMessage={fieldState.error?.message}
+                label="Material"
+                isDisabled={isLoading}
+              />
+            )}
+          />
+        ),
+        [isLoading, jobsiteMaterials, props]
+      ),
+    StartTime: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="startTime"
+            render={({ field, fieldState }) => {
+              return (
+                <TextField
+                  {...props}
+                  {...field}
+                  type="time"
+                  errorMessage={fieldState.error?.message}
+                  label="Start Time (Optional)"
+                  isDisabled={isLoading}
+                />
+              );
+            }}
+          />
+        ),
+        [isLoading, props]
+      ),
+    EndTime: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="endTime"
+            render={({ field, fieldState }) => (
+              <TextField
+                {...props}
+                {...field}
+                type="time"
+                errorMessage={fieldState.error?.message}
+                label="End Time (Optional)"
+                isDisabled={isLoading}
+              />
+            )}
+          />
+        ),
+        [isLoading, props]
+      ),
+    Quantity: ({ isLoading, ...props }: IFormProps<INumber>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="quantity"
+            render={({ field, fieldState }) => (
+              <Number
+                {...props}
+                {...field}
+                errorMessage={fieldState.error?.message}
+                label="Quantity"
                 isDisabled={isLoading}
               />
             )}

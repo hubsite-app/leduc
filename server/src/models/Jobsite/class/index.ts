@@ -10,7 +10,11 @@ import {
 } from "@models";
 import { JobsiteSchema } from "..";
 import get from "./get";
-import { GetByIDOptions, ISearchOptions } from "@typescript/models";
+import {
+  GetByIDOptions,
+  IDefaultRateData,
+  ISearchOptions,
+} from "@typescript/models";
 import { IJobsiteCreate } from "@typescript/jobsite";
 import create from "./create";
 import update from "./update";
@@ -78,5 +82,12 @@ export class JobsiteClass extends JobsiteSchema {
 
   public async addInvoice(this: JobsiteDocument, invoice: InvoiceDocument) {
     return update.addInvoice(this, invoice);
+  }
+
+  public async setTruckingRates(
+    this: JobsiteDocument,
+    truckingRates: IDefaultRateData[]
+  ) {
+    return update.truckingRates(this, truckingRates);
   }
 }

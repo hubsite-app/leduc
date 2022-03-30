@@ -10,6 +10,7 @@ import { ObjectType } from "type-graphql";
 import { CompanySchema } from "../schema";
 import create from "./create";
 import get from "./get";
+import validate from "./validate";
 
 @ObjectType()
 export class CompanyClass extends CompanySchema {
@@ -50,5 +51,13 @@ export class CompanyClass extends CompanySchema {
 
   public static async createDocument(this: CompanyModel, data: ICompanyCreate) {
     return create.document(this, data);
+  }
+
+  /**
+   * ----- Validate -----
+   */
+
+  public static async validateCompanies(this: CompanyModel) {
+    return validate.companies(this);
   }
 }

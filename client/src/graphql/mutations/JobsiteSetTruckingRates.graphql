@@ -1,0 +1,5 @@
+mutation JobsiteSetTruckingRates($id: String!, $data: [DefaultRateData!]!) {
+  jobsiteSetTruckingRates(id: $id, data: $data) {
+    ...JobsiteFullSnippet
+  }
+}

@@ -1,3 +1,4 @@
+import { DefaultRateData } from "@graphql/types/mutation";
 import {
   Company,
   Invoice,
@@ -92,8 +93,25 @@ const addInvoice = (jobsiteId: string, data: InvoiceData) => {
   });
 };
 
+const setTruckingRates = (jobsiteId: string, data: DefaultRateData[]) => {
+  return new Promise<JobsiteDocument>(async (resolve, reject) => {
+    try {
+      const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;
+
+      await jobsite.setTruckingRates(data);
+
+      await jobsite.save();
+
+      resolve(jobsite);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   create,
   addMaterial,
   addInvoice,
+  setTruckingRates,
 };

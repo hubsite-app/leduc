@@ -14,7 +14,7 @@ export interface ISelect extends SelectProps {
   errorMessage?: string;
   helperText?: string | JSX.Element;
   label?: string;
-  name: string;
+  name?: string;
   isRequired?: boolean;
   isDisabled?: boolean;
   isReadOnly?: boolean;

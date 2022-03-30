@@ -1,0 +1,9 @@
+fragment SystemSnippet on SystemClass {
+  unitDefaults
+  companyVehicleTypeDefaults {
+    ...DefaultRateSnippet
+  }
+  materialShipmentVehicleTypeDefaults {
+    ...DefaultRateSnippet
+  }
+}

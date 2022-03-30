@@ -19,8 +19,8 @@ import dayjs from "dayjs";
 
 export interface ITextField extends InputProps {
   label?: string;
-  errorMessage?: string;
-  helperText?: string;
+  errorMessage?: React.ReactNode;
+  helperText?: React.ReactNode;
   inputLeftAddon?: React.ReactNode;
   inputRightAddon?: React.ReactNode;
   inputLeftElement?: React.ReactNode;

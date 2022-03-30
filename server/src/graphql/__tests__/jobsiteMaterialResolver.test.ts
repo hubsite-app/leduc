@@ -6,12 +6,8 @@ import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 import createApp from "../../app";
 import _ids from "@testing/_ids";
 import jestLogin from "@testing/jestLogin";
-import {
-  JobsiteMaterialCreateData,
-  JobsiteMaterialUpdateData,
-} from "@graphql/resolvers/jobsiteMaterial/mutations";
-import { Invoice, Jobsite, JobsiteMaterial } from "@models";
-import { InvoiceData } from "@graphql/resolvers/invoice/mutations";
+import { JobsiteMaterialUpdateData } from "@graphql/resolvers/jobsiteMaterial/mutations";
+import { JobsiteMaterial } from "@models";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 

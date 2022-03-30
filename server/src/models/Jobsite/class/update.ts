@@ -3,6 +3,7 @@ import {
   JobsiteDocument,
   JobsiteMaterialDocument,
 } from "@models";
+import { IDefaultRateData } from "@typescript/models";
 
 const addMaterial = (
   jobsite: JobsiteDocument,
@@ -43,7 +44,23 @@ const addInvoice = (jobsite: JobsiteDocument, invoice: InvoiceDocument) => {
   });
 };
 
+const truckingRates = (
+  jobsite: JobsiteDocument,
+  truckingRates: IDefaultRateData[]
+) => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      jobsite.truckingRates = truckingRates;
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   addMaterial,
   addInvoice,
+  truckingRates,
 };

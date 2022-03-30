@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  IconButton,
-  SimpleGrid,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, IconButton, SimpleGrid } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { RateSnippetFragment } from "../../../generated/graphql";
@@ -70,6 +63,15 @@ const Rates = ({ rates = [], onChange, isLoading }: IRates) => {
     },
     [ratesCopy, onChange]
   );
+
+  /**
+   * ----- Use-effects and other logic -----
+   */
+
+  React.useEffect(() => {
+    if (onChange) onChange(ratesCopy);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /**
    * ----- Rendering -----

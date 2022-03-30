@@ -13,6 +13,7 @@ export default {
   Production: 1,
   ReportNote: 1,
   Signup: 1,
+  System: 1,
   User: 1,
   Vehicle: 1,
   VehicleWork: 1,

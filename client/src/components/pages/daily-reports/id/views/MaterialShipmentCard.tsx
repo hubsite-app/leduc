@@ -3,20 +3,22 @@ import React from "react";
 import { Box, Flex, IconButton, Text } from "@chakra-ui/react";
 import {
   DailyReportFullDocument,
+  DailyReportFullSnippetFragment,
   MaterialShipmentCardSnippetFragment,
   useMaterialShipmentDeleteMutation,
 } from "../../../../../generated/graphql";
 import { FiEdit, FiTrash, FiX } from "react-icons/fi";
 import MaterialShipmentUpdateV1 from "../../../../Forms/MaterialShipment/MaterialShipmentUpdateV1";
+import MaterialShipmentUpdate from "../../../../Forms/MaterialShipment/MaterialShipmentUpdate";
 
 interface IMaterialShipmentCard {
   materialShipment: MaterialShipmentCardSnippetFragment;
-  dailyReportDate: Date;
+  dailyReport: DailyReportFullSnippetFragment;
 }
 
 const MaterialShipmentCard = ({
   materialShipment,
-  dailyReportDate,
+  dailyReport,
 }: IMaterialShipmentCard) => {
   /**
    * ----- Hook Initialization -----
@@ -91,11 +93,15 @@ const MaterialShipmentCard = ({
           {materialShipment.schemaVersion <= 1 ? (
             <MaterialShipmentUpdateV1
               materialShipment={materialShipment}
-              dailyReportDate={dailyReportDate}
+              dailyReportDate={dailyReport.date}
               onSuccess={() => setEdit(false)}
             />
           ) : (
-            "Update V > 1"
+            <MaterialShipmentUpdate
+              materialShipment={materialShipment}
+              dailyReport={dailyReport}
+              onSuccess={() => setEdit(false)}
+            />
           )}
         </Box>
       )}

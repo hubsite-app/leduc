@@ -1,5 +1,6 @@
 import { prop } from "@typegoose/typegoose";
-import { Field, ObjectType } from "type-graphql";
+import { Types } from "mongoose";
+import { Field, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
 export class VehicleObjectClass {
@@ -10,6 +11,10 @@ export class VehicleObjectClass {
   @Field({ nullable: true })
   @prop({ trim: true, default: "Truck" })
   public vehicleType?: string;
+
+  @Field(() => ID, { nullable: true })
+  @prop({ type: Types.ObjectId, required: false })
+  public truckingRateId?: Types.ObjectId;
 
   @Field({ nullable: true })
   @prop({ trim: true })

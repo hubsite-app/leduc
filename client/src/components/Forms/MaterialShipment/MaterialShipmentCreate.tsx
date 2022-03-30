@@ -2,6 +2,7 @@ import { Box, Flex, IconButton, SimpleGrid, useToast } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
 import { MaterialShipmentVehicleTypes } from "../../../constants/select";
+import { useSystem } from "../../../contexts/System";
 import {
   DailyReportFullDocument,
   DailyReportFullSnippetFragment,
@@ -10,11 +11,13 @@ import {
 } from "../../../generated/graphql";
 import convertHourToDate from "../../../utils/convertHourToDate";
 import isEmpty from "../../../utils/isEmpty";
+import ContactOffice from "../../Common/ContactOffice";
 import ErrorMessage from "../../Common/ErrorMessage";
 import Number from "../../Common/forms/Number";
-import Select from "../../Common/forms/Select";
+import Select, { ISelect } from "../../Common/forms/Select";
 import SubmitButton from "../../Common/forms/SubmitButton";
 import TextField from "../../Common/forms/TextField";
+import CompanySearch from "../../Search/CompanySearch";
 
 type ShipmentErrors = {
   jobsiteMaterialId?: string;
@@ -55,12 +58,17 @@ const MaterialShipmentCreate = ({
       source: "",
       vehicleType: MaterialShipmentVehicleTypes[0],
       vehicleCode: "",
+      truckingRateId: "",
     };
   }, []);
 
   /**
    * ----- Hook Initialization -----
    */
+
+  const {
+    state: { system },
+  } = useSystem();
 
   const toast = useToast();
 
@@ -80,6 +88,19 @@ const MaterialShipmentCreate = ({
   const [create, { loading }] = useMaterialShipmentCreateMutation({
     refetchQueries: [DailyReportFullDocument],
   });
+
+  /**
+   * ----- Variables -----
+   */
+
+  const vehicleTypeOptions: ISelect["options"] = React.useMemo(() => {
+    return dailyReport.jobsite.truckingRates.map((rate) => {
+      return {
+        title: rate.title,
+        value: rate._id!,
+      };
+    });
+  }, [dailyReport.jobsite.truckingRates]);
 
   /**
    * ----- Functions -----
@@ -167,12 +188,13 @@ const MaterialShipmentCreate = ({
   );
 
   const updateVehicleType = React.useCallback(
-    (value: string, dataIndex: number) => {
+    (type: string, truckingRateId: string, dataIndex: number) => {
       const formDataCopy: MaterialShipmentCreateData[] = JSON.parse(
         JSON.stringify(formData)
       );
 
-      formDataCopy[dataIndex].vehicleObject.vehicleType = value;
+      formDataCopy[dataIndex].vehicleObject.vehicleType = type;
+      formDataCopy[dataIndex].vehicleObject.truckingRateId = truckingRateId;
 
       setFormData(formDataCopy);
     },
@@ -277,6 +299,12 @@ const MaterialShipmentCreate = ({
 
       if (isEmpty(formData[i].vehicleObject.vehicleType)) {
         vehicleObject.vehicleType = "please provide a vehicle type";
+        valid = false;
+      }
+
+      if (isEmpty(formData[i].vehicleObject.truckingRateId)) {
+        vehicleObject.vehicleType =
+          "something went wrong, please contact support";
         valid = false;
       }
 
@@ -457,22 +485,37 @@ const MaterialShipmentCreate = ({
 
           {/* VEHICLE OBJECT */}
           <SimpleGrid spacing={2} columns={[1, 1, 3]} p={4}>
-            <TextField
+            <CompanySearch
               label="Vehicle Source"
               isDisabled={loading}
-              value={data.vehicleObject.source}
               errorMessage={formErrors[dataIndex]?.vehicleObject?.source}
-              onChange={(e) => updateVehicleSource(e.target.value, dataIndex)}
+              companySelected={(company) =>
+                updateVehicleSource(company.name, dataIndex)
+              }
+              helperText={
+                <>
+                  if not available contact <ContactOffice />
+                </>
+              }
             />
             <Select
               name="vehicleType"
-              onChange={(e) => updateVehicleType(e.target.value, dataIndex)}
-              options={MaterialShipmentVehicleTypes.map((type) => {
-                return { value: type, title: type };
-              })}
+              onChange={(e) => {
+                updateVehicleType(
+                  e.target.options[e.target.selectedIndex].text,
+                  e.target.value,
+                  dataIndex
+                );
+              }}
+              options={vehicleTypeOptions}
               errorMessage={formErrors[dataIndex]?.vehicleObject?.vehicleType}
               label="Vehicle Type"
               isDisabled={loading}
+              helperText={
+                <>
+                  if not available contact <ContactOffice />
+                </>
+              }
             />
             <TextField
               label="Vehicle Code"
@@ -480,6 +523,7 @@ const MaterialShipmentCreate = ({
               value={data.vehicleObject.vehicleCode}
               errorMessage={formErrors[dataIndex]?.vehicleObject?.vehicleCode}
               onChange={(e) => updateVehicleCode(e.target.value, dataIndex)}
+              helperText="&nbsp;"
             />
           </SimpleGrid>
         </Box>
