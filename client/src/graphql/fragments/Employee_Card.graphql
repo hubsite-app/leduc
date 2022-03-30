@@ -2,4 +2,7 @@ fragment EmployeeCardSnippet on EmployeeClass {
   _id
   name
   jobTitle
+  rates {
+    ...RateSnippet
+  }
 }

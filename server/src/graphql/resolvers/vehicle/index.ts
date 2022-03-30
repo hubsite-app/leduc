@@ -1,5 +1,6 @@
 import {
   Arg,
+  Authorized,
   FieldResolver,
   Mutation,
   Query,
@@ -10,6 +11,7 @@ import {
 import { CrewClass, Vehicle, VehicleClass, VehicleDocument } from "@models";
 import mutations, { VehicleCreateData } from "./mutations";
 import { SearchOptions } from "@graphql/types/query";
+import { RatesData } from "@graphql/types/mutation";
 
 @Resolver(() => VehicleClass)
 export default class VehicleResolver {
@@ -46,11 +48,21 @@ export default class VehicleResolver {
    * ----- Mutations -----
    */
 
+  @Authorized()
   @Mutation(() => VehicleClass)
   async vehicleCreate(
     @Arg("data") data: VehicleCreateData,
     @Arg("crewId", { nullable: true }) crewId?: string
   ) {
     return mutations.create(data, crewId);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => VehicleClass)
+  async vehicleUpdateRates(
+    @Arg("id") id: string,
+    @Arg("data", () => [RatesData]) data: RatesData[]
+  ) {
+    return mutations.updateRates(id, data);
   }
 }

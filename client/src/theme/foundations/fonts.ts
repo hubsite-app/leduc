@@ -1,2 +1,5 @@
-const fonts = { body: "Roboto", heading: "Roboto" };
+const fonts = {
+  body: "roboto, sans-serif",
+  heading: "roboto, sans-serif",
+};
 export default fonts;

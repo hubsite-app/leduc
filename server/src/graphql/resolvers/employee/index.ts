@@ -1,3 +1,4 @@
+import { RatesData } from "@graphql/types/mutation";
 import { SearchOptions } from "@graphql/types/query";
 import {
   CrewClass,
@@ -9,6 +10,7 @@ import {
 } from "@models";
 import {
   Arg,
+  Authorized,
   FieldResolver,
   Mutation,
   Query,
@@ -62,11 +64,21 @@ export default class EmployeeResolver {
    * ----- Mutations -----
    */
 
+  @Authorized()
   @Mutation(() => EmployeeClass)
   async employeeCreate(
     @Arg("data") data: EmployeeCreateData,
     @Arg("crewId", { nullable: true }) crewId?: string
   ) {
     return mutations.create(data, crewId);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => EmployeeClass)
+  async employeeUpdateRates(
+    @Arg("id") id: string,
+    @Arg("data", () => [RatesData]) data: RatesData[]
+  ) {
+    return mutations.updateRates(id, data);
   }
 }

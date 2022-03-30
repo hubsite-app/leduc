@@ -3,4 +3,7 @@ fragment VehicleCardSnippet on VehicleClass {
   name
   vehicleCode
   vehicleType
+  rates {
+    ...RateSnippet
+  }
 }

@@ -1,0 +1,4 @@
+fragment RateSnippet on Rate {
+  date
+  rate
+}

@@ -1,0 +1,6 @@
+fragment VehicleFullSnippet on VehicleClass {
+  ...VehicleCardSnippet
+  crews {
+    ...CrewCardSnippet
+  }
+}

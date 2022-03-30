@@ -101,8 +101,6 @@ const completedQuantity = (jobsiteMaterial: JobsiteMaterialDocument) => {
         jobsiteMaterial: jobsiteMaterial._id,
       });
 
-      console.log(materialShipments);
-
       let quantity = 0;
       for (let i = 0; i < materialShipments.length; i++) {
         quantity += materialShipments[i].quantity;

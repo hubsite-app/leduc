@@ -1,3 +1,4 @@
+import { RatesData } from "@graphql/types/mutation";
 import { Crew, CrewDocument, Vehicle, VehicleDocument } from "@models";
 import { Id } from "@typescript/models";
 import { Field, InputType } from "type-graphql";
@@ -43,6 +44,23 @@ const create = (data: VehicleCreateData, crewId?: Id) => {
   });
 };
 
+const updateRates = (id: string, data: RatesData[]) => {
+  return new Promise<VehicleDocument>(async (resolve, reject) => {
+    try {
+      const vehicle = (await Vehicle.getById(id, { throwError: true }))!;
+
+      await vehicle.updateRates(data);
+
+      await vehicle.save();
+
+      resolve(vehicle);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   create,
+  updateRates,
 };

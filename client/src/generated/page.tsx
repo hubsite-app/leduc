@@ -46,6 +46,10 @@ import { getApolloClient , ApolloClientContext} from '../withApollo';
 
 
 
+
+
+
+
 export async function getServerPageCompanies
     (options: Omit<Apollo.QueryOptions<Types.CompaniesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -850,6 +854,41 @@ export const ssrVehicleSearch = {
       getServerPage: getServerPageVehicleSearch,
       withPage: withPageVehicleSearch,
       usePage: useVehicleSearch,
+    }
+export async function getServerPageVehicleFull
+    (options: Omit<Apollo.QueryOptions<Types.VehicleFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.VehicleFullQuery>({ ...options, query: Operations.VehicleFullDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useVehicleFull = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.VehicleFullQuery, Types.VehicleFullQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.VehicleFullDocument, options);
+};
+export type PageVehicleFullComp = React.FC<{data?: Types.VehicleFullQuery, error?: Apollo.ApolloError}>;
+export const withPageVehicleFull = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.VehicleFullQuery, Types.VehicleFullQueryVariables>) => (WrappedComponent:PageVehicleFullComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.VehicleFullDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrVehicleFull = {
+      getServerPage: getServerPageVehicleFull,
+      withPage: withPageVehicleFull,
+      usePage: useVehicleFull,
     }
 export async function getServerPageVehicleSsr
     (options: Omit<Apollo.QueryOptions<Types.VehicleSsrQueryVariables>, 'query'>, ctx: ApolloClientContext ){

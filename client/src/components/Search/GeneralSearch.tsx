@@ -114,9 +114,9 @@ const GeneralSearch = ({
           value: item.crew._id,
           label: item.crew.name,
           extraData: {
-            type: "crew"
-          }
-        }
+            type: "crew",
+          },
+        };
       } else {
         return {
           value: "error",
@@ -142,13 +142,13 @@ const GeneralSearch = ({
   return (
     <TextDropdown
       onChange={(e) => handleChange(e.target.value)}
-      value={searchString}
       options={options}
       onOptionSelection={(value, extraData) => itemSelected(value, extraData!)}
       handleSubmit={() => handleSubmit && handleSubmit(searchString)}
       selectOptionsWithEnter
       isLoading={loading}
       {...props}
+      value={searchString}
     />
   );
 };

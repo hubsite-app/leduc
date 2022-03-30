@@ -5,6 +5,7 @@ import AdminOnly from "../../Common/AdminOnly";
 import Card from "../../Common/Card";
 import DailyReportListCard from "../../Common/DailyReport/DailyReportListCard";
 import Loading from "../../Common/Loading";
+import Invoices from "./views/Invoices";
 import JobsiteMaterialsCosting from "./views/JobsiteMaterials";
 
 interface IJobsiteClientContent {
@@ -48,6 +49,7 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
           </Card>
           <AdminOnly>
             <JobsiteMaterialsCosting jobsite={jobsite} />
+            <Invoices jobsite={jobsite} />
           </AdminOnly>
           <DailyReportListCard dailyReports={jobsite.dailyReports} />
         </Box>

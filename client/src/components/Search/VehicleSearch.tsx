@@ -88,7 +88,6 @@ const VehicleSearch = ({
   return (
     <TextDropdown
       onChange={(e) => handleChange(e.target.value)}
-      value={searchString}
       options={options}
       placeholder="Search vehicles"
       onOptionSelection={(value) => {
@@ -104,6 +103,7 @@ const VehicleSearch = ({
       autoComplete="off"
       selectOptionsWithEnter
       {...props}
+      value={searchString}
     />
   );
 };

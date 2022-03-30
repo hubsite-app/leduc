@@ -88,7 +88,6 @@ const CrewSearch = ({
   return (
     <TextDropdown
       onChange={(e) => handleChange(e.target.value)}
-      value={searchString}
       options={options}
       placeholder="Search Crews"
       onOptionSelection={(value) => {
@@ -105,6 +104,7 @@ const CrewSearch = ({
       selectOptionsWithEnter
       isLoading={loading}
       {...props}
+      value={searchString}
     />
   );
 };

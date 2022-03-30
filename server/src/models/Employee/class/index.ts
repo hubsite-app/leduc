@@ -4,9 +4,10 @@ import { ObjectType } from "type-graphql";
 import { EmployeeDocument, EmployeeModel } from "@models";
 import { EmployeeSchema } from "../schema";
 import get from "./get";
-import { GetByIDOptions, ISearchOptions } from "@typescript/models";
+import { GetByIDOptions, IRatesData, ISearchOptions } from "@typescript/models";
 import { IEmployeeCreate } from "@typescript/employee";
 import create from "./create";
+import update from "./update";
 
 @ObjectType()
 export class EmployeeClass extends EmployeeSchema {
@@ -59,5 +60,13 @@ export class EmployeeClass extends EmployeeSchema {
     data: IEmployeeCreate
   ) {
     return create.document(this, data);
+  }
+
+  /**
+   * ----- Update -----
+   */
+
+  public async updateRates(this: EmployeeDocument, data: IRatesData[]) {
+    return update.rates(this, data);
   }
 }

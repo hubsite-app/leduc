@@ -3,10 +3,11 @@ import { ObjectType } from "type-graphql";
 
 import { VehicleDocument, VehicleModel } from "@models";
 import { VehicleSchema } from "..";
-import { GetByIDOptions, ISearchOptions } from "@typescript/models";
+import { GetByIDOptions, IRatesData, ISearchOptions } from "@typescript/models";
 import get from "./get";
 import { IVehicleCreate } from "@typescript/vehicle";
 import create from "./create";
+import update from "./update";
 
 @ObjectType()
 export class VehicleClass extends VehicleSchema {
@@ -44,5 +45,13 @@ export class VehicleClass extends VehicleSchema {
 
   public static async createDocument(this: VehicleModel, data: IVehicleCreate) {
     return create.document(this, data);
+  }
+
+  /**
+   * ----- Update -----
+   */
+
+  public async updateRates(this: VehicleDocument, data: IRatesData[]) {
+    return update.rates(this, data);
   }
 }

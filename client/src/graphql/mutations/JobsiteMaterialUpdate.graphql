@@ -1,0 +1,8 @@
+mutation JobsiteMaterialUpdate(
+  $id: String!
+  $data: JobsiteMaterialUpdateData!
+) {
+  jobsiteMaterialUpdate(id: $id, data: $data) {
+    ...JobsiteMaterialCardSnippet
+  }
+}

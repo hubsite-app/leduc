@@ -38,13 +38,9 @@ const NavbarAccount = () => {
           </MenuButton>
           <MenuList>
             <MenuGroup>
-              <MenuItem onClick={() => router.push("/materials")}>
-                Materials
+              <MenuItem onClick={() => router.push(`/settings`)}>
+                Settings
               </MenuItem>
-              <MenuItem onClick={() => router.push("/companies")}>
-                Companies
-              </MenuItem>
-              <MenuItem onClick={() => router.push(`/me`)}>Profile</MenuItem>
               <MenuDivider />
               <MenuItem onClick={() => logout()}>Logout</MenuItem>
             </MenuGroup>

@@ -2,6 +2,7 @@ import SchemaVersions from "@constants/SchemaVersions";
 import { ES_updateEmployee } from "@elasticsearch/helpers/employee";
 import { CrewClass, EmployeeDocument, UserClass } from "@models";
 import { post, prop, Ref } from "@typegoose/typegoose";
+import { Rate } from "@typescript/models";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
@@ -20,6 +21,10 @@ export class EmployeeSchema {
   @Field({ nullable: true })
   @prop({ trim: true })
   public jobTitle?: string;
+
+  @Field(() => [Rate], { nullable: false })
+  @prop({ type: () => [Rate], default: [], required: true })
+  public rates!: Rate[];
 
   @Field()
   @prop({ required: true, default: SchemaVersions.Employee })

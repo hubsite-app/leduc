@@ -9,16 +9,20 @@ interface IJobsiteMaterialProgressBar {
 const JobsiteMaterialProgressBar = ({
   jobsiteMaterial,
 }: IJobsiteMaterialProgressBar) => {
+  let color = "#4285F4";
+  if (jobsiteMaterial.completedQuantity > jobsiteMaterial.quantity)
+    color = "red";
+
   return (
     <Flex flexDir="row" justifyContent="space-around">
       <Box w="90%">
         <ProgressBar
-          bgColor="#4285F4"
+          bgColor={color}
           completed={`${jobsiteMaterial.completedQuantity}`}
           maxCompleted={jobsiteMaterial.quantity}
         />
       </Box>
-      <Text my="auto">
+      <Text my="auto" fontWeight="bold">
         {jobsiteMaterial.quantity} {jobsiteMaterial.unit}
       </Text>
     </Flex>

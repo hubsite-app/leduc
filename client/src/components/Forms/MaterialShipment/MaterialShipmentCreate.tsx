@@ -11,6 +11,7 @@ import {
 import convertHourToDate from "../../../utils/convertHourToDate";
 import isEmpty from "../../../utils/isEmpty";
 import ErrorMessage from "../../Common/ErrorMessage";
+import Number from "../../Common/forms/Number";
 import Select from "../../Common/forms/Select";
 import SubmitButton from "../../Common/forms/SubmitButton";
 import TextField from "../../Common/forms/TextField";
@@ -42,7 +43,7 @@ const MaterialShipmentCreate = ({
 }: IMaterialShipmentCreate) => {
   const initialShipment = React.useMemo(() => {
     return {
-      jobsiteMaterialId: dailyReport.jobsite.materials[0]._id || "",
+      jobsiteMaterialId: dailyReport.jobsite.materials[0]?._id || "",
       quantity: 0,
       startTime: undefined,
       endTime: undefined,
@@ -383,6 +384,7 @@ const MaterialShipmentCreate = ({
                       };
                     }
                   )}
+                  placeholder="Contact office to add Materials"
                   label="Material"
                   isDisabled={loading}
                   value={shipment.jobsiteMaterialId}
@@ -398,20 +400,17 @@ const MaterialShipmentCreate = ({
                     )
                   }
                 />
-                <TextField
+                <Number
+                  step={10}
+                  stepper
                   label="Quantity"
                   isDisabled={loading}
                   value={shipment.quantity}
                   errorMessage={
                     formErrors[dataIndex]?.shipments[shipmentIndex]?.quantity
                   }
-                  type="number"
                   onChange={(e) =>
-                    updateQuantity(
-                      parseInt(e.target.value),
-                      dataIndex,
-                      shipmentIndex
-                    )
+                    updateQuantity(parseInt(e), dataIndex, shipmentIndex)
                   }
                 />
               </SimpleGrid>

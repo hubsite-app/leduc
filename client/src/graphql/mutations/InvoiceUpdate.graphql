@@ -1,0 +1,5 @@
+mutation InvoiceUpdate($id: String!, $data: InvoiceData!) {
+  invoiceUpdate(id: $id, data: $data) {
+    ...InvoiceCardSnippet
+  }
+}

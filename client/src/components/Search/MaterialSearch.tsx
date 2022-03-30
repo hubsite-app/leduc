@@ -92,7 +92,6 @@ const MaterialSearch = ({
         if (onChange) onChange(e);
         handleChange(e.target.value);
       }}
-      value={searchString}
       options={options}
       placeholder="Search Materials"
       onOptionSelection={(value) => {
@@ -109,6 +108,7 @@ const MaterialSearch = ({
       autoComplete="off"
       selectOptionsWithEnter
       {...props}
+      value={searchString}
     />
   );
 };

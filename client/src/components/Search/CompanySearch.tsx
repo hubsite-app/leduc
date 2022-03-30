@@ -92,7 +92,6 @@ const CompanySearch = ({
         if (onChange) onChange(e);
         handleChange(e.target.value);
       }}
-      value={searchString}
       options={options}
       placeholder="Search Companies"
       onOptionSelection={(value) => {
@@ -109,6 +108,7 @@ const CompanySearch = ({
       autoComplete="off"
       selectOptionsWithEnter
       {...props}
+      value={searchString}
     />
   );
 };

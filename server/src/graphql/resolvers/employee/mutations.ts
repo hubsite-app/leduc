@@ -1,3 +1,4 @@
+import { RatesData } from "@graphql/types/mutation";
 import { Crew, CrewDocument, Employee, EmployeeDocument } from "@models";
 import { Id } from "@typescript/models";
 import { Field, InputType } from "type-graphql";
@@ -34,6 +35,23 @@ const create = (data: EmployeeCreateData, crewId?: Id) => {
   });
 };
 
+const updateRates = (id: string, data: RatesData[]) => {
+  return new Promise<EmployeeDocument>(async (resolve, reject) => {
+    try {
+      const employee = (await Employee.getById(id, { throwError: true }))!;
+
+      await employee.updateRates(data);
+
+      await employee.save();
+
+      resolve(employee);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   create,
+  updateRates,
 };

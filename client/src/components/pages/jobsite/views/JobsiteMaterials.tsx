@@ -1,7 +1,6 @@
 import { Box, Flex, Heading, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
-import { useJobsiteMaterialCreateForm } from "../../../../forms/jobsiteMaterial";
 
 import { JobsiteFullSnippetFragment } from "../../../../generated/graphql";
 import Card from "../../../Common/Card";

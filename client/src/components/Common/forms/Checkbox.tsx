@@ -1,6 +1,8 @@
 import { Checkbox as Check, CheckboxProps } from "@chakra-ui/react";
 
-const Checkbox = ({ children, ...props }: CheckboxProps) => {
+export interface ICheckbox extends CheckboxProps {}
+
+const Checkbox = ({ children, ...props }: ICheckbox) => {
   return <Check {...props}>{children}</Check>;
 };
 

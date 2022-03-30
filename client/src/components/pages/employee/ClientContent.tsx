@@ -13,6 +13,7 @@ import TextLink from "../../Common/TextLink";
 import AdminOnly from "../../Common/AdminOnly";
 import Checkbox from "../../Common/forms/Checkbox";
 import CopyField from "../../Common/CopyField";
+import EmployeeRates from "./views/Rates";
 
 interface IEmployeeClientContent {
   id: string;
@@ -107,6 +108,9 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
             <Heading size="md">User Info</Heading>
             {userContent}
           </Card>
+          <AdminOnly>
+            <EmployeeRates employee={employee} />
+          </AdminOnly>
           {employee.crews.length > 0 && (
             <Card>
               <Heading size="md">Crews</Heading>

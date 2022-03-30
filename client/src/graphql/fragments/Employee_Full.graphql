@@ -1,7 +1,5 @@
 fragment EmployeeFullSnippet on EmployeeClass {
-  _id
-  name
-  jobTitle
+  ...EmployeeCardSnippet
   user {
     ...UserCardSnippet
   }

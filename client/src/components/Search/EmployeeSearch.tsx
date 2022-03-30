@@ -88,7 +88,6 @@ const EmployeeSearch = ({
   return (
     <TextDropdown
       onChange={(e) => handleChange(e.target.value)}
-      value={searchString}
       options={options}
       placeholder="Search Employees"
       onOptionSelection={(value) => {
@@ -104,6 +103,7 @@ const EmployeeSearch = ({
       autoComplete="off"
       selectOptionsWithEnter
       {...props}
+      value={searchString}
     />
   );
 };

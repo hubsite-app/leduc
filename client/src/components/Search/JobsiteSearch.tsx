@@ -88,7 +88,6 @@ const JobsiteSearch = ({
   return (
     <TextDropdown
       onChange={(e) => handleChange(e.target.value)}
-      value={searchString}
       options={options}
       placeholder="Search Jobsites"
       onOptionSelection={(value) => {
@@ -105,6 +104,7 @@ const JobsiteSearch = ({
       selectOptionsWithEnter
       isLoading={loading}
       {...props}
+      value={searchString}
     />
   );
 };

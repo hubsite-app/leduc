@@ -1,13 +1,12 @@
 import { Flex, Heading } from "@chakra-ui/react";
 import React from "react";
-import Card from "../components/Common/Card";
-import Container from "../components/Common/Container";
-import InfiniteScroll from "../components/Common/InfiniteScroll";
-import Loading from "../components/Common/Loading";
 
-import { useMaterialsQuery } from "../generated/graphql";
+import { useMaterialsQuery } from "../../../generated/graphql";
+import Card from "../Card";
+import InfiniteScroll from "../InfiniteScroll";
+import Loading from "../Loading";
 
-const Materials = () => {
+const MaterialFullList = () => {
   /**
    * ----- Hook Initialization -----
    */
@@ -55,12 +54,7 @@ const Materials = () => {
     }
   }, [data?.materials, loading]);
 
-  return (
-    <Container>
-      <Heading>Materials</Heading>
-      <InfiniteScroll content={content} nextPage={nextPage} />
-    </Container>
-  );
+  return <InfiniteScroll content={content} nextPage={nextPage} />;
 };
 
-export default Materials;
+export default MaterialFullList;
