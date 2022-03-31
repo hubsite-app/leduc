@@ -15,7 +15,7 @@ import {
   IDefaultRateData,
   ISearchOptions,
 } from "@typescript/models";
-import { IJobsiteCreate } from "@typescript/jobsite";
+import { IJobsiteCreate, ITruckingRateData } from "@typescript/jobsite";
 import create from "./create";
 import update from "./update";
 
@@ -86,7 +86,7 @@ export class JobsiteClass extends JobsiteSchema {
 
   public async setTruckingRates(
     this: JobsiteDocument,
-    truckingRates: IDefaultRateData[]
+    truckingRates: ITruckingRateData[]
   ) {
     return update.truckingRates(this, truckingRates);
   }

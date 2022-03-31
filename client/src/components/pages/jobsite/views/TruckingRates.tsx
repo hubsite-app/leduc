@@ -3,7 +3,7 @@ import React from "react";
 import { FiEdit, FiX } from "react-icons/fi";
 import { JobsiteFullSnippetFragment } from "../../../../generated/graphql";
 import Card from "../../../Common/Card";
-import DefaultsTable from "../../../Common/DefaultRatesTable";
+import TruckingRatesTable from "../../../Common/Jobsite/TruckingRatesTable";
 import JobsiteTruckingRates from "../../../Forms/Jobsite/JobsiteTruckingRates";
 
 interface ITruckingRates {
@@ -50,7 +50,9 @@ const TruckingRates = ({ jobsite }: ITruckingRates) => {
         />
       )}
       {jobsite.truckingRates.length > 0 ? (
-        !collapsed && <DefaultsTable defaultRates={jobsite.truckingRates} />
+        !collapsed && (
+          <TruckingRatesTable truckingRates={jobsite.truckingRates} />
+        )
       ) : (
         <Center>Rates not set</Center>
       )}

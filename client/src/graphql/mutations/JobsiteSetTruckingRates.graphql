@@ -1,4 +1,4 @@
-mutation JobsiteSetTruckingRates($id: String!, $data: [DefaultRateData!]!) {
+mutation JobsiteSetTruckingRates($id: String!, $data: [TruckingRateData!]!) {
   jobsiteSetTruckingRates(id: $id, data: $data) {
     ...JobsiteFullSnippet
   }

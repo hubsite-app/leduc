@@ -1,4 +1,5 @@
 import { JobsiteDocument } from "@models";
+import { IDefaultRateData } from "./models";
 
 export interface IJobsiteCreate {
   name: string;
@@ -10,4 +11,13 @@ export interface IJobsiteCreate {
 export interface IJobsiteSearchObject {
   score: number;
   jobsite: JobsiteDocument;
+}
+
+export enum TruckingRateTypes {
+  Hour = "Hour",
+  Quantity = "Quantity",
+}
+
+export interface ITruckingRateData extends IDefaultRateData {
+  type: TruckingRateTypes;
 }

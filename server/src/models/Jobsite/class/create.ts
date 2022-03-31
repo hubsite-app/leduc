@@ -1,5 +1,5 @@
 import { JobsiteDocument, JobsiteModel, System } from "@models";
-import { IJobsiteCreate } from "@typescript/jobsite";
+import { IJobsiteCreate, TruckingRateTypes } from "@typescript/jobsite";
 
 const document = (Jobsite: JobsiteModel, data: IJobsiteCreate) => {
   return new Promise<JobsiteDocument>(async (resolve, reject) => {
@@ -9,7 +9,15 @@ const document = (Jobsite: JobsiteModel, data: IJobsiteCreate) => {
       });
 
       const system = await System.getSystem();
-      jobsite.truckingRates = system.materialShipmentVehicleTypeDefaults;
+      jobsite.truckingRates = system.materialShipmentVehicleTypeDefaults.map(
+        (rate) => {
+          return {
+            rate: rate.rate,
+            title: rate.title,
+            type: TruckingRateTypes.Hour,
+          };
+        }
+      );
 
       resolve(jobsite);
     } catch (e) {

@@ -20,7 +20,7 @@ import {
 } from "type-graphql";
 import { InvoiceData } from "../invoice/mutations";
 import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
-import mutations, { JobsiteCreateData } from "./mutations";
+import mutations, { JobsiteCreateData, TruckingRateData } from "./mutations";
 
 @Resolver(() => JobsiteClass)
 export default class JobsiteResolver {
@@ -100,7 +100,7 @@ export default class JobsiteResolver {
   @Mutation(() => JobsiteClass)
   async jobsiteSetTruckingRates(
     @Arg("id") id: string,
-    @Arg("data", () => [DefaultRateData]) data: DefaultRateData[]
+    @Arg("data", () => [TruckingRateData]) data: TruckingRateData[]
   ) {
     return mutations.setTruckingRates(id, data);
   }

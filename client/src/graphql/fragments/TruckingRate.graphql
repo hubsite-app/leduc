@@ -1,0 +1,6 @@
+fragment TruckingRateSnippet on TruckingRateClass {
+  _id
+  title
+  rate
+  type
+}

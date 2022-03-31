@@ -3,6 +3,7 @@ import {
   JobsiteDocument,
   JobsiteMaterialDocument,
 } from "@models";
+import { ITruckingRateData } from "@typescript/jobsite";
 import { IDefaultRateData } from "@typescript/models";
 
 const addMaterial = (
@@ -46,7 +47,7 @@ const addInvoice = (jobsite: JobsiteDocument, invoice: InvoiceDocument) => {
 
 const truckingRates = (
   jobsite: JobsiteDocument,
-  truckingRates: IDefaultRateData[]
+  truckingRates: ITruckingRateData[]
 ) => {
   return new Promise<void>(async (resolve, reject) => {
     try {

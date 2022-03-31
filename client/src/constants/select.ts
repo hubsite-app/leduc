@@ -16,3 +16,5 @@ export const CrewTypes = [
   "Patch",
   "Concrete",
 ];
+
+export const TruckingRateTypes = ["Hours", "Quantity"];

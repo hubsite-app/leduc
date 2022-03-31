@@ -18,6 +18,6 @@ fragment JobsiteFullSnippet on JobsiteClass {
     ...InvoiceCardSnippet
   }
   truckingRates {
-    ...DefaultRateSnippet
+    ...TruckingRateSnippet
   }
 }

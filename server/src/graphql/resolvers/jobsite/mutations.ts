@@ -7,6 +7,7 @@ import {
   JobsiteMaterial,
   Material,
 } from "@models";
+import { TruckingRateTypes } from "@typescript/jobsite";
 import { Field, InputType } from "type-graphql";
 import { InvoiceData } from "../invoice/mutations";
 import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
@@ -21,6 +22,12 @@ export class JobsiteCreateData {
 
   @Field({ nullable: true })
   public description?: string;
+}
+
+@InputType()
+export class TruckingRateData extends DefaultRateData {
+  @Field({ nullable: false })
+  public type!: TruckingRateTypes;
 }
 
 const create = (data: JobsiteCreateData) => {
@@ -93,7 +100,7 @@ const addInvoice = (jobsiteId: string, data: InvoiceData) => {
   });
 };
 
-const setTruckingRates = (jobsiteId: string, data: DefaultRateData[]) => {
+const setTruckingRates = (jobsiteId: string, data: TruckingRateData[]) => {
   return new Promise<JobsiteDocument>(async (resolve, reject) => {
     try {
       const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;

@@ -1,12 +1,13 @@
 import { useToast } from "@chakra-ui/react";
 import React from "react";
+import { TruckingRateTypes } from "../../../constants/select";
 import { useSystem } from "../../../contexts/System";
 import {
   JobsiteFullSnippetFragment,
   useJobsiteSetTruckingRatesMutation,
 } from "../../../generated/graphql";
-import DefaultRates from "../../Common/forms/DefaultRates";
 import SubmitButton from "../../Common/forms/SubmitButton";
+import TruckingRates from "./TruckingRates";
 
 interface IJobsiteTruckingRates {
   jobsite: JobsiteFullSnippetFragment;
@@ -27,10 +28,16 @@ const JobsiteTruckingRates = ({
     state: { system },
   } = useSystem();
 
-  const [defaultRates, setDefaults] = React.useState(
+  const [truckingRates, setDefaults] = React.useState(
     jobsite.truckingRates.length > 0
       ? jobsite.truckingRates
-      : system!.materialShipmentVehicleTypeDefaults
+      : system!.materialShipmentVehicleTypeDefaults.map((rate) => {
+          return {
+            title: rate.title,
+            rate: rate.rate,
+            type: TruckingRateTypes[0],
+          };
+        })
   );
 
   const [setRates, { loading }] = useJobsiteSetTruckingRatesMutation();
@@ -43,7 +50,7 @@ const JobsiteTruckingRates = ({
     try {
       const res = await setRates({
         variables: {
-          data: defaultRates,
+          data: truckingRates,
           id: jobsite._id,
         },
       });
@@ -66,7 +73,7 @@ const JobsiteTruckingRates = ({
         isClosable: true,
       });
     }
-  }, [defaultRates, jobsite._id, onSuccess, setRates, toast]);
+  }, [truckingRates, jobsite._id, onSuccess, setRates, toast]);
 
   /**
    * ----- Rendering -----
@@ -79,9 +86,9 @@ const JobsiteTruckingRates = ({
         handleSubmit();
       }}
     >
-      <DefaultRates
-        defaultRates={defaultRates}
-        onChange={(defaultRates) => setDefaults(defaultRates)}
+      <TruckingRates
+        truckingRates={truckingRates}
+        onChange={(truckingRates) => setDefaults(truckingRates)}
         isLoading={loading}
       />
       <SubmitButton isLoading={loading} />

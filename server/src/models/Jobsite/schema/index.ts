@@ -12,6 +12,7 @@ import { DefaultRateClass } from "@typescript/models";
 import isUrl from "@validation/isUrl";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
+import { TruckingRateClass } from "./subDocuments";
 
 @ObjectType()
 @post<JobsiteDocument>("save", async (jobsite) => {
@@ -64,9 +65,9 @@ export class JobsiteSchema {
   /**
    * @version 2
    */
-  @Field(() => [DefaultRateClass])
-  @prop({ type: () => [DefaultRateClass], default: [] })
-  public truckingRates!: DefaultRateClass[];
+  @Field(() => [TruckingRateClass])
+  @prop({ type: () => [TruckingRateClass], default: [] })
+  public truckingRates!: TruckingRateClass[];
 
   @Field(() => [CrewClass])
   @prop({ ref: () => CrewClass, default: [] })
