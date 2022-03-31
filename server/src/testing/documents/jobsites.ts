@@ -29,6 +29,12 @@ const createJobsites = () => {
         active: true,
         materials: [_ids.jobsiteMaterials.jobsite_2_material_1._id],
         crews: [_ids.crews.base_1._id],
+        truckingRates: [
+          {
+            title: "Tandem",
+            rate: 120,
+          },
+        ],
       });
 
       const jobsite_3 = new Jobsite({

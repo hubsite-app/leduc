@@ -4,6 +4,7 @@ import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 import { disconnectAndStopServer, prepareDatabase } from "@testing/jestDB";
 import { MaterialShipment } from "@models";
 import { IMaterialShipmentCreate } from "@typescript/materialShipment";
+import { Types } from "aws-sdk/clients/acm";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
 const setupDatabase = () => {
@@ -41,6 +42,8 @@ describe("Material Shipment Class", () => {
               source: "Burnco",
               vehicleCode: "12",
               vehicleType: "Tandem",
+              truckingRateId:
+                documents.jobsites.jobsite_2.truckingRates[0]._id!.toString(),
             },
             startTime: new Date("2022-02-25 11:00am"),
             endTime: new Date("2022-02-25 2:00pm"),
@@ -63,6 +66,8 @@ describe("Material Shipment Class", () => {
               source: "Burnco",
               vehicleCode: "12",
               vehicleType: "Tandem",
+              truckingRateId:
+                documents.jobsites.jobsite_2.truckingRates[0]._id!.toString(),
             },
             startTime: new Date("2022-02-25 11:00am"),
             endTime: new Date("2022-02-25 2:00pm"),
