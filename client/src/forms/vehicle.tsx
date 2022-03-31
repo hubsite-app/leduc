@@ -13,6 +13,9 @@ import { IFormProps } from "../typescript/forms";
 import TextField, { ITextField } from "../components/Common/forms/TextField";
 import Select, { ISelect } from "../components/Common/forms/Select";
 import { MaterialShipmentVehicleTypes } from "../constants/select";
+import CompanyVehicleTypes, {
+  ICompanyVehicleTypes,
+} from "../components/Common/forms/CompanyVehicleTypes";
 
 const VehicleCreate = yup
   .object()
@@ -77,10 +80,7 @@ export const useVehicleCreateForm = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
-    VehicleType: ({
-      isLoading,
-      ...props
-    }: IFormProps<Omit<ISelect, "options" | "name">>) =>
+    VehicleType: ({ isLoading, ...props }: IFormProps<ICompanyVehicleTypes>) =>
       React.useMemo(
         () => (
           <Controller
@@ -88,12 +88,9 @@ export const useVehicleCreateForm = (options?: UseFormProps) => {
             name="vehicleType"
             defaultValue={MaterialShipmentVehicleTypes[0]}
             render={({ field, fieldState }) => (
-              <Select
+              <CompanyVehicleTypes
                 {...props}
                 {...field}
-                options={MaterialShipmentVehicleTypes.map((type) => {
-                  return { value: type, title: type };
-                })}
                 errorMessage={fieldState.error?.message}
                 label="Vehicle Type"
                 isDisabled={isLoading}
