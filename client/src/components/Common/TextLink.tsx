@@ -26,7 +26,7 @@ const TextLink = ({
   const activeAndFocusProps = {
     outline: 0,
     border: "none",
-    "-moz-outline-style": "none",
+    MozOutlineStyle: "none",
   };
 
   let newTabProps = {};

@@ -44,6 +44,16 @@ export default extendTheme({
         backgroundColor: "white",
       },
     },
+    Heading: {
+      baseStyle: {
+        webkitTouchCallout: "none",
+        WebkitUserSelect: "none",
+        KhtmlUserSelect: "none",
+        MozUserSelect: "none",
+        msUserSelect: "none",
+        userSelect: "none",
+      },
+    },
   },
   config: {
     initialColorMode: "light",

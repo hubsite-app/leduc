@@ -1,5 +1,13 @@
-import { Center, Flex, Spinner } from "@chakra-ui/react";
+import {
+  Center,
+  Flex,
+  Spinner,
+  Box,
+  Breadcrumb,
+  BreadcrumbItem,
+} from "@chakra-ui/react";
 import React from "react";
+import Breadcrumbs from "../components/Common/Breadcrumbs";
 import Container from "../components/Common/Container";
 import DailyReportCard from "../components/Common/DailyReportCard";
 import InfiniteScroll from "../components/Common/InfiniteScroll";
@@ -59,21 +67,31 @@ const Home = () => {
   const content = React.useMemo(() => {
     if (data?.dailyReports) {
       return (
-        <Flex flexDir="column" alignContent="center" id="pages-flex">
-          {data.dailyReports.map((dailyReport) => {
-            return (
-              <DailyReportCard
-                dailyReport={dailyReport}
-                key={dailyReport._id}
-              />
-            );
-          })}
-          {loading && (
-            <Center pt={4}>
-              <Spinner />
-            </Center>
-          )}
-        </Flex>
+        <Box>
+          <Breadcrumbs
+            crumbs={[
+              {
+                title: "Daily Reports",
+                isCurrentPage: true,
+              },
+            ]}
+          />
+          <Flex flexDir="column" alignContent="center" id="pages-flex">
+            {data.dailyReports.map((dailyReport) => {
+              return (
+                <DailyReportCard
+                  dailyReport={dailyReport}
+                  key={dailyReport._id}
+                />
+              );
+            })}
+            {loading && (
+              <Center pt={4}>
+                <Spinner />
+              </Center>
+            )}
+          </Flex>
+        </Box>
       );
     } else {
       return <Loading />;

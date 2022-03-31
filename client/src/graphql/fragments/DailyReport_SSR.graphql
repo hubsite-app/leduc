@@ -5,4 +5,8 @@ fragment DailyReportSSRSnippet on DailyReportClass {
     name
     jobcode
   }
+  crew {
+    _id
+    name
+  }
 }

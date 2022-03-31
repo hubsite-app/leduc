@@ -1,5 +1,6 @@
 import { Heading } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
+import Breadcrumbs from "../../components/Common/Breadcrumbs";
 import ClientOnly from "../../components/Common/ClientOnly";
 import Container from "../../components/Common/Container";
 import DailyReportClientContent from "../../components/pages/daily-reports/id/ClientContent";
@@ -9,11 +10,23 @@ import {
 } from "../../generated/page";
 
 const DailyReport: PageDailyReportSsrComp = ({ data }) => {
+  const name = `${data?.dailyReport.jobsite.jobcode}: ${data?.dailyReport.jobsite.name}`;
+
   return (
     <Container>
-      <Heading>
-        {data?.dailyReport.jobsite.jobcode}: {data?.dailyReport.jobsite.name}
-      </Heading>
+      <Breadcrumbs
+        crumbs={[
+          {
+            title: "Daily Reports",
+            link: "/",
+          },
+          {
+            title: name,
+            isCurrentPage: true,
+          },
+        ]}
+      />
+      <Heading>{data?.dailyReport.crew.name}</Heading>
       <ClientOnly>
         <DailyReportClientContent id={data?.dailyReport._id!} />
       </ClientOnly>

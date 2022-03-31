@@ -31,6 +31,7 @@ import Card from "../../../Common/Card";
 import Checkbox from "../../../Common/forms/Checkbox";
 import SubmitButton from "../../../Common/forms/SubmitButton";
 import Loading from "../../../Common/Loading";
+import TextGrid from "../../../Common/TextGrid";
 import TextLink from "../../../Common/TextLink";
 import EmployeeHours from "./views/EmployeeHours";
 import MaterialShipments from "./views/MaterialShipments";
@@ -84,75 +85,117 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
       return (
         <Box>
           <Card>
-            <Flex flexDir="row" justifyContent="space-between">
-              <Box>
-                <Text>
-                  <Text as="span" fontWeight="bold">
-                    Date:{" "}
-                  </Text>
-                  <Text as="span">
-                    {dayjs(data?.dailyReport.date).format("MMMM DD, YYYY")}
-                  </Text>
-                </Text>
-                <Text>
-                  <Text as="span" fontWeight="bold">
-                    Jobsite:{" "}
-                  </Text>
-                  <TextLink
-                    link={createLink.jobsite(data?.dailyReport.jobsite._id)}
-                  >
-                    {data?.dailyReport.jobsite.name}
-                  </TextLink>
-                </Text>
-                <Text>
-                  <Text as="span" fontWeight="bold">
-                    Crew:{" "}
-                  </Text>
-                  <TextLink link={createLink.crew(data?.dailyReport.crew._id)}>
-                    {data?.dailyReport.crew.name}
-                  </TextLink>
-                </Text>
+            <Flex flexDir="row" justifyContent="space-evenly">
+              <SimpleGrid columns={[1, 1, 2]} spacing={4} w="90%">
+                <Box
+                  backgroundColor="gray.200"
+                  borderRadius={4}
+                  m={2}
+                  p={2}
+                  w="100%"
+                  border="1px solid"
+                  borderColor="gray.300"
+                >
+                  <TextGrid
+                    rows={[
+                      {
+                        title: (
+                          <Text as="span" fontWeight="bold">
+                            Date:{" "}
+                          </Text>
+                        ),
+                        text: (
+                          <Text as="span">
+                            {dayjs(data?.dailyReport.date).format(
+                              "MMMM DD, YYYY"
+                            )}
+                          </Text>
+                        ),
+                      },
+                      {
+                        title: (
+                          <Text as="span" fontWeight="bold">
+                            Jobsite:{" "}
+                          </Text>
+                        ),
+                        text: (
+                          <TextLink
+                            link={createLink.jobsite(
+                              data?.dailyReport.jobsite._id
+                            )}
+                          >
+                            {data?.dailyReport.jobsite.name}
+                          </TextLink>
+                        ),
+                      },
+                      {
+                        title: (
+                          <Text as="span" fontWeight="bold">
+                            Crew:{" "}
+                          </Text>
+                        ),
+                        text: (
+                          <TextLink
+                            link={createLink.crew(data?.dailyReport.crew._id)}
+                          >
+                            {data?.dailyReport.crew.name}
+                          </TextLink>
+                        ),
+                      },
+                    ]}
+                  />
+                </Box>
                 <AdminOnly>
-                  <Flex flexDir="column">
-                    <Checkbox
-                      isDisabled={approvalLoading}
-                      isChecked={data?.dailyReport.jobCostApproved}
-                      onChange={(e) => {
-                        updateApproval({
-                          variables: {
-                            id: data?.dailyReport._id,
-                            approved: e.target.checked,
-                          },
-                        });
-                      }}
-                    >
-                      Job Cost Approval
-                    </Checkbox>
-                    <Checkbox
-                      isDisabled={payrollLoading}
-                      isChecked={data?.dailyReport.payrollComplete}
-                      onChange={(e) => {
-                        updatePayrollComplete({
-                          variables: {
-                            id: data?.dailyReport._id,
-                            complete: e.target.checked,
-                          },
-                        });
-                      }}
-                    >
-                      Pay Roll Complete
-                    </Checkbox>
-                  </Flex>
-                </AdminOnly>
-                <Text>
-                  <TextLink
-                    newTab
-                    link={`/daily-report/${data.dailyReport._id}/pdf`}
+                  <Box
+                    backgroundColor="gray.200"
+                    border="1px solid"
+                    borderColor="gray.300"
+                    borderRadius={4}
+                    m={2}
+                    p={2}
+                    w="100%"
                   >
-                    PDF Report
-                  </TextLink>
-                </Text>
-              </Box>
+                    <Flex flexDir="column">
+                      <Checkbox
+                        isDisabled={approvalLoading}
+                        isChecked={data?.dailyReport.jobCostApproved}
+                        onChange={(e) => {
+                          updateApproval({
+                            variables: {
+                              id: data?.dailyReport._id,
+                              approved: e.target.checked,
+                            },
+                          });
+                        }}
+                      >
+                        Job Cost Approval
+                      </Checkbox>
+                      <Checkbox
+                        isDisabled={payrollLoading}
+                        isChecked={data?.dailyReport.payrollComplete}
+                        onChange={(e) => {
+                          updatePayrollComplete({
+                            variables: {
+                              id: data?.dailyReport._id,
+                              complete: e.target.checked,
+                            },
+                          });
+                        }}
+                      >
+                        Pay Roll Complete
+                      </Checkbox>
+                    </Flex>
+                    <Text>
+                      <TextLink
+                        newTab
+                        link={`/daily-report/${data.dailyReport._id}/pdf`}
+                      >
+                        PDF Report
+                      </TextLink>
+                    </Text>
+                  </Box>
+                </AdminOnly>
+              </SimpleGrid>
               <Box>
                 <IconButton
                   backgroundColor="transparent"
