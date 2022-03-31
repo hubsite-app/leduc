@@ -16,6 +16,7 @@ import {
 import TextField, { ITextField } from "../components/Common/forms/TextField";
 import { IFormProps } from "../typescript/forms";
 import TextArea, { ITextArea } from "../components/Common/forms/TextArea";
+import Unit, { IUnit } from "../components/Common/forms/Unit";
 
 const ProductionData = {
   jobTitle: yup.string().required("please provide a job title"),
@@ -128,14 +129,14 @@ export const useProductionUpdateForm = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
-    Unit: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+    Unit: ({ isLoading, ...props }: IFormProps<IUnit>) =>
       React.useMemo(
         () => (
           <Controller
             control={control}
             name="unit"
             render={({ field, fieldState }) => (
-              <TextField
+              <Unit
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}
@@ -273,14 +274,14 @@ export const useProductionCreateForm = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
-    Unit: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+    Unit: ({ isLoading, ...props }: IFormProps<IUnit>) =>
       React.useMemo(
         () => (
           <Controller
             control={control}
             name="unit"
             render={({ field, fieldState }) => (
-              <TextField
+              <Unit
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}

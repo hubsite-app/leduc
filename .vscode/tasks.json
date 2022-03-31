@@ -62,6 +62,14 @@
         "down": {},
         "files": ["${workspaceFolder}/docker-compose.yml"]
       }
+    },
+    {
+      "type": "typescript",
+      "tsconfig": "client/tsconfig.json",
+      "option": "watch",
+      "problemMatcher": ["$tsc-watch"],
+      "group": "build",
+      "label": "tsc: watch - client/tsconfig.json"
     }
   ]
 }
