@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 
 interface ITextGrid {
   rows: {
@@ -18,10 +18,20 @@ const TextGrid = ({ rows }: ITextGrid) => {
 
   return (
     <Flex flexDir="row">
-      <Flex flexDir="column" mr={1}>
-        {titles.map((title) => title)}
+      <Flex flexDir="column" mr={2}>
+        {titles.map((title, index) => (
+          <Box my="2px" key={index}>
+            {title}
+          </Box>
+        ))}
       </Flex>
-      <Flex flexDir="column">{texts.map((text) => text)}</Flex>
+      <Flex flexDir="column">
+        {texts.map((text, index) => (
+          <Box my="2px" key={index}>
+            {text}
+          </Box>
+        ))}
+      </Flex>
     </Flex>
   );
 };

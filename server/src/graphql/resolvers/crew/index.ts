@@ -3,6 +3,7 @@ import {
   Crew,
   CrewClass,
   CrewDocument,
+  DailyReportClass,
   EmployeeClass,
   JobsiteClass,
   VehicleClass,
@@ -37,6 +38,11 @@ export default class CrewResolver {
   @FieldResolver(() => [JobsiteClass])
   async jobsites(@Root() crew: CrewDocument) {
     return crew.getJobsites();
+  }
+
+  @FieldResolver(() => [DailyReportClass])
+  async dailyReports(@Root() crew: CrewDocument) {
+    return crew.getDailyReports();
   }
 
   /**

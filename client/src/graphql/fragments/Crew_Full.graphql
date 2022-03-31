@@ -6,4 +6,7 @@ fragment CrewFullSnippet on CrewClass {
   vehicles {
     ...VehicleCardSnippet
   }
+  dailyReports {
+    ...DailyReportCardSnippet
+  }
 }

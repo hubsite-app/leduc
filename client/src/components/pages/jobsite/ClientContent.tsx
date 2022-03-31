@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, SimpleGrid, Text } from "@chakra-ui/react";
 import React from "react";
 import { useJobsiteFullQuery } from "../../../generated/graphql";
 import AdminOnly from "../../Common/AdminOnly";
@@ -49,8 +49,10 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
             )}
           </Card>
           <AdminOnly>
-            <JobsiteMaterialsCosting jobsite={jobsite} />
-            <Invoices jobsite={jobsite} />
+            <SimpleGrid columns={[1, 1, 1, 2]} spacingX={4} spacingY={2}>
+              <JobsiteMaterialsCosting jobsite={jobsite} />
+              <Invoices jobsite={jobsite} />
+            </SimpleGrid>
             <TruckingRates jobsite={jobsite} />
           </AdminOnly>
           <DailyReportListCard dailyReports={jobsite.dailyReports} />

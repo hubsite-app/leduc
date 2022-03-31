@@ -52,6 +52,10 @@ export class CrewClass extends CrewSchema {
     return get.jobsites(this);
   }
 
+  public async getDailyReports(this: CrewDocument) {
+    return get.dailyReports(this);
+  }
+
   /**
    * ----- Create -----
    */

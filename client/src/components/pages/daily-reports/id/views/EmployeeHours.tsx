@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Heading, Flex, IconButton } from "@chakra-ui/react";
+import { Heading, Flex, IconButton, Center } from "@chakra-ui/react";
 
 import EmployeeWorkCard from "./EmployeeWorkCard";
 import Card from "../../../../Common/Card";
@@ -8,6 +8,7 @@ import Card from "../../../../Common/Card";
 import { DailyReportFullSnippetFragment } from "../../../../../generated/graphql";
 import { FiPlus, FiX } from "react-icons/fi";
 import EmployeeHourCreateForm from "./EmployeeHourCreateForm";
+import ShowMore from "../../../../Common/ShowMore";
 
 interface IEmployeeHours {
   dailyReport: DailyReportFullSnippetFragment;
@@ -16,19 +17,10 @@ interface IEmployeeHours {
 const EmployeeHours = ({ dailyReport }: IEmployeeHours) => {
   const [addForm, setAddForm] = React.useState(false);
 
-  const [collapsed, setCollapsed] = React.useState(true);
-
   return (
     <Card h="fit-content">
       <Flex flexDir="row" justifyContent="space-between">
-        <Heading
-          w="100%"
-          my="auto"
-          ml={2}
-          size="md"
-          cursor="pointer"
-          onClick={() => setCollapsed(!collapsed)}
-        >
+        <Heading w="100%" my="auto" ml={2} size="md">
           Employee Hours ({dailyReport.employeeWork.length || 0})
         </Heading>
         <IconButton
@@ -44,17 +36,21 @@ const EmployeeHours = ({ dailyReport }: IEmployeeHours) => {
           closeForm={() => setAddForm(false)}
         />
       )}
-      {!collapsed && (
-        <Flex flexDir="column" w="100%" px={4} py={2}>
-          {dailyReport.employeeWork.map((work) => (
-            <EmployeeWorkCard
-              employeeWork={work}
-              dailyReportDate={dailyReport.date}
-              key={work._id}
-            />
-          ))}
-        </Flex>
-      )}
+      <Flex flexDir="column" w="100%" px={4} py={2}>
+        {dailyReport.employeeWork.length > 0 ? (
+          <ShowMore
+            list={dailyReport.employeeWork.map((work) => (
+              <EmployeeWorkCard
+                employeeWork={work}
+                dailyReportDate={dailyReport.date}
+                key={work._id}
+              />
+            ))}
+          />
+        ) : (
+          <Center>No Employee Work</Center>
+        )}
+      </Flex>
     </Card>
   );
 };

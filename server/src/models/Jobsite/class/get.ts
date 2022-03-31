@@ -7,7 +7,6 @@ import {
   DailyReportDocument,
   Invoice,
   InvoiceDocument,
-  Jobsite,
   JobsiteDocument,
   JobsiteMaterial,
   JobsiteMaterialDocument,
@@ -49,7 +48,7 @@ const byId = (
 };
 
 const search = (
-  Employee: JobsiteModel,
+  Jobsite: JobsiteModel,
   searchString: string,
   options?: ISearchOptions
 ) => {
@@ -132,7 +131,9 @@ const crews = (jobsite: JobsiteDocument) => {
 const dailyReports = (jobsite: JobsiteDocument) => {
   return new Promise<DailyReportDocument[]>(async (resolve, reject) => {
     try {
-      const dailyReports = await DailyReport.find({ jobsite: jobsite._id });
+      const dailyReports = await DailyReport.find({
+        jobsite: jobsite._id,
+      }).sort({ date: -1 });
 
       resolve(dailyReports);
     } catch (e) {

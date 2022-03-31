@@ -1,4 +1,4 @@
-import { Flex, Heading, IconButton } from "@chakra-ui/react";
+import { Center, Flex, Heading, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
 
@@ -7,6 +7,7 @@ import {
   VehicleCardSnippetFragment,
 } from "../../../../../generated/graphql";
 import Card from "../../../../Common/Card";
+import ShowMore from "../../../../Common/ShowMore";
 import VehicleAddForm from "./VehicleAddForm";
 import VehicleCard from "./VehicleCard";
 
@@ -22,8 +23,6 @@ const Vehicles = ({ vehicles, crew }: IVehicles) => {
 
   const [addForm, setAddForm] = React.useState(false);
 
-  const [collapsed, setCollapsed] = React.useState(true);
-
   /**
    * ----- Rendering -----
    */
@@ -31,14 +30,7 @@ const Vehicles = ({ vehicles, crew }: IVehicles) => {
   return (
     <Card>
       <Flex flexDir="row" justifyContent="space-between">
-        <Heading
-          w="100%"
-          my="auto"
-          size="md"
-          cursor="pointer"
-          ml={1}
-          onClick={() => setCollapsed(!collapsed)}
-        >
+        <Heading w="100%" my="auto" size="md" ml={1}>
           Vehicles ({vehicles.length})
         </Heading>
         <IconButton
@@ -53,13 +45,17 @@ const Vehicles = ({ vehicles, crew }: IVehicles) => {
         <VehicleAddForm crew={crew} closeForm={() => setAddForm(false)} />
       )}
 
-      {!collapsed && (
-        <Flex flexDir="column" w="100%" px={4} py={2}>
-          {vehicles.map((vehicle) => (
-            <VehicleCard vehicle={vehicle} crew={crew} key={vehicle._id} />
-          ))}
-        </Flex>
-      )}
+      <Flex flexDir="column" w="100%" px={4} py={2}>
+        {vehicles.length > 0 ? (
+          <ShowMore
+            list={vehicles.map((vehicle) => (
+              <VehicleCard vehicle={vehicle} crew={crew} key={vehicle._id} />
+            ))}
+          />
+        ) : (
+          <Center>No vehicles</Center>
+        )}
+      </Flex>
     </Card>
   );
 };

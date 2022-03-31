@@ -3,6 +3,8 @@ import { Types } from "mongoose";
 import {
   CrewDocument,
   CrewModel,
+  DailyReport,
+  DailyReportDocument,
   Employee,
   EmployeeDocument,
   Jobsite,
@@ -165,6 +167,20 @@ const jobsites = (crew: CrewDocument) => {
   });
 };
 
+const dailyReports = (crew: CrewDocument) => {
+  return new Promise<DailyReportDocument[]>(async (resolve, reject) => {
+    try {
+      const dailyReports = await DailyReport.find({ crew: crew._id }).sort({
+        date: -1,
+      });
+
+      resolve(dailyReports);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   byId,
   search,
@@ -173,4 +189,5 @@ export default {
   employees,
   vehicles,
   jobsites,
+  dailyReports,
 };

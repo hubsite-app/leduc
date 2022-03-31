@@ -14,8 +14,8 @@ const JobsiteMaterialProgressBar = ({
     color = "red";
 
   return (
-    <Flex flexDir="row" justifyContent="space-around">
-      <Box w="90%">
+    <Flex w="100%" flexDir="row" justifyContent="space-around">
+      <Box w={["60%", "70%", "70%", "70%", "80%", "85%"]} m="auto">
         <ProgressBar
           bgColor={color}
           completed={`${jobsiteMaterial.completedQuantity}`}

@@ -1,9 +1,10 @@
-import { Flex, Heading, IconButton } from "@chakra-ui/react";
+import { Center, Flex, Heading, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
 
 import { DailyReportFullSnippetFragment } from "../../../../../generated/graphql";
 import Card from "../../../../Common/Card";
+import ShowMore from "../../../../Common/ShowMore";
 import VehicleWorkCreateForm from "./VehicleWorkCreateForm";
 import VehicleWorkCard from "./VehicleWorldCard";
 
@@ -14,7 +15,9 @@ interface IVehicleWork {
 const VehicleWork = ({ dailyReport }: IVehicleWork) => {
   const [addForm, setAddForm] = React.useState(false);
 
-  const [collapsed, setCollapsed] = React.useState(true);
+  const [collapsed, setCollapsed] = React.useState(
+    dailyReport.vehicleWork.length > 0
+  );
 
   return (
     <Card h="fit-content">
@@ -42,13 +45,17 @@ const VehicleWork = ({ dailyReport }: IVehicleWork) => {
           closeForm={() => setAddForm(false)}
         />
       )}
-      {!collapsed && (
-        <Flex flexDir="column" w="100%" px={4} py={2}>
-          {dailyReport.vehicleWork.map((work) => (
-            <VehicleWorkCard vehicleWork={work} key={work._id} />
-          ))}
-        </Flex>
-      )}
+      <Flex flexDir="column" w="100%" px={4} py={2}>
+        {dailyReport.vehicleWork.length > 0 ? (
+          <ShowMore
+            list={dailyReport.vehicleWork.map((work) => (
+              <VehicleWorkCard vehicleWork={work} key={work._id} />
+            ))}
+          />
+        ) : (
+          <Center>No Vehicle Work</Center>
+        )}
+      </Flex>
     </Card>
   );
 };

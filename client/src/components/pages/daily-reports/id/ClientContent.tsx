@@ -86,15 +86,19 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
         <Box>
           <Card>
             <Flex flexDir="row" justifyContent="space-evenly">
-              <SimpleGrid columns={[1, 1, 2]} spacing={4} w="90%">
+              <SimpleGrid
+                columns={[1, 1, 2]}
+                spacing={4}
+                w={["85%", "90%", "95%"]}
+              >
                 <Box
-                  backgroundColor="gray.200"
+                  backgroundColor="gray.100"
                   borderRadius={4}
                   m={2}
                   p={2}
                   w="100%"
                   border="1px solid"
-                  borderColor="gray.300"
+                  borderColor="gray.200"
                 >
                   <TextGrid
                     rows={[
@@ -147,9 +151,9 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                 </Box>
                 <AdminOnly>
                   <Box
-                    backgroundColor="gray.200"
+                    backgroundColor="gray.100"
                     border="1px solid"
-                    borderColor="gray.300"
+                    borderColor="gray.200"
                     borderRadius={4}
                     m={2}
                     p={2}

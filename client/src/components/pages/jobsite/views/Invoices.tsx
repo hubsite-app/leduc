@@ -1,8 +1,9 @@
-import { Box, Flex, Heading, IconButton } from "@chakra-ui/react";
+import { Box, Center, Flex, Heading, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
 import { JobsiteFullSnippetFragment } from "../../../../generated/graphql";
 import Card from "../../../Common/Card";
+import ShowMore from "../../../Common/ShowMore";
 import InvoiceCreate from "../../../Forms/Invoice/InvoiceCreate";
 import InvoiceCard from "./InvoiceCard";
 
@@ -15,8 +16,6 @@ const Invoices = ({ jobsite }: IInvoices) => {
    * ----- Hook Initialization -----
    */
 
-  const [collapsed, setCollapsed] = React.useState(true);
-
   const [addForm, setAddForm] = React.useState(false);
 
   /**
@@ -26,14 +25,7 @@ const Invoices = ({ jobsite }: IInvoices) => {
   return (
     <Card>
       <Flex flexDir="row" justifyContent="space-between">
-        <Heading
-          my="auto"
-          ml={2}
-          size="md"
-          w="100%"
-          cursor="pointer"
-          onClick={() => setCollapsed(!collapsed)}
-        >
+        <Heading my="auto" ml={2} size="md" w="100%">
           Invoices ({jobsite.invoices.length})
         </Heading>
         <IconButton
@@ -51,13 +43,17 @@ const Invoices = ({ jobsite }: IInvoices) => {
           />
         </Box>
       )}
-      {!collapsed && (
-        <Flex w="100%" flexDir="column" px={4} py={2}>
-          {jobsite.invoices.map((invoice) => (
-            <InvoiceCard invoice={invoice} key={invoice._id} />
-          ))}
-        </Flex>
-      )}
+      <Flex w="100%" flexDir="column" px={4} py={2}>
+        {jobsite.invoices.length > 0 ? (
+          <ShowMore
+            list={jobsite.invoices.map((invoice) => (
+              <InvoiceCard invoice={invoice} key={invoice._id} />
+            ))}
+          />
+        ) : (
+          <Center>No Invoices</Center>
+        )}
+      </Flex>
     </Card>
   );
 };

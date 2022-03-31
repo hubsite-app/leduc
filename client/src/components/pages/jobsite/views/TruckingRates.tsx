@@ -1,4 +1,4 @@
-import { Flex, Heading, IconButton } from "@chakra-ui/react";
+import { Center, Flex, Heading, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FiEdit, FiX } from "react-icons/fi";
 import { JobsiteFullSnippetFragment } from "../../../../generated/graphql";
@@ -17,7 +17,7 @@ const TruckingRates = ({ jobsite }: ITruckingRates) => {
 
   const [editForm, setEditForm] = React.useState(false);
 
-  const [collapsed, setCollapsed] = React.useState(true);
+  const [collapsed, setCollapsed] = React.useState(false);
 
   /**
    * ----- Rendering -----
@@ -49,7 +49,11 @@ const TruckingRates = ({ jobsite }: ITruckingRates) => {
           onSuccess={() => setEditForm(false)}
         />
       )}
-      {!collapsed && <DefaultsTable defaultRates={jobsite.truckingRates} />}
+      {!collapsed && jobsite.truckingRates.length > 0 ? (
+        <DefaultsTable defaultRates={jobsite.truckingRates} />
+      ) : (
+        <Center>Rates not set</Center>
+      )}
     </Card>
   );
 };
