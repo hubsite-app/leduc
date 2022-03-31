@@ -76,12 +76,12 @@ const vehicleWork = (
   const parsedVehicleWork: IParsedVehicleWork[] = [];
 
   const allVehicleIds = Array.from(
-    new Set(vehicleWork.map((work) => work.vehicle._id))
+    new Set(vehicleWork.map((work) => work.vehicle?._id))
   );
 
   for (let i = 0; i < allVehicleIds.length; i++) {
     const vehiclesWork = vehicleWork.filter(
-      (work) => work.vehicle._id === allVehicleIds[i]
+      (work) => work.vehicle?._id === allVehicleIds[i]
     );
 
     let totalHours = 0;
@@ -96,7 +96,7 @@ const vehicleWork = (
 
     parsedVehicleWork.push({
       vehicle: {
-        name: vehiclesWork[0].vehicle.name,
+        name: vehiclesWork[0].vehicle?.name || "NOT FOUND",
         _id: vehiclesWork[0]._id,
       },
       jobs,
