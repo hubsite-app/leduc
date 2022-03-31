@@ -1,15 +1,8 @@
-import {
-  Center,
-  Flex,
-  Spinner,
-  Box,
-  Breadcrumb,
-  BreadcrumbItem,
-} from "@chakra-ui/react";
+import { Center, Flex, Spinner, Box } from "@chakra-ui/react";
 import React from "react";
 import Breadcrumbs from "../components/Common/Breadcrumbs";
 import Container from "../components/Common/Container";
-import DailyReportCard from "../components/Common/DailyReportCard";
+import DailyReportCard from "../components/Common/DailyReport/DailyReportCard";
 import InfiniteScroll from "../components/Common/InfiniteScroll";
 import Loading from "../components/Common/Loading";
 import { useAuth } from "../contexts/Auth";

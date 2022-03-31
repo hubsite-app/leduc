@@ -265,6 +265,41 @@ export const ssrCurrentUser = {
       withPage: withPageCurrentUser,
       usePage: useCurrentUser,
     }
+export async function getServerPageDailyReportCard
+    (options: Omit<Apollo.QueryOptions<Types.DailyReportCardQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.DailyReportCardQuery>({ ...options, query: Operations.DailyReportCardDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useDailyReportCard = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.DailyReportCardQuery, Types.DailyReportCardQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.DailyReportCardDocument, options);
+};
+export type PageDailyReportCardComp = React.FC<{data?: Types.DailyReportCardQuery, error?: Apollo.ApolloError}>;
+export const withPageDailyReportCard = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.DailyReportCardQuery, Types.DailyReportCardQueryVariables>) => (WrappedComponent:PageDailyReportCardComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.DailyReportCardDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrDailyReportCard = {
+      getServerPage: getServerPageDailyReportCard,
+      withPage: withPageDailyReportCard,
+      usePage: useDailyReportCard,
+    }
 export async function getServerPageDailyReportFull
     (options: Omit<Apollo.QueryOptions<Types.DailyReportFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);

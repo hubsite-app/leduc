@@ -3,7 +3,7 @@ import React from "react";
 
 import { DailyReportCardSnippetFragment } from "../../../generated/graphql";
 import Card from "../Card";
-import DailyReportCard from "../DailyReportCard";
+import DailyReportCard from "./DailyReportCard";
 import ShowMore from "../ShowMore";
 
 interface IDailyReportListCard {

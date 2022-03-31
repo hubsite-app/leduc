@@ -49,8 +49,8 @@ const TruckingRates = ({ jobsite }: ITruckingRates) => {
           onSuccess={() => setEditForm(false)}
         />
       )}
-      {!collapsed && jobsite.truckingRates.length > 0 ? (
-        <DefaultsTable defaultRates={jobsite.truckingRates} />
+      {jobsite.truckingRates.length > 0 ? (
+        !collapsed && <DefaultsTable defaultRates={jobsite.truckingRates} />
       ) : (
         <Center>Rates not set</Center>
       )}

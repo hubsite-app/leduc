@@ -3,7 +3,7 @@ import React from "react";
 import Card from "../components/Common/Card";
 
 import Container from "../components/Common/Container";
-import DailyReportCard from "../components/Common/DailyReportCard";
+import DailyReportCard from "../components/Common/DailyReport/DailyReportCard";
 import CrewSearchCard from "../components/pages/search/CrewCard";
 import EmployeeSearchCard from "../components/pages/search/EmployeeCard";
 import JobsiteSearchCard from "../components/pages/search/JobsiteCard";
@@ -28,7 +28,7 @@ const Search: PageSearchComp = ({ data }) => {
       } else if (result.dailyReport) {
         return <DailyReportCard dailyReport={result.dailyReport} />;
       } else if (result.crew) {
-        return <CrewSearchCard crew={result.crew} />
+        return <CrewSearchCard crew={result.crew} />;
       } else {
         return <Card>Error</Card>;
       }
