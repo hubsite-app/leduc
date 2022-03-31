@@ -339,6 +339,9 @@ export type Mutation = {
   reportNoteRemoveFile: ReportNoteClass;
   signup: Scalars['String'];
   signupCreate: SignupClass;
+  systemUpdateCompanyVehicleTypeDefaults: SystemClass;
+  systemUpdateMaterialShipmentVehicleTypeDefaults: SystemClass;
+  systemUpdateUnitDefaults: SystemClass;
   userAdmin: UserClass;
   userPasswordReset: Scalars['Boolean'];
   userPasswordResetRequest: Scalars['Boolean'];
@@ -559,6 +562,21 @@ export type MutationSignupArgs = {
 
 export type MutationSignupCreateArgs = {
   employeeId: Scalars['String'];
+};
+
+
+export type MutationSystemUpdateCompanyVehicleTypeDefaultsArgs = {
+  data: Array<DefaultRateData>;
+};
+
+
+export type MutationSystemUpdateMaterialShipmentVehicleTypeDefaultsArgs = {
+  data: Array<DefaultRateData>;
+};
+
+
+export type MutationSystemUpdateUnitDefaultsArgs = {
+  data: Array<Scalars['String']>;
 };
 
 
@@ -1269,6 +1287,27 @@ export type SignupCreateMutationVariables = Exact<{
 
 
 export type SignupCreateMutation = { __typename?: 'Mutation', signupCreate: { __typename?: 'SignupClass', _id: string } };
+
+export type SystemUpdateCompanyVehicleTypeDefaultsMutationVariables = Exact<{
+  data: Array<DefaultRateData> | DefaultRateData;
+}>;
+
+
+export type SystemUpdateCompanyVehicleTypeDefaultsMutation = { __typename?: 'Mutation', systemUpdateCompanyVehicleTypeDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rate: number }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rate: number }> } };
+
+export type SystemUpdateMaterialShipmentVehicleTypeDefaultsMutationVariables = Exact<{
+  data: Array<DefaultRateData> | DefaultRateData;
+}>;
+
+
+export type SystemUpdateMaterialShipmentVehicleTypeDefaultsMutation = { __typename?: 'Mutation', systemUpdateMaterialShipmentVehicleTypeDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rate: number }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rate: number }> } };
+
+export type SystemUpdateUnitDefaultsMutationVariables = Exact<{
+  data: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type SystemUpdateUnitDefaultsMutation = { __typename?: 'Mutation', systemUpdateUnitDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rate: number }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rate: number }> } };
 
 export type UserAdminMutationVariables = Exact<{
   id: Scalars['String'];
@@ -3198,6 +3237,105 @@ export function useSignupCreateMutation(baseOptions?: Apollo.MutationHookOptions
 export type SignupCreateMutationHookResult = ReturnType<typeof useSignupCreateMutation>;
 export type SignupCreateMutationResult = Apollo.MutationResult<SignupCreateMutation>;
 export type SignupCreateMutationOptions = Apollo.BaseMutationOptions<SignupCreateMutation, SignupCreateMutationVariables>;
+export const SystemUpdateCompanyVehicleTypeDefaultsDocument = gql`
+    mutation SystemUpdateCompanyVehicleTypeDefaults($data: [DefaultRateData!]!) {
+  systemUpdateCompanyVehicleTypeDefaults(data: $data) {
+    ...SystemSnippet
+  }
+}
+    ${SystemSnippetFragmentDoc}`;
+export type SystemUpdateCompanyVehicleTypeDefaultsMutationFn = Apollo.MutationFunction<SystemUpdateCompanyVehicleTypeDefaultsMutation, SystemUpdateCompanyVehicleTypeDefaultsMutationVariables>;
+
+/**
+ * __useSystemUpdateCompanyVehicleTypeDefaultsMutation__
+ *
+ * To run a mutation, you first call `useSystemUpdateCompanyVehicleTypeDefaultsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSystemUpdateCompanyVehicleTypeDefaultsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [systemUpdateCompanyVehicleTypeDefaultsMutation, { data, loading, error }] = useSystemUpdateCompanyVehicleTypeDefaultsMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSystemUpdateCompanyVehicleTypeDefaultsMutation(baseOptions?: Apollo.MutationHookOptions<SystemUpdateCompanyVehicleTypeDefaultsMutation, SystemUpdateCompanyVehicleTypeDefaultsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SystemUpdateCompanyVehicleTypeDefaultsMutation, SystemUpdateCompanyVehicleTypeDefaultsMutationVariables>(SystemUpdateCompanyVehicleTypeDefaultsDocument, options);
+      }
+export type SystemUpdateCompanyVehicleTypeDefaultsMutationHookResult = ReturnType<typeof useSystemUpdateCompanyVehicleTypeDefaultsMutation>;
+export type SystemUpdateCompanyVehicleTypeDefaultsMutationResult = Apollo.MutationResult<SystemUpdateCompanyVehicleTypeDefaultsMutation>;
+export type SystemUpdateCompanyVehicleTypeDefaultsMutationOptions = Apollo.BaseMutationOptions<SystemUpdateCompanyVehicleTypeDefaultsMutation, SystemUpdateCompanyVehicleTypeDefaultsMutationVariables>;
+export const SystemUpdateMaterialShipmentVehicleTypeDefaultsDocument = gql`
+    mutation SystemUpdateMaterialShipmentVehicleTypeDefaults($data: [DefaultRateData!]!) {
+  systemUpdateMaterialShipmentVehicleTypeDefaults(data: $data) {
+    ...SystemSnippet
+  }
+}
+    ${SystemSnippetFragmentDoc}`;
+export type SystemUpdateMaterialShipmentVehicleTypeDefaultsMutationFn = Apollo.MutationFunction<SystemUpdateMaterialShipmentVehicleTypeDefaultsMutation, SystemUpdateMaterialShipmentVehicleTypeDefaultsMutationVariables>;
+
+/**
+ * __useSystemUpdateMaterialShipmentVehicleTypeDefaultsMutation__
+ *
+ * To run a mutation, you first call `useSystemUpdateMaterialShipmentVehicleTypeDefaultsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSystemUpdateMaterialShipmentVehicleTypeDefaultsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [systemUpdateMaterialShipmentVehicleTypeDefaultsMutation, { data, loading, error }] = useSystemUpdateMaterialShipmentVehicleTypeDefaultsMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSystemUpdateMaterialShipmentVehicleTypeDefaultsMutation(baseOptions?: Apollo.MutationHookOptions<SystemUpdateMaterialShipmentVehicleTypeDefaultsMutation, SystemUpdateMaterialShipmentVehicleTypeDefaultsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SystemUpdateMaterialShipmentVehicleTypeDefaultsMutation, SystemUpdateMaterialShipmentVehicleTypeDefaultsMutationVariables>(SystemUpdateMaterialShipmentVehicleTypeDefaultsDocument, options);
+      }
+export type SystemUpdateMaterialShipmentVehicleTypeDefaultsMutationHookResult = ReturnType<typeof useSystemUpdateMaterialShipmentVehicleTypeDefaultsMutation>;
+export type SystemUpdateMaterialShipmentVehicleTypeDefaultsMutationResult = Apollo.MutationResult<SystemUpdateMaterialShipmentVehicleTypeDefaultsMutation>;
+export type SystemUpdateMaterialShipmentVehicleTypeDefaultsMutationOptions = Apollo.BaseMutationOptions<SystemUpdateMaterialShipmentVehicleTypeDefaultsMutation, SystemUpdateMaterialShipmentVehicleTypeDefaultsMutationVariables>;
+export const SystemUpdateUnitDefaultsDocument = gql`
+    mutation SystemUpdateUnitDefaults($data: [String!]!) {
+  systemUpdateUnitDefaults(data: $data) {
+    ...SystemSnippet
+  }
+}
+    ${SystemSnippetFragmentDoc}`;
+export type SystemUpdateUnitDefaultsMutationFn = Apollo.MutationFunction<SystemUpdateUnitDefaultsMutation, SystemUpdateUnitDefaultsMutationVariables>;
+
+/**
+ * __useSystemUpdateUnitDefaultsMutation__
+ *
+ * To run a mutation, you first call `useSystemUpdateUnitDefaultsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSystemUpdateUnitDefaultsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [systemUpdateUnitDefaultsMutation, { data, loading, error }] = useSystemUpdateUnitDefaultsMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSystemUpdateUnitDefaultsMutation(baseOptions?: Apollo.MutationHookOptions<SystemUpdateUnitDefaultsMutation, SystemUpdateUnitDefaultsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SystemUpdateUnitDefaultsMutation, SystemUpdateUnitDefaultsMutationVariables>(SystemUpdateUnitDefaultsDocument, options);
+      }
+export type SystemUpdateUnitDefaultsMutationHookResult = ReturnType<typeof useSystemUpdateUnitDefaultsMutation>;
+export type SystemUpdateUnitDefaultsMutationResult = Apollo.MutationResult<SystemUpdateUnitDefaultsMutation>;
+export type SystemUpdateUnitDefaultsMutationOptions = Apollo.BaseMutationOptions<SystemUpdateUnitDefaultsMutation, SystemUpdateUnitDefaultsMutationVariables>;
 export const UserAdminDocument = gql`
     mutation UserAdmin($id: String!, $isAdmin: Boolean!) {
   userAdmin(id: $id, isAdmin: $isAdmin) {

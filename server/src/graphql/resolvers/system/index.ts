@@ -19,20 +19,20 @@ export default class SystemResolver {
    */
 
   @Mutation(() => SystemClass)
-  async systemUpdateUnitDefauls(@Arg("data") data: string[]) {
+  async systemUpdateUnitDefaults(@Arg("data", () => [String]) data: string[]) {
     return mutations.unitDefaults(data);
   }
 
   @Mutation(() => SystemClass)
   async systemUpdateCompanyVehicleTypeDefaults(
-    @Arg("data") data: DefaultRateData[]
+    @Arg("data", () => [DefaultRateData]) data: DefaultRateData[]
   ) {
     return mutations.companyVehicleTypeDefaults(data);
   }
 
   @Mutation(() => SystemClass)
   async systemUpdateMaterialShipmentVehicleTypeDefaults(
-    @Arg("data") data: DefaultRateData[]
+    @Arg("data", () => [DefaultRateData]) data: DefaultRateData[]
   ) {
     return mutations.materialShipmentVehicleTypeDefaults(data);
   }

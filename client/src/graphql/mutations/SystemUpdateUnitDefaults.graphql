@@ -1,0 +1,5 @@
+mutation SystemUpdateUnitDefaults($data: [String!]!) {
+  systemUpdateUnitDefaults(data: $data) {
+    ...SystemSnippet
+  }
+}

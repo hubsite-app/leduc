@@ -1,7 +1,11 @@
-import { Box, Button, Flex, IconButton } from "@chakra-ui/react";
+import { Button, Flex, IconButton, useToast } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiTrash } from "react-icons/fi";
-import { SystemSnippetFragment } from "../../../generated/graphql";
+import {
+  SystemDocument,
+  SystemSnippetFragment,
+  useSystemUpdateUnitDefaultsMutation,
+} from "../../../generated/graphql";
 import SubmitButton from "../../Common/forms/SubmitButton";
 import TextField from "../../Common/forms/TextField";
 
@@ -15,7 +19,11 @@ const SystemUnitUpdate = ({ system, onSuccess }: ISystemUnitUpdate) => {
    * ----- Hook Initialization -----
    */
 
-  const loading = false;
+  const toast = useToast();
+
+  const [update, { loading }] = useSystemUpdateUnitDefaultsMutation({
+    refetchQueries: [SystemDocument],
+  });
 
   const [units, setUnits] = React.useState<string[]>(system.unitDefaults);
 
@@ -55,7 +63,33 @@ const SystemUnitUpdate = ({ system, onSuccess }: ISystemUnitUpdate) => {
     [unitsCopy]
   );
 
-  const handleSubmit = React.useCallback(() => {}, []);
+  const handleSubmit = React.useCallback(async () => {
+    try {
+      const res = await update({
+        variables: {
+          data: units,
+        },
+      });
+
+      if (res.data?.systemUpdateUnitDefaults) {
+        if (onSuccess) onSuccess();
+      } else {
+        toast({
+          status: "error",
+          title: "Error",
+          description: "Something went wrong, please try again",
+          isClosable: true,
+        });
+      }
+    } catch (e: any) {
+      toast({
+        status: "error",
+        title: "Error",
+        description: e.message,
+        isClosable: true,
+      });
+    }
+  }, [onSuccess, toast, units, update]);
 
   /**
    * ----- Rendering -----
