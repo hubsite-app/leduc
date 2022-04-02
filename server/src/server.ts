@@ -1,13 +1,6 @@
 import "reflect-metadata";
 import path from "path";
-import mongoose from "mongoose";
 import * as dotenv from "dotenv";
-
-import createApp from "./app";
-import updateDocuments from "@utils/updateDocuments";
-import saveAll from "@testing/saveAll";
-import elasticsearch from "./elasticsearch";
-import { Company, System } from "@models";
 
 // Setup environment variables
 let production = process.env.NODE_ENV === "production";
@@ -15,8 +8,17 @@ if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
   dotenv.config({ path: path.join(__dirname, "..", ".env.development") });
 }
 
+import mongoose from "mongoose";
+import createApp from "./app";
+import updateDocuments from "@utils/updateDocuments";
+import saveAll from "@testing/saveAll";
+import { Company, System } from "@models";
+import elasticsearch from "./elasticsearch";
+
 const main = async () => {
   try {
+    await elasticsearch();
+
     if (process.env.NODE_ENV !== "test") {
       await mongoose.connect(process.env.MONGO_URI!, {
         useNewUrlParser: true,
@@ -26,7 +28,6 @@ const main = async () => {
 
       if (!production) {
         // await seedDatabase();
-        // await saveAll();
       }
     }
 
@@ -39,9 +40,9 @@ const main = async () => {
     if (process.env.NODE !== "test") {
       if (production) {
         // await saveAll();
+      } else {
+        // await saveAll();
       }
-
-      await elasticsearch();
 
       await System.validateSystem();
       await Company.validateCompanies();

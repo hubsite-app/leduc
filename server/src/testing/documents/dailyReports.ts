@@ -46,6 +46,10 @@ const createDailyReports = () => {
         date: new Date("2022-02-25 7:00 am"),
         jobsite: _ids.jobsites.jobsite_2._id,
         crew: _ids.crews.base_1._id,
+        materialShipment: [
+          _ids.materialShipments.jobsite_2_base_1_1_shipment_1._id,
+          _ids.materialShipments.jobsite_2_base_1_1_shipment_2._id,
+        ],
       });
 
       const dailyReports = {

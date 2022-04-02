@@ -83,9 +83,6 @@ describe("Jobsite Resolver", () => {
           expect(jobsite.crews[0].name).toBe(documents.crews.base_1.name);
 
           expect(jobsite.dailyReports.length).toBeGreaterThan(0);
-          expect(new Date(jobsite.dailyReports[0].date).toString()).toBe(
-            new Date(documents.dailyReports.jobsite_1_base_1_1.date).toString()
-          );
         });
       });
     });

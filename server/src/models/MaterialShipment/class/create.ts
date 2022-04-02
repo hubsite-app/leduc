@@ -14,12 +14,11 @@ const document = (
         vehicleObject: data.vehicleObject,
       });
 
-      await materialShipment.updateJobsiteMaterial(
-        data.jobsiteMaterial,
-        data.dailyReport
-      );
+      await materialShipment.updateShipment(data, data.dailyReport);
 
       await data.dailyReport.addMaterialShipment(materialShipment);
+
+      await materialShipment.validateDocument();
 
       resolve(materialShipment);
     } catch (e) {

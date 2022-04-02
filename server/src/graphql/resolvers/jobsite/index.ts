@@ -8,6 +8,7 @@ import {
   JobsiteClass,
   JobsiteDocument,
   JobsiteMaterialClass,
+  MaterialShipmentClass,
 } from "@models";
 import {
   Arg,
@@ -46,6 +47,11 @@ export default class JobsiteResolver {
   @FieldResolver(() => [InvoiceClass])
   async invoices(@Root() jobsite: JobsiteDocument) {
     return jobsite.getInvoices();
+  }
+
+  @FieldResolver(() => [MaterialShipmentClass])
+  async nonCostedMaterialShipments(@Root() jobsite: JobsiteDocument) {
+    return jobsite.getNonCostedMaterialShipments();
   }
 
   /**

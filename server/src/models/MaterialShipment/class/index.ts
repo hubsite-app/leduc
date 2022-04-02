@@ -6,8 +6,8 @@ import {
 } from "@models";
 import {
   IMaterialShipmentCreate,
+  IMaterialShipmentShipmentUpdate,
   IMaterialShipmentUpdate,
-  IMaterialShipmentUpdateV1,
 } from "@typescript/materialShipment";
 import { GetByIDOptions, Id } from "@typescript/models";
 import { ObjectType } from "type-graphql";
@@ -16,6 +16,7 @@ import create from "./create";
 import get from "./get";
 import remove from "./remove";
 import update from "./update";
+import validate from "./validate";
 
 @ObjectType()
 export class MaterialShipmentClass extends MaterialShipmentSchema {
@@ -65,13 +66,6 @@ export class MaterialShipmentClass extends MaterialShipmentSchema {
     return update.document(this, data);
   }
 
-  public async updateDocumentV1(
-    this: MaterialShipmentDocument,
-    data: IMaterialShipmentUpdateV1
-  ) {
-    return update.documentV1(this, data);
-  }
-
   public async updateDate(this: MaterialShipmentDocument, date: Date) {
     return update.date(this, date);
   }
@@ -82,6 +76,22 @@ export class MaterialShipmentClass extends MaterialShipmentSchema {
     dailyReport: DailyReportDocument
   ) {
     return update.jobsiteMaterial(this, jobsiteMaterial, dailyReport);
+  }
+
+  public async updateShipment(
+    this: MaterialShipmentDocument,
+    shipment: IMaterialShipmentShipmentUpdate,
+    dailyReport: DailyReportDocument
+  ) {
+    return update.shipment(this, shipment, dailyReport);
+  }
+
+  /**
+   * ----- Validate -----
+   */
+
+  public async validateDocument(this: MaterialShipmentDocument) {
+    return validate.document(this);
   }
 
   /**

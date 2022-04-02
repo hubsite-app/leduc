@@ -10,26 +10,17 @@ export class MaterialShipmentSchema {
   @Field(() => ID, { nullable: false })
   public _id!: Types.ObjectId;
 
-  /**
-   * @version 1
-   */
   @Field({ nullable: true })
   @prop({ required: false })
-  public shipmentType!: string;
+  public shipmentType?: string;
 
-  /**
-   * @version 1
-   */
   @Field({ nullable: true })
   @prop({ trim: true })
   public supplier?: string;
 
-  /**
-   * @version 1
-   */
   @Field({ nullable: true })
   @prop({ required: false })
-  public unit!: string;
+  public unit?: string;
 
   @Field({ nullable: false })
   @prop({ required: true })
@@ -41,6 +32,14 @@ export class MaterialShipmentSchema {
   @Field(() => JobsiteMaterialClass, { nullable: true })
   @prop({ ref: () => JobsiteMaterialClass, required: false })
   public jobsiteMaterial?: Ref<JobsiteMaterialClass>;
+
+  /**
+   * @version 2
+   * @desc if true, will utilize 'shipmentType', 'supplier', 'unit'
+   */
+  @Field({ nullable: true })
+  @prop({ required: true, default: false })
+  public noJobsiteMaterial!: boolean;
 
   @Field({ nullable: true })
   @prop()
@@ -57,13 +56,6 @@ export class MaterialShipmentSchema {
   @Field(() => VehicleObjectClass, { nullable: true })
   @prop({ type: () => VehicleObjectClass })
   public vehicleObject?: VehicleObjectClass;
-
-  /**
-   * @desc if a legacy document, which version was this made in
-   */
-  @Field({ nullable: true })
-  @prop()
-  public legacyVersion?: number;
 
   @Field()
   @prop({ required: true, default: SchemaVersions.MaterialShipment })

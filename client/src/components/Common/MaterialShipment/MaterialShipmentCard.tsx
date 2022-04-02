@@ -1,24 +1,32 @@
 import React from "react";
 
-import { Box, Flex, IconButton, Text } from "@chakra-ui/react";
 import {
+  Box,
+  BoxProps,
+  Flex,
+  HStack,
+  IconButton,
+  Text,
+} from "@chakra-ui/react";
+import {
+  DailyReportForMaterialShipmentSnippetFragment,
   DailyReportFullDocument,
-  DailyReportFullSnippetFragment,
   MaterialShipmentCardSnippetFragment,
   useMaterialShipmentDeleteMutation,
-} from "../../../../../generated/graphql";
+} from "../../../generated/graphql";
 import { FiEdit, FiTrash, FiX } from "react-icons/fi";
-import MaterialShipmentUpdateV1 from "../../../../Forms/MaterialShipment/MaterialShipmentUpdateV1";
-import MaterialShipmentUpdate from "../../../../Forms/MaterialShipment/MaterialShipmentUpdate";
+import MaterialShipmentUpdate from "../../Forms/MaterialShipment/MaterialShipmentUpdate";
+import Warning from "../Warning";
 
-interface IMaterialShipmentCard {
+interface IMaterialShipmentCard extends BoxProps {
   materialShipment: MaterialShipmentCardSnippetFragment;
-  dailyReport: DailyReportFullSnippetFragment;
+  dailyReport: DailyReportForMaterialShipmentSnippetFragment;
 }
 
 const MaterialShipmentCard = ({
   materialShipment,
   dailyReport,
+  ...props
 }: IMaterialShipmentCard) => {
   /**
    * ----- Hook Initialization -----
@@ -38,7 +46,10 @@ const MaterialShipmentCard = ({
    */
 
   const content = React.useMemo(() => {
-    if (materialShipment.schemaVersion === 1) {
+    if (
+      materialShipment.schemaVersion === 1 ||
+      materialShipment.noJobsiteMaterial
+    ) {
       return (
         <Text>
           <Text as="span" fontWeight="bold">
@@ -63,7 +74,7 @@ const MaterialShipmentCard = ({
   }, [materialShipment]);
 
   return (
-    <Box p={2} w="100%" border="1px solid lightgray">
+    <Box p={2} w="100%" border="1px solid lightgray" {...props}>
       <Flex flexDir="row" justifyContent="space-between">
         <Box>
           {content}
@@ -71,9 +82,13 @@ const MaterialShipmentCard = ({
           {materialShipment.vehicleObject?.vehicleType}{" "}
           {materialShipment.vehicleObject?.vehicleCode}
         </Box>
-        <Flex flexDir="row">
+        <HStack dir="horizontal" spacing={2} h="100%">
+          {materialShipment.noJobsiteMaterial && (
+            <Warning tooltip="No costing" />
+          )}
           {edit && (
             <IconButton
+              m="auto"
               backgroundColor="transparent"
               icon={<FiTrash />}
               aria-label="delete"
@@ -81,28 +96,21 @@ const MaterialShipmentCard = ({
             />
           )}
           <IconButton
+            m="auto"
             backgroundColor="transparent"
             icon={edit ? <FiX /> : <FiEdit />}
             aria-label="edit"
             onClick={() => setEdit(!edit)}
           />
-        </Flex>
+        </HStack>
       </Flex>
       {edit && (
         <Box backgroundColor="gray.200" p={2} borderRadius={4}>
-          {materialShipment.schemaVersion <= 1 ? (
-            <MaterialShipmentUpdateV1
-              materialShipment={materialShipment}
-              dailyReportDate={dailyReport.date}
-              onSuccess={() => setEdit(false)}
-            />
-          ) : (
-            <MaterialShipmentUpdate
-              materialShipment={materialShipment}
-              dailyReport={dailyReport}
-              onSuccess={() => setEdit(false)}
-            />
-          )}
+          <MaterialShipmentUpdate
+            materialShipment={materialShipment}
+            dailyReport={dailyReport}
+            onSuccess={() => setEdit(false)}
+          />
         </Box>
       )}
     </Box>

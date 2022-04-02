@@ -11,7 +11,6 @@ import * as yup from "yup";
 import {
   JobsiteMaterialCardSnippetFragment,
   MaterialShipmentShipmentData,
-  MaterialShipmentShipmentDataV1,
 } from "../generated/graphql";
 
 import TextField, { ITextField } from "../components/Common/forms/TextField";
@@ -21,26 +20,59 @@ import Select, { ISelect } from "../components/Common/forms/Select";
 import Unit, { IUnit } from "../components/Common/forms/Unit";
 import Number, { INumber } from "../components/Common/forms/Number";
 import CompanySearch from "../components/Search/CompanySearch";
+import { isEmpty } from "lodash";
 
-const MaterialShipmentUpdateV1 = yup
+const MaterialShipmentUpdate = yup
   .object()
   .shape({
-    shipmentType: yup.string().required(),
+    noJobsiteMaterial: yup.boolean().required(),
+    jobsiteMaterialId: yup.string().when("noJobsiteMaterial", {
+      is: false,
+      then: yup.string().required("must provide material"),
+    }),
+    shipmentType: yup
+      .string()
+      .nullable()
+      .when("noJobsiteMaterial", {
+        is: true,
+        then: yup.string().required("must provide material"),
+      }),
+    supplier: yup
+      .string()
+      .nullable()
+      .when("noJobsiteMaterial", {
+        is: true,
+        then: yup.string().required("must provide supplier"),
+      }),
+    unit: yup
+      .string()
+      .nullable()
+      .when("noJobsiteMaterial", {
+        is: true,
+        then: yup.string().required("must provide unit"),
+      }),
     quantity: yup.number().required(),
-    unit: yup.string().required(),
     startTime: yup.string().optional(),
     endTime: yup.string().optional(),
-    supplier: yup.string().required(),
   })
   .required();
 
-export const useMaterialShipmentUpdateFormV1 = (options?: UseFormProps) => {
+export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
   const form = useForm({
-    resolver: yupResolver(MaterialShipmentUpdateV1),
+    resolver: yupResolver(MaterialShipmentUpdate),
     ...options,
   });
 
-  const { control, handleSubmit, setValue } = form;
+  const { control, handleSubmit, watch, setValue } = form;
+
+  const jobsiteMaterialId = watch("jobsiteMaterialId");
+
+  const noJobsiteMaterial = watch("noJobsiteMaterial");
+
+  React.useEffect(() => {
+    if (isEmpty(jobsiteMaterialId)) setValue("noJobsiteMaterial", true);
+    else setValue("noJobsiteMaterial", false);
+  }, [jobsiteMaterialId, setValue]);
 
   const FormComponents = {
     Form: ({
@@ -48,8 +80,40 @@ export const useMaterialShipmentUpdateFormV1 = (options?: UseFormProps) => {
       submitHandler,
     }: {
       children: React.ReactNode;
-      submitHandler: SubmitHandler<MaterialShipmentShipmentDataV1>;
+      submitHandler: SubmitHandler<MaterialShipmentShipmentData>;
     }) => <form onSubmit={handleSubmit(submitHandler)}>{children}</form>,
+    JobsiteMaterial: ({
+      isLoading,
+      jobsiteMaterials,
+      ...props
+    }: IFormProps<Omit<ISelect, "options">> & {
+      jobsiteMaterials: JobsiteMaterialCardSnippetFragment[];
+    }) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="jobsiteMaterialId"
+            render={({ field, fieldState }) => (
+              <Select
+                {...props}
+                {...field}
+                options={jobsiteMaterials.map((material) => {
+                  return {
+                    title: `${material.material.name} - ${material.supplier.name}`,
+                    value: material._id,
+                  };
+                })}
+                errorMessage={fieldState.error?.message}
+                label="Material"
+                isDisabled={isLoading}
+                placeholder="Material not listed"
+              />
+            )}
+          />
+        ),
+        [isLoading, jobsiteMaterials, props]
+      ),
     ShipmentType: ({ isLoading, ...props }: IFormProps<ITextField>) =>
       React.useMemo(
         () => (
@@ -60,6 +124,7 @@ export const useMaterialShipmentUpdateFormV1 = (options?: UseFormProps) => {
               <MaterialSearch
                 {...props}
                 {...field}
+                defaultValue={field.value}
                 errorMessage={fieldState.error?.message}
                 label="Shipment Type"
                 isDisabled={isLoading}
@@ -82,6 +147,7 @@ export const useMaterialShipmentUpdateFormV1 = (options?: UseFormProps) => {
               <CompanySearch
                 {...props}
                 {...field}
+                defaultValue={field.value}
                 errorMessage={fieldState.error?.message}
                 label="Supplier"
                 isDisabled={isLoading}
@@ -178,132 +244,7 @@ export const useMaterialShipmentUpdateFormV1 = (options?: UseFormProps) => {
 
   return {
     FormComponents,
-    ...form,
-  };
-};
-
-const MaterialShipmentUpdate = yup
-  .object()
-  .shape({
-    jobsiteMaterialId: yup.string().required(),
-    quantity: yup.number().required(),
-    startTime: yup.string().optional(),
-    endTime: yup.string().optional(),
-  })
-  .required();
-
-export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
-  const form = useForm({
-    resolver: yupResolver(MaterialShipmentUpdate),
-    ...options,
-  });
-
-  const { control, handleSubmit } = form;
-
-  const FormComponents = {
-    Form: ({
-      children,
-      submitHandler,
-    }: {
-      children: React.ReactNode;
-      submitHandler: SubmitHandler<MaterialShipmentShipmentData>;
-    }) => <form onSubmit={handleSubmit(submitHandler)}>{children}</form>,
-    JobsiteMaterial: ({
-      isLoading,
-      jobsiteMaterials,
-      ...props
-    }: IFormProps<Omit<ISelect, "options">> & {
-      jobsiteMaterials: JobsiteMaterialCardSnippetFragment[];
-    }) =>
-      React.useMemo(
-        () => (
-          <Controller
-            control={control}
-            name="jobsiteMaterialId"
-            render={({ field, fieldState }) => (
-              <Select
-                {...props}
-                {...field}
-                options={jobsiteMaterials.map((material) => {
-                  return {
-                    title: `${material.material.name} - ${material.supplier.name}`,
-                    value: material._id,
-                  };
-                })}
-                errorMessage={fieldState.error?.message}
-                label="Material"
-                isDisabled={isLoading}
-              />
-            )}
-          />
-        ),
-        [isLoading, jobsiteMaterials, props]
-      ),
-    StartTime: ({ isLoading, ...props }: IFormProps<ITextField>) =>
-      React.useMemo(
-        () => (
-          <Controller
-            control={control}
-            name="startTime"
-            render={({ field, fieldState }) => {
-              return (
-                <TextField
-                  {...props}
-                  {...field}
-                  type="time"
-                  errorMessage={fieldState.error?.message}
-                  label="Start Time (Optional)"
-                  isDisabled={isLoading}
-                />
-              );
-            }}
-          />
-        ),
-        [isLoading, props]
-      ),
-    EndTime: ({ isLoading, ...props }: IFormProps<ITextField>) =>
-      React.useMemo(
-        () => (
-          <Controller
-            control={control}
-            name="endTime"
-            render={({ field, fieldState }) => (
-              <TextField
-                {...props}
-                {...field}
-                type="time"
-                errorMessage={fieldState.error?.message}
-                label="End Time (Optional)"
-                isDisabled={isLoading}
-              />
-            )}
-          />
-        ),
-        [isLoading, props]
-      ),
-    Quantity: ({ isLoading, ...props }: IFormProps<INumber>) =>
-      React.useMemo(
-        () => (
-          <Controller
-            control={control}
-            name="quantity"
-            render={({ field, fieldState }) => (
-              <Number
-                {...props}
-                {...field}
-                errorMessage={fieldState.error?.message}
-                label="Quantity"
-                isDisabled={isLoading}
-              />
-            )}
-          />
-        ),
-        [isLoading, props]
-      ),
-  };
-
-  return {
-    FormComponents,
+    noJobsiteMaterial,
     ...form,
   };
 };

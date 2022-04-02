@@ -2,11 +2,12 @@ import { Box, Flex, IconButton, SimpleGrid, useToast } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
 import { MaterialShipmentVehicleTypes } from "../../../constants/select";
-import { useSystem } from "../../../contexts/System";
 import {
   DailyReportFullDocument,
   DailyReportFullSnippetFragment,
   MaterialShipmentCreateData,
+  MaterialShipmentShipmentData,
+  MaterialShipmentVehicleObjectData,
   useMaterialShipmentCreateMutation,
 } from "../../../generated/graphql";
 import convertHourToDate from "../../../utils/convertHourToDate";
@@ -17,10 +18,15 @@ import Number from "../../Common/forms/Number";
 import Select, { ISelect } from "../../Common/forms/Select";
 import SubmitButton from "../../Common/forms/SubmitButton";
 import TextField from "../../Common/forms/TextField";
+import Unit from "../../Common/forms/Unit";
 import CompanySearch from "../../Search/CompanySearch";
+import MaterialSearch from "../../Search/MaterialSearch";
 
 type ShipmentErrors = {
   jobsiteMaterialId?: string;
+  shipmentType?: string;
+  supplier?: string;
+  unit?: string;
   quantity?: string;
   startTime?: string;
   endTime?: string;
@@ -44,31 +50,33 @@ const MaterialShipmentCreate = ({
   dailyReport,
   onSuccess,
 }: IMaterialShipmentCreate) => {
-  const initialShipment = React.useMemo(() => {
+  const initialShipment: MaterialShipmentShipmentData = React.useMemo(() => {
+    const jobsiteMaterialId = dailyReport.jobsite.materials[0]?._id || "";
+
     return {
-      jobsiteMaterialId: dailyReport.jobsite.materials[0]?._id || "",
+      noJobsiteMaterial: isEmpty(jobsiteMaterialId),
+      jobsiteMaterialId,
       quantity: 0,
       startTime: undefined,
       endTime: undefined,
     };
   }, [dailyReport.jobsite.materials]);
 
-  const initialVehicleObject = React.useMemo(() => {
-    return {
-      source: "",
-      vehicleType: MaterialShipmentVehicleTypes[0],
-      vehicleCode: "",
-      truckingRateId: "",
-    };
-  }, []);
+  const initialVehicleObject: MaterialShipmentVehicleObjectData =
+    React.useMemo(() => {
+      return {
+        source: "",
+        vehicleType:
+          dailyReport.jobsite.truckingRates[0]?.title ||
+          MaterialShipmentVehicleTypes[0],
+        vehicleCode: "",
+        truckingRateId: dailyReport.jobsite.truckingRates[0]?._id || "",
+      };
+    }, [dailyReport.jobsite.truckingRates]);
 
   /**
    * ----- Hook Initialization -----
    */
-
-  const {
-    state: { system },
-  } = useSystem();
 
   const toast = useToast();
 
@@ -112,6 +120,13 @@ const MaterialShipmentCreate = ({
         JSON.stringify(formData)
       );
 
+      if (isEmpty(jobsiteMaterialId))
+        formDataCopy[dataIndex].shipments[shipmentIndex].noJobsiteMaterial =
+          true;
+      else
+        formDataCopy[dataIndex].shipments[shipmentIndex].noJobsiteMaterial =
+          false;
+
       formDataCopy[dataIndex].shipments[shipmentIndex].jobsiteMaterialId =
         jobsiteMaterialId;
 
@@ -127,6 +142,45 @@ const MaterialShipmentCreate = ({
       );
 
       formDataCopy[dataIndex].shipments[shipmentIndex].quantity = value;
+
+      setFormData(formDataCopy);
+    },
+    [formData]
+  );
+
+  const updateUnit = React.useCallback(
+    (value: string, dataIndex: number, shipmentIndex: number) => {
+      const formDataCopy: MaterialShipmentCreateData[] = JSON.parse(
+        JSON.stringify(formData)
+      );
+
+      formDataCopy[dataIndex].shipments[shipmentIndex].unit = value;
+
+      setFormData(formDataCopy);
+    },
+    [formData]
+  );
+
+  const updateShipmentType = React.useCallback(
+    (value: string, dataIndex: number, shipmentIndex: number) => {
+      const formDataCopy: MaterialShipmentCreateData[] = JSON.parse(
+        JSON.stringify(formData)
+      );
+
+      formDataCopy[dataIndex].shipments[shipmentIndex].shipmentType = value;
+
+      setFormData(formDataCopy);
+    },
+    [formData]
+  );
+
+  const updateSupplier = React.useCallback(
+    (value: string, dataIndex: number, shipmentIndex: number) => {
+      const formDataCopy: MaterialShipmentCreateData[] = JSON.parse(
+        JSON.stringify(formData)
+      );
+
+      formDataCopy[dataIndex].shipments[shipmentIndex].supplier = value;
 
       setFormData(formDataCopy);
     },
@@ -274,16 +328,31 @@ const MaterialShipmentCreate = ({
           quantity: undefined,
           startTime: undefined,
           endTime: undefined,
+          shipmentType: undefined,
+          supplier: undefined,
+          unit: undefined,
         };
-
-        if (isEmpty(formData[i].shipments[j].jobsiteMaterialId)) {
-          shipments[j].jobsiteMaterialId = "please select a material";
-          valid = false;
-        }
 
         if (isEmpty(formData[i].shipments[j].quantity)) {
           shipments[j].quantity = "please provide a quantity";
           valid = false;
+        }
+
+        if (formData[i].shipments[j].noJobsiteMaterial) {
+          if (isEmpty(formData[i].shipments[j].shipmentType)) {
+            shipments[j].shipmentType = "please provide a shipment type";
+            valid = false;
+          }
+
+          if (isEmpty(formData[i].shipments[j].supplier)) {
+            shipments[j].supplier = "please provide a supplier";
+            valid = false;
+          }
+
+          if (isEmpty(formData[i].shipments[j].unit)) {
+            shipments[j].unit = "please provide a unit";
+            valid = false;
+          }
         }
       }
 
@@ -401,47 +470,136 @@ const MaterialShipmentCreate = ({
                   />
                 </Flex>
               )}
-              <SimpleGrid spacing={2} columns={[1, 1, 2]}>
-                <Select
-                  name="jobsiteMaterialId"
-                  options={dailyReport.jobsite.materials.map(
-                    (jobsiteMaterial) => {
-                      return {
-                        title: `${jobsiteMaterial.material.name} - ${jobsiteMaterial.supplier.name}`,
-                        value: jobsiteMaterial._id,
-                      };
+              {/* SHIPMENT */}
+              {shipment.noJobsiteMaterial ? (
+                // NO JOBSITE MATERIAL
+                <>
+                  <Select
+                    name="jobsiteMaterialId"
+                    options={dailyReport.jobsite.materials.map(
+                      (jobsiteMaterial) => {
+                        return {
+                          title: `${jobsiteMaterial.material.name} - ${jobsiteMaterial.supplier.name}`,
+                          value: jobsiteMaterial._id,
+                        };
+                      }
+                    )}
+                    placeholder="Material not listed"
+                    label="Material"
+                    isDisabled={loading}
+                    value={shipment.jobsiteMaterialId || undefined}
+                    errorMessage={
+                      formErrors[dataIndex]?.shipments[shipmentIndex]
+                        ?.jobsiteMaterialId
                     }
-                  )}
-                  placeholder="Contact office to add Materials"
-                  label="Material"
-                  isDisabled={loading}
-                  value={shipment.jobsiteMaterialId}
-                  errorMessage={
-                    formErrors[dataIndex]?.shipments[shipmentIndex]
-                      ?.jobsiteMaterialId
-                  }
-                  onChange={(e) =>
-                    updateJobsiteMaterial(
-                      e.target.value,
-                      dataIndex,
-                      shipmentIndex
-                    )
-                  }
-                />
-                <Number
-                  step={10}
-                  stepper
-                  label="Quantity"
-                  isDisabled={loading}
-                  value={shipment.quantity}
-                  errorMessage={
-                    formErrors[dataIndex]?.shipments[shipmentIndex]?.quantity
-                  }
-                  onChange={(e) =>
-                    updateQuantity(parseInt(e), dataIndex, shipmentIndex)
-                  }
-                />
-              </SimpleGrid>
+                    onChange={(e) => {
+                      updateJobsiteMaterial(
+                        e.target.value,
+                        dataIndex,
+                        shipmentIndex
+                      );
+                    }}
+                  />
+                  <SimpleGrid spacing={2} columns={[1, 1, 2]}>
+                    <Number
+                      step={10}
+                      stepper
+                      label="Quantity"
+                      isDisabled={loading}
+                      value={shipment.quantity}
+                      errorMessage={
+                        formErrors[dataIndex]?.shipments[shipmentIndex]
+                          ?.quantity
+                      }
+                      onChange={(e) =>
+                        updateQuantity(parseInt(e), dataIndex, shipmentIndex)
+                      }
+                    />
+                    <Unit
+                      label="Units"
+                      value={shipment.unit || undefined}
+                      onChange={(e) =>
+                        updateUnit(e.target.value, dataIndex, shipmentIndex)
+                      }
+                      errorMessage={
+                        formErrors[dataIndex]?.shipments[shipmentIndex]?.unit
+                      }
+                    />
+                  </SimpleGrid>
+                  <SimpleGrid spacing={2} columns={[1, 1, 2]}>
+                    <MaterialSearch
+                      label="Received Material"
+                      isDisabled={loading}
+                      errorMessage={
+                        formErrors[dataIndex]?.shipments[shipmentIndex]
+                          ?.shipmentType
+                      }
+                      materialSelected={(material) =>
+                        updateShipmentType(
+                          material.name,
+                          dataIndex,
+                          shipmentIndex
+                        )
+                      }
+                    />
+                    <CompanySearch
+                      label="Supplier"
+                      isDisabled={loading}
+                      errorMessage={
+                        formErrors[dataIndex]?.shipments[shipmentIndex]
+                          ?.supplier
+                      }
+                      companySelected={(company) =>
+                        updateSupplier(company.name, dataIndex, shipmentIndex)
+                      }
+                    />
+                  </SimpleGrid>
+                </>
+              ) : (
+                // JOBSITE MATERIAL
+                <SimpleGrid spacing={2} columns={[1, 1, 2]}>
+                  <Select
+                    name="jobsiteMaterialId"
+                    options={dailyReport.jobsite.materials.map(
+                      (jobsiteMaterial) => {
+                        return {
+                          title: `${jobsiteMaterial.material.name} - ${jobsiteMaterial.supplier.name}`,
+                          value: jobsiteMaterial._id,
+                        };
+                      }
+                    )}
+                    placeholder="Material not listed"
+                    label="Material"
+                    isDisabled={loading}
+                    value={shipment.jobsiteMaterialId || undefined}
+                    errorMessage={
+                      formErrors[dataIndex]?.shipments[shipmentIndex]
+                        ?.jobsiteMaterialId
+                    }
+                    onChange={(e) => {
+                      updateJobsiteMaterial(
+                        e.target.value,
+                        dataIndex,
+                        shipmentIndex
+                      );
+                    }}
+                  />
+                  <Number
+                    step={10}
+                    stepper
+                    label="Quantity"
+                    isDisabled={loading}
+                    value={shipment.quantity}
+                    errorMessage={
+                      formErrors[dataIndex]?.shipments[shipmentIndex]?.quantity
+                    }
+                    onChange={(e) =>
+                      updateQuantity(parseInt(e), dataIndex, shipmentIndex)
+                    }
+                  />
+                </SimpleGrid>
+              )}
+
               <SimpleGrid spacing={2} columns={[1, 1, 2]}>
                 <TextField
                   label="Start Time (optional)"
@@ -470,6 +628,7 @@ const MaterialShipmentCreate = ({
                   }
                 />
               </SimpleGrid>
+              {/* END SHIPMENT */}
             </Box>
           ))}
           <Box w="100%" px={2}>

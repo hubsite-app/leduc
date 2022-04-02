@@ -6,6 +6,7 @@ fragment MaterialShipmentCardSnippet on MaterialShipmentClass {
   unit
   startTime
   endTime
+  noJobsiteMaterial
   jobsiteMaterial {
     ...JobsiteMaterialCardSnippet
   }

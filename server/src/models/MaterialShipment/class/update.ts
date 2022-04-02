@@ -4,9 +4,10 @@ import {
   MaterialShipmentDocument,
 } from "@models";
 import {
+  IMaterialShipmentShipmentUpdate,
   IMaterialShipmentUpdate,
-  IMaterialShipmentUpdateV1,
 } from "@typescript/materialShipment";
+import isEmpty from "@utils/isEmpty";
 import dayjs from "dayjs";
 
 const document = (
@@ -26,10 +27,10 @@ const document = (
         throw new Error(
           "could not find material shipments daily report for update"
         );
-      await materialShipment.updateJobsiteMaterial(
-        data.jobsiteMaterial,
-        dailyReport
-      );
+
+      await materialShipment.updateShipment(data, dailyReport);
+
+      await materialShipment.validateDocument();
 
       resolve();
     } catch (e) {
@@ -38,23 +39,36 @@ const document = (
   });
 };
 
-const documentV1 = (
+const shipment = (
   materialShipment: MaterialShipmentDocument,
-  data: IMaterialShipmentUpdateV1
+  shipment: IMaterialShipmentShipmentUpdate,
+  dailyReport: DailyReportDocument
 ) => {
   return new Promise<void>(async (resolve, reject) => {
     try {
-      materialShipment.shipmentType = data.shipmentType;
+      if (shipment.noJobsiteMaterial) {
+        if (isEmpty(shipment.shipmentType))
+          throw new Error("Must provide a shipment type");
 
-      materialShipment.quantity = data.quantity;
+        if (isEmpty(shipment.supplier))
+          throw new Error("Must provide a supplier");
 
-      materialShipment.unit = data.unit;
+        if (isEmpty(shipment.unit)) throw new Error("Must provide a unit");
 
-      materialShipment.startTime = data.startTime;
+        materialShipment.shipmentType = shipment.shipmentType;
+        materialShipment.supplier = shipment.supplier;
+        materialShipment.unit = shipment.unit;
+      } else {
+        if (!shipment.jobsiteMaterial)
+          throw new Error("Must provide a jobsite material");
 
-      materialShipment.endTime = data.endTime;
+        await materialShipment.updateJobsiteMaterial(
+          shipment.jobsiteMaterial,
+          dailyReport
+        );
+      }
 
-      materialShipment.supplier = data.supplier;
+      materialShipment.noJobsiteMaterial = shipment.noJobsiteMaterial;
 
       resolve();
     } catch (e) {
@@ -116,7 +130,7 @@ const jobsiteMaterial = (
 
 export default {
   document,
-  documentV1,
   date,
   jobsiteMaterial,
+  shipment,
 };

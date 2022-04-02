@@ -1,0 +1,6 @@
+fragment MaterialShipmentNonCostedSnippet on MaterialShipmentClass {
+  dailyReport {
+    ...DailyReportForMaterialShipmentSnippet
+  }
+  ...MaterialShipmentCardSnippet
+}

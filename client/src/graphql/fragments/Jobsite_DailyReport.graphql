@@ -1,0 +1,10 @@
+fragment JobsiteForDailyReportSnippet on JobsiteClass {
+  _id
+  name
+  materials {
+    ...JobsiteMaterialCardSnippet
+  }
+  truckingRates {
+    ...TruckingRateSnippet
+  }
+}

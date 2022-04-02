@@ -34,7 +34,7 @@ const Unit = ({ ...props }: IUnit) => {
    * ----- Rendering -----
    */
 
-  return <Select options={options} {...props} />;
+  return <Select options={options} placeholder="Select unit" {...props} />;
 };
 
 export default Unit;

@@ -12,23 +12,23 @@ interface IMaterialShipmentCreateBase {
   dailyReport: DailyReportDocument;
 }
 
-export interface IMaterialShipmentCreate extends IMaterialShipmentCreateBase {
-  quantity: number;
-  jobsiteMaterial: JobsiteMaterialDocument;
-}
-
-export interface IMaterialShipmentUpdate {
-  jobsiteMaterial: JobsiteMaterialDocument;
-  quantity: number;
-  startTime?: Date;
-  endTime?: Date;
-}
-
-export interface IMaterialShipmentUpdateV1 {
-  shipmentType: string;
-  quantity: number;
-  unit: string;
-  startTime?: Date;
-  endTime?: Date;
+export interface IMaterialShipmentShipmentUpdate {
+  noJobsiteMaterial: boolean;
+  jobsiteMaterial?: JobsiteMaterialDocument;
+  shipmentType?: string;
   supplier?: string;
+  unit?: string;
+}
+
+export interface IMaterialShipmentCreate
+  extends IMaterialShipmentCreateBase,
+    IMaterialShipmentShipmentUpdate {
+  quantity: number;
+}
+
+export interface IMaterialShipmentUpdate
+  extends IMaterialShipmentShipmentUpdate {
+  quantity: number;
+  startTime?: Date;
+  endTime?: Date;
 }

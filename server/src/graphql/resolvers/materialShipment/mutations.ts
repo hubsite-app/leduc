@@ -3,13 +3,26 @@ import {
   JobsiteMaterial,
   MaterialShipment,
   MaterialShipmentDocument,
+  JobsiteMaterialDocument,
 } from "@models";
 import { Field, Float, InputType } from "type-graphql";
 
 @InputType()
 export class MaterialShipmentShipmentData {
   @Field({ nullable: false })
-  public jobsiteMaterialId!: string;
+  public noJobsiteMaterial!: boolean;
+
+  @Field({ nullable: true })
+  public jobsiteMaterialId?: string;
+
+  @Field({ nullable: true })
+  public shipmentType?: string;
+
+  @Field({ nullable: true })
+  public supplier?: string;
+
+  @Field({ nullable: true })
+  public unit?: string;
 
   @Field(() => Float, { nullable: false })
   public quantity!: number;
@@ -88,17 +101,19 @@ const create = (dailyReportId: string, data: MaterialShipmentCreateData[]) => {
         const currentData = data[i];
 
         for (let j = 0; j < currentData.shipments.length; j++) {
-          const jobsiteMaterial = (await JobsiteMaterial.getById(
-            currentData.shipments[j].jobsiteMaterialId,
-            { throwError: true }
-          ))!;
+          let jobsiteMaterial: JobsiteMaterialDocument | null = null;
+          if (currentData.shipments[j].noJobsiteMaterial === false) {
+            jobsiteMaterial = await JobsiteMaterial.getById(
+              currentData.shipments[j].jobsiteMaterialId!
+            );
+          }
 
           materialShipments.push(
             await MaterialShipment.createDocument({
               vehicleObject: currentData.vehicleObject,
               ...currentData.shipments[j],
               dailyReport,
-              jobsiteMaterial,
+              jobsiteMaterial: jobsiteMaterial || undefined,
             })
           );
         }
@@ -124,33 +139,17 @@ const update = (id: string, data: MaterialShipmentShipmentData) => {
         throwError: true,
       }))!;
 
-      const jobsiteMaterial = (await JobsiteMaterial.getById(
-        data.jobsiteMaterialId,
-        { throwError: true }
-      ))!;
+      let jobsiteMaterial: JobsiteMaterialDocument | null = null;
+      if (data.noJobsiteMaterial === false) {
+        jobsiteMaterial = await JobsiteMaterial.getById(
+          data.jobsiteMaterialId!
+        );
+      }
 
       await materialShipment.updateDocument({
         ...data,
-        jobsiteMaterial,
+        jobsiteMaterial: jobsiteMaterial || undefined,
       });
-
-      await materialShipment.save();
-
-      resolve(materialShipment);
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
-
-const updateV1 = (id: string, data: MaterialShipmentShipmentDataV1) => {
-  return new Promise<MaterialShipmentDocument>(async (resolve, reject) => {
-    try {
-      const materialShipment = (await MaterialShipment.getById(id, {
-        throwError: true,
-      }))!;
-
-      await materialShipment.updateDocumentV1(data);
 
       await materialShipment.save();
 
@@ -180,6 +179,5 @@ const remove = (id: string) => {
 export default {
   create,
   update,
-  updateV1,
   remove,
 };

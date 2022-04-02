@@ -8,6 +8,7 @@ import {
 } from "type-graphql";
 
 import {
+  DailyReportClass,
   JobsiteMaterialClass,
   MaterialShipmentClass,
   MaterialShipmentDocument,
@@ -16,7 +17,6 @@ import {
 import mutations, {
   MaterialShipmentCreateData,
   MaterialShipmentShipmentData,
-  MaterialShipmentShipmentDataV1,
 } from "./mutations";
 
 @Resolver(() => MaterialShipmentClass)
@@ -33,6 +33,11 @@ export default class MaterialShipmentResolver {
   @FieldResolver(() => JobsiteMaterialClass, { nullable: true })
   async jobsiteMaterial(@Root() materialShipment: MaterialShipmentDocument) {
     return materialShipment.getJobsiteMaterial();
+  }
+
+  @FieldResolver(() => DailyReportClass)
+  async dailyReport(@Root() materialShipment: MaterialShipmentDocument) {
+    return materialShipment.getDailyReport();
   }
 
   /**
@@ -56,15 +61,6 @@ export default class MaterialShipmentResolver {
     @Arg("data") data: MaterialShipmentShipmentData
   ) {
     return mutations.update(id, data);
-  }
-
-  @Authorized()
-  @Mutation(() => MaterialShipmentClass)
-  async materialShipmentUpdateV1(
-    @Arg("id") id: string,
-    @Arg("data") data: MaterialShipmentShipmentDataV1
-  ) {
-    return mutations.updateV1(id, data);
   }
 
   @Authorized()

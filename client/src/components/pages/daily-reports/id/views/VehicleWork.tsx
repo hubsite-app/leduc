@@ -15,21 +15,10 @@ interface IVehicleWork {
 const VehicleWork = ({ dailyReport }: IVehicleWork) => {
   const [addForm, setAddForm] = React.useState(false);
 
-  const [collapsed, setCollapsed] = React.useState(
-    dailyReport.vehicleWork.length > 0
-  );
-
   return (
     <Card h="fit-content">
       <Flex flexDir="row" justifyContent="space-between">
-        <Heading
-          my="auto"
-          ml={2}
-          size="md"
-          w="100%"
-          cursor="pointer"
-          onClick={() => setCollapsed(!collapsed)}
-        >
+        <Heading my="auto" ml={2} size="md" w="100%">
           Vehicle Hours ({dailyReport.vehicleWork.length || 0})
         </Heading>
         <IconButton

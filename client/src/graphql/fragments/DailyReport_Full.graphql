@@ -4,14 +4,7 @@ fragment DailyReportFullSnippet on DailyReportClass {
   jobCostApproved
   payrollComplete
   jobsite {
-    _id
-    name
-    materials {
-      ...JobsiteMaterialCardSnippet
-    }
-    truckingRates {
-      ...TruckingRateSnippet
-    }
+    ...JobsiteForDailyReportSnippet
   }
   crew {
     ...CrewFullSnippet

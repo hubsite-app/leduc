@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import React from "react";
 import { useMaterialShipmentUpdateForm } from "../../../forms/materialShipment";
 import {
-  DailyReportFullSnippetFragment,
+  DailyReportForMaterialShipmentSnippetFragment,
   MaterialShipmentCardSnippetFragment,
   MaterialShipmentShipmentData,
   useMaterialShipmentUpdateMutation,
@@ -13,7 +13,7 @@ import SubmitButton from "../../Common/forms/SubmitButton";
 
 interface IMaterialShipmentUpdate {
   materialShipment: MaterialShipmentCardSnippetFragment;
-  dailyReport: DailyReportFullSnippetFragment;
+  dailyReport: DailyReportForMaterialShipmentSnippetFragment;
   onSuccess?: () => void;
 }
 
@@ -28,12 +28,15 @@ const MaterialShipmentUpdate = ({
 
   const [update, { loading }] = useMaterialShipmentUpdateMutation();
 
-  const { FormComponents } = useMaterialShipmentUpdateForm({
+  const { FormComponents, noJobsiteMaterial } = useMaterialShipmentUpdateForm({
     defaultValues: {
       jobsiteMaterialId: materialShipment.jobsiteMaterial?._id,
       quantity: materialShipment.quantity,
       startTime: materialShipment.startTime,
       endTime: materialShipment.endTime,
+      shipmentType: materialShipment.shipmentType,
+      unit: materialShipment.unit,
+      supplier: materialShipment.supplier,
     },
   });
 
@@ -75,13 +78,30 @@ const MaterialShipmentUpdate = ({
 
   return (
     <FormComponents.Form submitHandler={handleSubmit}>
-      <SimpleGrid spacing={2} columns={[1, 1, 2]}>
-        <FormComponents.JobsiteMaterial
-          jobsiteMaterials={dailyReport.jobsite.materials}
-          isLoading={loading}
-        />
-        <FormComponents.Quantity isLoading={loading} />
-      </SimpleGrid>
+      {noJobsiteMaterial ? (
+        <>
+          <FormComponents.JobsiteMaterial
+            jobsiteMaterials={dailyReport.jobsite.materials}
+            isLoading={loading}
+          />
+          <SimpleGrid spacing={2} columns={[1, 1, 2]}>
+            <FormComponents.Quantity isLoading={loading} />
+            <FormComponents.Unit isLoading={loading} />
+          </SimpleGrid>
+          <SimpleGrid spacing={2} columns={[1, 1, 2]}>
+            <FormComponents.ShipmentType isLoading={loading} />
+            <FormComponents.Supplier isLoading={loading} />
+          </SimpleGrid>
+        </>
+      ) : (
+        <SimpleGrid spacing={2} columns={[1, 1, 2]}>
+          <FormComponents.JobsiteMaterial
+            jobsiteMaterials={dailyReport.jobsite.materials}
+            isLoading={loading}
+          />
+          <FormComponents.Quantity isLoading={loading} />
+        </SimpleGrid>
+      )}
       <SimpleGrid spacing={2} columns={[1, 1, 2]}>
         <FormComponents.StartTime isLoading={loading} />
         <FormComponents.EndTime isLoading={loading} />

@@ -99,6 +99,7 @@ const completedQuantity = (jobsiteMaterial: JobsiteMaterialDocument) => {
     try {
       const materialShipments = await MaterialShipment.find({
         jobsiteMaterial: jobsiteMaterial._id,
+        noJobsiteMaterial: false,
       });
 
       let quantity = 0;

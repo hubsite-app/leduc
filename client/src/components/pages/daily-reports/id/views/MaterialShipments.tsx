@@ -6,7 +6,7 @@ import { DailyReportFullSnippetFragment } from "../../../../../generated/graphql
 import Card from "../../../../Common/Card";
 import ShowMore from "../../../../Common/ShowMore";
 import MaterialShipmentCreate from "../../../../Forms/MaterialShipment/MaterialShipmentCreate";
-import MaterialShipmentCard from "./MaterialShipmentCard";
+import MaterialShipmentCard from "../../../../Common/MaterialShipment/MaterialShipmentCard";
 
 interface IMaterialShipments {
   dailyReport: DailyReportFullSnippetFragment;

@@ -11,8 +11,10 @@ import {
   JobsiteMaterial,
   JobsiteMaterialDocument,
   JobsiteModel,
+  MaterialShipment,
+  MaterialShipmentDocument,
 } from "@models";
-import { GetByIDOptions, ISearchOptions } from "@typescript/models";
+import { GetByIDOptions, Id, ISearchOptions } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 import { IJobsiteSearchObject } from "@typescript/jobsite";
 import ElasticsearchClient from "@elasticsearch/client";
@@ -170,6 +172,31 @@ const invoices = (jobsite: JobsiteDocument) => {
   });
 };
 
+const nonCostedMaterialShipments = (jobsite: JobsiteDocument) => {
+  return new Promise<MaterialShipmentDocument[]>(async (resolve, reject) => {
+    try {
+      const dailyReports = await jobsite.getDailyReports();
+
+      const materialShipmentIds: Id[] = [];
+      for (let i = 0; i < dailyReports.length; i++) {
+        materialShipmentIds.push.apply(
+          materialShipmentIds,
+          dailyReports[i].materialShipment.map((id) => id!.toString())
+        );
+      }
+
+      const materialShipments = await MaterialShipment.find({
+        _id: { $in: materialShipmentIds },
+        noJobsiteMaterial: true,
+      });
+
+      resolve(materialShipments);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   byId,
   search,
@@ -178,4 +205,5 @@ export default {
   dailyReports,
   materials,
   invoices,
+  nonCostedMaterialShipments,
 };

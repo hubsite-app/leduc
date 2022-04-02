@@ -1,0 +1,9 @@
+fragment DailyReportForMaterialShipmentSnippet on DailyReportClass {
+  _id
+  date
+  jobsite {
+    materials {
+      ...JobsiteMaterialCardSnippet
+    }
+  }
+}

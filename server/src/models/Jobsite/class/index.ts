@@ -61,6 +61,10 @@ export class JobsiteClass extends JobsiteSchema {
     return get.invoices(this);
   }
 
+  public async getNonCostedMaterialShipments(this: JobsiteDocument) {
+    return get.nonCostedMaterialShipments(this);
+  }
+
   /**
    * ----- Create -----
    */

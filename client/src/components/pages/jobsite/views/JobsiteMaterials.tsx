@@ -1,11 +1,20 @@
-import { Box, Center, Flex, Heading, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Flex,
+  Heading,
+  HStack,
+  IconButton,
+} from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
 
 import { JobsiteFullSnippetFragment } from "../../../../generated/graphql";
 import Card from "../../../Common/Card";
 import ShowMore from "../../../Common/ShowMore";
+import Warning from "../../../Common/Warning";
 import JobsiteMaterialCreate from "../../../Forms/JobsiteMaterial/JobsiteMaterialCreate";
+import MaterialShipmentCard from "../../../Common/MaterialShipment/MaterialShipmentCard";
 import JobsiteMaterialCard from "./JobsiteMaterialCard";
 
 interface IJobsiteMaterialsCosting {
@@ -19,6 +28,8 @@ const JobsiteMaterialsCosting = ({ jobsite }: IJobsiteMaterialsCosting) => {
 
   const [addForm, setAddForm] = React.useState(false);
 
+  const [nonCostedList, setNonCostedList] = React.useState(false);
+
   /**
    * ----- Rendering -----
    */
@@ -29,12 +40,20 @@ const JobsiteMaterialsCosting = ({ jobsite }: IJobsiteMaterialsCosting) => {
         <Heading my="auto" ml={2} size="md" w="100%">
           Materials ({jobsite.materials.length})
         </Heading>
-        <IconButton
-          icon={addForm ? <FiX /> : <FiPlus />}
-          aria-label="add"
-          backgroundColor="transparent"
-          onClick={() => setAddForm(!addForm)}
-        />
+        <HStack spacing={2}>
+          {jobsite.nonCostedMaterialShipments.length > 0 && (
+            <Warning
+              description={`${jobsite.nonCostedMaterialShipments.length} non-costed`}
+              onClick={() => setNonCostedList(!nonCostedList)}
+            />
+          )}
+          <IconButton
+            icon={addForm ? <FiX /> : <FiPlus />}
+            aria-label="add"
+            backgroundColor="transparent"
+            onClick={() => setAddForm(!addForm)}
+          />
+        </HStack>
       </Flex>
       {addForm && (
         <Box backgroundColor="gray.200" borderRadius={4} p={2} m={2}>
@@ -42,6 +61,18 @@ const JobsiteMaterialsCosting = ({ jobsite }: IJobsiteMaterialsCosting) => {
             onSuccess={() => setAddForm(false)}
             jobsiteId={jobsite._id}
           />
+        </Box>
+      )}
+      {nonCostedList && (
+        <Box p={4} borderRadius={6} backgroundColor="red.100">
+          {jobsite.nonCostedMaterialShipments.map((materialShipment) => (
+            <MaterialShipmentCard
+              backgroundColor="white"
+              key={materialShipment._id}
+              materialShipment={materialShipment}
+              dailyReport={materialShipment.dailyReport}
+            />
+          ))}
         </Box>
       )}
       <Flex w="100%" flexDir="column" px={4} py={2}>
