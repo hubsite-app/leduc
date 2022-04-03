@@ -29,5 +29,5 @@ spec:
               value: https://paving.bowmark.ca/graphql
             - name: NEXT_PUBLIC_API_URL
               value: https://paving.bowmark.ca/graphql
-            - name: NEXT_APP_NAME
+            - name: NEXT_PUBLIC_APP_NAME
               value: Paving
