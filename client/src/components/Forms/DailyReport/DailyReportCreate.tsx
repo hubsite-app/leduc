@@ -28,7 +28,7 @@ const DailyReportCreateForm = ({ onSuccess }: IDailyReportCreateForm) => {
   const { FormComponents } = useDailyReportCreateForm({
     defaultValues: {
       date: new Date(),
-      crewId: user?.employee.crews[0]._id,
+      crewId: user?.employee?.crews[0]?._id || "",
     },
   });
 

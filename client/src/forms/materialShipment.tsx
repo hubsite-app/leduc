@@ -69,10 +69,10 @@ export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
 
   const noJobsiteMaterial = watch("noJobsiteMaterial");
 
-  React.useEffect(() => {
-    if (isEmpty(jobsiteMaterialId)) setValue("noJobsiteMaterial", true);
-    else setValue("noJobsiteMaterial", false);
-  }, [jobsiteMaterialId, setValue]);
+  // React.useEffect(() => {
+  //   if (isEmpty(jobsiteMaterialId)) setValue("noJobsiteMaterial", true);
+  //   else setValue("noJobsiteMaterial", false);
+  // }, [jobsiteMaterialId, setValue]);
 
   const FormComponents = {
     Form: ({
@@ -94,7 +94,7 @@ export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
           <Controller
             control={control}
             name="jobsiteMaterialId"
-            render={({ field, fieldState }) => (
+            render={({ field: { onChange, value, ...field }, fieldState }) => (
               <Select
                 {...props}
                 {...field}
@@ -104,6 +104,13 @@ export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
                     value: material._id,
                   };
                 })}
+                value={noJobsiteMaterial ? null : value}
+                onChange={(e) => {
+                  if (e.target.value) setValue("noJobsiteMaterial", false);
+                  else setValue("noJobsiteMaterial", true);
+
+                  onChange(e);
+                }}
                 errorMessage={fieldState.error?.message}
                 label="Material"
                 isDisabled={isLoading}

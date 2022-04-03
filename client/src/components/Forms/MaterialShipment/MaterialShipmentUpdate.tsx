@@ -31,6 +31,7 @@ const MaterialShipmentUpdate = ({
   const { FormComponents, noJobsiteMaterial } = useMaterialShipmentUpdateForm({
     defaultValues: {
       jobsiteMaterialId: materialShipment.jobsiteMaterial?._id,
+      noJobsiteMaterial: materialShipment.noJobsiteMaterial,
       quantity: materialShipment.quantity,
       startTime: materialShipment.startTime,
       endTime: materialShipment.endTime,

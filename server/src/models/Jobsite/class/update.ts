@@ -4,7 +4,6 @@ import {
   JobsiteMaterialDocument,
 } from "@models";
 import { ITruckingRateData } from "@typescript/jobsite";
-import { IDefaultRateData } from "@typescript/models";
 
 const addMaterial = (
   jobsite: JobsiteDocument,
