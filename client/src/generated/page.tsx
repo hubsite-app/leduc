@@ -159,6 +159,41 @@ export const ssrCrewSearch = {
       withPage: withPageCrewSearch,
       usePage: useCrewSearch,
     }
+export async function getServerPageCrewCard
+    (options: Omit<Apollo.QueryOptions<Types.CrewCardQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.CrewCardQuery>({ ...options, query: Operations.CrewCardDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useCrewCard = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CrewCardQuery, Types.CrewCardQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.CrewCardDocument, options);
+};
+export type PageCrewCardComp = React.FC<{data?: Types.CrewCardQuery, error?: Apollo.ApolloError}>;
+export const withPageCrewCard = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CrewCardQuery, Types.CrewCardQueryVariables>) => (WrappedComponent:PageCrewCardComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.CrewCardDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrCrewCard = {
+      getServerPage: getServerPageCrewCard,
+      withPage: withPageCrewCard,
+      usePage: useCrewCard,
+    }
 export async function getServerPageCrewFull
     (options: Omit<Apollo.QueryOptions<Types.CrewFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);

@@ -41,7 +41,7 @@ const main = async () => {
       if (production) {
         // await saveAll();
       } else {
-        // await saveAll();
+        await saveAll();
       }
 
       await System.validateSystem();

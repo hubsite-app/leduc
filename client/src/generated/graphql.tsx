@@ -1399,6 +1399,13 @@ export type CrewSearchQueryVariables = Exact<{
 
 export type CrewSearchQuery = { __typename?: 'Query', crewSearch: Array<{ __typename?: 'CrewClass', _id: string, name: string }> };
 
+export type CrewCardQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type CrewCardQuery = { __typename?: 'Query', crew: { __typename?: 'CrewClass', _id: string, name: string } };
+
 export type CrewFullQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -3730,6 +3737,41 @@ export function useCrewSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type CrewSearchQueryHookResult = ReturnType<typeof useCrewSearchQuery>;
 export type CrewSearchLazyQueryHookResult = ReturnType<typeof useCrewSearchLazyQuery>;
 export type CrewSearchQueryResult = Apollo.QueryResult<CrewSearchQuery, CrewSearchQueryVariables>;
+export const CrewCardDocument = gql`
+    query CrewCard($id: String!) {
+  crew(id: $id) {
+    ...CrewCardSnippet
+  }
+}
+    ${CrewCardSnippetFragmentDoc}`;
+
+/**
+ * __useCrewCardQuery__
+ *
+ * To run a query within a React component, call `useCrewCardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCrewCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCrewCardQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useCrewCardQuery(baseOptions: Apollo.QueryHookOptions<CrewCardQuery, CrewCardQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CrewCardQuery, CrewCardQueryVariables>(CrewCardDocument, options);
+      }
+export function useCrewCardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CrewCardQuery, CrewCardQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CrewCardQuery, CrewCardQueryVariables>(CrewCardDocument, options);
+        }
+export type CrewCardQueryHookResult = ReturnType<typeof useCrewCardQuery>;
+export type CrewCardLazyQueryHookResult = ReturnType<typeof useCrewCardLazyQuery>;
+export type CrewCardQueryResult = Apollo.QueryResult<CrewCardQuery, CrewCardQueryVariables>;
 export const CrewFullDocument = gql`
     query CrewFull($id: String!) {
   crew(id: $id) {

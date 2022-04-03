@@ -1,8 +1,10 @@
 import React from "react";
 import {
   CrewCardSnippetFragment,
+  useCrewCardLazyQuery,
   useCrewSearchLazyQuery,
 } from "../../generated/graphql";
+import isObjectId from "../../utils/isObjectId";
 import TextDropdown from "../Common/forms/TextDropdown";
 
 import { ITextField } from "../Common/forms/TextField";
@@ -34,6 +36,9 @@ const CrewSearch = ({
   const [searchTimeout, setSearchTimeout] = React.useState<NodeJS.Timeout>();
 
   const [search, { loading, data }] = useCrewSearchLazyQuery();
+
+  const [fetch, { loading: fetchLoading, data: fetchData }] =
+    useCrewCardLazyQuery();
 
   /**
    * ----- Functions -----
@@ -81,13 +86,31 @@ const CrewSearch = ({
     }
   }, [loading, data]);
 
+  React.useEffect(() => {
+    if (props.value && isObjectId(props.value.toString())) {
+      fetch({
+        variables: {
+          id: props.value.toString(),
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (fetchData?.crew && !fetchLoading) {
+      setSearchString(fetchData.crew.name);
+      crewSelected({ _id: fetchData.crew._id });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchData, fetchLoading]);
+
   /**
    * ----- Rendering -----
    */
 
   return (
     <TextDropdown
-      onChange={(e) => handleChange(e.target.value)}
       options={options}
       placeholder="Search Crews"
       onOptionSelection={(value) => {
@@ -105,6 +128,7 @@ const CrewSearch = ({
       isLoading={loading}
       {...props}
       value={searchString}
+      onChange={(e) => handleChange(e.target.value)}
     />
   );
 };

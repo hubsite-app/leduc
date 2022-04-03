@@ -107,9 +107,8 @@ export const useDailyReportCreateForm = (options?: UseFormProps) => {
               } else
                 return (
                   <CrewSearch
+                    {...field}
                     {...props}
-                    name={field.name}
-                    onBlur={field.onBlur}
                     label="Crew"
                     crewSelected={(crew) => field.onChange(crew._id)}
                     errorMessage={fieldState.error?.message}

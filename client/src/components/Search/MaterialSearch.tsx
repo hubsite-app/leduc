@@ -88,10 +88,6 @@ const MaterialSearch = ({
 
   return (
     <TextDropdown
-      onChange={(e) => {
-        if (onChange) onChange(e);
-        handleChange(e.target.value);
-      }}
       options={options}
       placeholder="Search Materials"
       onOptionSelection={(value) => {
@@ -108,6 +104,10 @@ const MaterialSearch = ({
       autoComplete="off"
       selectOptionsWithEnter
       {...props}
+      onChange={(e) => {
+        if (onChange) onChange(e);
+        handleChange(e.target.value);
+      }}
       value={searchString}
     />
   );

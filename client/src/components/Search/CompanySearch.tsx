@@ -88,10 +88,6 @@ const CompanySearch = ({
 
   return (
     <TextDropdown
-      onChange={(e) => {
-        if (onChange) onChange(e);
-        handleChange(e.target.value);
-      }}
       options={options}
       placeholder="Search Companies"
       onOptionSelection={(value) => {
@@ -108,6 +104,10 @@ const CompanySearch = ({
       autoComplete="off"
       selectOptionsWithEnter
       {...props}
+      onChange={(e) => {
+        if (onChange) onChange(e);
+        handleChange(e.target.value);
+      }}
       value={searchString}
     />
   );

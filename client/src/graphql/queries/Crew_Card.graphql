@@ -1,0 +1,5 @@
+query CrewCard($id: String!) {
+  crew(id: $id) {
+    ...CrewCardSnippet
+  }
+}

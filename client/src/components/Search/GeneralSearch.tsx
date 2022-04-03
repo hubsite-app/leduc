@@ -141,13 +141,13 @@ const GeneralSearch = ({
 
   return (
     <TextDropdown
-      onChange={(e) => handleChange(e.target.value)}
       options={options}
       onOptionSelection={(value, extraData) => itemSelected(value, extraData!)}
       handleSubmit={() => handleSubmit && handleSubmit(searchString)}
       selectOptionsWithEnter
       isLoading={loading}
       {...props}
+      onChange={(e) => handleChange(e.target.value)}
       value={searchString}
     />
   );
