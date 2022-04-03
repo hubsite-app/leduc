@@ -13,7 +13,8 @@ export default function MyApolloProvider({
 }) {
   const { getItem } = useStorage();
 
-  console.log(process.env);
+  console.log(process.env.NEXT_PUBLIC_API_URL);
+  console.log(process.env.SSR_API_URL);
 
   const httpLink = createUploadLink({
     uri: `${process.env.NEXT_PUBLIC_API_URL}`,
