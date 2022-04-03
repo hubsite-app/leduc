@@ -17,6 +17,15 @@ const Navbar = () => {
 
   const isLarger = hasMounted ? isLargerThan480 : true;
 
+  const [header, setHeader] = React.useState(process.env.NEXT_PUBLIC_APP_NAME);
+
+  React.useEffect(() => {
+    if (!header)
+      if (window.location.host.includes("paving")) setHeader("Paving");
+      else if (window.location.host.includes("concrete")) setHeader("Concrete");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setHeader]);
+
   return (
     <Box
       shadow="bottomShadow"
@@ -49,7 +58,7 @@ const Navbar = () => {
             p="auto"
             mt={[1, 0]}
           >
-            {process.env.NEXT_PUBLIC_APP_NAME}
+            {header}
           </Heading>
         </TextLink>
         <NavbarSearch />

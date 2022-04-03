@@ -21,6 +21,7 @@ import AdminOnly from "../../Common/AdminOnly";
 import CompanyCreateForm from "../../Forms/Company/CompanyCreate";
 import CrewCreateForm from "../../Forms/Crew/CrewCreate";
 import DailyReportCreateForm from "../../Forms/DailyReport/DailyReportCreate";
+import EmployeeCreateForm from "../../Forms/Employee/EmployeeCreate";
 import JobsiteCreateForm from "../../Forms/Jobsite/JobsiteCreate";
 import MaterialCreateForm from "../../Forms/Material/MaterialCreate";
 
@@ -36,7 +37,7 @@ const NavbarCreate = () => {
   const router = useRouter();
 
   const [form, setForm] = React.useState<
-    "dailyReport" | "jobsite" | "crew" | "material" | "company"
+    "dailyReport" | "jobsite" | "crew" | "material" | "company" | "employee"
   >();
 
   /**
@@ -70,6 +71,9 @@ const NavbarCreate = () => {
               <AdminOnly>
                 <MenuItem onClick={() => setForm("jobsite")}>Jobsite</MenuItem>
                 <MenuItem onClick={() => setForm("crew")}>Crew</MenuItem>
+                <MenuItem onClick={() => setForm("employee")}>
+                  Employee
+                </MenuItem>
                 <MenuItem onClick={() => setForm("material")}>
                   Material
                 </MenuItem>
@@ -154,6 +158,24 @@ const NavbarCreate = () => {
               <ModalCloseButton />
               <ModalBody>
                 <CompanyCreateForm
+                  onSuccess={() => {
+                    setForm(undefined);
+                  }}
+                />
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+          {/* EMPLOYEE */}
+          <Modal
+            isOpen={form === "employee"}
+            onClose={() => setForm(undefined)}
+          >
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Employee</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <EmployeeCreateForm
                   onSuccess={() => {
                     setForm(undefined);
                   }}
