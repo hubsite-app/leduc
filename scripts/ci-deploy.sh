@@ -13,9 +13,15 @@ export COMMIT_SHA1=$COMMIT_SHA1
 envsubst <./k8s/server-deployment.yaml >./k8s/server-deployment.yaml.out
 mv ./k8s/server-deployment.yaml.out ./k8s/server-deployment.yaml
 
+envsubst <./k8s/server-concrete-deployment.yaml >./k8s/server-concrete-deployment.yaml.out
+mv ./k8s/server-concrete-deployment.yaml.out ./k8s/server-concrete-deployment.yaml
+
 export COMMIT_SHA1=$COMMIT_SHA1
 envsubst <./k8s/client-deployment.yaml >./k8s/client-deployment.yaml.out
 mv ./k8s/client-deployment.yaml.out ./k8s/client-deployment.yaml
+
+envsubst <./k8s/client-concrete-deployment.yaml >./k8s/client-concrete-deployment.yaml.out
+mv ./k8s/client-concrete-deployment.yaml.out ./k8s/client-concrete-deployment.yaml
 
 echo "$KUBERNETES_CLUSTER_CERTIFICATE" | base64 --decode > cert.crt
 

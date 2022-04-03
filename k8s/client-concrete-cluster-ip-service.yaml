@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-concrete-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector:
+    component: web-concrete
+  ports:
+    - port: 3001
+      targetPort: 3000

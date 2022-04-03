@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: client-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       component: web
@@ -24,3 +24,10 @@ spec:
               memory: "1000Mi"
           ports:
             - containerPort: 3000
+          env:
+            - name: SSR_API_URL
+              value: https://paving.bowmark.ca/graphql
+            - name: NEXT_PUBLIC_API_URL
+              value: https://paving.bowmark.ca/graphql
+            - name: NEXT_APP_NAME
+              value: Paving

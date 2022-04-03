@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-concrete-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: server-concrete
+  template:
+    metadata:
+      labels:
+        component: server-concrete
+    spec:
+      containers:
+        - name: server
+          image: itsdevin/bow-mark-server:$COMMIT_SHA1
+          ports:
+            - containerPort: 8081
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "500Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2000Mi"
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: ELASTICSEARCH_GROUP
+              value: bow-mark-concrete
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: server-concrete-secrets
+                  key: mongoURI
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: server-concrete-secrets
+                  key: jwtSecret
+            - name: SPACES_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: server-concrete-secrets
+                  key: spacesName
+            - name: SPACES_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: server-concrete-secrets
+                  key: spacesRegion
+            - name: SPACES_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: server-concrete-secrets
+                  key: spacesKey
+            - name: SPACES_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: server-concrete-secrets
+                  key: spacesSecret
+            - name: ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: server-concrete-secrets
+                  key: elasticsearchPassword
+            - name: ELASTICSEARCH_URL
+              valueFrom:
+                secretKeyRef:
+                  name: server-concrete-secrets
+                  key: elasticsearchUrl
