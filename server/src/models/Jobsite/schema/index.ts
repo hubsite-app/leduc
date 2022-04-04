@@ -8,7 +8,6 @@ import {
   JobsiteMaterialClass,
 } from "@models";
 import { post, prop, Ref } from "@typegoose/typegoose";
-import { DefaultRateClass } from "@typescript/models";
 import isUrl from "@validation/isUrl";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";

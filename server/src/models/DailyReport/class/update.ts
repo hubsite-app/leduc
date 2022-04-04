@@ -2,6 +2,8 @@ import {
   DailyReportDocument,
   EmployeeDocument,
   EmployeeWorkDocument,
+  Jobsite,
+  JobsiteDocument,
   MaterialShipmentDocument,
   ProductionDocument,
   ReportNoteDocument,
@@ -14,36 +16,74 @@ const document = (
   dailyReport: DailyReportDocument,
   data: IDailyReportUpdate
 ) => {
-  return new Promise<{ employeeWork: EmployeeWorkDocument[] }>(
-    async (resolve, reject) => {
-      try {
-        const { employeeWork } = await dailyReport.updateDate(data.date);
+  return new Promise<{
+    employeeWork: EmployeeWorkDocument[];
+    materialShipments: MaterialShipmentDocument[];
+  }>(async (resolve, reject) => {
+    try {
+      const jobsite = await Jobsite.getById(data.jobsiteId);
+      if (!jobsite) throw new Error("Could not find this Jobsite");
+      await dailyReport.updateJobsite(jobsite);
 
-        resolve({ employeeWork });
-      } catch (e) {
-        reject(e);
-      }
+      const { employeeWork, materialShipments } = await dailyReport.updateDate(
+        data.date
+      );
+
+      resolve({ employeeWork, materialShipments });
+    } catch (e) {
+      reject(e);
     }
-  );
+  });
 };
 
 const date = (dailyReport: DailyReportDocument, date: Date) => {
-  return new Promise<{ employeeWork: EmployeeWorkDocument[] }>(
-    async (resolve, reject) => {
-      try {
-        dailyReport.date = date;
+  return new Promise<{
+    employeeWork: EmployeeWorkDocument[];
+    materialShipments: MaterialShipmentDocument[];
+  }>(async (resolve, reject) => {
+    try {
+      dailyReport.date = date;
 
-        const employeeWork = await dailyReport.getEmployeeWork();
-        for (let i = 0; i < employeeWork.length; i++) {
-          await employeeWork[i].updateDate(date);
-        }
-
-        resolve({ employeeWork });
-      } catch (e) {
-        reject(e);
+      const employeeWork = await dailyReport.getEmployeeWork();
+      for (let i = 0; i < employeeWork.length; i++) {
+        await employeeWork[i].updateDate(date);
       }
+
+      const materialShipments = await dailyReport.getMaterialShipments();
+      for (let i = 0; i < materialShipments.length; i++) {
+        await materialShipments[i].updateDate(date);
+      }
+
+      resolve({ employeeWork, materialShipments });
+    } catch (e) {
+      reject(e);
     }
-  );
+  });
+};
+
+const jobsite = (
+  dailyReport: DailyReportDocument,
+  jobsite: JobsiteDocument
+) => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      const materialShipments = await dailyReport.getMaterialShipments();
+      for (let i = 0; i < materialShipments.length; i++) {
+        if (
+          materialShipments[i].noJobsiteMaterial === false ||
+          materialShipments[i].jobsiteMaterial
+        ) {
+          throw new Error("cannot update the jobsite of this report");
+        }
+      }
+
+      dailyReport.jobsite = jobsite._id;
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 
 const jobCodeApproval = (
@@ -205,6 +245,7 @@ const addTemporaryVehicle = (
 export default {
   document,
   date,
+  jobsite,
   jobCodeApproval,
   payrollComplete,
   addEmployeeWork,

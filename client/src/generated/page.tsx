@@ -124,6 +124,41 @@ export const ssrCompanySearch = {
       withPage: withPageCompanySearch,
       usePage: useCompanySearch,
     }
+export async function getServerPageCompanyCard
+    (options: Omit<Apollo.QueryOptions<Types.CompanyCardQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.CompanyCardQuery>({ ...options, query: Operations.CompanyCardDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useCompanyCard = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CompanyCardQuery, Types.CompanyCardQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.CompanyCardDocument, options);
+};
+export type PageCompanyCardComp = React.FC<{data?: Types.CompanyCardQuery, error?: Apollo.ApolloError}>;
+export const withPageCompanyCard = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CompanyCardQuery, Types.CompanyCardQueryVariables>) => (WrappedComponent:PageCompanyCardComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.CompanyCardDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrCompanyCard = {
+      getServerPage: getServerPageCompanyCard,
+      withPage: withPageCompanyCard,
+      usePage: useCompanyCard,
+    }
 export async function getServerPageCrewSearch
     (options: Omit<Apollo.QueryOptions<Types.CrewSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -579,6 +614,41 @@ export const ssrEmployeeSsr = {
       withPage: withPageEmployeeSsr,
       usePage: useEmployeeSsr,
     }
+export async function getServerPageEmployeeFetchSearch
+    (options: Omit<Apollo.QueryOptions<Types.EmployeeFetchSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.EmployeeFetchSearchQuery>({ ...options, query: Operations.EmployeeFetchSearchDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useEmployeeFetchSearch = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.EmployeeFetchSearchQuery, Types.EmployeeFetchSearchQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.EmployeeFetchSearchDocument, options);
+};
+export type PageEmployeeFetchSearchComp = React.FC<{data?: Types.EmployeeFetchSearchQuery, error?: Apollo.ApolloError}>;
+export const withPageEmployeeFetchSearch = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.EmployeeFetchSearchQuery, Types.EmployeeFetchSearchQueryVariables>) => (WrappedComponent:PageEmployeeFetchSearchComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.EmployeeFetchSearchDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrEmployeeFetchSearch = {
+      getServerPage: getServerPageEmployeeFetchSearch,
+      withPage: withPageEmployeeFetchSearch,
+      usePage: useEmployeeFetchSearch,
+    }
 export async function getServerPageFileFull
     (options: Omit<Apollo.QueryOptions<Types.FileFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -719,6 +789,41 @@ export const ssrJobsiteSsr = {
       withPage: withPageJobsiteSsr,
       usePage: useJobsiteSsr,
     }
+export async function getServerPageJobsiteFetchSearch
+    (options: Omit<Apollo.QueryOptions<Types.JobsiteFetchSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsiteFetchSearchQuery>({ ...options, query: Operations.JobsiteFetchSearchDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsiteFetchSearch = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteFetchSearchQuery, Types.JobsiteFetchSearchQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsiteFetchSearchDocument, options);
+};
+export type PageJobsiteFetchSearchComp = React.FC<{data?: Types.JobsiteFetchSearchQuery, error?: Apollo.ApolloError}>;
+export const withPageJobsiteFetchSearch = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteFetchSearchQuery, Types.JobsiteFetchSearchQueryVariables>) => (WrappedComponent:PageJobsiteFetchSearchComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsiteFetchSearchDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsiteFetchSearch = {
+      getServerPage: getServerPageJobsiteFetchSearch,
+      withPage: withPageJobsiteFetchSearch,
+      usePage: useJobsiteFetchSearch,
+    }
 export async function getServerPageMaterialSearch
     (options: Omit<Apollo.QueryOptions<Types.MaterialSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -753,6 +858,41 @@ export const ssrMaterialSearch = {
       getServerPage: getServerPageMaterialSearch,
       withPage: withPageMaterialSearch,
       usePage: useMaterialSearch,
+    }
+export async function getServerPageMaterialCard
+    (options: Omit<Apollo.QueryOptions<Types.MaterialCardQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.MaterialCardQuery>({ ...options, query: Operations.MaterialCardDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useMaterialCard = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MaterialCardQuery, Types.MaterialCardQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.MaterialCardDocument, options);
+};
+export type PageMaterialCardComp = React.FC<{data?: Types.MaterialCardQuery, error?: Apollo.ApolloError}>;
+export const withPageMaterialCard = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MaterialCardQuery, Types.MaterialCardQueryVariables>) => (WrappedComponent:PageMaterialCardComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.MaterialCardDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrMaterialCard = {
+      getServerPage: getServerPageMaterialCard,
+      withPage: withPageMaterialCard,
+      usePage: useMaterialCard,
     }
 export async function getServerPageMaterials
     (options: Omit<Apollo.QueryOptions<Types.MaterialsQueryVariables>, 'query'>, ctx: ApolloClientContext ){
@@ -1033,4 +1173,39 @@ export const ssrVehicleSsr = {
       getServerPage: getServerPageVehicleSsr,
       withPage: withPageVehicleSsr,
       usePage: useVehicleSsr,
+    }
+export async function getServerPageVehicleFetchSearch
+    (options: Omit<Apollo.QueryOptions<Types.VehicleFetchSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.VehicleFetchSearchQuery>({ ...options, query: Operations.VehicleFetchSearchDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useVehicleFetchSearch = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.VehicleFetchSearchQuery, Types.VehicleFetchSearchQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.VehicleFetchSearchDocument, options);
+};
+export type PageVehicleFetchSearchComp = React.FC<{data?: Types.VehicleFetchSearchQuery, error?: Apollo.ApolloError}>;
+export const withPageVehicleFetchSearch = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.VehicleFetchSearchQuery, Types.VehicleFetchSearchQueryVariables>) => (WrappedComponent:PageVehicleFetchSearchComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.VehicleFetchSearchDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrVehicleFetchSearch = {
+      getServerPage: getServerPageVehicleFetchSearch,
+      withPage: withPageVehicleFetchSearch,
+      usePage: useVehicleFetchSearch,
     }

@@ -1,8 +1,10 @@
 import React from "react";
 import {
   JobsiteCardSnippetFragment,
+  useJobsiteFetchSearchLazyQuery,
   useJobsiteSearchLazyQuery,
 } from "../../generated/graphql";
+import isObjectId from "../../utils/isObjectId";
 import TextDropdown from "../Common/forms/TextDropdown";
 
 import { ITextField } from "../Common/forms/TextField";
@@ -35,6 +37,9 @@ const JobsiteSearch = ({
 
   const [search, { loading, data }] = useJobsiteSearchLazyQuery();
 
+  const [fetch, { loading: fetchLoading, data: fetchData }] =
+    useJobsiteFetchSearchLazyQuery();
+
   /**
    * ----- Functions -----
    */
@@ -65,7 +70,7 @@ const JobsiteSearch = ({
   const options = React.useMemo(() => {
     return foundJobsites.map((jobsite) => {
       return {
-        label: jobsite.name,
+        label: `${jobsite.jobcode}: ${jobsite.name}`,
         value: jobsite._id,
       };
     });
@@ -80,6 +85,27 @@ const JobsiteSearch = ({
       setFoundJobsites(data.jobsiteSearch);
     }
   }, [loading, data]);
+
+  React.useEffect(() => {
+    if (props.value && isObjectId(props.value.toString())) {
+      fetch({
+        variables: {
+          id: props.value.toString(),
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (fetchData?.jobsite && !fetchLoading) {
+      setSearchString(
+        `${fetchData.jobsite.jobcode}: ${fetchData.jobsite.name}`
+      );
+      jobsiteSelected({ _id: fetchData.jobsite._id });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchData, fetchLoading]);
 
   /**
    * ----- Rendering -----

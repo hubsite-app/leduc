@@ -1,8 +1,10 @@
 import React from "react";
 import {
   CompanyCardSnippetFragment,
+  useCompanyCardLazyQuery,
   useCompanySearchLazyQuery,
 } from "../../generated/graphql";
+import isObjectId from "../../utils/isObjectId";
 import TextDropdown from "../Common/forms/TextDropdown";
 
 import { ITextField } from "../Common/forms/TextField";
@@ -35,6 +37,9 @@ const CompanySearch = ({
   const [searchTimeout, setSearchTimeout] = React.useState<NodeJS.Timeout>();
 
   const [search, { loading, data }] = useCompanySearchLazyQuery();
+
+  const [fetch, { loading: fetchLoading, data: fetchData }] =
+    useCompanyCardLazyQuery();
 
   /**
    * ----- Functions -----
@@ -81,6 +86,28 @@ const CompanySearch = ({
       setFoundCompanies(data.companySearch);
     }
   }, [loading, data]);
+
+  React.useEffect(() => {
+    if (props.value && isObjectId(props.value.toString())) {
+      fetch({
+        variables: {
+          id: props.value.toString(),
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (fetchData?.company && !fetchLoading) {
+      setSearchString(fetchData.company.name);
+      companySelected({
+        _id: fetchData.company._id,
+        name: fetchData.company.name,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchData, fetchLoading]);
 
   /**
    * ----- Rendering -----

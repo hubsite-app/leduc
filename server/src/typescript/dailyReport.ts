@@ -1,7 +1,9 @@
 import { CrewDocument, DailyReportDocument, JobsiteDocument } from "@models";
+import { Id } from "./models";
 
 export interface IDailyReportUpdate {
   date: Date;
+  jobsiteId: Id;
 }
 
 export interface IDailyReportCreate {

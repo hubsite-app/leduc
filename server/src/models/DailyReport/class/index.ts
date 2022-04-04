@@ -5,6 +5,7 @@ import {
   DailyReportModel,
   EmployeeDocument,
   EmployeeWorkDocument,
+  JobsiteDocument,
   MaterialShipmentDocument,
   ProductionDocument,
   ReportNoteDocument,
@@ -125,6 +126,13 @@ export class DailyReportClass extends DailyReportSchema {
 
   public async updateDate(this: DailyReportDocument, date: Date) {
     return update.date(this, date);
+  }
+
+  public async updateJobsite(
+    this: DailyReportDocument,
+    jobsite: JobsiteDocument
+  ) {
+    return update.jobsite(this, jobsite);
   }
 
   public async updateJobCostApproval(

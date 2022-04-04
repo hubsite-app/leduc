@@ -88,6 +88,7 @@ export type DailyReportNoteUpdateData = {
 
 export type DailyReportUpdateData = {
   date: Scalars['DateTime'];
+  jobsiteId: Scalars['ID'];
 };
 
 export type DefaultRateClass = {
@@ -965,6 +966,8 @@ export type EmployeeFullSnippetFragment = { __typename?: 'EmployeeClass', _id: s
 
 export type EmployeeSsrSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null };
 
+export type EmployeeSearchSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string };
+
 export type FileFullSnippetFragment = { __typename?: 'FileClass', buffer: string, _id: string, mimetype: string, description?: string | null };
 
 export type FilePreloadSnippetFragment = { __typename?: 'FileClass', _id: string, mimetype: string, description?: string | null };
@@ -980,6 +983,8 @@ export type JobsiteForDailyReportSnippetFragment = { __typename?: 'JobsiteClass'
 export type JobsiteFullSnippetFragment = { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null, description?: string | null, location_url?: string | null, active: boolean, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, dailyReports: Array<{ __typename?: 'DailyReportClass', _id: string, date: any, jobCostApproved: boolean, payrollComplete: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } }>, materials: Array<{ __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, rate: number, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string } }>, invoices: Array<{ __typename?: 'InvoiceClass', _id: string, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } }>, truckingRates: Array<{ __typename?: 'TruckingRateClass', _id?: string | null, title: string, rate: number, type: string }>, nonCostedMaterialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType?: string | null, supplier?: string | null, quantity: number, unit?: string | null, startTime?: any | null, endTime?: any | null, noJobsiteMaterial?: boolean | null, schemaVersion: number, dailyReport: { __typename?: 'DailyReportClass', _id: string, date: any, jobsite: { __typename?: 'JobsiteClass', materials: Array<{ __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, rate: number, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string } }> } }, jobsiteMaterial?: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, rate: number, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string } } | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }> };
 
 export type JobsiteSsrSnippetFragment = { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null };
+
+export type JobsiteSearchSnippetFragment = { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null };
 
 export type MaterialShipmentCardSnippetFragment = { __typename?: 'MaterialShipmentClass', _id: string, shipmentType?: string | null, supplier?: string | null, quantity: number, unit?: string | null, startTime?: any | null, endTime?: any | null, noJobsiteMaterial?: boolean | null, schemaVersion: number, jobsiteMaterial?: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, rate: number, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string } } | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null };
 
@@ -1014,6 +1019,8 @@ export type VehicleCardSnippetFragment = { __typename?: 'VehicleClass', _id: str
 export type VehicleFullSnippetFragment = { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, rates: Array<{ __typename?: 'Rate', date: any, rate: number }> };
 
 export type VehicleSsrSnippetFragment = { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string };
+
+export type VehicleSearchSnippetFragment = { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string };
 
 export type CompanyCreateMutationVariables = Exact<{
   data: CompanyCreateData;
@@ -1391,6 +1398,13 @@ export type CompanySearchQueryVariables = Exact<{
 
 export type CompanySearchQuery = { __typename?: 'Query', companySearch: Array<{ __typename?: 'CompanyClass', _id: string, name: string }> };
 
+export type CompanyCardQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type CompanyCardQuery = { __typename?: 'Query', company: { __typename?: 'CompanyClass', _id: string, name: string } };
+
 export type CrewSearchQueryVariables = Exact<{
   searchString: Scalars['String'];
   options?: InputMaybe<SearchOptions>;
@@ -1482,6 +1496,13 @@ export type EmployeeSsrQueryVariables = Exact<{
 
 export type EmployeeSsrQuery = { __typename?: 'Query', employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null } };
 
+export type EmployeeFetchSearchQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type EmployeeFetchSearchQuery = { __typename?: 'Query', employee: { __typename?: 'EmployeeClass', _id: string, name: string } };
+
 export type FileFullQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -1511,6 +1532,13 @@ export type JobsiteSsrQueryVariables = Exact<{
 
 export type JobsiteSsrQuery = { __typename?: 'Query', jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } };
 
+export type JobsiteFetchSearchQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type JobsiteFetchSearchQuery = { __typename?: 'Query', jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } };
+
 export type MaterialSearchQueryVariables = Exact<{
   searchString: Scalars['String'];
   options?: InputMaybe<SearchOptions>;
@@ -1518,6 +1546,13 @@ export type MaterialSearchQueryVariables = Exact<{
 
 
 export type MaterialSearchQuery = { __typename?: 'Query', materialSearch: Array<{ __typename?: 'MaterialClass', _id: string, name: string }> };
+
+export type MaterialCardQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type MaterialCardQuery = { __typename?: 'Query', material: { __typename?: 'MaterialClass', _id: string, name: string } };
 
 export type MaterialsQueryVariables = Exact<{
   options?: InputMaybe<ListOptionData>;
@@ -1558,7 +1593,7 @@ export type VehicleSearchQueryVariables = Exact<{
 }>;
 
 
-export type VehicleSearchQuery = { __typename?: 'Query', vehicleSearch: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, rates: Array<{ __typename?: 'Rate', date: any, rate: number }> }> };
+export type VehicleSearchQuery = { __typename?: 'Query', vehicleSearch: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string }> };
 
 export type VehicleFullQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1573,6 +1608,13 @@ export type VehicleSsrQueryVariables = Exact<{
 
 
 export type VehicleSsrQuery = { __typename?: 'Query', vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string } };
+
+export type VehicleFetchSearchQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type VehicleFetchSearchQuery = { __typename?: 'Query', vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string } };
 
 export const MaterialCardSnippetFragmentDoc = gql`
     fragment MaterialCardSnippet on MaterialClass {
@@ -1863,6 +1905,12 @@ export const EmployeeSsrSnippetFragmentDoc = gql`
   jobTitle
 }
     `;
+export const EmployeeSearchSnippetFragmentDoc = gql`
+    fragment EmployeeSearchSnippet on EmployeeClass {
+  _id
+  name
+}
+    `;
 export const FileFullSnippetFragmentDoc = gql`
     fragment FileFullSnippet on FileClass {
   ...FilePreloadSnippet
@@ -1963,6 +2011,13 @@ export const JobsiteSsrSnippetFragmentDoc = gql`
   jobcode
 }
     `;
+export const JobsiteSearchSnippetFragmentDoc = gql`
+    fragment JobsiteSearchSnippet on JobsiteClass {
+  _id
+  name
+  jobcode
+}
+    `;
 export const MaterialFullSnippetFragmentDoc = gql`
     fragment MaterialFullSnippet on MaterialClass {
   ...MaterialCardSnippet
@@ -2057,6 +2112,14 @@ export const VehicleFullSnippetFragmentDoc = gql`
 ${CrewCardSnippetFragmentDoc}`;
 export const VehicleSsrSnippetFragmentDoc = gql`
     fragment VehicleSSRSnippet on VehicleClass {
+  _id
+  name
+  vehicleCode
+  vehicleType
+}
+    `;
+export const VehicleSearchSnippetFragmentDoc = gql`
+    fragment VehicleSearchSnippet on VehicleClass {
   _id
   name
   vehicleCode
@@ -3701,6 +3764,41 @@ export function useCompanySearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type CompanySearchQueryHookResult = ReturnType<typeof useCompanySearchQuery>;
 export type CompanySearchLazyQueryHookResult = ReturnType<typeof useCompanySearchLazyQuery>;
 export type CompanySearchQueryResult = Apollo.QueryResult<CompanySearchQuery, CompanySearchQueryVariables>;
+export const CompanyCardDocument = gql`
+    query CompanyCard($id: String!) {
+  company(id: $id) {
+    ...CompanyCardSnippet
+  }
+}
+    ${CompanyCardSnippetFragmentDoc}`;
+
+/**
+ * __useCompanyCardQuery__
+ *
+ * To run a query within a React component, call `useCompanyCardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCompanyCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCompanyCardQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useCompanyCardQuery(baseOptions: Apollo.QueryHookOptions<CompanyCardQuery, CompanyCardQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CompanyCardQuery, CompanyCardQueryVariables>(CompanyCardDocument, options);
+      }
+export function useCompanyCardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CompanyCardQuery, CompanyCardQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CompanyCardQuery, CompanyCardQueryVariables>(CompanyCardDocument, options);
+        }
+export type CompanyCardQueryHookResult = ReturnType<typeof useCompanyCardQuery>;
+export type CompanyCardLazyQueryHookResult = ReturnType<typeof useCompanyCardLazyQuery>;
+export type CompanyCardQueryResult = Apollo.QueryResult<CompanyCardQuery, CompanyCardQueryVariables>;
 export const CrewSearchDocument = gql`
     query CrewSearch($searchString: String!, $options: SearchOptions) {
   crewSearch(searchString: $searchString, options: $options) {
@@ -4157,6 +4255,41 @@ export function useEmployeeSsrLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type EmployeeSsrQueryHookResult = ReturnType<typeof useEmployeeSsrQuery>;
 export type EmployeeSsrLazyQueryHookResult = ReturnType<typeof useEmployeeSsrLazyQuery>;
 export type EmployeeSsrQueryResult = Apollo.QueryResult<EmployeeSsrQuery, EmployeeSsrQueryVariables>;
+export const EmployeeFetchSearchDocument = gql`
+    query EmployeeFetchSearch($id: String!) {
+  employee(id: $id) {
+    ...EmployeeSearchSnippet
+  }
+}
+    ${EmployeeSearchSnippetFragmentDoc}`;
+
+/**
+ * __useEmployeeFetchSearchQuery__
+ *
+ * To run a query within a React component, call `useEmployeeFetchSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEmployeeFetchSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEmployeeFetchSearchQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEmployeeFetchSearchQuery(baseOptions: Apollo.QueryHookOptions<EmployeeFetchSearchQuery, EmployeeFetchSearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EmployeeFetchSearchQuery, EmployeeFetchSearchQueryVariables>(EmployeeFetchSearchDocument, options);
+      }
+export function useEmployeeFetchSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EmployeeFetchSearchQuery, EmployeeFetchSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EmployeeFetchSearchQuery, EmployeeFetchSearchQueryVariables>(EmployeeFetchSearchDocument, options);
+        }
+export type EmployeeFetchSearchQueryHookResult = ReturnType<typeof useEmployeeFetchSearchQuery>;
+export type EmployeeFetchSearchLazyQueryHookResult = ReturnType<typeof useEmployeeFetchSearchLazyQuery>;
+export type EmployeeFetchSearchQueryResult = Apollo.QueryResult<EmployeeFetchSearchQuery, EmployeeFetchSearchQueryVariables>;
 export const FileFullDocument = gql`
     query FileFull($id: String!) {
   file(id: $id) {
@@ -4298,6 +4431,41 @@ export function useJobsiteSsrLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type JobsiteSsrQueryHookResult = ReturnType<typeof useJobsiteSsrQuery>;
 export type JobsiteSsrLazyQueryHookResult = ReturnType<typeof useJobsiteSsrLazyQuery>;
 export type JobsiteSsrQueryResult = Apollo.QueryResult<JobsiteSsrQuery, JobsiteSsrQueryVariables>;
+export const JobsiteFetchSearchDocument = gql`
+    query JobsiteFetchSearch($id: String!) {
+  jobsite(id: $id) {
+    ...JobsiteSearchSnippet
+  }
+}
+    ${JobsiteSearchSnippetFragmentDoc}`;
+
+/**
+ * __useJobsiteFetchSearchQuery__
+ *
+ * To run a query within a React component, call `useJobsiteFetchSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJobsiteFetchSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJobsiteFetchSearchQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useJobsiteFetchSearchQuery(baseOptions: Apollo.QueryHookOptions<JobsiteFetchSearchQuery, JobsiteFetchSearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<JobsiteFetchSearchQuery, JobsiteFetchSearchQueryVariables>(JobsiteFetchSearchDocument, options);
+      }
+export function useJobsiteFetchSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<JobsiteFetchSearchQuery, JobsiteFetchSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<JobsiteFetchSearchQuery, JobsiteFetchSearchQueryVariables>(JobsiteFetchSearchDocument, options);
+        }
+export type JobsiteFetchSearchQueryHookResult = ReturnType<typeof useJobsiteFetchSearchQuery>;
+export type JobsiteFetchSearchLazyQueryHookResult = ReturnType<typeof useJobsiteFetchSearchLazyQuery>;
+export type JobsiteFetchSearchQueryResult = Apollo.QueryResult<JobsiteFetchSearchQuery, JobsiteFetchSearchQueryVariables>;
 export const MaterialSearchDocument = gql`
     query MaterialSearch($searchString: String!, $options: SearchOptions) {
   materialSearch(searchString: $searchString, options: $options) {
@@ -4334,6 +4502,41 @@ export function useMaterialSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type MaterialSearchQueryHookResult = ReturnType<typeof useMaterialSearchQuery>;
 export type MaterialSearchLazyQueryHookResult = ReturnType<typeof useMaterialSearchLazyQuery>;
 export type MaterialSearchQueryResult = Apollo.QueryResult<MaterialSearchQuery, MaterialSearchQueryVariables>;
+export const MaterialCardDocument = gql`
+    query MaterialCard($id: String!) {
+  material(id: $id) {
+    ...MaterialCardSnippet
+  }
+}
+    ${MaterialCardSnippetFragmentDoc}`;
+
+/**
+ * __useMaterialCardQuery__
+ *
+ * To run a query within a React component, call `useMaterialCardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMaterialCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMaterialCardQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMaterialCardQuery(baseOptions: Apollo.QueryHookOptions<MaterialCardQuery, MaterialCardQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MaterialCardQuery, MaterialCardQueryVariables>(MaterialCardDocument, options);
+      }
+export function useMaterialCardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MaterialCardQuery, MaterialCardQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MaterialCardQuery, MaterialCardQueryVariables>(MaterialCardDocument, options);
+        }
+export type MaterialCardQueryHookResult = ReturnType<typeof useMaterialCardQuery>;
+export type MaterialCardLazyQueryHookResult = ReturnType<typeof useMaterialCardLazyQuery>;
+export type MaterialCardQueryResult = Apollo.QueryResult<MaterialCardQuery, MaterialCardQueryVariables>;
 export const MaterialsDocument = gql`
     query Materials($options: ListOptionData) {
   materials(options: $options) {
@@ -4512,10 +4715,10 @@ export type UserForPasswordResetQueryResult = Apollo.QueryResult<UserForPassword
 export const VehicleSearchDocument = gql`
     query VehicleSearch($searchString: String!, $options: SearchOptions) {
   vehicleSearch(searchString: $searchString, options: $options) {
-    ...VehicleCardSnippet
+    ...VehicleSearchSnippet
   }
 }
-    ${VehicleCardSnippetFragmentDoc}`;
+    ${VehicleSearchSnippetFragmentDoc}`;
 
 /**
  * __useVehicleSearchQuery__
@@ -4615,3 +4818,38 @@ export function useVehicleSsrLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type VehicleSsrQueryHookResult = ReturnType<typeof useVehicleSsrQuery>;
 export type VehicleSsrLazyQueryHookResult = ReturnType<typeof useVehicleSsrLazyQuery>;
 export type VehicleSsrQueryResult = Apollo.QueryResult<VehicleSsrQuery, VehicleSsrQueryVariables>;
+export const VehicleFetchSearchDocument = gql`
+    query VehicleFetchSearch($id: String!) {
+  vehicle(id: $id) {
+    ...VehicleSearchSnippet
+  }
+}
+    ${VehicleSearchSnippetFragmentDoc}`;
+
+/**
+ * __useVehicleFetchSearchQuery__
+ *
+ * To run a query within a React component, call `useVehicleFetchSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVehicleFetchSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVehicleFetchSearchQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVehicleFetchSearchQuery(baseOptions: Apollo.QueryHookOptions<VehicleFetchSearchQuery, VehicleFetchSearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<VehicleFetchSearchQuery, VehicleFetchSearchQueryVariables>(VehicleFetchSearchDocument, options);
+      }
+export function useVehicleFetchSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<VehicleFetchSearchQuery, VehicleFetchSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<VehicleFetchSearchQuery, VehicleFetchSearchQueryVariables>(VehicleFetchSearchDocument, options);
+        }
+export type VehicleFetchSearchQueryHookResult = ReturnType<typeof useVehicleFetchSearchQuery>;
+export type VehicleFetchSearchLazyQueryHookResult = ReturnType<typeof useVehicleFetchSearchLazyQuery>;
+export type VehicleFetchSearchQueryResult = Apollo.QueryResult<VehicleFetchSearchQuery, VehicleFetchSearchQueryVariables>;

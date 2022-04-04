@@ -153,6 +153,7 @@ const DailyReportUpdate = yup
   .object()
   .shape({
     date: yup.date().required().typeError("must provide a valid date"),
+    jobsiteId: yup.string().required("must provide a jobsite"),
   })
   .required();
 
@@ -162,7 +163,7 @@ export const useDailyReportUpdateForm = (options?: UseFormProps) => {
     ...options,
   });
 
-  const { handleSubmit, control } = form;
+  const { handleSubmit, setValue, control } = form;
 
   const FormComponents = {
     Form: ({
@@ -197,6 +198,29 @@ export const useDailyReportUpdateForm = (options?: UseFormProps) => {
           />
         ),
         [defaultValue, isLoading]
+      ),
+    Jobsite: ({ isLoading, defaultValue, ...props }: IFormProps<ITextField>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="jobsiteId"
+            defaultValue={defaultValue}
+            render={({ field, fieldState }) => (
+              <JobsiteSearch
+                {...props}
+                {...field}
+                errorMessage={fieldState.error?.message}
+                label="Jobsite"
+                isDisabled={isLoading}
+                jobsiteSelected={(jobsite) => {
+                  setValue("jobsiteId", jobsite._id);
+                }}
+              />
+            )}
+          />
+        ),
+        [defaultValue, isLoading, props]
       ),
   };
 

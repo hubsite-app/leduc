@@ -1,14 +1,16 @@
 import React from "react";
 import {
   MaterialCardSnippetFragment,
+  useMaterialCardLazyQuery,
   useMaterialSearchLazyQuery,
 } from "../../generated/graphql";
+import isObjectId from "../../utils/isObjectId";
 import TextDropdown from "../Common/forms/TextDropdown";
 
 import { ITextField } from "../Common/forms/TextField";
 
 interface IMaterialSearch extends ITextField {
-  materialSelected: (crew: { _id: string; name: string }) => void;
+  materialSelected: (material: { _id: string; name: string }) => void;
   handleSubmit?: (name: string) => void;
   blacklistedIds?: string[];
 }
@@ -35,6 +37,9 @@ const MaterialSearch = ({
   const [searchTimeout, setSearchTimeout] = React.useState<NodeJS.Timeout>();
 
   const [search, { loading, data }] = useMaterialSearchLazyQuery();
+
+  const [fetch, { loading: fetchLoading, data: fetchData }] =
+    useMaterialCardLazyQuery();
 
   /**
    * ----- Functions -----
@@ -81,6 +86,28 @@ const MaterialSearch = ({
       setFoundMaterials(data.materialSearch);
     }
   }, [loading, data]);
+
+  React.useEffect(() => {
+    if (props.value && isObjectId(props.value.toString())) {
+      fetch({
+        variables: {
+          id: props.value.toString(),
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (fetchData?.material && !fetchLoading) {
+      setSearchString(fetchData.material.name);
+      materialSelected({
+        _id: fetchData.material._id,
+        name: fetchData.material.name,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchData, fetchLoading]);
 
   /**
    * ----- Rendering -----

@@ -1,8 +1,10 @@
 import React from "react";
 import {
   EmployeeCardSnippetFragment,
+  useEmployeeFetchSearchLazyQuery,
   useEmployeeSearchLazyQuery,
 } from "../../generated/graphql";
+import isObjectId from "../../utils/isObjectId";
 import TextDropdown from "../Common/forms/TextDropdown";
 
 import { ITextField } from "../Common/forms/TextField";
@@ -34,6 +36,9 @@ const EmployeeSearch = ({
   const [searchTimeout, setSearchTimeout] = React.useState<NodeJS.Timeout>();
 
   const [search, { loading, data }] = useEmployeeSearchLazyQuery();
+
+  const [fetch, { loading: fetchLoading, data: fetchData }] =
+    useEmployeeFetchSearchLazyQuery();
 
   /**
    * ----- Functions -----
@@ -80,6 +85,25 @@ const EmployeeSearch = ({
       setFoundEmployees(data.employeeSearch);
     }
   }, [loading, data]);
+
+  React.useEffect(() => {
+    if (props.value && isObjectId(props.value.toString())) {
+      fetch({
+        variables: {
+          id: props.value.toString(),
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (fetchData?.employee && !fetchLoading) {
+      setSearchString(fetchData.employee.name);
+      employeeSelected({ _id: fetchData.employee._id });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchData, fetchLoading]);
 
   /**
    * ----- Rendering -----

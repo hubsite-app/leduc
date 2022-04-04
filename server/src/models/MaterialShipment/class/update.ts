@@ -58,6 +58,8 @@ const shipment = (
         materialShipment.shipmentType = shipment.shipmentType;
         materialShipment.supplier = shipment.supplier;
         materialShipment.unit = shipment.unit;
+
+        materialShipment.jobsiteMaterial = undefined;
       } else {
         if (!shipment.jobsiteMaterial)
           throw new Error("Must provide a jobsite material");

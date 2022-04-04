@@ -10,13 +10,13 @@ import {
   ModalOverlay,
   SimpleGrid,
   Text,
+  Tooltip,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import React from "react";
 import { FiEdit } from "react-icons/fi";
-import { useAuth } from "../../../../contexts/Auth";
 import { useDailyReportUpdateForm } from "../../../../forms/dailyReport";
 import {
   useDailyReportFullQuery,
@@ -48,10 +48,6 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
    * ----- Hook Initialization -----
    */
 
-  const {
-    state: { user },
-  } = useAuth();
-
   const { data } = useDailyReportFullQuery({
     variables: {
       id,
@@ -75,6 +71,21 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
   const { FormComponents } = useDailyReportUpdateForm();
 
   const toast = useToast();
+
+  /**
+   * ----- Variables -----
+   */
+
+  const canUpdateJobsite = React.useMemo(() => {
+    let canUpdate = true;
+    if (data?.dailyReport)
+      for (let i = 0; i < data?.dailyReport.materialShipments.length; i++) {
+        const materialShipment = data.dailyReport.materialShipments[i];
+        if (materialShipment.noJobsiteMaterial === false) canUpdate = false;
+      }
+
+    return canUpdate;
+  }, [data?.dailyReport]);
 
   /**
    * ----- Rendering -----
@@ -253,6 +264,17 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                     isLoading={loading}
                     defaultValue={data.dailyReport.date}
                   />
+                  <FormComponents.Jobsite
+                    helperText={
+                      !canUpdateJobsite && (
+                        <Tooltip label="Material shipments linked to Jobsite materials">
+                          Cannot update jobsite
+                        </Tooltip>
+                      )
+                    }
+                    isLoading={canUpdateJobsite ? loading : true}
+                    defaultValue={data.dailyReport.jobsite._id}
+                  />
                   <SubmitButton isLoading={loading} />
                 </FormComponents.Form>
               </ModalBody>
@@ -266,6 +288,7 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
   }, [
     FormComponents,
     approvalLoading,
+    canUpdateJobsite,
     data?.dailyReport,
     editModalOpen,
     id,

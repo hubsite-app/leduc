@@ -59,7 +59,7 @@ export const useProductionUpdateForm = (options?: UseFormProps) => {
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}
-                label="Job Title"
+                label="Work Done"
                 isDisabled={isLoading}
               />
             )}
@@ -204,7 +204,7 @@ export const useProductionCreateForm = (options?: UseFormProps) => {
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}
-                label="Job Title"
+                label="Work Done"
                 isDisabled={isLoading}
               />
             )}

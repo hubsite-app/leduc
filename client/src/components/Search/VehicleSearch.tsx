@@ -1,14 +1,16 @@
 import React from "react";
 import {
-  VehicleCardSnippetFragment,
   useVehicleSearchLazyQuery,
+  VehicleSearchSnippetFragment,
+  useVehicleFetchSearchLazyQuery,
 } from "../../generated/graphql";
+import isObjectId from "../../utils/isObjectId";
 import TextDropdown from "../Common/forms/TextDropdown";
 
 import { ITextField } from "../Common/forms/TextField";
 
 interface IVehicleSearch extends ITextField {
-  vehicleSelected: (crew: { _id: string }) => void;
+  vehicleSelected: (vehicle: { _id: string }) => void;
   handleSubmit?: (name: string) => void;
   blacklistedIds?: string[];
 }
@@ -24,7 +26,7 @@ const VehicleSearch = ({
    */
 
   const [foundVehicles, setFoundVehicles] = React.useState<
-    VehicleCardSnippetFragment[]
+    VehicleSearchSnippetFragment[]
   >([]);
 
   const [searchString, setSearchString] = React.useState(
@@ -34,6 +36,9 @@ const VehicleSearch = ({
   const [searchTimeout, setSearchTimeout] = React.useState<NodeJS.Timeout>();
 
   const [search, { loading, data }] = useVehicleSearchLazyQuery();
+
+  const [fetch, { loading: fetchLoading, data: fetchData }] =
+    useVehicleFetchSearchLazyQuery();
 
   /**
    * ----- Functions -----
@@ -80,6 +85,25 @@ const VehicleSearch = ({
       setFoundVehicles(data.vehicleSearch);
     }
   }, [loading, data]);
+
+  React.useEffect(() => {
+    if (props.value && isObjectId(props.value.toString())) {
+      fetch({
+        variables: {
+          id: props.value.toString(),
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (fetchData?.vehicle && !fetchLoading) {
+      setSearchString(fetchData.vehicle.name);
+      vehicleSelected({ _id: fetchData.vehicle._id });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchData, fetchLoading]);
 
   /**
    * ----- Rendering -----

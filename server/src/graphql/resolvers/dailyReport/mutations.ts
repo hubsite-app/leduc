@@ -9,13 +9,16 @@ import {
   Vehicle,
 } from "@models";
 import { Id } from "@typescript/models";
-import { Field, InputType } from "type-graphql";
+import { Field, ID, InputType } from "type-graphql";
 import { FileCreateData } from "../file/mutations";
 
 @InputType()
 export class DailyReportUpdateData {
   @Field(() => Date, { nullable: false })
   public date!: Date;
+
+  @Field(() => ID, { nullable: false })
+  public jobsiteId!: string;
 }
 
 @InputType()
@@ -66,12 +69,17 @@ const update = (id: string, data: DailyReportUpdateData) => {
         throwError: true,
       }))!;
 
-      const { employeeWork } = await dailyReport.updateDocument(data);
+      const { employeeWork, materialShipments } =
+        await dailyReport.updateDocument(data);
 
       await dailyReport.save();
 
       for (let i = 0; i < employeeWork.length; i++) {
         employeeWork[i].save();
+      }
+
+      for (let i = 0; i < materialShipments.length; i++) {
+        materialShipments[i].save();
       }
 
       resolve(dailyReport!);
