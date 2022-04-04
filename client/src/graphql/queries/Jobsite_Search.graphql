@@ -1,0 +1,5 @@
+query JobsiteFetchSearch($id: String!) {
+  jobsite(id: $id) {
+    ...JobsiteSearchSnippet
+  }
+}

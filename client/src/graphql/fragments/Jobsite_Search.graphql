@@ -1,0 +1,5 @@
+fragment JobsiteSearchSnippet on JobsiteClass {
+  _id
+  name
+  jobcode
+}

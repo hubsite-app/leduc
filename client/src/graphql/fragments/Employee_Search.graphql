@@ -1,0 +1,4 @@
+fragment EmployeeSearchSnippet on EmployeeClass {
+  _id
+  name
+}

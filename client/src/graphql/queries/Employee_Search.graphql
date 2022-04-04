@@ -1,0 +1,5 @@
+query EmployeeFetchSearch($id: String!) {
+  employee(id: $id) {
+    ...EmployeeSearchSnippet
+  }
+}

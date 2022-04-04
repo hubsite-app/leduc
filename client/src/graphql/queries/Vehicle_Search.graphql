@@ -1,0 +1,5 @@
+query VehicleFetchSearch($id: String!) {
+  vehicle(id: $id) {
+    ...VehicleSearchSnippet
+  }
+}
