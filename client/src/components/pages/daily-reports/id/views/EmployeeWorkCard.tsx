@@ -14,15 +14,18 @@ import {
 import convertHourToDate from "../../../../../utils/convertHourToDate";
 import hourString from "../../../../../utils/hourString";
 import SubmitButton from "../../../../Common/forms/SubmitButton";
+import Permission from "../../../../Common/Permission";
 
 interface IEmployeeWorkCard {
   employeeWork: EmployeeWorkCardSnippetFragment;
   dailyReportDate: Date;
+  editPermission?: boolean;
 }
 
 const EmployeeWorkCard = ({
   employeeWork,
   dailyReportDate,
+  editPermission,
 }: IEmployeeWorkCard) => {
   /**
    * ----- Hook Initialization
@@ -108,20 +111,22 @@ const EmployeeWorkCard = ({
           </Text>
         </Box>
         <Flex flexDir="row">
-          {edit && (
+          <Permission otherCriteria={editPermission}>
+            {edit && (
+              <IconButton
+                backgroundColor="transparent"
+                icon={<FiTrash />}
+                aria-label="delete"
+                onClick={() => window.confirm("Are you sure?") && remove()}
+              />
+            )}
             <IconButton
               backgroundColor="transparent"
-              icon={<FiTrash />}
-              aria-label="delete"
-              onClick={() => window.confirm("Are you sure?") && remove()}
+              icon={edit ? <FiX /> : <FiEdit />}
+              aria-label="edit"
+              onClick={() => setEdit(!edit)}
             />
-          )}
-          <IconButton
-            backgroundColor="transparent"
-            icon={edit ? <FiX /> : <FiEdit />}
-            aria-label="edit"
-            onClick={() => setEdit(!edit)}
-          />
+          </Permission>
         </Flex>
       </Box>
       {edit && (

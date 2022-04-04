@@ -3,10 +3,10 @@ import { Types } from "mongoose";
 import { SignupDocument, UserDocument, UserModel } from "@models";
 import { UserSchema } from "..";
 import interact from "./interact";
-import { GetByIDOptions } from "@typescript/models";
+import { GetByIDOptions, IListOptions } from "@typescript/models";
 import get from "./get";
 import { ObjectType } from "type-graphql";
-import { IUserCreate } from "@typescript/user";
+import { IUserCreate, UserRoles } from "@typescript/user";
 import create from "./create";
 import update from "./update";
 import { IEmailData } from "@utils/sendEmail";
@@ -23,6 +23,13 @@ export class UserClass extends UserSchema {
     options?: GetByIDOptions
   ) {
     return get.byId(this, id, options);
+  }
+
+  public static async getList(
+    this: UserModel,
+    options?: IListOptions<UserDocument>
+  ) {
+    return get.list(this, options);
   }
 
   public static async getByResetPasswordToken(this: UserModel, token: string) {
@@ -74,8 +81,8 @@ export class UserClass extends UserSchema {
    * ----- Update -----
    */
 
-  public async isAdmin(this: UserDocument, isAdmin: boolean) {
-    return update.admin(this, isAdmin);
+  public async updateRole(this: UserDocument, role: UserRoles) {
+    return update.role(this, role);
   }
 
   public async updatePassword(this: UserDocument, password: string) {

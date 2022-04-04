@@ -14,7 +14,7 @@ export default {
   ReportNote: 1,
   Signup: 1,
   System: 1,
-  User: 1,
+  User: 2,
   Vehicle: 1,
   VehicleWork: 1,
 };

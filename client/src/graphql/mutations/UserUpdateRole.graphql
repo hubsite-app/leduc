@@ -1,0 +1,5 @@
+mutation UserUpdateRole($id: String!, $role: UserRoles!) {
+  userUpdateRole(id: $id, role: $role) {
+    ...UserCardSnippet
+  }
+}

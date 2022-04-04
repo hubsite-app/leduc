@@ -12,6 +12,7 @@ import formatNumber from "../../../../utils/formatNumber";
 import JobsiteMaterialProgressBar from "../../../Common/JobsiteMaterial/ProgressBar";
 import { FiEdit, FiX } from "react-icons/fi";
 import JobsiteMaterialUpdate from "../../../Forms/JobsiteMaterial/JobsiteMaterialUpdate";
+import Permission from "../../../Common/Permission";
 
 interface IJobsiteMaterialCard {
   jobsiteMaterial: JobsiteMaterialCardSnippetFragment;
@@ -39,12 +40,14 @@ const JobsiteMaterialCard = ({ jobsiteMaterial }: IJobsiteMaterialCard) => {
             )}
           </StatNumber>
         </Stat>
-        <IconButton
-          backgroundColor="transparent"
-          aria-label="edit"
-          icon={edit ? <FiX /> : <FiEdit />}
-          onClick={() => setEdit(!edit)}
-        />
+        <Permission>
+          <IconButton
+            backgroundColor="transparent"
+            aria-label="edit"
+            icon={edit ? <FiX /> : <FiEdit />}
+            onClick={() => setEdit(!edit)}
+          />
+        </Permission>
       </Flex>
       <Box>
         <JobsiteMaterialProgressBar jobsiteMaterial={jobsiteMaterial} />

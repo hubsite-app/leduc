@@ -7,12 +7,17 @@ import Card from "../../../../Common/Card";
 import ShowMore from "../../../../Common/ShowMore";
 import MaterialShipmentCreate from "../../../../Forms/MaterialShipment/MaterialShipmentCreate";
 import MaterialShipmentCard from "../../../../Common/MaterialShipment/MaterialShipmentCard";
+import Permission from "../../../../Common/Permission";
 
 interface IMaterialShipments {
   dailyReport: DailyReportFullSnippetFragment;
+  editPermission?: boolean;
 }
 
-const MaterialShipments = ({ dailyReport }: IMaterialShipments) => {
+const MaterialShipments = ({
+  dailyReport,
+  editPermission,
+}: IMaterialShipments) => {
   const [addForm, setAddForm] = React.useState(false);
 
   return (
@@ -21,12 +26,14 @@ const MaterialShipments = ({ dailyReport }: IMaterialShipments) => {
         <Heading my="auto" ml={2} size="md" w="100%">
           Material Shipments ({dailyReport.materialShipments.length || 0})
         </Heading>
-        <IconButton
-          icon={addForm ? <FiX /> : <FiPlus />}
-          aria-label="add"
-          backgroundColor="transparent"
-          onClick={() => setAddForm(!addForm)}
-        />
+        <Permission otherCriteria={editPermission}>
+          <IconButton
+            icon={addForm ? <FiX /> : <FiPlus />}
+            aria-label="add"
+            backgroundColor="transparent"
+            onClick={() => setAddForm(!addForm)}
+          />
+        </Permission>
       </Flex>
       {addForm && (
         <MaterialShipmentCreate
@@ -42,6 +49,7 @@ const MaterialShipments = ({ dailyReport }: IMaterialShipments) => {
                 key={materialShipment._id}
                 materialShipment={materialShipment}
                 dailyReport={dailyReport}
+                editPermission={editPermission}
               />
             ))}
           />

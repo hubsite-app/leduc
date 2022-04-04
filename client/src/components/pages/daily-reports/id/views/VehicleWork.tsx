@@ -4,15 +4,17 @@ import { FiPlus, FiX } from "react-icons/fi";
 
 import { DailyReportFullSnippetFragment } from "../../../../../generated/graphql";
 import Card from "../../../../Common/Card";
+import Permission from "../../../../Common/Permission";
 import ShowMore from "../../../../Common/ShowMore";
 import VehicleWorkCreateForm from "./VehicleWorkCreateForm";
 import VehicleWorkCard from "./VehicleWorldCard";
 
 interface IVehicleWork {
   dailyReport: DailyReportFullSnippetFragment;
+  editPermission?: boolean;
 }
 
-const VehicleWork = ({ dailyReport }: IVehicleWork) => {
+const VehicleWork = ({ dailyReport, editPermission }: IVehicleWork) => {
   const [addForm, setAddForm] = React.useState(false);
 
   return (
@@ -21,12 +23,14 @@ const VehicleWork = ({ dailyReport }: IVehicleWork) => {
         <Heading my="auto" ml={2} size="md" w="100%">
           Vehicle Hours ({dailyReport.vehicleWork.length || 0})
         </Heading>
-        <IconButton
-          icon={addForm ? <FiX /> : <FiPlus />}
-          aria-label="add"
-          backgroundColor="transparent"
-          onClick={() => setAddForm(!addForm)}
-        />
+        <Permission otherCriteria={editPermission}>
+          <IconButton
+            icon={addForm ? <FiX /> : <FiPlus />}
+            aria-label="add"
+            backgroundColor="transparent"
+            onClick={() => setAddForm(!addForm)}
+          />
+        </Permission>
       </Flex>
       {addForm && (
         <VehicleWorkCreateForm

@@ -16,8 +16,9 @@ import { useRouter } from "next/router";
 import React from "react";
 import { FiPlus } from "react-icons/fi";
 import { useAuth } from "../../../contexts/Auth";
+import { UserRoles } from "../../../generated/graphql";
 import createLink from "../../../utils/createLink";
-import AdminOnly from "../../Common/AdminOnly";
+import Permission from "../../Common/Permission";
 import CompanyCreateForm from "../../Forms/Company/CompanyCreate";
 import CrewCreateForm from "../../Forms/Crew/CrewCreate";
 import DailyReportCreateForm from "../../Forms/DailyReport/DailyReportCreate";
@@ -68,8 +69,10 @@ const NavbarCreate = () => {
               <MenuItem onClick={() => setForm("dailyReport")}>
                 Daily Report
               </MenuItem>
-              <AdminOnly>
+              <Permission minRole={UserRoles.ProjectManager}>
                 <MenuItem onClick={() => setForm("jobsite")}>Jobsite</MenuItem>
+              </Permission>
+              <Permission>
                 <MenuItem onClick={() => setForm("crew")}>Crew</MenuItem>
                 <MenuItem onClick={() => setForm("employee")}>
                   Employee
@@ -78,7 +81,7 @@ const NavbarCreate = () => {
                   Material
                 </MenuItem>
                 <MenuItem onClick={() => setForm("company")}>Company</MenuItem>
-              </AdminOnly>
+              </Permission>
             </MenuList>
           </Menu>
           {/* DAILY REPORT */}

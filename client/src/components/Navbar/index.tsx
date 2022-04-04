@@ -10,6 +10,7 @@ import useMounted from "../../hooks/useMounted";
 import NavbarAccount from "./views/Account";
 import NavbarSearch from "./views/Search";
 import NavbarCreate from "./views/Create";
+import Development from "./views/Development";
 
 const Navbar = () => {
   const { hasMounted } = useMounted();
@@ -23,6 +24,7 @@ const Navbar = () => {
     if (!header)
       if (window.location.host.includes("paving")) setHeader("Paving");
       else if (window.location.host.includes("concrete")) setHeader("Concrete");
+      else setHeader("Paving");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setHeader]);
 
@@ -69,6 +71,7 @@ const Navbar = () => {
           height="100%"
           pt={isLarger ? 1 : 1}
         >
+          <Development />
           <NavbarCreate />
 
           <NavbarAccount />

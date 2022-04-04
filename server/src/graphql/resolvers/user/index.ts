@@ -1,6 +1,7 @@
 import { UserQuery } from "@graphql/types/query";
 import { EmployeeClass, User, UserClass, UserDocument } from "@models";
-import { IContext } from "@typescript/graphql";
+import { IContext, ListOptionData } from "@typescript/graphql";
+import { UserRoles } from "@typescript/user";
 import {
   Arg,
   Authorized,
@@ -45,6 +46,14 @@ export default class UserResolver {
     }
   }
 
+  @Query(() => [UserClass])
+  async users(
+    @Arg("options", () => ListOptionData, { nullable: true })
+    options?: ListOptionData
+  ) {
+    return User.getList(options);
+  }
+
   /**
    * ----- Mutations -----
    */
@@ -62,10 +71,13 @@ export default class UserResolver {
     return mutations.login(data);
   }
 
-  @Authorized(["ADMIN"])
+  @Authorized(["ADMIN", "DEV"])
   @Mutation(() => UserClass)
-  async userAdmin(@Arg("id") id: string, @Arg("isAdmin") isAdmin: boolean) {
-    return mutations.admin(id, isAdmin);
+  async userUpdateRole(
+    @Arg("id") id: string,
+    @Arg("role", () => UserRoles) role: UserRoles
+  ) {
+    return mutations.role(id, role);
   }
 
   @Mutation(() => Boolean)

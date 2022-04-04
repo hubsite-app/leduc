@@ -7,12 +7,14 @@ import { FiPlus, FiX } from "react-icons/fi";
 import ProductionCard from "./ProductionCard";
 import ProductionCreateForm from "./ProductionCreateForm";
 import ShowMore from "../../../../Common/ShowMore";
+import Permission from "../../../../Common/Permission";
 
 interface IProduction {
   dailyReport: DailyReportFullSnippetFragment;
+  editPermission?: boolean;
 }
 
-const Production = ({ dailyReport }: IProduction) => {
+const Production = ({ dailyReport, editPermission }: IProduction) => {
   /**
    * ----- Hook Initialization -----
    */
@@ -29,12 +31,14 @@ const Production = ({ dailyReport }: IProduction) => {
         <Heading my="auto" ml={2} size="md" w="100%">
           Production ({dailyReport.productions.length || 0})
         </Heading>
-        <IconButton
-          icon={addForm ? <FiX /> : <FiPlus />}
-          aria-label="add"
-          backgroundColor="transparent"
-          onClick={() => setAddForm(!addForm)}
-        />
+        <Permission otherCriteria={editPermission}>
+          <IconButton
+            icon={addForm ? <FiX /> : <FiPlus />}
+            aria-label="add"
+            backgroundColor="transparent"
+            onClick={() => setAddForm(!addForm)}
+          />
+        </Permission>
       </Flex>
       {addForm && (
         <ProductionCreateForm
@@ -50,6 +54,7 @@ const Production = ({ dailyReport }: IProduction) => {
                 production={production}
                 dailyReportDate={dailyReport.date}
                 key={production._id}
+                editPermission={editPermission}
               />
             ))}
           />

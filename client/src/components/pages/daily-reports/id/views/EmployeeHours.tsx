@@ -9,12 +9,14 @@ import { DailyReportFullSnippetFragment } from "../../../../../generated/graphql
 import { FiPlus, FiX } from "react-icons/fi";
 import EmployeeHourCreateForm from "./EmployeeHourCreateForm";
 import ShowMore from "../../../../Common/ShowMore";
+import Permission from "../../../../Common/Permission";
 
 interface IEmployeeHours {
   dailyReport: DailyReportFullSnippetFragment;
+  editPermission?: boolean;
 }
 
-const EmployeeHours = ({ dailyReport }: IEmployeeHours) => {
+const EmployeeHours = ({ dailyReport, editPermission }: IEmployeeHours) => {
   const [addForm, setAddForm] = React.useState(false);
 
   return (
@@ -23,12 +25,14 @@ const EmployeeHours = ({ dailyReport }: IEmployeeHours) => {
         <Heading w="100%" my="auto" ml={2} size="md">
           Employee Hours ({dailyReport.employeeWork.length || 0})
         </Heading>
-        <IconButton
-          icon={addForm ? <FiX /> : <FiPlus />}
-          aria-label="add"
-          backgroundColor="transparent"
-          onClick={() => setAddForm(!addForm)}
-        />
+        <Permission otherCriteria={editPermission}>
+          <IconButton
+            icon={addForm ? <FiX /> : <FiPlus />}
+            aria-label="add"
+            backgroundColor="transparent"
+            onClick={() => setAddForm(!addForm)}
+          />
+        </Permission>
       </Flex>
       {addForm && (
         <EmployeeHourCreateForm
@@ -41,6 +45,7 @@ const EmployeeHours = ({ dailyReport }: IEmployeeHours) => {
           <ShowMore
             list={dailyReport.employeeWork.map((work) => (
               <EmployeeWorkCard
+                editPermission={editPermission}
                 employeeWork={work}
                 dailyReportDate={dailyReport.date}
                 key={work._id}

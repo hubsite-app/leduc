@@ -2,9 +2,9 @@ import { Box, Heading, Text } from "@chakra-ui/react";
 import React from "react";
 import { useVehicleFullQuery } from "../../../generated/graphql";
 import createLink from "../../../utils/createLink";
-import AdminOnly from "../../Common/AdminOnly";
 import Card from "../../Common/Card";
 import Loading from "../../Common/Loading";
+import Permission from "../../Common/Permission";
 import TextLink from "../../Common/TextLink";
 import VehicleRates from "./views/Rates";
 
@@ -42,9 +42,9 @@ const VehicleClientContent = ({ id }: IVehicleClientContent) => {
               {vehicle.vehicleType}
             </Text>
           </Card>
-          <AdminOnly>
+          <Permission>
             <VehicleRates vehicle={vehicle} />
-          </AdminOnly>
+          </Permission>
           <Card>
             <Heading size="md">Crews</Heading>
             {vehicle.crews.map((crew) => (

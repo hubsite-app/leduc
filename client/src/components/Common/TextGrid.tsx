@@ -1,10 +1,13 @@
 import React from "react";
 import { Box, Flex } from "@chakra-ui/react";
+import { UserRoles } from "../../generated/graphql";
+import Permission from "./Permission";
 
 interface ITextGrid {
   rows: {
     title: React.ReactNode;
     text: React.ReactNode;
+    permission?: UserRoles;
   }[];
 }
 
@@ -20,16 +23,26 @@ const TextGrid = ({ rows }: ITextGrid) => {
     <Flex flexDir="row">
       <Flex flexDir="column" mr={2}>
         {titles.map((title, index) => (
-          <Box my="2px" key={index}>
-            {title}
-          </Box>
+          <Permission
+            key={index}
+            minRole={rows[index].permission || UserRoles.User}
+          >
+            <Box my="2px" h="100%" py="auto">
+              {title}
+            </Box>
+          </Permission>
         ))}
       </Flex>
       <Flex flexDir="column">
         {texts.map((text, index) => (
-          <Box my="2px" key={index}>
-            {text}
-          </Box>
+          <Permission
+            key={index}
+            minRole={rows[index].permission || UserRoles.User}
+          >
+            <Box my="2px" h="100%" py="auto">
+              {text}
+            </Box>
+          </Permission>
         ))}
       </Flex>
     </Flex>

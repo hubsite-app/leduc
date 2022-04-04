@@ -13,7 +13,7 @@ import {
 import { FiPlus } from "react-icons/fi";
 import MaterialFullList from "../../../Common/Material/FullList";
 import MaterialCreateForm from "../../../Forms/Material/MaterialCreate";
-import AdminOnly from "../../../Common/AdminOnly";
+import Permission from "../../../Common/Permission";
 
 const MaterialSettings = () => {
   /**
@@ -28,7 +28,7 @@ const MaterialSettings = () => {
 
   return (
     <Box>
-      <AdminOnly>
+      <Permission>
         <Flex justifyContent="end">
           <Button
             backgroundColor="white"
@@ -38,7 +38,7 @@ const MaterialSettings = () => {
             Add
           </Button>
         </Flex>
-      </AdminOnly>
+      </Permission>
       <MaterialFullList />
 
       {/* MATERIAL ADD */}

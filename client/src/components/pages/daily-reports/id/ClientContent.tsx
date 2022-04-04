@@ -17,20 +17,22 @@ import {
 import dayjs from "dayjs";
 import React from "react";
 import { FiEdit } from "react-icons/fi";
+import { useAuth } from "../../../../contexts/Auth";
 import { useDailyReportUpdateForm } from "../../../../forms/dailyReport";
 import {
   useDailyReportFullQuery,
   useDailyReportJobCostApprovalUpdateMutation,
   useDailyReportPayrollCompleteUpdateMutation,
   useDailyReportUpdateMutation,
+  UserRoles,
 } from "../../../../generated/graphql";
 import createLink from "../../../../utils/createLink";
-import AdminOnly from "../../../Common/AdminOnly";
 
 import Card from "../../../Common/Card";
 import Checkbox from "../../../Common/forms/Checkbox";
 import SubmitButton from "../../../Common/forms/SubmitButton";
 import Loading from "../../../Common/Loading";
+import Permission from "../../../Common/Permission";
 import TextGrid from "../../../Common/TextGrid";
 import TextLink from "../../../Common/TextLink";
 import EmployeeHours from "./views/EmployeeHours";
@@ -47,6 +49,10 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
   /**
    * ----- Hook Initialization -----
    */
+
+  const {
+    state: { user },
+  } = useAuth();
 
   const { data } = useDailyReportFullQuery({
     variables: {
@@ -87,6 +93,21 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
     return canUpdate;
   }, [data?.dailyReport]);
 
+  const editPermission = React.useMemo(
+    () =>
+      user?.employee.crews
+        .map((crew) => crew._id)
+        .includes(data?.dailyReport.crew._id || "randomString") &&
+      data?.dailyReport.jobCostApproved !== true &&
+      data?.dailyReport.payrollComplete !== true,
+    [
+      data?.dailyReport.crew._id,
+      data?.dailyReport.jobCostApproved,
+      data?.dailyReport.payrollComplete,
+      user?.employee.crews,
+    ]
+  );
+
   /**
    * ----- Rendering -----
    */
@@ -98,7 +119,7 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
           <Card>
             <Flex flexDir="row" justifyContent="space-evenly">
               <SimpleGrid
-                columns={[1, 1, 2]}
+                columns={user?.role === UserRoles.Admin ? [1, 1, 2] : 1}
                 spacing={4}
                 w={["85%", "90%", "95%"]}
               >
@@ -160,7 +181,7 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                     ]}
                   />
                 </Box>
-                <AdminOnly>
+                <Permission>
                   <Box
                     backgroundColor="gray.100"
                     border="1px solid"
@@ -209,30 +230,50 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                       </TextLink>
                     </Text>
                   </Box>
-                </AdminOnly>
+                </Permission>
               </SimpleGrid>
-              <Box>
-                <IconButton
-                  backgroundColor="transparent"
-                  icon={<FiEdit />}
-                  aria-label="edit"
-                  onClick={onEditModalOpen}
-                />
-              </Box>
+              <Permission
+                minRole={UserRoles.ProjectManager}
+                otherCriteria={editPermission}
+              >
+                <Box>
+                  <IconButton
+                    backgroundColor="transparent"
+                    icon={<FiEdit />}
+                    aria-label="edit"
+                    onClick={onEditModalOpen}
+                  />
+                </Box>
+              </Permission>
             </Flex>
           </Card>
 
           <SimpleGrid columns={[1, 1, 1, 2]} spacingX={4} spacingY={2}>
-            <EmployeeHours dailyReport={data.dailyReport} />
+            <EmployeeHours
+              dailyReport={data.dailyReport}
+              editPermission={editPermission}
+            />
 
-            <VehicleWork dailyReport={data.dailyReport} />
+            <VehicleWork
+              dailyReport={data.dailyReport}
+              editPermission={editPermission}
+            />
 
-            <Production dailyReport={data.dailyReport} />
+            <Production
+              dailyReport={data.dailyReport}
+              editPermission={editPermission}
+            />
 
-            <MaterialShipments dailyReport={data.dailyReport} />
+            <MaterialShipments
+              dailyReport={data.dailyReport}
+              editPermission={editPermission}
+            />
           </SimpleGrid>
 
-          <ReportNotes dailyReport={data.dailyReport} />
+          <ReportNotes
+            dailyReport={data.dailyReport}
+            editPermission={editPermission}
+          />
 
           {/* REPORT EDIT MODAL */}
           <Modal isOpen={editModalOpen} onClose={onEditModalClose}>
@@ -291,6 +332,7 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
     canUpdateJobsite,
     data?.dailyReport,
     editModalOpen,
+    editPermission,
     id,
     loading,
     onEditModalClose,
@@ -300,6 +342,7 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
     update,
     updateApproval,
     updatePayrollComplete,
+    user?.role,
   ]);
 
   return content;

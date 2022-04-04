@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 import { Employee, EmployeeDocument, UserDocument, UserModel } from "@models";
-import { GetByIDOptions } from "@typescript/models";
+import { GetByIDOptions, IListOptions } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 
 /**
@@ -27,6 +27,27 @@ const byId = (
       }
 
       resolve(user);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const listDefaultOptions: IListOptions<UserDocument> = {
+  pageLimit: 25,
+  offset: 0,
+};
+const list = (User: UserModel, options?: IListOptions<UserDocument>) => {
+  return new Promise<UserDocument[]>(async (resolve, reject) => {
+    try {
+      options = populateOptions(options, listDefaultOptions);
+
+      const users = await User.find(options?.query || {}, undefined, {
+        limit: options?.pageLimit,
+        skip: options?.offset,
+      });
+
+      resolve(users);
     } catch (e) {
       reject(e);
     }
@@ -78,6 +99,8 @@ const employee = (user: UserDocument) => {
 
         await employee.save();
 
+        user.employee = employee._id;
+
         resolve(employee);
       }
     } catch (e) {
@@ -89,6 +112,7 @@ const employee = (user: UserDocument) => {
 export default {
   byId,
   byEmail,
+  list,
   byResetPasswordToken,
   employee,
 };

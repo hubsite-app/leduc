@@ -3,6 +3,7 @@ import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
 import { JobsiteFullSnippetFragment } from "../../../../generated/graphql";
 import Card from "../../../Common/Card";
+import Permission from "../../../Common/Permission";
 import ShowMore from "../../../Common/ShowMore";
 import InvoiceCreate from "../../../Forms/Invoice/InvoiceCreate";
 import InvoiceCard from "./InvoiceCard";
@@ -28,12 +29,14 @@ const Invoices = ({ jobsite }: IInvoices) => {
         <Heading my="auto" ml={2} size="md" w="100%">
           Invoices ({jobsite.invoices.length})
         </Heading>
-        <IconButton
-          icon={addForm ? <FiX /> : <FiPlus />}
-          aria-label="add"
-          backgroundColor="transparent"
-          onClick={() => setAddForm(!addForm)}
-        />
+        <Permission>
+          <IconButton
+            icon={addForm ? <FiX /> : <FiPlus />}
+            aria-label="add"
+            backgroundColor="transparent"
+            onClick={() => setAddForm(!addForm)}
+          />
+        </Permission>
       </Flex>
       {addForm && (
         <Box backgroundColor="gray.200" borderRadius={4} p={2} m={2}>

@@ -12,12 +12,14 @@ import {
 } from "../../../../../generated/graphql";
 import hourString from "../../../../../utils/hourString";
 import SubmitButton from "../../../../Common/forms/SubmitButton";
+import Permission from "../../../../Common/Permission";
 
 interface IVehicleWorkCard {
   vehicleWork: VehicleWorkCardSnippetFragment;
+  editPermission?: boolean;
 }
 
-const VehicleWorkCard = ({ vehicleWork }: IVehicleWorkCard) => {
+const VehicleWorkCard = ({ vehicleWork, editPermission }: IVehicleWorkCard) => {
   /**
    * ----- Hook Initialization -----
    */
@@ -77,20 +79,22 @@ const VehicleWorkCard = ({ vehicleWork }: IVehicleWorkCard) => {
           </Text>
         </Box>
         <Flex flexDir="row">
-          {edit && (
+          <Permission otherCriteria={editPermission}>
+            {edit && (
+              <IconButton
+                backgroundColor="transparent"
+                icon={<FiTrash />}
+                aria-label="delete"
+                onClick={() => window.confirm("Are you sure?") && remove()}
+              />
+            )}
             <IconButton
               backgroundColor="transparent"
-              icon={<FiTrash />}
-              aria-label="delete"
-              onClick={() => window.confirm("Are you sure?") && remove()}
+              aria-label="edit"
+              icon={edit ? <FiX /> : <FiEdit />}
+              onClick={() => setEdit(!edit)}
             />
-          )}
-          <IconButton
-            backgroundColor="transparent"
-            aria-label="edit"
-            icon={edit ? <FiX /> : <FiEdit />}
-            onClick={() => setEdit(!edit)}
-          />
+          </Permission>
         </Flex>
       </Flex>
 

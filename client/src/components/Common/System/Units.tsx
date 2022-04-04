@@ -11,6 +11,7 @@ import Card from "../Card";
 import { SystemSnippetFragment } from "../../../generated/graphql";
 import { FiEdit, FiX } from "react-icons/fi";
 import SystemUnitUpdate from "../../Forms/System/SystemUnitUpdate";
+import Permission from "../Permission";
 
 interface ISystemUnits {
   system: SystemSnippetFragment;
@@ -42,12 +43,14 @@ const SystemUnits = ({ system }: ISystemUnits) => {
         >
           Units
         </Heading>
-        <IconButton
-          aria-label="edit"
-          icon={edit ? <FiX /> : <FiEdit />}
-          backgroundColor="transparent"
-          onClick={() => setEdit(!edit)}
-        />
+        <Permission>
+          <IconButton
+            aria-label="edit"
+            icon={edit ? <FiX /> : <FiEdit />}
+            backgroundColor="transparent"
+            onClick={() => setEdit(!edit)}
+          />
+        </Permission>
       </Flex>
       {edit && (
         <SystemUnitUpdate system={system} onSuccess={() => setEdit(false)} />

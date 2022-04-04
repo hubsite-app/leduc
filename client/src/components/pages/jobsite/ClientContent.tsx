@@ -1,10 +1,10 @@
 import { Box, SimpleGrid, Text } from "@chakra-ui/react";
 import React from "react";
-import { useJobsiteFullQuery } from "../../../generated/graphql";
-import AdminOnly from "../../Common/AdminOnly";
+import { useJobsiteFullQuery, UserRoles } from "../../../generated/graphql";
 import Card from "../../Common/Card";
 import DailyReportListCard from "../../Common/DailyReport/DailyReportListCard";
 import Loading from "../../Common/Loading";
+import Permission from "../../Common/Permission";
 import Invoices from "./views/Invoices";
 import JobsiteMaterialsCosting from "./views/JobsiteMaterials";
 import TruckingRates from "./views/TruckingRates";
@@ -48,13 +48,13 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
               </Text>
             )}
           </Card>
-          <AdminOnly>
+          <Permission minRole={UserRoles.ProjectManager}>
             <SimpleGrid columns={[1, 1, 1, 2]} spacingX={4} spacingY={2}>
               <JobsiteMaterialsCosting jobsite={jobsite} />
               <Invoices jobsite={jobsite} />
             </SimpleGrid>
             <TruckingRates jobsite={jobsite} />
-          </AdminOnly>
+          </Permission>
           <DailyReportListCard dailyReports={jobsite.dailyReports} />
         </Box>
       );

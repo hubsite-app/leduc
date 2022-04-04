@@ -8,6 +8,8 @@ import _ids from "@testing/_ids";
 import { SignupData } from "@graphql/resolvers/user/mutations";
 import { Signup, User } from "@models";
 import { decode } from "jsonwebtoken";
+import jestLogin from "@testing/jestLogin";
+import { UserRoles } from "@typescript/user";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -246,6 +248,42 @@ describe("User Resolver", () => {
           expect(res.status).toBe(200);
 
           expect(res.body.errors.length).toBe(1);
+        });
+      });
+    });
+
+    describe("userUpdateRole", () => {
+      const userUpdateRole = `
+        mutation UserUpdateRole($id: String!, $role: UserRoles!) {
+          userUpdateRole(id: $id, role: $role) {
+            _id
+            role
+          }
+        }
+      `;
+
+      describe("success", () => {
+        test("should successfully update user role", async () => {
+          const token = await jestLogin(app, documents.users.admin_user.email);
+
+          const res = await request(app)
+            .post("/graphql")
+            .send({
+              query: userUpdateRole,
+              variables: {
+                id: documents.users.base_foreman_1_user._id,
+                role: "ProjectManager",
+              },
+            })
+            .set("Authorization", token);
+
+          expect(res.status).toBe(200);
+
+          expect(res.body.data.userUpdateRole._id).toBeDefined();
+
+          const user = await User.getById(res.body.data.userUpdateRole._id);
+
+          expect(user!.role).toBe(UserRoles.ProjectManager);
         });
       });
     });

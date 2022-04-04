@@ -2,6 +2,8 @@ import { Field, InputType } from "type-graphql";
 
 import { Signup, User, UserDocument } from "@models";
 import { decode, JwtPayload } from "jsonwebtoken";
+import { Id } from "@typescript/models";
+import { UserRoles } from "@typescript/user";
 
 @InputType()
 export class LoginData {
@@ -45,22 +47,6 @@ const signup = (signupId: string, data: SignupData) => {
       const token = await User.login(user.email, data.password, true);
 
       resolve(token);
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
-
-const admin = (id: string, isAdmin: boolean) => {
-  return new Promise<UserDocument>(async (resolve, reject) => {
-    try {
-      const user = (await User.getById(id, { throwError: true }))!;
-
-      await user.isAdmin(isAdmin);
-
-      await user.save();
-
-      resolve(user);
     } catch (e) {
       reject(e);
     }
@@ -114,10 +100,26 @@ const passwordReset = (password: string, token: string) => {
   });
 };
 
+const role = (id: Id, role: UserRoles) => {
+  return new Promise<UserDocument>(async (resolve, reject) => {
+    try {
+      const user = (await User.getById(id, { throwError: true }))!;
+
+      await user.updateRole(role);
+
+      await user.save();
+
+      resolve(user);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   login,
   signup,
-  admin,
+  role,
   passwordResetRequest,
   passwordReset,
 };

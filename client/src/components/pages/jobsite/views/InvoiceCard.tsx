@@ -4,6 +4,7 @@ import { InvoiceCardSnippetFragment } from "../../../../generated/graphql";
 import formatNumber from "../../../../utils/formatNumber";
 import { FiEdit, FiX } from "react-icons/fi";
 import InvoiceUpdate from "../../../Forms/Invoice/InvoiceUpdate";
+import Permission from "../../../Common/Permission";
 
 interface IInvoiceCard {
   invoice: InvoiceCardSnippetFragment;
@@ -28,12 +29,14 @@ const InvoiceCard = ({ invoice }: IInvoiceCard) => {
           </Text>
           <Text whiteSpace="pre-wrap">{invoice.description}</Text>
         </Text>
-        <IconButton
-          backgroundColor="transparent"
-          aria-label="edit"
-          icon={edit ? <FiX /> : <FiEdit />}
-          onClick={() => setEdit(!edit)}
-        />
+        <Permission>
+          <IconButton
+            backgroundColor="transparent"
+            aria-label="edit"
+            icon={edit ? <FiX /> : <FiEdit />}
+            onClick={() => setEdit(!edit)}
+          />
+        </Permission>
       </Flex>
       {edit && <InvoiceUpdate invoice={invoice} />}
     </Box>

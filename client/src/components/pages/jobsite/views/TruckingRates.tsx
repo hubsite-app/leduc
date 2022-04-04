@@ -4,6 +4,7 @@ import { FiEdit, FiX } from "react-icons/fi";
 import { JobsiteFullSnippetFragment } from "../../../../generated/graphql";
 import Card from "../../../Common/Card";
 import TruckingRatesTable from "../../../Common/Jobsite/TruckingRatesTable";
+import Permission from "../../../Common/Permission";
 import JobsiteTruckingRates from "../../../Forms/Jobsite/JobsiteTruckingRates";
 
 interface ITruckingRates {
@@ -36,12 +37,14 @@ const TruckingRates = ({ jobsite }: ITruckingRates) => {
         >
           Trucking Rates
         </Heading>
-        <IconButton
-          icon={editForm ? <FiX /> : <FiEdit />}
-          aria-label="add"
-          backgroundColor="transparent"
-          onClick={() => setEditForm(!editForm)}
-        />
+        <Permission>
+          <IconButton
+            icon={editForm ? <FiX /> : <FiEdit />}
+            aria-label="add"
+            backgroundColor="transparent"
+            onClick={() => setEditForm(!editForm)}
+          />
+        </Permission>
       </Flex>
       {editForm && (
         <JobsiteTruckingRates

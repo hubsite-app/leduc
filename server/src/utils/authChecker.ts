@@ -9,9 +9,13 @@ const authChecker: AuthChecker<IContext> = ({ context }, roles) => {
     }
 
     if (context.user) {
-      if (roles.includes("ADMIN") && context.user.admin) resolve(true);
+      const isDevelopment = process.env.NODE_ENV === "development";
 
-      if (roles.includes("PM") && context.user.projectManager) resolve(true);
+      if (roles.includes("DEV") && isDevelopment && context.user) resolve(true);
+
+      if (roles.includes("ADMIN") && context.user.role === 3) resolve(true);
+
+      if (roles.includes("PM") && context.user.role >= 2) resolve(true);
     }
 
     resolve(false);

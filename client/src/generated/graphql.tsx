@@ -342,6 +342,7 @@ export type Mutation = {
   userAdmin: UserClass;
   userPasswordReset: Scalars['Boolean'];
   userPasswordResetRequest: Scalars['Boolean'];
+  userUpdateRole: UserClass;
   vehicleCreate: VehicleClass;
   vehicleUpdateRates: VehicleClass;
   vehicleWorkCreate: Array<VehicleWorkClass>;
@@ -588,6 +589,12 @@ export type MutationUserPasswordResetRequestArgs = {
 };
 
 
+export type MutationUserUpdateRoleArgs = {
+  id: Scalars['String'];
+  role: UserRoles;
+};
+
+
 export type MutationVehicleCreateArgs = {
   crewId?: InputMaybe<Scalars['String']>;
   data: VehicleCreateData;
@@ -671,6 +678,7 @@ export type Query = {
   signup: SignupClass;
   system: SystemClass;
   user?: Maybe<UserClass>;
+  users: Array<UserClass>;
   vehicle: VehicleClass;
   vehicleSearch: Array<VehicleClass>;
 };
@@ -777,6 +785,11 @@ export type QueryUserArgs = {
 };
 
 
+export type QueryUsersArgs = {
+  options?: InputMaybe<ListOptionData>;
+};
+
+
 export type QueryVehicleArgs = {
   id: Scalars['String'];
 };
@@ -874,6 +887,7 @@ export type UserClass = {
   projectManager: Scalars['Boolean'];
   resetPasswordExpires: Scalars['DateTime'];
   resetPasswordToken?: Maybe<Scalars['String']>;
+  role: UserRoles;
   schemaVersion: Scalars['Float'];
 };
 
@@ -881,6 +895,12 @@ export type UserQuery = {
   id?: InputMaybe<Scalars['String']>;
   resetPasswordToken?: InputMaybe<Scalars['String']>;
 };
+
+export enum UserRoles {
+  Admin = 'Admin',
+  ProjectManager = 'ProjectManager',
+  User = 'User'
+}
 
 export type VehicleClass = {
   __typename?: 'VehicleClass';
@@ -962,7 +982,7 @@ export type EmployeeWorkCardSnippetFragment = { __typename?: 'EmployeeWorkClass'
 
 export type EmployeeCardSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, rates: Array<{ __typename?: 'Rate', date: any, rate: number }> };
 
-export type EmployeeFullSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, user?: { __typename?: 'UserClass', _id: string, name: string, email: string, admin: boolean } | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, signup?: { __typename?: 'SignupClass', _id: string } | null, rates: Array<{ __typename?: 'Rate', date: any, rate: number }> };
+export type EmployeeFullSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, user?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean } | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, signup?: { __typename?: 'SignupClass', _id: string } | null, rates: Array<{ __typename?: 'Rate', date: any, rate: number }> };
 
 export type EmployeeSsrSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null };
 
@@ -1008,9 +1028,9 @@ export type SystemSnippetFragment = { __typename?: 'SystemClass', unitDefaults: 
 
 export type TruckingRateSnippetFragment = { __typename?: 'TruckingRateClass', _id?: string | null, title: string, rate: number, type: string };
 
-export type UserCardSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, admin: boolean };
+export type UserCardSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean };
 
-export type FullUserSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }> } };
+export type FullUserSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }> } };
 
 export type VehicleWorkCardSnippetFragment = { __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle: string, vehicle?: { __typename?: 'VehicleClass', _id: string, name: string } | null };
 
@@ -1321,14 +1341,6 @@ export type SystemUpdateUnitDefaultsMutationVariables = Exact<{
 
 export type SystemUpdateUnitDefaultsMutation = { __typename?: 'Mutation', systemUpdateUnitDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rate: number }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rate: number }> } };
 
-export type UserAdminMutationVariables = Exact<{
-  id: Scalars['String'];
-  isAdmin: Scalars['Boolean'];
-}>;
-
-
-export type UserAdminMutation = { __typename?: 'Mutation', userAdmin: { __typename?: 'UserClass', _id: string, name: string, email: string, admin: boolean } };
-
 export type UserPasswordResetMutationVariables = Exact<{
   password: Scalars['String'];
   token: Scalars['String'];
@@ -1343,6 +1355,14 @@ export type UserPasswordResetRequestMutationVariables = Exact<{
 
 
 export type UserPasswordResetRequestMutation = { __typename?: 'Mutation', userPasswordResetRequest: boolean };
+
+export type UserUpdateRoleMutationVariables = Exact<{
+  id: Scalars['String'];
+  role: UserRoles;
+}>;
+
+
+export type UserUpdateRoleMutation = { __typename?: 'Mutation', userUpdateRole: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean } };
 
 export type VehicleCreateMutationVariables = Exact<{
   data: VehicleCreateData;
@@ -1437,7 +1457,7 @@ export type CrewSsrQuery = { __typename?: 'Query', crew: { __typename?: 'CrewCla
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserQuery = { __typename?: 'Query', currentUser: { __typename?: 'UserClass', _id: string, name: string, email: string, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }> } } };
+export type CurrentUserQuery = { __typename?: 'Query', currentUser: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }> } } };
 
 export type DailyReportCardQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1487,7 +1507,7 @@ export type EmployeeFullQueryVariables = Exact<{
 }>;
 
 
-export type EmployeeFullQuery = { __typename?: 'Query', employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, user?: { __typename?: 'UserClass', _id: string, name: string, email: string, admin: boolean } | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, signup?: { __typename?: 'SignupClass', _id: string } | null, rates: Array<{ __typename?: 'Rate', date: any, rate: number }> } };
+export type EmployeeFullQuery = { __typename?: 'Query', employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, user?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean } | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, signup?: { __typename?: 'SignupClass', _id: string } | null, rates: Array<{ __typename?: 'Rate', date: any, rate: number }> } };
 
 export type EmployeeSsrQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1586,6 +1606,13 @@ export type UserForPasswordResetQueryVariables = Exact<{
 
 
 export type UserForPasswordResetQuery = { __typename?: 'Query', user?: { __typename?: 'UserClass', _id: string, name: string } | null };
+
+export type UsersQueryVariables = Exact<{
+  options?: InputMaybe<ListOptionData>;
+}>;
+
+
+export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean }> };
 
 export type VehicleSearchQueryVariables = Exact<{
   searchString: Scalars['String'];
@@ -1879,7 +1906,9 @@ export const UserCardSnippetFragmentDoc = gql`
   _id
   name
   email
+  role
   admin
+  projectManager
 }
     `;
 export const EmployeeFullSnippetFragmentDoc = gql`
@@ -2086,11 +2115,7 @@ export const SystemSnippetFragmentDoc = gql`
     ${DefaultRateSnippetFragmentDoc}`;
 export const FullUserSnippetFragmentDoc = gql`
     fragment FullUserSnippet on UserClass {
-  _id
-  name
-  email
-  admin
-  projectManager
+  ...UserCardSnippet
   employee {
     _id
     name
@@ -2100,7 +2125,8 @@ export const FullUserSnippetFragmentDoc = gql`
     }
   }
 }
-    ${CrewCardSnippetFragmentDoc}`;
+    ${UserCardSnippetFragmentDoc}
+${CrewCardSnippetFragmentDoc}`;
 export const VehicleFullSnippetFragmentDoc = gql`
     fragment VehicleFullSnippet on VehicleClass {
   ...VehicleCardSnippet
@@ -3429,40 +3455,6 @@ export function useSystemUpdateUnitDefaultsMutation(baseOptions?: Apollo.Mutatio
 export type SystemUpdateUnitDefaultsMutationHookResult = ReturnType<typeof useSystemUpdateUnitDefaultsMutation>;
 export type SystemUpdateUnitDefaultsMutationResult = Apollo.MutationResult<SystemUpdateUnitDefaultsMutation>;
 export type SystemUpdateUnitDefaultsMutationOptions = Apollo.BaseMutationOptions<SystemUpdateUnitDefaultsMutation, SystemUpdateUnitDefaultsMutationVariables>;
-export const UserAdminDocument = gql`
-    mutation UserAdmin($id: String!, $isAdmin: Boolean!) {
-  userAdmin(id: $id, isAdmin: $isAdmin) {
-    ...UserCardSnippet
-  }
-}
-    ${UserCardSnippetFragmentDoc}`;
-export type UserAdminMutationFn = Apollo.MutationFunction<UserAdminMutation, UserAdminMutationVariables>;
-
-/**
- * __useUserAdminMutation__
- *
- * To run a mutation, you first call `useUserAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUserAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [userAdminMutation, { data, loading, error }] = useUserAdminMutation({
- *   variables: {
- *      id: // value for 'id'
- *      isAdmin: // value for 'isAdmin'
- *   },
- * });
- */
-export function useUserAdminMutation(baseOptions?: Apollo.MutationHookOptions<UserAdminMutation, UserAdminMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UserAdminMutation, UserAdminMutationVariables>(UserAdminDocument, options);
-      }
-export type UserAdminMutationHookResult = ReturnType<typeof useUserAdminMutation>;
-export type UserAdminMutationResult = Apollo.MutationResult<UserAdminMutation>;
-export type UserAdminMutationOptions = Apollo.BaseMutationOptions<UserAdminMutation, UserAdminMutationVariables>;
 export const UserPasswordResetDocument = gql`
     mutation UserPasswordReset($password: String!, $token: String!) {
   userPasswordReset(password: $password, token: $token)
@@ -3526,6 +3518,40 @@ export function useUserPasswordResetRequestMutation(baseOptions?: Apollo.Mutatio
 export type UserPasswordResetRequestMutationHookResult = ReturnType<typeof useUserPasswordResetRequestMutation>;
 export type UserPasswordResetRequestMutationResult = Apollo.MutationResult<UserPasswordResetRequestMutation>;
 export type UserPasswordResetRequestMutationOptions = Apollo.BaseMutationOptions<UserPasswordResetRequestMutation, UserPasswordResetRequestMutationVariables>;
+export const UserUpdateRoleDocument = gql`
+    mutation UserUpdateRole($id: String!, $role: UserRoles!) {
+  userUpdateRole(id: $id, role: $role) {
+    ...UserCardSnippet
+  }
+}
+    ${UserCardSnippetFragmentDoc}`;
+export type UserUpdateRoleMutationFn = Apollo.MutationFunction<UserUpdateRoleMutation, UserUpdateRoleMutationVariables>;
+
+/**
+ * __useUserUpdateRoleMutation__
+ *
+ * To run a mutation, you first call `useUserUpdateRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUserUpdateRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [userUpdateRoleMutation, { data, loading, error }] = useUserUpdateRoleMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      role: // value for 'role'
+ *   },
+ * });
+ */
+export function useUserUpdateRoleMutation(baseOptions?: Apollo.MutationHookOptions<UserUpdateRoleMutation, UserUpdateRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UserUpdateRoleMutation, UserUpdateRoleMutationVariables>(UserUpdateRoleDocument, options);
+      }
+export type UserUpdateRoleMutationHookResult = ReturnType<typeof useUserUpdateRoleMutation>;
+export type UserUpdateRoleMutationResult = Apollo.MutationResult<UserUpdateRoleMutation>;
+export type UserUpdateRoleMutationOptions = Apollo.BaseMutationOptions<UserUpdateRoleMutation, UserUpdateRoleMutationVariables>;
 export const VehicleCreateDocument = gql`
     mutation VehicleCreate($data: VehicleCreateData!, $crewId: String) {
   vehicleCreate(data: $data, crewId: $crewId) {
@@ -4712,6 +4738,41 @@ export function useUserForPasswordResetLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type UserForPasswordResetQueryHookResult = ReturnType<typeof useUserForPasswordResetQuery>;
 export type UserForPasswordResetLazyQueryHookResult = ReturnType<typeof useUserForPasswordResetLazyQuery>;
 export type UserForPasswordResetQueryResult = Apollo.QueryResult<UserForPasswordResetQuery, UserForPasswordResetQueryVariables>;
+export const UsersDocument = gql`
+    query Users($options: ListOptionData) {
+  users(options: $options) {
+    ...UserCardSnippet
+  }
+}
+    ${UserCardSnippetFragmentDoc}`;
+
+/**
+ * __useUsersQuery__
+ *
+ * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useUsersQuery(baseOptions?: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+      }
+export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+        }
+export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
+export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
+export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
 export const VehicleSearchDocument = gql`
     query VehicleSearch($searchString: String!, $options: SearchOptions) {
   vehicleSearch(searchString: $searchString, options: $options) {

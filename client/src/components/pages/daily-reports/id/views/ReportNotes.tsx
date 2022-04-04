@@ -27,12 +27,14 @@ import FileUpload, {
   IFileUploadFile,
 } from "../../../../Common/forms/FileUpload";
 import SubmitButton from "../../../../Common/forms/SubmitButton";
+import Permission from "../../../../Common/Permission";
 
 interface IReportNotes {
   dailyReport: DailyReportFullSnippetFragment;
+  editPermission?: boolean;
 }
 
-const ReportNotes = ({ dailyReport }: IReportNotes) => {
+const ReportNotes = ({ dailyReport, editPermission }: IReportNotes) => {
   /**
    * ----- Hook Initialization -----
    */
@@ -128,12 +130,14 @@ const ReportNotes = ({ dailyReport }: IReportNotes) => {
         >
           Notes
         </Heading>
-        <IconButton
-          aria-label="edit"
-          onClick={() => setEditNotes(!editNotes)}
-          icon={editNotes ? <FiX /> : <FiEdit />}
-          backgroundColor="transparent"
-        />
+        <Permission otherCriteria={editPermission}>
+          <IconButton
+            aria-label="edit"
+            onClick={() => setEditNotes(!editNotes)}
+            icon={editNotes ? <FiX /> : <FiEdit />}
+            backgroundColor="transparent"
+          />
+        </Permission>
       </Flex>
       {editNotes && (
         <Box backgroundColor="gray.200" borderRadius={4} p={2} m={2}>
@@ -158,13 +162,15 @@ const ReportNotes = ({ dailyReport }: IReportNotes) => {
             >
               Files ({dailyReport.reportNote?.files.length || 0})
             </Heading>
-            <IconButton
-              aria-label="add-file"
-              onClick={() => setFileForm(!fileForm)}
-              icon={fileForm ? <FiX /> : <FiPlus />}
-              backgroundColor="transparent"
-              size="sm"
-            />
+            <Permission otherCriteria={editPermission}>
+              <IconButton
+                aria-label="add-file"
+                onClick={() => setFileForm(!fileForm)}
+                icon={fileForm ? <FiX /> : <FiPlus />}
+                backgroundColor="transparent"
+                size="sm"
+              />
+            </Permission>
           </Flex>
           {fileForm && (
             <Box backgroundColor="gray.200" borderRadius={4} p={2} m={2}>

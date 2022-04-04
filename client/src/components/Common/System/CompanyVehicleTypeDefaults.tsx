@@ -5,6 +5,7 @@ import { SystemSnippetFragment } from "../../../generated/graphql";
 import SystemCompanyVehicleTypeUpdate from "../../Forms/System/SystemCompanyVehicleTypeUpdate";
 import Card from "../Card";
 import DefaultRatesTable from "../DefaultRatesTable";
+import Permission from "../Permission";
 
 interface ISystemCompanyVehicleTypeDefaults {
   system: SystemSnippetFragment;
@@ -38,12 +39,14 @@ const SystemCompanyVehicleTypeDefaults = ({
         >
           Company Vehicle Type Rates
         </Heading>
-        <IconButton
-          aria-label="edit"
-          icon={edit ? <FiX /> : <FiEdit />}
-          backgroundColor="transparent"
-          onClick={() => setEdit(!edit)}
-        />
+        <Permission>
+          <IconButton
+            aria-label="edit"
+            icon={edit ? <FiX /> : <FiEdit />}
+            backgroundColor="transparent"
+            onClick={() => setEdit(!edit)}
+          />
+        </Permission>
       </Flex>
       {edit && (
         <SystemCompanyVehicleTypeUpdate

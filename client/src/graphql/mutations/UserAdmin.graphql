@@ -1,5 +1,0 @@
-mutation UserAdmin($id: String!, $isAdmin: Boolean!) {
-  userAdmin(id: $id, isAdmin: $isAdmin) {
-    ...UserCardSnippet
-  }
-}

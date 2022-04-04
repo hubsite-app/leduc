@@ -16,6 +16,7 @@ import Warning from "../../../Common/Warning";
 import JobsiteMaterialCreate from "../../../Forms/JobsiteMaterial/JobsiteMaterialCreate";
 import MaterialShipmentCard from "../../../Common/MaterialShipment/MaterialShipmentCard";
 import JobsiteMaterialCard from "./JobsiteMaterialCard";
+import Permission from "../../../Common/Permission";
 
 interface IJobsiteMaterialsCosting {
   jobsite: JobsiteFullSnippetFragment;
@@ -47,12 +48,14 @@ const JobsiteMaterialsCosting = ({ jobsite }: IJobsiteMaterialsCosting) => {
               onClick={() => setNonCostedList(!nonCostedList)}
             />
           )}
-          <IconButton
-            icon={addForm ? <FiX /> : <FiPlus />}
-            aria-label="add"
-            backgroundColor="transparent"
-            onClick={() => setAddForm(!addForm)}
-          />
+          <Permission>
+            <IconButton
+              icon={addForm ? <FiX /> : <FiPlus />}
+              aria-label="add"
+              backgroundColor="transparent"
+              onClick={() => setAddForm(!addForm)}
+            />
+          </Permission>
         </HStack>
       </Flex>
       {addForm && (

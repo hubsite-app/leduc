@@ -1,11 +1,12 @@
 import { UserDocument } from "@models";
 import createJWT from "@utils/createJWT";
 import hashPassword from "@utils/hashPassword";
+import { UserRoles } from "@typescript/user";
 
-const admin = (user: UserDocument, isAdmin: boolean) => {
+const role = (user: UserDocument, role: UserRoles) => {
   return new Promise<void>(async (resolve, reject) => {
     try {
-      user.admin = isAdmin;
+      user.role = role;
 
       resolve();
     } catch (e) {
@@ -46,7 +47,7 @@ const password = (user: UserDocument, password: string) => {
 };
 
 export default {
-  admin,
+  role,
   resetPasswordToken,
   password,
 };

@@ -1,9 +1,5 @@
 fragment FullUserSnippet on UserClass {
-  _id
-  name
-  email
-  admin
-  projectManager
+  ...UserCardSnippet
   employee {
     _id
     name

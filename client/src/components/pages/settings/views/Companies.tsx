@@ -11,8 +11,8 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus } from "react-icons/fi";
-import AdminOnly from "../../../Common/AdminOnly";
 import CompanyFullList from "../../../Common/Company/FullList";
+import Permission from "../../../Common/Permission";
 import CompanyCreateForm from "../../../Forms/Company/CompanyCreate";
 
 const CompanySettings = () => {
@@ -28,7 +28,7 @@ const CompanySettings = () => {
 
   return (
     <Box>
-      <AdminOnly>
+      <Permission>
         <Flex justifyContent="end">
           <Button
             backgroundColor="white"
@@ -38,7 +38,7 @@ const CompanySettings = () => {
             Add
           </Button>
         </Flex>
-      </AdminOnly>
+      </Permission>
       <CompanyFullList />
 
       {/* MATERIAL ADD */}

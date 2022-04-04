@@ -1,6 +1,7 @@
 import SchemaVersions from "@constants/SchemaVersions";
 import { EmployeeClass } from "@models";
 import { prop, Ref } from "@typegoose/typegoose";
+import { UserRoles } from "@typescript/user";
 import isEmail from "@validation/isEmail";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
@@ -42,6 +43,10 @@ export class UserSchema {
   @Field({ nullable: false })
   @prop({ required: true, default: false })
   public projectManager!: boolean;
+
+  @Field(() => UserRoles, { nullable: false })
+  @prop({ required: true, enum: UserRoles, default: UserRoles.User })
+  public role!: UserRoles;
 
   @Field(() => EmployeeClass, { nullable: false })
   @prop({ ref: () => EmployeeClass, required: true })

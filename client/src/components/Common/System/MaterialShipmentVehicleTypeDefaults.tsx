@@ -5,6 +5,7 @@ import { SystemSnippetFragment } from "../../../generated/graphql";
 import SystemMaterialShipmentVehicleTypeUpdate from "../../Forms/System/SystemMaterialShipmentVehicleTypeUpdate";
 import Card from "../Card";
 import DefaultRatesTable from "../DefaultRatesTable";
+import Permission from "../Permission";
 
 interface ISystemMaterialShipmentVehicleTypeDefaults {
   system: SystemSnippetFragment;
@@ -38,12 +39,14 @@ const SystemMaterialShipmentVehicleTypeDefaults = ({
         >
           Material Shipment Trucking Rates
         </Heading>
-        <IconButton
-          aria-label="edit"
-          icon={edit ? <FiX /> : <FiEdit />}
-          backgroundColor="transparent"
-          onClick={() => setEdit(!edit)}
-        />
+        <Permission>
+          <IconButton
+            aria-label="edit"
+            icon={edit ? <FiX /> : <FiEdit />}
+            backgroundColor="transparent"
+            onClick={() => setEdit(!edit)}
+          />
+        </Permission>
       </Flex>
       {edit && (
         <SystemMaterialShipmentVehicleTypeUpdate

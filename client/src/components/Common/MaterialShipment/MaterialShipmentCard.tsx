@@ -17,15 +17,18 @@ import {
 import { FiEdit, FiTrash, FiX } from "react-icons/fi";
 import MaterialShipmentUpdate from "../../Forms/MaterialShipment/MaterialShipmentUpdate";
 import Warning from "../Warning";
+import Permission from "../Permission";
 
 interface IMaterialShipmentCard extends BoxProps {
   materialShipment: MaterialShipmentCardSnippetFragment;
   dailyReport: DailyReportForMaterialShipmentSnippetFragment;
+  editPermission?: boolean;
 }
 
 const MaterialShipmentCard = ({
   materialShipment,
   dailyReport,
+  editPermission,
   ...props
 }: IMaterialShipmentCard) => {
   /**
@@ -86,22 +89,24 @@ const MaterialShipmentCard = ({
           {materialShipment.noJobsiteMaterial && (
             <Warning tooltip="No costing" />
           )}
-          {edit && (
+          <Permission otherCriteria={editPermission}>
+            {edit && (
+              <IconButton
+                m="auto"
+                backgroundColor="transparent"
+                icon={<FiTrash />}
+                aria-label="delete"
+                onClick={() => window.confirm("Are you sure?") && remove()}
+              />
+            )}
             <IconButton
               m="auto"
               backgroundColor="transparent"
-              icon={<FiTrash />}
-              aria-label="delete"
-              onClick={() => window.confirm("Are you sure?") && remove()}
+              icon={edit ? <FiX /> : <FiEdit />}
+              aria-label="edit"
+              onClick={() => setEdit(!edit)}
             />
-          )}
-          <IconButton
-            m="auto"
-            backgroundColor="transparent"
-            icon={edit ? <FiX /> : <FiEdit />}
-            aria-label="edit"
-            onClick={() => setEdit(!edit)}
-          />
+          </Permission>
         </HStack>
       </Flex>
       {edit && (

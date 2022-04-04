@@ -1,20 +1,23 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-import AdminOnly from "../../Common/AdminOnly";
+import { UserRoles } from "../../../generated/graphql";
+import Permission from "../../Common/Permission";
 import CompanySettings from "./views/Companies";
 import MaterialSettings from "./views/Materials";
 import ProfileSettings from "./views/Profile";
 import SystemSettings from "./views/System";
+import UserSettings from "./views/Users";
 
 const SettingsClientContent = () => {
   return (
-    <Tabs isFitted>
+    <Tabs isFitted mt={2}>
       <TabList>
         <Tab>Profile</Tab>
-        <AdminOnly>
+        <Permission minRole={UserRoles.ProjectManager}>
           <Tab>System</Tab>
           <Tab>Materials</Tab>
           <Tab>Companies</Tab>
-        </AdminOnly>
+          <Tab>Users</Tab>
+        </Permission>
       </TabList>
       <TabPanels>
         <TabPanel>
@@ -28,6 +31,9 @@ const SettingsClientContent = () => {
         </TabPanel>
         <TabPanel>
           <CompanySettings />
+        </TabPanel>
+        <TabPanel>
+          <UserSettings />
         </TabPanel>
       </TabPanels>
     </Tabs>

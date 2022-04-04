@@ -5,16 +5,15 @@ import {
   EmployeeFullDocument,
   useEmployeeFullQuery,
   useSignupCreateMutation,
-  useUserAdminMutation,
 } from "../../../generated/graphql";
 import Loading from "../../Common/Loading";
 import Card from "../../Common/Card";
 import TextLink from "../../Common/TextLink";
-import AdminOnly from "../../Common/AdminOnly";
-import Checkbox from "../../Common/forms/Checkbox";
 import CopyField from "../../Common/CopyField";
 import EmployeeRates from "./views/Rates";
 import createLink from "../../../utils/createLink";
+import Permission from "../../Common/Permission";
+import UserUpdateRole from "../../Forms/User/Role";
 
 interface IEmployeeClientContent {
   id: string;
@@ -30,8 +29,6 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
       id,
     },
   });
-
-  const [userAdmin, { loading }] = useUserAdminMutation();
 
   const [createSignup, { loading: signupLoading }] = useSignupCreateMutation({
     refetchQueries: [EmployeeFullDocument],
@@ -83,22 +80,9 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
               </Text>
               {employee.user.email}
             </Text>
-            <AdminOnly>
-              <Checkbox
-                isChecked={employee.user.admin}
-                isDisabled={loading}
-                onChange={(e) =>
-                  userAdmin({
-                    variables: {
-                      id: employee.user!._id,
-                      isAdmin: e.target.checked,
-                    },
-                  })
-                }
-              >
-                Admin
-              </Checkbox>
-            </AdminOnly>
+            <Permission>
+              <UserUpdateRole user={employee.user} />
+            </Permission>
           </Box>
         );
       }
@@ -109,9 +93,9 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
             <Heading size="md">User Info</Heading>
             {userContent}
           </Card>
-          <AdminOnly>
+          <Permission>
             <EmployeeRates employee={employee} />
-          </AdminOnly>
+          </Permission>
           {employee.crews.length > 0 && (
             <Card>
               <Heading size="md">Crews</Heading>
@@ -132,7 +116,7 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
         </Box>
       );
     } else return <Loading />;
-  }, [createSignup, data?.employee, loading, signupLoading, userAdmin]);
+  }, [createSignup, data?.employee, signupLoading]);
 };
 
 export default EmployeeClientContent;
