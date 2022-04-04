@@ -80,6 +80,7 @@ describe("Daily Report Class", () => {
 
           const { employeeWork } = await dailyReport.updateDocument({
             date: newDate,
+            jobsiteId: dailyReport.jobsite!,
           });
 
           expect(dailyReport.date).toEqual(newDate);
