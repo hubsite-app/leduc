@@ -17,6 +17,7 @@ envsubst <./k8s/server-concrete-deployment.yaml >./k8s/server-concrete-deploymen
 mv ./k8s/server-concrete-deployment.yaml.out ./k8s/server-concrete-deployment.yaml
 
 export COMMIT_SHA1=$COMMIT_SHA1
+
 envsubst <./k8s/client-deployment.yaml >./k8s/client-deployment.yaml.out
 mv ./k8s/client-deployment.yaml.out ./k8s/client-deployment.yaml
 

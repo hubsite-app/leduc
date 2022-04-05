@@ -6,6 +6,7 @@ jobs:
     environment:
       SERVER_IMAGE_NAME: itsdevin/bow-mark-server
       CLIENT_IMAGE_NAME: itsdevin/bow-mark-client
+      CLIENT_CONCRETE_IMAGE_NAME: itsdevin/bow-mark-concrete-client
     working_directory: ~/app
     steps:
       - checkout
@@ -16,8 +17,15 @@ jobs:
           command: |
             docker build -t $SERVER_IMAGE_NAME:latest ./server
             touch ./client/.env.local
-            echo "NEXT_PUBLIC_APP_NAME=Concretee" | cat >> ./client/.env.local
+            echo "SSR_API_URL=https://paving.bowmark.ca/graphql" | cat >> ./client/.env.local
+            echo "NEXT_PUBLIC_APP_NAME=Paving" | cat >> ./client/.env.local
+            echo "NEXT_PUBLIC_API_URL=https://paving.bowmark.ca/graphql" | cat >> ./client/.env.local
             docker build -t $CLIENT_IMAGE_NAME:latest ./client
+            touch ./client/.env.local
+            echo "SSR_API_URL=https://concrete.bowmark.ca/graphql" | cat >> ./client/.env.local
+            echo "NEXT_PUBLIC_APP_NAME=Paving" | cat >> ./client/.env.local
+            echo "NEXT_PUBLIC_API_URL=https://concrete.bowmark.ca/graphql" | cat >> ./client/.env.local
+            docker build -t $CLIENT_CONCRETE_IMAGE_NAME:latest ./client
       - run:
           name: Push Docker Images
           command: |
@@ -28,6 +36,9 @@ jobs:
             docker tag $CLIENT_IMAGE_NAME:latest $CLIENT_IMAGE_NAME:$CIRCLE_SHA1
             docker push $CLIENT_IMAGE_NAME:latest
             docker push $CLIENT_IMAGE_NAME:$CIRCLE_SHA1
+            docker tag $CLIENT_CONCRETE_IMAGE_NAME:latest $CLIENT_CONCRETE_IMAGE_NAME:$CIRCLE_SHA1
+            docker push $CLIENT_CONCRETE_IMAGE_NAME:latest
+            docker push $CLIENT_CONCRETE_IMAGE_NAME:$CIRCLE_SHA1
       - run:
           name: Install envsubst
           command: |
