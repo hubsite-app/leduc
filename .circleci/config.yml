@@ -16,7 +16,7 @@ jobs:
           command: |
             docker build -t $SERVER_IMAGE_NAME:latest ./server
             touch ./client/.env.local
-            echo "NEXT_PUBLIC_APP_NAME=Concretee" | cat >> .client/.env.local
+            echo "NEXT_PUBLIC_APP_NAME=Concretee" | cat >> ./client/.env.local
             docker build -t $CLIENT_IMAGE_NAME:latest ./client
       - run:
           name: Push Docker Images
