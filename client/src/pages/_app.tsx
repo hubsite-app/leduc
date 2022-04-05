@@ -12,8 +12,8 @@ export default function App({ Component, pageProps }: AppProps) {
       <Head>
         <title>
           Bow Mark
-          {process.env.REACT_APP_PUBLIC_APP_NAME &&
-            ` ${process.env.REACT_PUBLIC_APP_NAME}`}
+          {process.env.NEXT_PUBLIC_APP_NAME &&
+            ` ${process.env.NEXT_PUBLIC_APP_NAME}`}
         </title>
         <meta
           name="viewport"
