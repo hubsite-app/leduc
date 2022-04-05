@@ -25,12 +25,12 @@ spec:
           ports:
             - containerPort: 3001
           volumeMounts:
-            - mountPath: /.env.local
-              name: client-concrete-env
+            - mountPath: /app/.env.local
+              name: env-file
               subPath: .env.local
               readOnly: true
       volumes:
-        - name: client-concrete-env
+        - name: env-file
           configMap:
             defaultMode: 420
             items:
