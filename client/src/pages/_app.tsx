@@ -10,7 +10,11 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider>
       <Head>
-        <title>Bow Mark</title>
+        <title>
+          Bow Mark
+          {process.env.REACT_APP_PUBLIC_APP_NAME &&
+            ` ${process.env.REACT_PUBLIC_APP_NAME}`}
+        </title>
         <meta
           name="viewport"
           content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"

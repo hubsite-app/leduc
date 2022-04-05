@@ -16,15 +16,21 @@ jobs:
           name: Build Docker images
           command: |
             docker build -t $SERVER_IMAGE_NAME:latest ./server
+
             touch ./client/.env.local
             echo "SSR_API_URL=https://paving.bowmark.ca/graphql" | cat >> ./client/.env.local
             echo "NEXT_PUBLIC_APP_NAME=Paving" | cat >> ./client/.env.local
             echo "NEXT_PUBLIC_API_URL=https://paving.bowmark.ca/graphql" | cat >> ./client/.env.local
+            rm ./client/manifest.json
+            cp ./client/manifest-paving.json ./client/manifest.json
             docker build -t $CLIENT_IMAGE_NAME:latest ./client
+
             touch ./client/.env.local
             echo "SSR_API_URL=https://concrete.bowmark.ca/graphql" | cat >> ./client/.env.local
             echo "NEXT_PUBLIC_APP_NAME=Concrete" | cat >> ./client/.env.local
             echo "NEXT_PUBLIC_API_URL=https://concrete.bowmark.ca/graphql" | cat >> ./client/.env.local
+            rm ./client/manifest.json
+            cp ./client/manifest-concrete.json ./client/manifest.json
             docker build -t $CLIENT_CONCRETE_IMAGE_NAME:latest ./client
       - run:
           name: Push Docker Images
