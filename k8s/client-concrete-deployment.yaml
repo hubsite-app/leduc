@@ -30,7 +30,7 @@ spec:
               subPath: .env.local
               readOnly: true
       volumes:
-        - name: client-paving-env
+        - name: client-concrete-env
           configMap:
             defaultMode: 420
             items:
