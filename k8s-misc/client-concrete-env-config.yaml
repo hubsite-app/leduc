@@ -1,3 +1,4 @@
+# https://stackoverflow.com/questions/63351072/get-environment-variable-kubernetes-on-next-js-app
 apiVersion: v1
 kind: ConfigMap
 metadata:
