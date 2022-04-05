@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-concrete-env
+data:
+  .env: |-
+    SSR_API_URL=https://concrete.bowmark.ca/graphql
+    NEXT_PUBLIC_API_URL=https://concrete.bowmark.ca/graphql
+    NEXT_PUBLIC_APP_NAME=Concretee
