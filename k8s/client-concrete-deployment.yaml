@@ -25,7 +25,8 @@ spec:
           ports:
             - containerPort: 3001
           volumeMounts:
-            - mountPath: /app/.env.local
+            - mountPath: /.env.local
+              subPath: .env.local
               name: env-file
               readOnly: true
       volumes:
