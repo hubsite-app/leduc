@@ -9,6 +9,7 @@ import {
 } from "@models";
 import SchemaVersions from "@constants/SchemaVersions";
 import { ES_updateCrew } from "@elasticsearch/helpers/crew";
+import { CrewTypes } from "@typescript/crew";
 
 @ObjectType()
 @post<CrewDocument>("save", async (crew) => {
@@ -22,9 +23,9 @@ export class CrewSchema {
   @prop({ required: true, minlength: 2, trim: true, unique: true })
   public name!: string;
 
-  @Field({ nullable: false })
-  @prop({ required: true })
-  public type!: string;
+  @Field(() => CrewTypes, { nullable: false })
+  @prop({ required: true, enum: CrewTypes })
+  public type!: CrewTypes;
 
   @Field(() => [EmployeeClass])
   @prop({ ref: () => EmployeeClass, default: [] })

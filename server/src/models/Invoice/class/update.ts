@@ -10,6 +10,8 @@ const document = (invoice: InvoiceDocument, data: IInvoiceUpdate) => {
 
       invoice.cost = data.cost;
 
+      invoice.date = data.date;
+
       invoice.description = data.description;
 
       invoice.internal = data.internal;

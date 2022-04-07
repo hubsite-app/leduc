@@ -3,7 +3,8 @@ import { Field, InputType } from "type-graphql";
 import { Signup, User, UserDocument } from "@models";
 import { decode, JwtPayload } from "jsonwebtoken";
 import { Id } from "@typescript/models";
-import { UserRoles } from "@typescript/user";
+import { UserHomeViewSettings, UserRoles } from "@typescript/user";
+import { IContext } from "@typescript/graphql";
 
 @InputType()
 export class LoginData {
@@ -116,10 +117,30 @@ const role = (id: Id, role: UserRoles) => {
   });
 };
 
+const updateHomeView = (context: IContext, homeView: UserHomeViewSettings) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!context.user) throw new Error("cannot find user");
+
+      if (parseInt(context.user.role.toString()) < 2 && homeView === 2)
+        throw new Error("User does not have permission for this home view");
+
+      await context.user.updateHomeView(homeView);
+
+      await context.user.save();
+
+      resolve(context.user);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   login,
   signup,
   role,
   passwordResetRequest,
   passwordReset,
+  updateHomeView,
 };

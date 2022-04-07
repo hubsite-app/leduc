@@ -1,4 +1,5 @@
 import { CrewDocument } from "@models";
+import { registerEnumType } from "type-graphql";
 
 export enum CrewTypes {
   Base = "Base",
@@ -6,8 +7,16 @@ export enum CrewTypes {
   Tech = "Tech",
   Shop = "Shop",
   Patch = "Patch",
-  Concrete = "Concrete",
+  Pour = "Pour",
+  FormLineSetting = "Form/Line Setting",
+  BasePrep = "Base Prep",
+  FormTruck = "Form Truck",
+  BreakoutCB = "Breakout / CB",
 }
+
+registerEnumType(CrewTypes, {
+  name: "CrewTypes",
+});
 
 export interface ICrewCreate {
   name: string;

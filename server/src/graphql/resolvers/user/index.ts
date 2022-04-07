@@ -1,7 +1,7 @@
 import { UserQuery } from "@graphql/types/query";
 import { EmployeeClass, User, UserClass, UserDocument } from "@models";
 import { IContext, ListOptionData } from "@typescript/graphql";
-import { UserRoles } from "@typescript/user";
+import { UserHomeViewSettings, UserRoles } from "@typescript/user";
 import {
   Arg,
   Authorized,
@@ -78,6 +78,15 @@ export default class UserResolver {
     @Arg("role", () => UserRoles) role: UserRoles
   ) {
     return mutations.role(id, role);
+  }
+
+  @Authorized()
+  @Mutation(() => UserClass)
+  async userUpdateHomeView(
+    @Ctx() context: IContext,
+    @Arg("homeView", () => UserHomeViewSettings) homeView: UserHomeViewSettings
+  ) {
+    return mutations.updateHomeView(context, homeView);
   }
 
   @Mutation(() => Boolean)

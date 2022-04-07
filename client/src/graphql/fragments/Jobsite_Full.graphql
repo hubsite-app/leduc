@@ -14,11 +14,14 @@ fragment JobsiteFullSnippet on JobsiteClass {
   materials {
     ...JobsiteMaterialCardSnippet
   }
-  invoices {
+  expenseInvoices {
+    ...InvoiceCardSnippet
+  }
+  revenueInvoices {
     ...InvoiceCardSnippet
   }
   truckingRates {
-    ...TruckingRateSnippet
+    ...TruckingTypeRateSnippet
   }
   nonCostedMaterialShipments {
     ...MaterialShipmentNonCostedSnippet

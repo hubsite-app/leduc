@@ -2,17 +2,20 @@ import React from "react";
 import { SimpleGrid, useToast } from "@chakra-ui/react";
 import {
   InvoiceData,
-  useJobsiteAddInvoiceMutation,
+  useJobsiteAddRevenueInvoiceMutation,
 } from "../../../generated/graphql";
 import { useInvoiceForm } from "../../../forms/invoice";
 import SubmitButton from "../../Common/forms/SubmitButton";
 
-interface IInvoiceCreate {
+interface IJobsiteRevenueInvoiceCreate {
   jobsiteId: string;
   onSuccess?: () => void;
 }
 
-const InvoiceCreate = ({ jobsiteId, onSuccess }: IInvoiceCreate) => {
+const JobsiteRevenueInvoiceCreate = ({
+  jobsiteId,
+  onSuccess,
+}: IJobsiteRevenueInvoiceCreate) => {
   /**
    * ----- Hook Initialization -----
    */
@@ -21,7 +24,7 @@ const InvoiceCreate = ({ jobsiteId, onSuccess }: IInvoiceCreate) => {
 
   const { FormComponents } = useInvoiceForm();
 
-  const [create, { loading }] = useJobsiteAddInvoiceMutation();
+  const [create, { loading }] = useJobsiteAddRevenueInvoiceMutation();
 
   /**
    * ----- Functions -----
@@ -37,7 +40,7 @@ const InvoiceCreate = ({ jobsiteId, onSuccess }: IInvoiceCreate) => {
           },
         });
 
-        if (res.data?.jobsiteAddInvoice) {
+        if (res.data?.jobsiteAddRevenueInvoice) {
           if (onSuccess) onSuccess();
         } else {
           toast({
@@ -67,9 +70,10 @@ const InvoiceCreate = ({ jobsiteId, onSuccess }: IInvoiceCreate) => {
     <FormComponents.Form submitHandler={handleSubmit}>
       <FormComponents.Company isLoading={loading} />
 
-      <SimpleGrid spacing={2} columns={[1, 1, 2]}>
+      <SimpleGrid spacing={2} columns={[1, 1, 3]}>
         <FormComponents.Cost isLoading={loading} />
         <FormComponents.InvoiceNumber isLoading={loading} />
+        <FormComponents.Date isLoading={loading} />
       </SimpleGrid>
 
       <FormComponents.Description isLoading={loading} />
@@ -80,4 +84,4 @@ const InvoiceCreate = ({ jobsiteId, onSuccess }: IInvoiceCreate) => {
   );
 };
 
-export default InvoiceCreate;
+export default JobsiteRevenueInvoiceCreate;

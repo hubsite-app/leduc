@@ -6,7 +6,7 @@ import interact from "./interact";
 import { GetByIDOptions, IListOptions } from "@typescript/models";
 import get from "./get";
 import { ObjectType } from "type-graphql";
-import { IUserCreate, UserRoles } from "@typescript/user";
+import { IUserCreate, UserHomeViewSettings, UserRoles } from "@typescript/user";
 import create from "./create";
 import update from "./update";
 import { IEmailData } from "@utils/sendEmail";
@@ -91,5 +91,12 @@ export class UserClass extends UserSchema {
 
   public async setResetPasswordToken(this: UserDocument) {
     return update.resetPasswordToken(this);
+  }
+
+  public async updateHomeView(
+    this: UserDocument,
+    homeView: UserHomeViewSettings
+  ) {
+    return update.homeView(this, homeView);
   }
 }

@@ -11,7 +11,7 @@ import { post, prop, Ref } from "@typegoose/typegoose";
 import isUrl from "@validation/isUrl";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
-import { TruckingRateClass } from "./subDocuments";
+import { TruckingTypeRateClass } from "./subDocuments";
 
 @ObjectType()
 @post<JobsiteDocument>("save", async (jobsite) => {
@@ -59,14 +59,21 @@ export class JobsiteSchema {
    */
   @Field(() => InvoiceClass)
   @prop({ ref: () => InvoiceClass, default: [] })
-  public invoices!: Ref<InvoiceClass>[];
+  public revenueInvoices!: Ref<InvoiceClass>[];
 
   /**
    * @version 2
    */
-  @Field(() => [TruckingRateClass])
-  @prop({ type: () => [TruckingRateClass], default: [] })
-  public truckingRates!: TruckingRateClass[];
+  @Field(() => InvoiceClass)
+  @prop({ ref: () => InvoiceClass, default: [] })
+  public expenseInvoices!: Ref<InvoiceClass>[];
+
+  /**
+   * @version 2
+   */
+  @Field(() => [TruckingTypeRateClass])
+  @prop({ type: () => [TruckingTypeRateClass], default: [] })
+  public truckingRates!: TruckingTypeRateClass[];
 
   @Field(() => [CrewClass])
   @prop({ ref: () => CrewClass, default: [] })

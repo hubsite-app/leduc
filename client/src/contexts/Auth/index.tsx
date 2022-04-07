@@ -145,13 +145,16 @@ const AuthProvider = ({ children }: IAuthProvider) => {
     });
   }, [dispatch]);
 
-  const fetchUser = React.useCallback(() => {
+  const fetchUser = React.useCallback(async () => {
     if (currentUserRefetch) {
-      currentUserRefetch();
+      try {
+        const res = await currentUserRefetch();
+        if (res.data.currentUser) authorizeSession(res.data.currentUser);
+      } catch {}
     } else {
       currentUser();
     }
-  }, [currentUser, currentUserRefetch]);
+  }, [authorizeSession, currentUser, currentUserRefetch]);
 
   /**
    * ----- Use-effects and other logic -----
@@ -174,8 +177,8 @@ const AuthProvider = ({ children }: IAuthProvider) => {
   ]);
 
   // Handle token changes
+  const localStorageToken = getItem(localStorageTokenKey);
   React.useEffect(() => {
-    const localStorageToken = getItem(localStorageTokenKey);
     if (token && localStorageToken && !state.user) {
       fetchUser();
     } else if (token && !localStorageToken) {
@@ -188,7 +191,7 @@ const AuthProvider = ({ children }: IAuthProvider) => {
       deauthorizeSession();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deauthorizeSession, state.user, token]);
+  }, [deauthorizeSession, state.user, token, localStorageToken]);
 
   /**
    * @desc go to login page if not logged in

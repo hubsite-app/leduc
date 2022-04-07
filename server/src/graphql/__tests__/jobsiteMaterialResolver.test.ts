@@ -54,7 +54,10 @@ describe("Jobsite Material Resolver", () => {
             }
             quantity
             unit
-            rate
+            rates {
+              rate
+              date
+            }
           }
         }
       `;
@@ -65,7 +68,12 @@ describe("Jobsite Material Resolver", () => {
 
           const data: JobsiteMaterialUpdateData = {
             quantity: 15,
-            rate: 10,
+            rates: [
+              {
+                date: new Date(),
+                rate: 125,
+              },
+            ],
             supplierId: documents.companies.company_1._id.toString(),
             unit: "tonnes",
           };
@@ -95,7 +103,7 @@ describe("Jobsite Material Resolver", () => {
 
           expect(jobsiteMaterial.supplier!.toString()).toBe(data.supplierId);
           expect(jobsiteMaterial.quantity).toBe(data.quantity);
-          expect(jobsiteMaterial.rate).toBe(data.rate);
+          expect(jobsiteMaterial.rates.length).toBe(data.rates.length);
           expect(jobsiteMaterial.unit).toBe(data.unit);
         });
       });

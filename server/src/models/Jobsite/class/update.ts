@@ -3,7 +3,7 @@ import {
   JobsiteDocument,
   JobsiteMaterialDocument,
 } from "@models";
-import { ITruckingRateData } from "@typescript/jobsite";
+import { ITruckingTypeRateData } from "@typescript/jobsite";
 
 const addMaterial = (
   jobsite: JobsiteDocument,
@@ -26,15 +26,39 @@ const addMaterial = (
   });
 };
 
-const addInvoice = (jobsite: JobsiteDocument, invoice: InvoiceDocument) => {
+const addExpenseInvoice = (
+  jobsite: JobsiteDocument,
+  invoice: InvoiceDocument
+) => {
   return new Promise<void>(async (resolve, reject) => {
     try {
-      const existingIndex = jobsite.invoices.findIndex(
+      const existingIndex = jobsite.expenseInvoices.findIndex(
         (inv) => inv?.toString() === invoice._id.toString()
       );
 
       if (existingIndex === -1) {
-        jobsite.invoices.push(invoice._id);
+        jobsite.expenseInvoices.push(invoice._id);
+      }
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const addRevenueInvoice = (
+  jobsite: JobsiteDocument,
+  invoice: InvoiceDocument
+) => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      const existingIndex = jobsite.revenueInvoices.findIndex(
+        (inv) => inv?.toString() === invoice._id.toString()
+      );
+
+      if (existingIndex === -1) {
+        jobsite.revenueInvoices.push(invoice._id);
       }
 
       resolve();
@@ -46,7 +70,7 @@ const addInvoice = (jobsite: JobsiteDocument, invoice: InvoiceDocument) => {
 
 const truckingRates = (
   jobsite: JobsiteDocument,
-  truckingRates: ITruckingRateData[]
+  truckingRates: ITruckingTypeRateData[]
 ) => {
   return new Promise<void>(async (resolve, reject) => {
     try {
@@ -61,6 +85,7 @@ const truckingRates = (
 
 export default {
   addMaterial,
-  addInvoice,
+  addExpenseInvoice,
+  addRevenueInvoice,
   truckingRates,
 };

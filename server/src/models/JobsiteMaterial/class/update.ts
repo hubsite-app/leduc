@@ -13,7 +13,7 @@ const document = (
 
       jobsiteMaterial.unit = data.unit;
 
-      jobsiteMaterial.rate = data.rate;
+      jobsiteMaterial.rates = data.rates;
 
       resolve();
     } catch (e) {

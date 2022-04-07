@@ -65,6 +65,7 @@ describe("Invoice Resolver", () => {
           const data: InvoiceData = {
             companyId: documents.companies.company_1._id.toString(),
             cost: 50,
+            date: new Date(),
             internal: true,
             invoiceNumber: "56789",
             description: "new description",

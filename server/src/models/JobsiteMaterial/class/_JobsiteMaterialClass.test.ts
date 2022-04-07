@@ -53,11 +53,18 @@ describe("Jobsite Material Class", () => {
             material: documents.materials.material_1,
             supplier: documents.companies.company_1,
             quantity: 1000,
-            rate: 125,
+            rates: [
+              {
+                date: new Date(),
+                rate: 125,
+              },
+            ],
             unit: "tonnes",
           };
 
           const jobsiteMaterial = await JobsiteMaterial.createDocument(data);
+
+          await jobsiteMaterial.save();
 
           expect(jobsiteMaterial).toBeDefined();
 

@@ -36,7 +36,7 @@ const JobsiteMaterialsCosting = ({ jobsite }: IJobsiteMaterialsCosting) => {
    */
 
   return (
-    <Card>
+    <Card h="fit-content">
       <Flex flexDir="row" justifyContent="space-between">
         <Heading my="auto" ml={2} size="md" w="100%">
           Materials ({jobsite.materials.length})

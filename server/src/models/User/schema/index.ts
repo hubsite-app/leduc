@@ -5,6 +5,7 @@ import { UserRoles } from "@typescript/user";
 import isEmail from "@validation/isEmail";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
+import { UserSettings } from "./subdocuments";
 
 @ObjectType()
 export class UserSchema {
@@ -51,6 +52,10 @@ export class UserSchema {
   @Field(() => EmployeeClass, { nullable: false })
   @prop({ ref: () => EmployeeClass, required: true })
   public employee!: Ref<EmployeeClass>;
+
+  @Field(() => UserSettings)
+  @prop({ type: () => UserSettings, required: true, default: {} })
+  public settings!: UserSettings;
 
   @Field()
   @prop({ required: true, default: SchemaVersions.User })

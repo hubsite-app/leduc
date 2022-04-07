@@ -73,11 +73,11 @@ const JobsiteMaterialCreate = ({
         <FormComponents.Material isLoading={loading} />
         <FormComponents.Supplier isLoading={loading} />
       </SimpleGrid>
-      <SimpleGrid spacing={2} columns={[1, 1, 3]}>
+      <SimpleGrid spacing={2} columns={[1, 1, 2]}>
         <FormComponents.Quantity isLoading={loading} />
         <FormComponents.Unit isLoading={loading} />
-        <FormComponents.Rate isLoading={loading} />
       </SimpleGrid>
+      <FormComponents.Rates isLoading={loading} />
       <SubmitButton isLoading={loading} />
     </FormComponents.Form>
   );

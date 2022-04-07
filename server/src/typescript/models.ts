@@ -20,7 +20,7 @@ export interface ISearchOptions {
 export type Id = string | Types.ObjectId;
 
 @ObjectType()
-export class Rate {
+export class RateClass {
   @Field(() => ID, { nullable: true })
   public _id?: Types.ObjectId;
 
@@ -28,7 +28,7 @@ export class Rate {
   @prop({ required: true })
   public date!: Date;
 
-  @Field({ nullable: false })
+  @Field(() => Float, { nullable: false })
   @prop({ required: true, min: 0 })
   public rate!: number;
 }
@@ -47,12 +47,21 @@ export class DefaultRateClass {
   @prop({ required: true })
   public title!: string;
 
-  @Field(() => Float, { nullable: false })
-  @prop({ required: true, default: 0 })
-  public rate!: number;
+  @Field(() => [RateClass], { nullable: false })
+  @prop({
+    type: () => [RateClass],
+    required: true,
+    default: [],
+    validate: {
+      validator: (val) => val.length > 0,
+      message: "must have at least one rate",
+    },
+  })
+  public rates!: RateClass[];
 }
 
 export interface IDefaultRateData {
+  _id?: Id;
   title: string;
-  rate: number;
+  rates: IRatesData[];
 }

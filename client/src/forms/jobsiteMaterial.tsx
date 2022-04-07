@@ -19,6 +19,7 @@ import {
 } from "../generated/graphql";
 import Number, { INumber } from "../components/Common/forms/Number";
 import Units, { IUnit } from "../components/Common/forms/Unit";
+import Rates, { IRates } from "../components/Common/forms/Rates";
 
 const JobsiteMaterialCreateSchema = yup
   .object()
@@ -27,7 +28,18 @@ const JobsiteMaterialCreateSchema = yup
     supplierId: yup.string().required("please enter a supplier"),
     quantity: yup.number().required("please enter a quantity"),
     unit: yup.string().required("please enter a unit"),
-    rate: yup.number().required("please enter a rate"),
+    rates: yup.array().of(
+      yup.object().shape({
+        date: yup
+          .date()
+          .required("please provide a date")
+          .typeError("please provide a date"),
+        rate: yup
+          .number()
+          .required("please provide a rate")
+          .typeError("please provide a rate"),
+      })
+    ),
   })
   .required();
 
@@ -36,7 +48,12 @@ export const useJobsiteMaterialCreateForm = (options?: UseFormProps) => {
     resolver: yupResolver(JobsiteMaterialCreateSchema),
     defaultValues: {
       quantity: 0,
-      rate: 0,
+      rates: [
+        {
+          rate: 0,
+          date: new Date(),
+        },
+      ],
       ...options?.defaultValues,
     },
     ...options,
@@ -134,21 +151,19 @@ export const useJobsiteMaterialCreateForm = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
-    Rate: ({ isLoading, ...props }: IFormProps<INumber>) =>
+    Rates: ({ isLoading, ...props }: IFormProps<Omit<IRates, "rates">>) =>
       React.useMemo(
         () => (
           <Controller
             control={control}
-            name="rate"
+            name="rates"
             render={({ field, fieldState }) => (
-              <Number
+              <Rates
                 {...props}
                 {...field}
-                errorMessage={fieldState.error?.message}
-                label="Rate"
-                isDisabled={isLoading}
-                format={(val) => `$${val}`}
-                parse={(val) => val.replace(/[$]/, "")}
+                rates={field.value}
+                errors={fieldState.error as any}
+                isLoading={isLoading}
               />
             )}
           />
@@ -169,7 +184,18 @@ const JobsiteMaterialUpdateSchema = yup
     supplierId: yup.string().required("please enter a supplier"),
     quantity: yup.number().required("please enter a quantity"),
     unit: yup.string().required("please enter a unit"),
-    rate: yup.number().required("please enter a rate"),
+    rates: yup.array().of(
+      yup.object().shape({
+        date: yup
+          .date()
+          .required("please provide a date")
+          .typeError("please provide a date"),
+        rate: yup
+          .number()
+          .required("please provide a rate")
+          .typeError("please provide a rate"),
+      })
+    ),
   })
   .required();
 
@@ -254,21 +280,19 @@ export const useJobsiteMaterialUpdateForm = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
-    Rate: ({ isLoading, ...props }: IFormProps<INumber>) =>
+    Rates: ({ isLoading, ...props }: IFormProps<Omit<IRates, "rates">>) =>
       React.useMemo(
         () => (
           <Controller
             control={control}
-            name="rate"
+            name="rates"
             render={({ field, fieldState }) => (
-              <Number
+              <Rates
                 {...props}
                 {...field}
-                errorMessage={fieldState.error?.message}
-                label="Rate"
-                isDisabled={isLoading}
-                format={(val) => `$${val}`}
-                parse={(val) => val.replace(/[$]/, "")}
+                rates={field.value}
+                errors={fieldState.error as any}
+                isLoading={isLoading}
               />
             )}
           />

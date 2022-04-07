@@ -1,8 +1,12 @@
 import { Box, Button, Flex, IconButton, SimpleGrid } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiTrash } from "react-icons/fi";
-import { DefaultRateSnippetFragment } from "../../../generated/graphql";
+import {
+  DefaultRateSnippetFragment,
+  RateSnippetFragment,
+} from "../../../generated/graphql";
 import Number from "./Number";
+import Rates from "./Rates";
 import TextField from "./TextField";
 
 interface IDefaultRates {
@@ -44,7 +48,12 @@ const DefaultRates = ({
   const addRate = React.useCallback(() => {
     defaultRatesCopy.push({
       title: "",
-      rate: 0,
+      rates: [
+        {
+          date: new Date(),
+          rate: 0,
+        },
+      ],
     });
 
     if (onChange) onChange(defaultRatesCopy);
@@ -67,9 +76,9 @@ const DefaultRates = ({
     [defaultRatesCopy, onChange]
   );
 
-  const setRate = React.useCallback(
-    (value: number, index: number) => {
-      defaultRatesCopy[index].rate = value;
+  const setRates = React.useCallback(
+    (value: Omit<RateSnippetFragment, "__typename">[], index: number) => {
+      defaultRatesCopy[index].rates = value;
 
       if (onChange) onChange(defaultRatesCopy);
     },
@@ -112,13 +121,10 @@ const DefaultRates = ({
               isDisabled={isLoading}
               onChange={(e) => setTitle(e.target.value, index)}
             />
-            <Number
-              value={def.rate}
-              label="Rate"
-              isDisabled={isLoading}
-              format={(val) => `$${val}`}
-              parse={(val) => val.replace(/[$]/, "")}
-              onChange={(_, number) => setRate(number, index)}
+            <Rates
+              rates={def.rates}
+              isLoading={isLoading}
+              onChange={(rate) => setRates(rate, index)}
             />
           </SimpleGrid>
           {allowDeletion && (

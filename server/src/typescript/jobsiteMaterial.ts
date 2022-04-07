@@ -1,4 +1,5 @@
 import { CompanyDocument, JobsiteDocument, MaterialDocument } from "@models";
+import { RateClass } from "./models";
 
 export interface IJobsiteMaterialCreate {
   jobsite: JobsiteDocument;
@@ -6,12 +7,12 @@ export interface IJobsiteMaterialCreate {
   supplier: CompanyDocument;
   quantity: number;
   unit: string;
-  rate: number;
+  rates: RateClass[];
 }
 
 export interface IJobsiteMaterialUpdate {
   supplier: CompanyDocument;
   quantity: number;
   unit: string;
-  rate: number;
+  rates: RateClass[];
 }

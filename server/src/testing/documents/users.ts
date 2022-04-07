@@ -1,5 +1,6 @@
 import { User, UserDocument } from "@models";
 import _ids from "@testing/_ids";
+import { UserRoles } from "@typescript/user";
 import hashPassword from "@utils/hashPassword";
 
 export interface SeededUsers {
@@ -25,6 +26,7 @@ const createUsers = () => {
         password: await hashPassword("password"),
         employee: _ids.employees.office_admin._id,
         admin: true,
+        role: UserRoles.Admin,
       });
 
       const users = {

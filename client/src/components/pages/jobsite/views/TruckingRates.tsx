@@ -3,7 +3,7 @@ import React from "react";
 import { FiEdit, FiX } from "react-icons/fi";
 import { JobsiteFullSnippetFragment } from "../../../../generated/graphql";
 import Card from "../../../Common/Card";
-import TruckingRatesTable from "../../../Common/Jobsite/TruckingRatesTable";
+import TruckingTypeRatesTable from "../../../Common/Jobsite/TruckingTypeRatesTable";
 import Permission from "../../../Common/Permission";
 import JobsiteTruckingRates from "../../../Forms/Jobsite/JobsiteTruckingRates";
 
@@ -25,7 +25,7 @@ const TruckingRates = ({ jobsite }: ITruckingRates) => {
    */
 
   return (
-    <Card>
+    <Card h="fit-content">
       <Flex flexDir="row" justifyContent="space-between">
         <Heading
           my="auto"
@@ -54,7 +54,7 @@ const TruckingRates = ({ jobsite }: ITruckingRates) => {
       )}
       {jobsite.truckingRates.length > 0 ? (
         !collapsed && (
-          <TruckingRatesTable truckingRates={jobsite.truckingRates} />
+          <TruckingTypeRatesTable truckingRates={jobsite.truckingRates} />
         )
       ) : (
         <Center>Rates not set</Center>

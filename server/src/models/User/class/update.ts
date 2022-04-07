@@ -1,7 +1,7 @@
 import { UserDocument } from "@models";
 import createJWT from "@utils/createJWT";
 import hashPassword from "@utils/hashPassword";
-import { UserRoles } from "@typescript/user";
+import { UserHomeViewSettings, UserRoles } from "@typescript/user";
 
 const role = (user: UserDocument, role: UserRoles) => {
   return new Promise<void>(async (resolve, reject) => {
@@ -46,8 +46,21 @@ const password = (user: UserDocument, password: string) => {
   });
 };
 
+const homeView = (user: UserDocument, homeView: UserHomeViewSettings) => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      user.settings.homeView = homeView;
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   role,
   resetPasswordToken,
   password,
+  homeView,
 };

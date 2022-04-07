@@ -3,6 +3,7 @@ fragment InvoiceCardSnippet on InvoiceClass {
   company {
     ...CompanyCardSnippet
   }
+  date
   invoiceNumber
   cost
   description

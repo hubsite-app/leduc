@@ -20,6 +20,6 @@ export class DefaultRateData {
   @Field({ nullable: false })
   public title!: string;
 
-  @Field(() => Float, { nullable: false })
-  public rate!: number;
+  @Field(() => [RatesData], { nullable: false })
+  public rates!: RatesData[];
 }

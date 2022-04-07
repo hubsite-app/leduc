@@ -29,6 +29,10 @@ export class InvoiceSchema {
   @prop({ required: true, default: false })
   public internal!: boolean;
 
+  @Field({ nullable: false })
+  @prop({ required: true, default: Date.now })
+  public date!: Date;
+
   @Field()
   @prop({ required: true, default: SchemaVersions.Invoice })
   public schemaVersion!: number;

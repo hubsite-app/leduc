@@ -1,43 +1,47 @@
 import { Box, Button, Flex, IconButton, SimpleGrid } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiTrash } from "react-icons/fi";
-import { TruckingRateTypes } from "../../../constants/select";
-import { TruckingRateSnippetFragment } from "../../../generated/graphql";
-import Number from "../../Common/forms/Number";
+import {
+  TruckingRateSnippetFragment,
+  TruckingRateTypes,
+  TruckingTypeRateSnippetFragment,
+} from "../../../generated/graphql";
 import TextField from "../../Common/forms/TextField";
-import TruckingRateType from "./TruckingRateType";
+import TruckingRates from "../../Common/forms/TruckingRates";
 
-interface ITruckingRates {
-  truckingRates: TruckingRateSnippetFragment[];
+interface ITruckingTypeRates {
+  truckingRates: TruckingTypeRateSnippetFragment[];
   onChange?: (
-    truckingRates: Omit<TruckingRateSnippetFragment, "__typename">[]
+    truckingRates: Omit<TruckingTypeRateSnippetFragment, "__typename">[]
   ) => void;
   isLoading?: boolean;
   allowDeletion?: boolean;
 }
 
-const TruckingRates = ({
+const TruckingTypeRates = ({
   truckingRates,
   onChange,
   isLoading,
   allowDeletion = false,
-}: ITruckingRates) => {
+}: ITruckingTypeRates) => {
   /**
    * ----- Variables -----
    */
 
-  const truckingRatesCopy: Omit<TruckingRateSnippetFragment, "__typename">[] =
-    React.useMemo(() => {
-      const copy: TruckingRateSnippetFragment[] = JSON.parse(
-        JSON.stringify(truckingRates)
-      );
+  const truckingRatesCopy: Omit<
+    TruckingTypeRateSnippetFragment,
+    "__typename"
+  >[] = React.useMemo(() => {
+    const copy: TruckingTypeRateSnippetFragment[] = JSON.parse(
+      JSON.stringify(truckingRates)
+    );
 
-      for (let i = 0; i < copy.length; i++) {
-        if (copy[i].__typename) delete copy[i].__typename;
-      }
+    for (let i = 0; i < copy.length; i++) {
+      if (copy[i].__typename) delete copy[i].__typename;
+    }
 
-      return copy;
-    }, [truckingRates]);
+    return copy;
+  }, [truckingRates]);
 
   /**
    * ----- Functions -----
@@ -46,8 +50,13 @@ const TruckingRates = ({
   const addRate = React.useCallback(() => {
     truckingRatesCopy.push({
       title: "",
-      rate: 0,
-      type: TruckingRateTypes[0],
+      rates: [
+        {
+          rate: 0,
+          date: new Date(),
+          type: TruckingRateTypes.Hour,
+        },
+      ],
     });
 
     if (onChange) onChange(truckingRatesCopy);
@@ -70,18 +79,12 @@ const TruckingRates = ({
     [truckingRatesCopy, onChange]
   );
 
-  const setRate = React.useCallback(
-    (value: number, index: number) => {
-      truckingRatesCopy[index].rate = value;
-
-      if (onChange) onChange(truckingRatesCopy);
-    },
-    [truckingRatesCopy, onChange]
-  );
-
-  const setType = React.useCallback(
-    (value: string, index: number) => {
-      truckingRatesCopy[index].type = value;
+  const setRates = React.useCallback(
+    (
+      value: Omit<TruckingRateSnippetFragment, "__typename">[],
+      index: number
+    ) => {
+      truckingRatesCopy[index].rates = value;
 
       if (onChange) onChange(truckingRatesCopy);
     },
@@ -114,7 +117,7 @@ const TruckingRates = ({
           m={2}
         >
           <SimpleGrid
-            columns={[1, 1, 3]}
+            columns={[1, 1, 2]}
             spacing={2}
             w={allowDeletion ? "95%" : "100%"}
           >
@@ -124,19 +127,10 @@ const TruckingRates = ({
               isDisabled={isLoading}
               onChange={(e) => setTitle(e.target.value, index)}
             />
-            <Number
-              value={rate.rate}
-              label="Rate"
-              isDisabled={isLoading}
-              format={(val) => `$${val}`}
-              parse={(val) => val.replace(/[$]/, "")}
-              onChange={(_, number) => setRate(number, index)}
-            />
-            <TruckingRateType
-              value={rate.type}
-              label="Type"
-              isDisabled={isLoading}
-              onChange={(e) => setType(e.target.value, index)}
+            <TruckingRates
+              rates={rate.rates}
+              isLoading={isLoading}
+              onChange={(rates) => setRates(rates, index)}
             />
           </SimpleGrid>
           {allowDeletion && (
@@ -164,4 +158,4 @@ const TruckingRates = ({
   );
 };
 
-export default TruckingRates;
+export default TruckingTypeRates;

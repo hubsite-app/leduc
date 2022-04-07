@@ -1,4 +1,4 @@
-import { DefaultRateData } from "@graphql/types/mutation";
+import { DefaultRateData, RatesData } from "@graphql/types/mutation";
 import {
   Company,
   Invoice,
@@ -25,9 +25,15 @@ export class JobsiteCreateData {
 }
 
 @InputType()
-export class TruckingRateData extends DefaultRateData {
-  @Field({ nullable: false })
+export class TruckingRateData extends RatesData {
+  @Field(() => TruckingRateTypes, { nullable: false })
   public type!: TruckingRateTypes;
+}
+
+@InputType()
+export class TruckingTypeRateData extends DefaultRateData {
+  @Field(() => [TruckingRateData], { nullable: false })
+  public rates!: TruckingRateData[];
 }
 
 const create = (data: JobsiteCreateData) => {
@@ -74,7 +80,7 @@ const addMaterial = (jobsiteId: string, data: JobsiteMaterialCreateData) => {
   });
 };
 
-const addInvoice = (jobsiteId: string, data: InvoiceData) => {
+const addExpenseInvoice = (jobsiteId: string, data: InvoiceData) => {
   return new Promise<JobsiteDocument>(async (resolve, reject) => {
     try {
       const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;
@@ -85,9 +91,10 @@ const addInvoice = (jobsiteId: string, data: InvoiceData) => {
 
       const invoice = await Invoice.createDocument({
         ...data,
-        jobsite,
         company,
       });
+
+      await jobsite.addExpenseInvoice(invoice);
 
       await invoice.save();
 
@@ -100,7 +107,34 @@ const addInvoice = (jobsiteId: string, data: InvoiceData) => {
   });
 };
 
-const setTruckingRates = (jobsiteId: string, data: TruckingRateData[]) => {
+const addRevenueInvoice = (jobsiteId: string, data: InvoiceData) => {
+  return new Promise<JobsiteDocument>(async (resolve, reject) => {
+    try {
+      const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;
+
+      const company = (await Company.getById(data.companyId, {
+        throwError: true,
+      }))!;
+
+      const invoice = await Invoice.createDocument({
+        ...data,
+        company,
+      });
+
+      await jobsite.addRevenueInvoice(invoice);
+
+      await invoice.save();
+
+      await jobsite.save();
+
+      resolve(jobsite);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const setTruckingRates = (jobsiteId: string, data: TruckingTypeRateData[]) => {
   return new Promise<JobsiteDocument>(async (resolve, reject) => {
     try {
       const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;
@@ -119,6 +153,7 @@ const setTruckingRates = (jobsiteId: string, data: TruckingRateData[]) => {
 export default {
   create,
   addMaterial,
-  addInvoice,
+  addExpenseInvoice,
+  addRevenueInvoice,
   setTruckingRates,
 };

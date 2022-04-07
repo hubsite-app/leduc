@@ -15,3 +15,12 @@ export enum UserRoles {
 registerEnumType(UserRoles, {
   name: "UserRoles",
 });
+
+export enum UserHomeViewSettings {
+  DailyReports = 1,
+  GeneralReports = 2,
+}
+
+registerEnumType(UserHomeViewSettings, {
+  name: "UserHomeViewSettings",
+});

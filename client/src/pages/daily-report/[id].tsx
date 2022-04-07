@@ -18,7 +18,7 @@ const DailyReport: PageDailyReportSsrComp = ({ data }) => {
         crumbs={[
           {
             title: "Daily Reports",
-            link: "/",
+            link: "/daily-reports",
           },
           {
             title: name,

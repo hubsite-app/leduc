@@ -1,6 +1,5 @@
 fragment TruckingRateSnippet on TruckingRateClass {
-  _id
-  title
   rate
+  date
   type
 }

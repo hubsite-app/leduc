@@ -10,10 +10,9 @@ import {
 import * as yup from "yup";
 
 import TextField, { ITextField } from "../components/Common/forms/TextField";
-import { CrewCreateData } from "../generated/graphql";
+import { CrewCreateData, CrewTypes } from "../generated/graphql";
 import { IFormProps } from "../typescript/forms";
-import Select, { ISelect } from "../components/Common/forms/Select";
-import { CrewTypes } from "../constants/select";
+import CrewType, { ICrewType } from "../components/Forms/Crew/Type";
 
 const CrewCreate = yup
   .object()
@@ -58,10 +57,7 @@ export const useCrewCreateForm = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
-    Type: ({
-      isLoading,
-      ...props
-    }: IFormProps<Omit<ISelect, "options" | "name">>) =>
+    Type: ({ isLoading, ...props }: IFormProps<ICrewType>) =>
       React.useMemo(
         () => (
           <Controller
@@ -69,12 +65,10 @@ export const useCrewCreateForm = (options?: UseFormProps) => {
             name="type"
             defaultValue="Base"
             render={({ field, fieldState }) => (
-              <Select
+              <CrewType
                 {...props}
                 {...field}
-                options={CrewTypes.map((type) => {
-                  return { value: type, title: type };
-                })}
+                value={field.value as CrewTypes}
                 errorMessage={fieldState.error?.message}
                 label="Crew Type"
                 isDisabled={isLoading}

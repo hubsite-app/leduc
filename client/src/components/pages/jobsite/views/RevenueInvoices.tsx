@@ -5,14 +5,15 @@ import { JobsiteFullSnippetFragment } from "../../../../generated/graphql";
 import Card from "../../../Common/Card";
 import Permission from "../../../Common/Permission";
 import ShowMore from "../../../Common/ShowMore";
-import InvoiceCreate from "../../../Forms/Invoice/InvoiceCreate";
+import JobsiteExpenseInvoiceCreate from "../../../Forms/Jobsite/ExpenseInvoiceCreate";
+import JobsiteRevenueInvoiceCreate from "../../../Forms/Jobsite/RevenueInvoiceCreate";
 import InvoiceCard from "./InvoiceCard";
 
-interface IInvoices {
+interface IRevenueInvoices {
   jobsite: JobsiteFullSnippetFragment;
 }
 
-const Invoices = ({ jobsite }: IInvoices) => {
+const RevenueInvoices = ({ jobsite }: IRevenueInvoices) => {
   /**
    * ----- Hook Initialization -----
    */
@@ -24,10 +25,10 @@ const Invoices = ({ jobsite }: IInvoices) => {
    */
 
   return (
-    <Card>
+    <Card h="fit-content">
       <Flex flexDir="row" justifyContent="space-between">
         <Heading my="auto" ml={2} size="md" w="100%">
-          Invoices ({jobsite.invoices.length})
+          Revenue ({jobsite.revenueInvoices.length})
         </Heading>
         <Permission>
           <IconButton
@@ -40,16 +41,16 @@ const Invoices = ({ jobsite }: IInvoices) => {
       </Flex>
       {addForm && (
         <Box backgroundColor="gray.200" borderRadius={4} p={2} m={2}>
-          <InvoiceCreate
+          <JobsiteRevenueInvoiceCreate
             onSuccess={() => setAddForm(false)}
             jobsiteId={jobsite._id}
           />
         </Box>
       )}
       <Flex w="100%" flexDir="column" px={4} py={2}>
-        {jobsite.invoices.length > 0 ? (
+        {jobsite.revenueInvoices.length > 0 ? (
           <ShowMore
-            list={jobsite.invoices.map((invoice) => (
+            list={jobsite.revenueInvoices.map((invoice) => (
               <InvoiceCard invoice={invoice} key={invoice._id} />
             ))}
           />
@@ -61,4 +62,4 @@ const Invoices = ({ jobsite }: IInvoices) => {
   );
 };
 
-export default Invoices;
+export default RevenueInvoices;

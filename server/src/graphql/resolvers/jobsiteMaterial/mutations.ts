@@ -1,3 +1,4 @@
+import { RatesData } from "@graphql/types/mutation";
 import { Company, JobsiteMaterial, JobsiteMaterialDocument } from "@models";
 import { Field, Float, InputType } from "type-graphql";
 
@@ -15,8 +16,8 @@ export class JobsiteMaterialCreateData {
   @Field({ nullable: false })
   public unit!: string;
 
-  @Field(() => Float, { nullable: false })
-  public rate!: number;
+  @Field(() => [RatesData], { nullable: false })
+  public rates!: RatesData[];
 }
 
 @InputType()
@@ -30,8 +31,8 @@ export class JobsiteMaterialUpdateData {
   @Field({ nullable: false })
   public unit!: string;
 
-  @Field(() => Float, { nullable: false })
-  public rate!: number;
+  @Field(() => [RatesData], { nullable: false })
+  public rates!: RatesData[];
 }
 
 const update = (id: string, data: JobsiteMaterialUpdateData) => {

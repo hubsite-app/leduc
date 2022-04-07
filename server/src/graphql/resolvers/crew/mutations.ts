@@ -8,7 +8,7 @@ export class CrewCreateData {
   @Field({ nullable: false })
   public name!: string;
 
-  @Field({ nullable: false })
+  @Field(() => CrewTypes, { nullable: false })
   public type!: CrewTypes;
 }
 

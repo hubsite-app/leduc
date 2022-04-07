@@ -10,11 +10,16 @@ const document = (Jobsite: JobsiteModel, data: IJobsiteCreate) => {
 
       const system = await System.getSystem();
       jobsite.truckingRates = system.materialShipmentVehicleTypeDefaults.map(
-        (rate) => {
+        (type) => {
           return {
-            rate: rate.rate,
-            title: rate.title,
-            type: TruckingRateTypes.Hour,
+            title: type.title,
+            rates: type.rates.map((rate) => {
+              return {
+                date: rate.date,
+                rate: rate.rate,
+                type: TruckingRateTypes.Hour,
+              };
+            }),
           };
         }
       );

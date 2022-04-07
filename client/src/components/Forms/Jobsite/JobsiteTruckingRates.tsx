@@ -1,13 +1,13 @@
 import { useToast } from "@chakra-ui/react";
 import React from "react";
-import { TruckingRateTypes } from "../../../constants/select";
 import { useSystem } from "../../../contexts/System";
 import {
   JobsiteFullSnippetFragment,
+  TruckingRateTypes,
   useJobsiteSetTruckingRatesMutation,
 } from "../../../generated/graphql";
 import SubmitButton from "../../Common/forms/SubmitButton";
-import TruckingRates from "./TruckingRates";
+import TruckingTypeRates from "./TruckingTypeRates";
 
 interface IJobsiteTruckingRates {
   jobsite: JobsiteFullSnippetFragment;
@@ -34,8 +34,13 @@ const JobsiteTruckingRates = ({
       : system!.materialShipmentVehicleTypeDefaults.map((rate) => {
           return {
             title: rate.title,
-            rate: rate.rate,
-            type: TruckingRateTypes[0],
+            rates: rate.rates.map((rate) => {
+              return {
+                date: rate.date,
+                rate: rate.rate,
+                type: TruckingRateTypes.Hour,
+              };
+            }),
           };
         })
   );
@@ -86,7 +91,7 @@ const JobsiteTruckingRates = ({
         handleSubmit();
       }}
     >
-      <TruckingRates
+      <TruckingTypeRates
         truckingRates={truckingRates}
         onChange={(truckingRates) => setDefaults(truckingRates)}
         isLoading={loading}

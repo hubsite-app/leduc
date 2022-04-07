@@ -9,5 +9,9 @@ fragment JobsiteMaterialCardSnippet on JobsiteMaterialClass {
   quantity
   completedQuantity
   unit
-  rate
+  rates {
+    _id
+    date
+    rate
+  }
 }

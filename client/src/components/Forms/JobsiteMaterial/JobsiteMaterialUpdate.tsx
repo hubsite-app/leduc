@@ -30,7 +30,7 @@ const JobsiteMaterialUpdate = ({
       supplierId: jobsiteMaterial.supplier._id,
       quantity: jobsiteMaterial.quantity,
       unit: jobsiteMaterial.unit,
-      rate: jobsiteMaterial.rate,
+      rates: jobsiteMaterial.rates,
     },
   });
 
@@ -77,11 +77,11 @@ const JobsiteMaterialUpdate = ({
   return (
     <FormComponents.Form submitHandler={handleSubmit}>
       <FormComponents.Supplier isLoading={loading} />
-      <SimpleGrid spacing={2} columns={[1, 1, 3]}>
+      <SimpleGrid spacing={2} columns={[1, 1, 2]}>
         <FormComponents.Quantity isLoading={loading} />
         <FormComponents.Unit isLoading={loading} />
-        <FormComponents.Rate isLoading={loading} />
       </SimpleGrid>
+      <FormComponents.Rates isLoading={loading} />
       <SubmitButton isLoading={loading} />
     </FormComponents.Form>
   );

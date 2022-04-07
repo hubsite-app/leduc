@@ -5,6 +5,6 @@ fragment JobsiteForDailyReportSnippet on JobsiteClass {
     ...JobsiteMaterialCardSnippet
   }
   truckingRates {
-    ...TruckingRateSnippet
+    ...TruckingTypeRateSnippet
   }
 }

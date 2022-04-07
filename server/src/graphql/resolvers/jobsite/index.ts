@@ -1,4 +1,3 @@
-import { DefaultRateData } from "@graphql/types/mutation";
 import { SearchOptions } from "@graphql/types/query";
 import {
   CrewClass,
@@ -21,7 +20,10 @@ import {
 } from "type-graphql";
 import { InvoiceData } from "../invoice/mutations";
 import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
-import mutations, { JobsiteCreateData, TruckingRateData } from "./mutations";
+import mutations, {
+  JobsiteCreateData,
+  TruckingTypeRateData,
+} from "./mutations";
 
 @Resolver(() => JobsiteClass)
 export default class JobsiteResolver {
@@ -45,8 +47,13 @@ export default class JobsiteResolver {
   }
 
   @FieldResolver(() => [InvoiceClass])
-  async invoices(@Root() jobsite: JobsiteDocument) {
-    return jobsite.getInvoices();
+  async expenseInvoices(@Root() jobsite: JobsiteDocument) {
+    return jobsite.getExpenseInvoices();
+  }
+
+  @FieldResolver(() => [InvoiceClass])
+  async revenueInvoices(@Root() jobsite: JobsiteDocument) {
+    return jobsite.getRevenueInvoices();
   }
 
   @FieldResolver(() => [MaterialShipmentClass])
@@ -95,18 +102,27 @@ export default class JobsiteResolver {
 
   @Authorized(["ADMIN"])
   @Mutation(() => JobsiteClass)
-  async jobsiteAddInvoice(
+  async jobsiteAddExpenseInvoice(
     @Arg("jobsiteId") jobsiteId: string,
     @Arg("data") data: InvoiceData
   ) {
-    return mutations.addInvoice(jobsiteId, data);
+    return mutations.addExpenseInvoice(jobsiteId, data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => JobsiteClass)
+  async jobsiteAddRevenueInvoice(
+    @Arg("jobsiteId") jobsiteId: string,
+    @Arg("data") data: InvoiceData
+  ) {
+    return mutations.addRevenueInvoice(jobsiteId, data);
   }
 
   @Authorized(["ADMIN"])
   @Mutation(() => JobsiteClass)
   async jobsiteSetTruckingRates(
     @Arg("id") id: string,
-    @Arg("data", () => [TruckingRateData]) data: TruckingRateData[]
+    @Arg("data", () => [TruckingTypeRateData]) data: TruckingTypeRateData[]
   ) {
     return mutations.setTruckingRates(id, data);
   }

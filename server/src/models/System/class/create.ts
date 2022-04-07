@@ -12,45 +12,95 @@ const document = (System: SystemModel) => {
         companyVehicleTypeDefaults: [
           {
             title: "Tandem",
-            rate: 82,
+            rates: [
+              {
+                date: new Date(),
+                rate: 82,
+              },
+            ],
           },
           {
             title: "Lowboy",
-            rate: 203,
+            rates: [
+              {
+                date: new Date(),
+                rate: 203,
+              },
+            ],
           },
         ],
         materialShipmentVehicleTypeDefaults: [
           {
             title: "Tandem",
-            rate: 90,
+            rates: [
+              {
+                date: new Date(),
+                rate: 90,
+              },
+            ],
           },
           {
             title: "Truck and Pup",
-            rate: 120,
+            rates: [
+              {
+                date: new Date(),
+                rate: 120,
+              },
+            ],
           },
           {
             title: "Truck and Tri",
-            rate: 130,
+            rates: [
+              {
+                date: new Date(),
+                rate: 130,
+              },
+            ],
           },
           {
             title: "Truck and Wagon",
-            rate: 145,
+            rates: [
+              {
+                date: new Date(),
+                rate: 145,
+              },
+            ],
           },
           {
             title: "Tandem BM",
-            rate: 82,
+            rates: [
+              {
+                date: new Date(),
+                rate: 82,
+              },
+            ],
           },
           {
             title: "Truck and Pup BM",
-            rate: 111,
+            rates: [
+              {
+                date: new Date(),
+                rate: 111,
+              },
+            ],
           },
           {
             title: "Truck and Tri BM",
-            rate: 120,
+            rates: [
+              {
+                date: new Date(),
+                rate: 120,
+              },
+            ],
           },
           {
             title: "Tractor/Lowboy BM",
-            rate: 203,
+            rates: [
+              {
+                date: new Date(),
+                rate: 203,
+              },
+            ],
           },
         ],
       });

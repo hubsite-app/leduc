@@ -15,7 +15,11 @@ import {
   IDefaultRateData,
   ISearchOptions,
 } from "@typescript/models";
-import { IJobsiteCreate, ITruckingRateData } from "@typescript/jobsite";
+import {
+  IJobsiteCreate,
+  ITruckingRateData,
+  ITruckingTypeRateData,
+} from "@typescript/jobsite";
 import create from "./create";
 import update from "./update";
 
@@ -57,8 +61,12 @@ export class JobsiteClass extends JobsiteSchema {
     return get.materials(this);
   }
 
-  public async getInvoices(this: JobsiteDocument) {
-    return get.invoices(this);
+  public async getExpenseInvoices(this: JobsiteDocument) {
+    return get.expenseInvoices(this);
+  }
+
+  public async getRevenueInvoices(this: JobsiteDocument) {
+    return get.revenueInvoices(this);
   }
 
   public async getNonCostedMaterialShipments(this: JobsiteDocument) {
@@ -84,13 +92,23 @@ export class JobsiteClass extends JobsiteSchema {
     return update.addMaterial(this, jobsiteMaterial);
   }
 
-  public async addInvoice(this: JobsiteDocument, invoice: InvoiceDocument) {
-    return update.addInvoice(this, invoice);
+  public async addExpenseInvoice(
+    this: JobsiteDocument,
+    invoice: InvoiceDocument
+  ) {
+    return update.addExpenseInvoice(this, invoice);
+  }
+
+  public async addRevenueInvoice(
+    this: JobsiteDocument,
+    invoice: InvoiceDocument
+  ) {
+    return update.addRevenueInvoice(this, invoice);
   }
 
   public async setTruckingRates(
     this: JobsiteDocument,
-    truckingRates: ITruckingRateData[]
+    truckingRates: ITruckingTypeRateData[]
   ) {
     return update.truckingRates(this, truckingRates);
   }

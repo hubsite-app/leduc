@@ -2,7 +2,7 @@ import SchemaVersions from "@constants/SchemaVersions";
 import { ES_updateVehicle } from "@elasticsearch/helpers/vehicle";
 import { CrewClass, VehicleDocument } from "@models";
 import { post, prop, Ref } from "@typegoose/typegoose";
-import { Rate } from "@typescript/models";
+import { RateClass } from "@typescript/models";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
@@ -34,9 +34,9 @@ export class VehicleSchema {
   @prop({ required: true, trim: true, minlength: 1, default: "Bow Mark" })
   public sourceCompany!: string;
 
-  @Field(() => [Rate], { nullable: false })
-  @prop({ type: () => [Rate], default: [], required: true })
-  public rates!: Rate[];
+  @Field(() => [RateClass], { nullable: false })
+  @prop({ type: () => [RateClass], default: [], required: true })
+  public rates!: RateClass[];
 
   @Field()
   @prop({ required: true, default: SchemaVersions.Vehicle })

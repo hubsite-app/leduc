@@ -158,11 +158,25 @@ const materials = (jobsite: JobsiteDocument) => {
   });
 };
 
-const invoices = (jobsite: JobsiteDocument) => {
+const expenseInvoices = (jobsite: JobsiteDocument) => {
   return new Promise<InvoiceDocument[]>(async (resolve, reject) => {
     try {
       const invoices = await Invoice.find({
-        _id: { $in: jobsite.invoices },
+        _id: { $in: jobsite.expenseInvoices },
+      });
+
+      resolve(invoices);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const revenueInvoices = (jobsite: JobsiteDocument) => {
+  return new Promise<InvoiceDocument[]>(async (resolve, reject) => {
+    try {
+      const invoices = await Invoice.find({
+        _id: { $in: jobsite.revenueInvoices },
       });
 
       resolve(invoices);
@@ -204,6 +218,7 @@ export default {
   crews,
   dailyReports,
   materials,
-  invoices,
+  expenseInvoices,
+  revenueInvoices,
   nonCostedMaterialShipments,
 };

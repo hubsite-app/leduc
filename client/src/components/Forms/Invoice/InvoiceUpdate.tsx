@@ -4,7 +4,6 @@ import {
   InvoiceCardSnippetFragment,
   InvoiceData,
   useInvoiceUpdateMutation,
-  useJobsiteAddInvoiceMutation,
 } from "../../../generated/graphql";
 import { useInvoiceForm } from "../../../forms/invoice";
 import SubmitButton from "../../Common/forms/SubmitButton";
@@ -26,6 +25,7 @@ const InvoiceUpdate = ({ invoice, onSuccess }: IInvoiceUpdate) => {
       companyId: invoice.company._id,
       invoiceNumber: invoice.invoiceNumber,
       cost: invoice.cost,
+      date: invoice.date,
       description: invoice.description,
       internal: invoice.internal,
     },
@@ -77,9 +77,10 @@ const InvoiceUpdate = ({ invoice, onSuccess }: IInvoiceUpdate) => {
     <FormComponents.Form submitHandler={handleSubmit}>
       <FormComponents.Company isLoading={loading} />
 
-      <SimpleGrid spacing={2} columns={[1, 1, 2]}>
+      <SimpleGrid spacing={2} columns={[1, 1, 3]}>
         <FormComponents.Cost isLoading={loading} />
         <FormComponents.InvoiceNumber isLoading={loading} />
+        <FormComponents.Date isLoading={loading} />
       </SimpleGrid>
 
       <FormComponents.Description isLoading={loading} />

@@ -1,6 +1,6 @@
 import { DefaultRateData } from "@graphql/types/mutation";
 import { System, SystemClass } from "@models";
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Mutation, Query, Resolver } from "type-graphql";
 import mutations from "./mutations";
 
 @Resolver(() => SystemClass)
@@ -18,11 +18,13 @@ export default class SystemResolver {
    * ----- Mutations -----
    */
 
+  @Authorized(["ADMIN"])
   @Mutation(() => SystemClass)
   async systemUpdateUnitDefaults(@Arg("data", () => [String]) data: string[]) {
     return mutations.unitDefaults(data);
   }
 
+  @Authorized(["ADMIN"])
   @Mutation(() => SystemClass)
   async systemUpdateCompanyVehicleTypeDefaults(
     @Arg("data", () => [DefaultRateData]) data: DefaultRateData[]
@@ -30,6 +32,7 @@ export default class SystemResolver {
     return mutations.companyVehicleTypeDefaults(data);
   }
 
+  @Authorized(["ADMIN"])
   @Mutation(() => SystemClass)
   async systemUpdateMaterialShipmentVehicleTypeDefaults(
     @Arg("data", () => [DefaultRateData]) data: DefaultRateData[]

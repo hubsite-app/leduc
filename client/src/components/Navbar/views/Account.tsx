@@ -1,7 +1,6 @@
 import React from "react";
 
 import {
-  Button,
   Menu,
   MenuButton,
   MenuDivider,
@@ -38,10 +37,15 @@ const NavbarAccount = () => {
           </MenuButton>
           <MenuList>
             <MenuGroup>
+              <MenuItem onClick={() => router.push("/daily-reports")}>
+                Daily Reports
+              </MenuItem>
+
+              <MenuDivider />
+
               <MenuItem onClick={() => router.push(`/settings`)}>
                 Settings
               </MenuItem>
-              <MenuDivider />
               <MenuItem onClick={() => logout()}>Logout</MenuItem>
             </MenuGroup>
           </MenuList>

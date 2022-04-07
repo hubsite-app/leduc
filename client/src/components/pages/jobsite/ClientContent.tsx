@@ -5,8 +5,9 @@ import Card from "../../Common/Card";
 import DailyReportListCard from "../../Common/DailyReport/DailyReportListCard";
 import Loading from "../../Common/Loading";
 import Permission from "../../Common/Permission";
-import Invoices from "./views/Invoices";
+import ExpenseInvoices from "./views/ExpenseInvoices";
 import JobsiteMaterialsCosting from "./views/JobsiteMaterials";
+import RevenueInvoices from "./views/RevenueInvoices";
 import TruckingRates from "./views/TruckingRates";
 
 interface IJobsiteClientContent {
@@ -35,7 +36,7 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
           <Card>
             <Text>
               <Text fontWeight="bold" as="span">
-                Code:{" "}
+                Number:{" "}
               </Text>
               {jobsite.jobcode}
             </Text>
@@ -51,9 +52,12 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
           <Permission minRole={UserRoles.ProjectManager}>
             <SimpleGrid columns={[1, 1, 1, 2]} spacingX={4} spacingY={2}>
               <JobsiteMaterialsCosting jobsite={jobsite} />
-              <Invoices jobsite={jobsite} />
+              <TruckingRates jobsite={jobsite} />
             </SimpleGrid>
-            <TruckingRates jobsite={jobsite} />
+            <SimpleGrid columns={[1, 1, 1, 2]} spacingX={4} spacingY={2}>
+              <ExpenseInvoices jobsite={jobsite} />
+              <RevenueInvoices jobsite={jobsite} />
+            </SimpleGrid>
           </Permission>
           <DailyReportListCard dailyReports={jobsite.dailyReports} />
         </Box>

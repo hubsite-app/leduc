@@ -33,11 +33,8 @@ const JobsiteMaterialCard = ({ jobsiteMaterial }: IJobsiteMaterialCard) => {
             {jobsiteMaterial.material.name} - {jobsiteMaterial.supplier.name}
           </StatLabel>
           <StatNumber>
-            ${formatNumber(jobsiteMaterial.rate)} x{" "}
-            {formatNumber(jobsiteMaterial.completedQuantity)} = $
-            {formatNumber(
-              jobsiteMaterial.rate * jobsiteMaterial.completedQuantity
-            )}
+            {formatNumber(jobsiteMaterial.completedQuantity)}{" "}
+            {jobsiteMaterial.unit}
           </StatNumber>
         </Stat>
         <Permission>

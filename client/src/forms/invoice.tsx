@@ -23,6 +23,10 @@ const InvoiceSchema = yup
     invoiceNumber: yup.string().required("please provide an invoice number"),
     cost: yup.number().required("please provide a cost"),
     description: yup.string(),
+    date: yup
+      .date()
+      .required("please provide a date")
+      .typeError("please provide a date"),
     internal: yup
       .boolean()
       .required("please select whether internal invoice")
@@ -36,6 +40,7 @@ export const useInvoiceForm = (options?: UseFormProps) => {
     defaultValues: {
       cost: 0,
       internal: false,
+      date: new Date(),
       ...options?.defaultValues,
     },
     ...options,
@@ -107,6 +112,26 @@ export const useInvoiceForm = (options?: UseFormProps) => {
                 isDisabled={isLoading}
                 format={(val) => `$${val}`}
                 parse={(val) => val.replace(/[$]/, "")}
+              />
+            )}
+          />
+        ),
+        [isLoading, props]
+      ),
+    Date: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="date"
+            render={({ field, fieldState }) => (
+              <TextField
+                {...props}
+                {...field}
+                type="date"
+                errorMessage={fieldState.error?.message}
+                label="Date"
+                isDisabled={isLoading}
               />
             )}
           />

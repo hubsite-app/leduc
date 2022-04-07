@@ -1,5 +1,6 @@
 import { JobsiteDocument } from "@models";
-import { IDefaultRateData } from "./models";
+import { registerEnumType } from "type-graphql";
+import { IDefaultRateData, IRatesData } from "./models";
 
 export interface IJobsiteCreate {
   name: string;
@@ -18,6 +19,14 @@ export enum TruckingRateTypes {
   Quantity = "Quantity",
 }
 
-export interface ITruckingRateData extends IDefaultRateData {
+registerEnumType(TruckingRateTypes, {
+  name: "TruckingRateTypes",
+});
+
+export interface ITruckingRateData extends IRatesData {
   type: TruckingRateTypes;
+}
+
+export interface ITruckingTypeRateData extends IDefaultRateData {
+  rates: ITruckingRateData[];
 }

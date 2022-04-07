@@ -10,6 +10,7 @@ import { JobsiteMaterialCreateData } from "@graphql/resolvers/jobsiteMaterial/mu
 import { Invoice, Jobsite, JobsiteMaterial, System } from "@models";
 import { InvoiceData } from "@graphql/resolvers/invoice/mutations";
 import { JobsiteCreateData } from "@graphql/resolvers/jobsite/mutations";
+import { TruckingRateTypes } from "@typescript/jobsite";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -97,7 +98,11 @@ describe("Jobsite Resolver", () => {
             name
             truckingRates {
               title
-              rate
+              rates {
+                rate
+                date
+                type
+              }
             }
           }
         }
@@ -141,8 +146,11 @@ describe("Jobsite Resolver", () => {
           expect(jobsite.truckingRates[0].title).toBe(
             system.materialShipmentVehicleTypeDefaults[0].title
           );
-          expect(jobsite.truckingRates[0].rate).toBe(
-            system.materialShipmentVehicleTypeDefaults[0].rate
+          expect(jobsite.truckingRates[0].rates.length).toBe(
+            system.materialShipmentVehicleTypeDefaults[0].rates.length
+          );
+          expect(jobsite.truckingRates[0].rates[0].type).toBe(
+            TruckingRateTypes.Hour
           );
         });
       });
@@ -163,7 +171,10 @@ describe("Jobsite Resolver", () => {
               }
               quantity
               unit
-              rate
+              rates {
+                date
+                rate
+              }
             }
           }
         }
@@ -177,7 +188,12 @@ describe("Jobsite Resolver", () => {
             materialId: documents.materials.material_1._id.toString(),
             supplierId: documents.companies.company_1._id.toString(),
             quantity: 1000,
-            rate: 75,
+            rates: [
+              {
+                date: new Date(),
+                rate: 125,
+              },
+            ],
             unit: "tonnes",
           };
 
@@ -213,12 +229,12 @@ describe("Jobsite Resolver", () => {
       });
     });
 
-    describe("jobsiteAddInvoice", () => {
-      const jobsiteAddInvoice = `
-        mutation JobsiteAddInvoice($jobsiteId: String!, $data: InvoiceData!) {
-          jobsiteAddInvoice(jobsiteId: $jobsiteId, data: $data) {
+    describe("jobsiteAddExpenseInvoice", () => {
+      const jobsiteAddExpenseInvoice = `
+        mutation JobsiteAddExpenseInvoice($jobsiteId: String!, $data: InvoiceData!) {
+          jobsiteAddExpenseInvoice(jobsiteId: $jobsiteId, data: $data) {
             _id
-            invoices {
+            expenseInvoices {
               _id
               cost
               company {
@@ -240,6 +256,7 @@ describe("Jobsite Resolver", () => {
             companyId: documents.companies.company_1._id.toString(),
             cost: 100,
             internal: false,
+            date: new Date(),
             invoiceNumber: "12345",
             description: "Description of invoice",
           };
@@ -247,7 +264,7 @@ describe("Jobsite Resolver", () => {
           const res = await request(app)
             .post("/graphql")
             .send({
-              query: jobsiteAddInvoice,
+              query: jobsiteAddExpenseInvoice,
               variables: {
                 jobsiteId: documents.jobsites.jobsite_2._id,
                 data,
@@ -257,7 +274,7 @@ describe("Jobsite Resolver", () => {
 
           expect(res.status).toBe(200);
 
-          expect(res.body.data.jobsiteAddInvoice._id).toBe(
+          expect(res.body.data.jobsiteAddExpenseInvoice._id).toBe(
             documents.jobsites.jobsite_2._id.toString()
           );
 
@@ -265,10 +282,10 @@ describe("Jobsite Resolver", () => {
             documents.jobsites.jobsite_2._id
           );
 
-          expect(jobsite?.invoices.length).toBe(1);
+          expect(jobsite?.expenseInvoices.length).toBe(1);
 
           const invoice = await Invoice.getById(
-            jobsite!.invoices[0]!.toString()
+            jobsite!.expenseInvoices[0]!.toString()
           );
 
           expect(invoice!.company!.toString()).toBe(data.companyId);

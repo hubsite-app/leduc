@@ -1,26 +1,45 @@
+import {
+  ApolloCache,
+  DefaultContext,
+  MutationHookOptions,
+} from "@apollo/client";
 import { useToast } from "@chakra-ui/react";
 import React from "react";
 import { useCrewCreateForm } from "../../../forms/crew";
 
 import {
   CrewCreateData,
+  CrewCreateMutation,
   CrewFullSnippetFragment,
+  Exact,
   useCrewCreateMutation,
 } from "../../../generated/graphql";
 import SubmitButton from "../../Common/forms/SubmitButton";
 
 interface ICrewCreateForm {
   onSuccess?: (crew: CrewFullSnippetFragment) => void;
+  mutationOptions?:
+    | MutationHookOptions<
+        CrewCreateMutation,
+        Exact<{
+          data: CrewCreateData;
+        }>,
+        DefaultContext,
+        ApolloCache<any>
+      >
+    | undefined;
 }
 
-const CrewCreateForm = ({ onSuccess }: ICrewCreateForm) => {
+const CrewCreateForm = ({ onSuccess, mutationOptions }: ICrewCreateForm) => {
   /**
    * ----- Hook Initialization -----
    */
 
   const toast = useToast();
 
-  const [create, { loading }] = useCrewCreateMutation();
+  const [create, { loading }] = useCrewCreateMutation({
+    ...mutationOptions,
+  });
 
   const { FormComponents } = useCrewCreateForm();
 

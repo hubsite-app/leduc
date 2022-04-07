@@ -8,4 +8,7 @@ fragment FullUserSnippet on UserClass {
       ...CrewCardSnippet
     }
   }
+  settings {
+    homeView
+  }
 }

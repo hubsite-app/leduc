@@ -69,7 +69,7 @@ export const useJobsiteCreateForm = (options?: UseFormProps) => {
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}
-                label="Jobcode"
+                label="Job Number"
                 isDisabled={isLoading}
                 placeholder="22-001"
               />

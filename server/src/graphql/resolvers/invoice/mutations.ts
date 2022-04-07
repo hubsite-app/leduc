@@ -12,6 +12,9 @@ export class InvoiceData {
   @Field({ nullable: false })
   public cost!: number;
 
+  @Field({ nullable: false })
+  public date!: Date;
+
   @Field({ nullable: true })
   public description?: string;
 

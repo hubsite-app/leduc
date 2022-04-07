@@ -15,7 +15,12 @@ const createJobsiteMaterials = () => {
         supplier: _ids.companies.company_1._id,
         quantity: 2000,
         unit: "tonnes",
-        rate: 10,
+        rates: [
+          {
+            date: new Date(),
+            rate: 10,
+          },
+        ],
       });
 
       const jobsite_3_material_1 = new JobsiteMaterial({
@@ -24,7 +29,12 @@ const createJobsiteMaterials = () => {
         supplier: _ids.companies.company_1._id,
         quantity: 1000,
         unit: "tonnes",
-        rate: 10,
+        rates: [
+          {
+            date: new Date(),
+            rate: 15,
+          },
+        ],
       });
 
       const jobsiteMaterials = {

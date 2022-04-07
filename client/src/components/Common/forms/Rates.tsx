@@ -5,13 +5,23 @@ import { RateSnippetFragment } from "../../../generated/graphql";
 import Number from "./Number";
 import TextField from "./TextField";
 
-interface IRates {
+interface RateError {
+  date?: {
+    message?: string;
+  };
+  rate?: {
+    message?: string;
+  };
+}
+
+export interface IRates {
   rates: RateSnippetFragment[];
   onChange?: (rates: Omit<RateSnippetFragment, "__typename">[]) => void;
   isLoading?: boolean;
+  errors?: RateError[];
 }
 
-const Rates = ({ rates = [], onChange, isLoading }: IRates) => {
+const Rates = ({ rates = [], onChange, isLoading, errors }: IRates) => {
   /**
    * ----- Variables -----
    */
@@ -70,7 +80,7 @@ const Rates = ({ rates = [], onChange, isLoading }: IRates) => {
 
   React.useEffect(() => {
     if (onChange) onChange(ratesCopy);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /**
@@ -96,6 +106,7 @@ const Rates = ({ rates = [], onChange, isLoading }: IRates) => {
               type="date"
               label="Date"
               onChange={(e) => setDate(e.target.value, index)}
+              errorMessage={errors && errors[index]?.date?.message}
             />
             <Number
               value={rate.rate}
@@ -104,6 +115,7 @@ const Rates = ({ rates = [], onChange, isLoading }: IRates) => {
               format={(val) => `$${val}`}
               parse={(val) => val.replace(/[$]/, "")}
               onChange={(_, number) => setRate(number, index)}
+              errorMessage={errors && errors[index]?.rate?.message}
             />
           </SimpleGrid>
           <IconButton

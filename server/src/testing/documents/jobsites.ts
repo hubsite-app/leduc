@@ -1,5 +1,6 @@
 import { Jobsite, JobsiteDocument } from "@models";
 import _ids from "@testing/_ids";
+import { TruckingRateTypes } from "@typescript/jobsite";
 
 export interface SeededJobsites {
   jobsite_1: JobsiteDocument;
@@ -32,7 +33,13 @@ const createJobsites = () => {
         truckingRates: [
           {
             title: "Tandem",
-            rate: 120,
+            rates: [
+              {
+                date: new Date(),
+                rate: 120,
+                type: TruckingRateTypes.Hour,
+              },
+            ],
           },
         ],
       });

@@ -74,12 +74,13 @@ export default class CrewResolver {
    * ----- Mutations -----
    */
 
-  @Authorized()
+  @Authorized(["PM", 'ADMIN'])
   @Mutation(() => CrewClass)
   async crewCreate(@Arg("data") data: CrewCreateData) {
     return mutations.create(data);
   }
 
+  @Authorized()
   @Mutation(() => CrewClass)
   async crewAddEmployee(
     @Arg("crewId") id: string,
@@ -88,6 +89,7 @@ export default class CrewResolver {
     return mutations.addEmployee(id, employeeId);
   }
 
+  @Authorized()
   @Mutation(() => CrewClass)
   async crewAddVehicle(
     @Arg("crewId") id: string,
@@ -96,6 +98,7 @@ export default class CrewResolver {
     return mutations.addVehicle(id, vehicleId);
   }
 
+  @Authorized()
   @Mutation(() => CrewClass)
   async crewRemoveEmployee(
     @Arg("crewId") id: string,
@@ -104,6 +107,7 @@ export default class CrewResolver {
     return mutations.removeEmployee(id, employeeId);
   }
 
+  @Authorized()
   @Mutation(() => CrewClass)
   async crewRemoveVehicle(
     @Arg("crewId") id: string,

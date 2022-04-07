@@ -8,11 +8,10 @@ const document = (Invoice: InvoiceModel, data: IInvoiceCreate) => {
         company: data.company._id,
         invoiceNumber: data.invoiceNumber,
         cost: data.cost,
+        date: data.date,
         description: data.description,
         internal: data.internal,
       });
-
-      await data.jobsite.addInvoice(invoice);
 
       resolve(invoice);
     } catch (e) {

@@ -12,7 +12,7 @@ const document = (
         supplier: data.supplier._id,
         quantity: data.quantity,
         unit: data.unit,
-        rate: data.rate,
+        rates: data.rates,
       });
 
       await data.jobsite.addMaterial(jobsiteMaterial);
