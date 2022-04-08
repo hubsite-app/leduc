@@ -8,6 +8,7 @@ import ProductionCard from "./ProductionCard";
 import ProductionCreateForm from "./ProductionCreateForm";
 import ShowMore from "../../../../Common/ShowMore";
 import Permission from "../../../../Common/Permission";
+import FormContainer from "../../../../Common/FormContainer";
 
 interface IProduction {
   dailyReport: DailyReportFullSnippetFragment;
@@ -41,10 +42,12 @@ const Production = ({ dailyReport, editPermission }: IProduction) => {
         </Permission>
       </Flex>
       {addForm && (
-        <ProductionCreateForm
-          dailyReport={dailyReport}
-          closeForm={() => setAddForm(false)}
-        />
+        <FormContainer>
+          <ProductionCreateForm
+            dailyReport={dailyReport}
+            closeForm={() => setAddForm(false)}
+          />
+        </FormContainer>
       )}
       <Flex flexDir="column" w="100%" px={4} py={2}>
         {dailyReport.productions.length > 0 ? (

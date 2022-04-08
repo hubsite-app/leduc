@@ -13,6 +13,7 @@ import JobsiteMaterialProgressBar from "../../../Common/JobsiteMaterial/Progress
 import { FiEdit, FiX } from "react-icons/fi";
 import JobsiteMaterialUpdate from "../../../Forms/JobsiteMaterial/JobsiteMaterialUpdate";
 import Permission from "../../../Common/Permission";
+import FormContainer from "../../../Common/FormContainer";
 
 interface IJobsiteMaterialCard {
   jobsiteMaterial: JobsiteMaterialCardSnippetFragment;
@@ -49,7 +50,11 @@ const JobsiteMaterialCard = ({ jobsiteMaterial }: IJobsiteMaterialCard) => {
       <Box>
         <JobsiteMaterialProgressBar jobsiteMaterial={jobsiteMaterial} />
       </Box>
-      {edit && <JobsiteMaterialUpdate jobsiteMaterial={jobsiteMaterial} />}
+      {edit && (
+        <FormContainer>
+          <JobsiteMaterialUpdate jobsiteMaterial={jobsiteMaterial} />
+        </FormContainer>
+      )}
     </Box>
   );
 };

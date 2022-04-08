@@ -1,4 +1,4 @@
-import { Box, SimpleGrid, useToast } from "@chakra-ui/react";
+import { SimpleGrid, useToast } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import React from "react";
 import { useProductionCreateForm } from "../../../../../forms/production";
@@ -72,21 +72,19 @@ const ProductionCreateForm = ({
   );
 
   return (
-    <Box backgroundColor="gray.200" borderRadius={4} p={2} m={2}>
-      <FormComponents.Form submitHandler={submitCreation}>
-        <FormComponents.JobTitle isLoading={loading} />
-        <SimpleGrid columns={[1, 1, 2]} spacing={2}>
-          <FormComponents.Quantity isLoading={loading} />
-          <FormComponents.Unit isLoading={loading} />
-        </SimpleGrid>
-        <SimpleGrid columns={[1, 1, 2]} spacing={2}>
-          <FormComponents.StartTime isLoading={loading} />
-          <FormComponents.EndTime isLoading={loading} />
-        </SimpleGrid>
-        <FormComponents.Description isLoading={loading} />
-        <SubmitButton isLoading={loading} />
-      </FormComponents.Form>
-    </Box>
+    <FormComponents.Form submitHandler={submitCreation}>
+      <FormComponents.JobTitle isLoading={loading} />
+      <SimpleGrid columns={[1, 1, 2]} spacing={2}>
+        <FormComponents.Quantity isLoading={loading} />
+        <FormComponents.Unit isLoading={loading} />
+      </SimpleGrid>
+      <SimpleGrid columns={[1, 1, 2]} spacing={2}>
+        <FormComponents.StartTime isLoading={loading} />
+        <FormComponents.EndTime isLoading={loading} />
+      </SimpleGrid>
+      <FormComponents.Description isLoading={loading} />
+      <SubmitButton isLoading={loading} />
+    </FormComponents.Form>
   );
 };
 

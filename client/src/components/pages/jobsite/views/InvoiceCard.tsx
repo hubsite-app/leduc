@@ -5,6 +5,7 @@ import formatNumber from "../../../../utils/formatNumber";
 import { FiEdit, FiX } from "react-icons/fi";
 import InvoiceUpdate from "../../../Forms/Invoice/InvoiceUpdate";
 import Permission from "../../../Common/Permission";
+import FormContainer from "../../../Common/FormContainer";
 
 interface IInvoiceCard {
   invoice: InvoiceCardSnippetFragment;
@@ -38,7 +39,11 @@ const InvoiceCard = ({ invoice }: IInvoiceCard) => {
           />
         </Permission>
       </Flex>
-      {edit && <InvoiceUpdate invoice={invoice} />}
+      {edit && (
+        <FormContainer>
+          <InvoiceUpdate invoice={invoice} />
+        </FormContainer>
+      )}
     </Box>
   );
 };

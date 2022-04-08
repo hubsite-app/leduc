@@ -13,6 +13,7 @@ import {
 } from "../../../../../generated/graphql";
 import convertHourToDate from "../../../../../utils/convertHourToDate";
 import hourString from "../../../../../utils/hourString";
+import FormContainer from "../../../../Common/FormContainer";
 import SubmitButton from "../../../../Common/forms/SubmitButton";
 import Permission from "../../../../Common/Permission";
 
@@ -134,7 +135,7 @@ const ProductionCard = ({
         </Flex>
       </Flex>
       {edit && (
-        <Box backgroundColor="gray.200" p={2} borderRadius={4}>
+        <FormContainer>
           <FormComponents.Form submitHandler={submitUpdate}>
             <FormComponents.JobTitle isLoading={loading} />
             <SimpleGrid columns={[1, 1, 2]} spacing={2}>
@@ -148,7 +149,7 @@ const ProductionCard = ({
             <FormComponents.Description isLoading={loading} />
             <SubmitButton isLoading={loading} />
           </FormComponents.Form>
-        </Box>
+        </FormContainer>
       )}
     </Box>
   );

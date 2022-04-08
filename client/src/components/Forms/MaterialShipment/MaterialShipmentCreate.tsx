@@ -14,6 +14,7 @@ import convertHourToDate from "../../../utils/convertHourToDate";
 import isEmpty from "../../../utils/isEmpty";
 import ContactOffice from "../../Common/ContactOffice";
 import ErrorMessage from "../../Common/ErrorMessage";
+import FormContainer from "../../Common/FormContainer";
 import Number from "../../Common/forms/Number";
 import Select, { ISelect } from "../../Common/forms/Select";
 import SubmitButton from "../../Common/forms/SubmitButton";
@@ -430,13 +431,7 @@ const MaterialShipmentCreate = ({
     <Box>
       {generalError && <ErrorMessage description={generalError} />}
       {formData.map((data, dataIndex) => (
-        <Box
-          key={dataIndex}
-          backgroundColor="gray.200"
-          borderRadius={4}
-          p={2}
-          m={2}
-        >
+        <FormContainer key={dataIndex}>
           {formData.length > 1 && (
             <Flex justifyContent="end">
               <IconButton
@@ -685,7 +680,7 @@ const MaterialShipmentCreate = ({
               helperText="&nbsp;"
             />
           </SimpleGrid>
-        </Box>
+        </FormContainer>
       ))}
 
       <Box w="100%" px={2}>

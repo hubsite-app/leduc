@@ -13,6 +13,7 @@ import {
 import hourString from "../../../../../utils/hourString";
 import SubmitButton from "../../../../Common/forms/SubmitButton";
 import Permission from "../../../../Common/Permission";
+import FormContainer from "../../../../Common/FormContainer";
 
 interface IVehicleWorkCard {
   vehicleWork: VehicleWorkCardSnippetFragment;
@@ -99,7 +100,7 @@ const VehicleWorkCard = ({ vehicleWork, editPermission }: IVehicleWorkCard) => {
       </Flex>
 
       {edit && (
-        <Box backgroundColor="gray.200" p={2} borderRadius={4}>
+        <FormContainer>
           <FormComponents.Form submitHandler={submitHandler}>
             <SimpleGrid columns={[1, 1, 2]} spacing={2}>
               <FormComponents.JobTitle
@@ -114,7 +115,7 @@ const VehicleWorkCard = ({ vehicleWork, editPermission }: IVehicleWorkCard) => {
 
             <SubmitButton />
           </FormComponents.Form>
-        </Box>
+        </FormContainer>
       )}
     </Box>
   );

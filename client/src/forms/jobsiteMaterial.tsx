@@ -161,6 +161,7 @@ export const useJobsiteMaterialCreateForm = (options?: UseFormProps) => {
               <Rates
                 {...props}
                 {...field}
+                label="Rates"
                 rates={field.value}
                 errors={fieldState.error as any}
                 isLoading={isLoading}
@@ -290,6 +291,7 @@ export const useJobsiteMaterialUpdateForm = (options?: UseFormProps) => {
               <Rates
                 {...props}
                 {...field}
+                label="Rates"
                 rates={field.value}
                 errors={fieldState.error as any}
                 isLoading={isLoading}

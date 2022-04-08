@@ -18,6 +18,7 @@ import { FiEdit, FiTrash, FiX } from "react-icons/fi";
 import MaterialShipmentUpdate from "../../Forms/MaterialShipment/MaterialShipmentUpdate";
 import Warning from "../Warning";
 import Permission from "../Permission";
+import FormContainer from "../FormContainer";
 
 interface IMaterialShipmentCard extends BoxProps {
   materialShipment: MaterialShipmentCardSnippetFragment;
@@ -110,13 +111,13 @@ const MaterialShipmentCard = ({
         </HStack>
       </Flex>
       {edit && (
-        <Box backgroundColor="gray.200" p={2} borderRadius={4}>
+        <FormContainer>
           <MaterialShipmentUpdate
             materialShipment={materialShipment}
             dailyReport={dailyReport}
             onSuccess={() => setEdit(false)}
           />
-        </Box>
+        </FormContainer>
       )}
     </Box>
   );

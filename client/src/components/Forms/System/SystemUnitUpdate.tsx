@@ -6,6 +6,7 @@ import {
   SystemSnippetFragment,
   useSystemUpdateUnitDefaultsMutation,
 } from "../../../generated/graphql";
+import FormContainer from "../../Common/FormContainer";
 import SubmitButton from "../../Common/forms/SubmitButton";
 import TextField from "../../Common/forms/TextField";
 
@@ -103,14 +104,11 @@ const SystemUnitUpdate = ({ system, onSuccess }: ISystemUnitUpdate) => {
       }}
     >
       {units.map((unit, index) => (
-        <Flex
+        <FormContainer
           key={index}
           justifyContent="space-between"
+          display="flex"
           flexDir="row"
-          backgroundColor="gray.200"
-          borderRadius={4}
-          p={2}
-          m={2}
         >
           <TextField
             isDisabled={loading}
@@ -127,7 +125,7 @@ const SystemUnitUpdate = ({ system, onSuccess }: ISystemUnitUpdate) => {
             backgroundColor="transparent"
             onClick={() => removeUnit(index)}
           />
-        </Flex>
+        </FormContainer>
       ))}
       <Flex justifyContent="end">
         <Button

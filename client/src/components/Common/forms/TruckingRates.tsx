@@ -1,4 +1,11 @@
-import { Box, Button, Flex, IconButton, SimpleGrid } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  FormLabel,
+  IconButton,
+  SimpleGrid,
+} from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiTrash } from "react-icons/fi";
 import {
@@ -6,6 +13,7 @@ import {
   TruckingRateTypes,
 } from "../../../generated/graphql";
 import TruckingRateType from "../../Forms/Jobsite/TruckingRateType";
+import FormContainer from "../FormContainer";
 import Number from "./Number";
 import TextField from "./TextField";
 
@@ -26,6 +34,7 @@ export interface ITruckingRates {
   onChange?: (rates: Omit<TruckingRateSnippetFragment, "__typename">[]) => void;
   isLoading?: boolean;
   errors?: TruckingRateError[];
+  label?: string;
 }
 
 const TruckingRates = ({
@@ -33,6 +42,7 @@ const TruckingRates = ({
   onChange,
   isLoading,
   errors,
+  label,
 }: ITruckingRates) => {
   /**
    * ----- Variables -----
@@ -113,15 +123,19 @@ const TruckingRates = ({
 
   return (
     <Box>
+      {label && (
+        <FormLabel fontWeight="bold" mb={0} mt={1} ml={1}>
+          {label}
+        </FormLabel>
+      )}
       {rates.map((rate, index) => (
-        <Flex
+        <FormContainer
           key={index}
           justifyContent="space-between"
+          display="flex"
           flexDir="row"
-          backgroundColor="gray.200"
-          borderRadius={4}
-          p={2}
-          m={2}
+          border="1px solid"
+          borderColor="gray.400"
         >
           <SimpleGrid columns={[1, 1, 3]} spacing={2} w="95%">
             <TextField
@@ -158,7 +172,7 @@ const TruckingRates = ({
             backgroundColor="transparent"
             onClick={() => removeTruckingRate(index)}
           />
-        </Flex>
+        </FormContainer>
       ))}
       <Flex justifyContent="end">
         <Button

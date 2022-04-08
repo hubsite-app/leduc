@@ -1,7 +1,15 @@
-import { Box, Button, Flex, IconButton, SimpleGrid } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  FormLabel,
+  IconButton,
+  SimpleGrid,
+} from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { RateSnippetFragment } from "../../../generated/graphql";
+import FormContainer from "../FormContainer";
 import Number from "./Number";
 import TextField from "./TextField";
 
@@ -19,9 +27,10 @@ export interface IRates {
   onChange?: (rates: Omit<RateSnippetFragment, "__typename">[]) => void;
   isLoading?: boolean;
   errors?: RateError[];
+  label?: string;
 }
 
-const Rates = ({ rates = [], onChange, isLoading, errors }: IRates) => {
+const Rates = ({ rates = [], onChange, isLoading, errors, label }: IRates) => {
   /**
    * ----- Variables -----
    */
@@ -89,15 +98,19 @@ const Rates = ({ rates = [], onChange, isLoading, errors }: IRates) => {
 
   return (
     <Box>
+      {label && (
+        <FormLabel fontWeight="bold" mb={0} mt={1} ml={1}>
+          {label}
+        </FormLabel>
+      )}
       {rates.map((rate, index) => (
-        <Flex
+        <FormContainer
           key={index}
           justifyContent="space-between"
+          display="flex"
           flexDir="row"
-          backgroundColor="gray.200"
-          borderRadius={4}
-          p={2}
-          m={2}
+          border="1px solid"
+          borderColor="gray.400"
         >
           <SimpleGrid columns={[1, 1, 2]} spacing={2} w="95%">
             <TextField
@@ -125,7 +138,7 @@ const Rates = ({ rates = [], onChange, isLoading, errors }: IRates) => {
             backgroundColor="transparent"
             onClick={() => removeRate(index)}
           />
-        </Flex>
+        </FormContainer>
       ))}
       <Flex justifyContent="end">
         <Button

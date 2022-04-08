@@ -3,6 +3,7 @@ import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
 import { JobsiteFullSnippetFragment } from "../../../../generated/graphql";
 import Card from "../../../Common/Card";
+import FormContainer from "../../../Common/FormContainer";
 import Permission from "../../../Common/Permission";
 import ShowMore from "../../../Common/ShowMore";
 import JobsiteExpenseInvoiceCreate from "../../../Forms/Jobsite/ExpenseInvoiceCreate";
@@ -39,12 +40,12 @@ const ExpenseInvoices = ({ jobsite }: IExpenseInvoices) => {
         </Permission>
       </Flex>
       {addForm && (
-        <Box backgroundColor="gray.200" borderRadius={4} p={2} m={2}>
+        <FormContainer>
           <JobsiteExpenseInvoiceCreate
             onSuccess={() => setAddForm(false)}
             jobsiteId={jobsite._id}
           />
-        </Box>
+        </FormContainer>
       )}
       <Flex w="100%" flexDir="column" px={4} py={2}>
         {jobsite.expenseInvoices.length > 0 ? (

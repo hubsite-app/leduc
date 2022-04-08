@@ -23,6 +23,7 @@ import {
 import dataUrlToBlob from "../../../../../utils/dataUrlToBlob";
 import Card from "../../../../Common/Card";
 import FileDisplay from "../../../../Common/FileDisplay";
+import FormContainer from "../../../../Common/FormContainer";
 import FileUpload, {
   IFileUploadFile,
 } from "../../../../Common/forms/FileUpload";
@@ -140,12 +141,12 @@ const ReportNotes = ({ dailyReport, editPermission }: IReportNotes) => {
         </Permission>
       </Flex>
       {editNotes && (
-        <Box backgroundColor="gray.200" borderRadius={4} p={2} m={2}>
+        <FormContainer>
           <FormComponents.Form submitHandler={submitUpdate}>
             <FormComponents.Note isLoading={loading} />
             <SubmitButton isLoading={loading} />
           </FormComponents.Form>
-        </Box>
+        </FormContainer>
       )}
       {!collapsed && (
         <Box ml={2} py={2} px={4} borderLeft="2px solid gray" borderRadius={4}>
@@ -173,9 +174,9 @@ const ReportNotes = ({ dailyReport, editPermission }: IReportNotes) => {
             </Permission>
           </Flex>
           {fileForm && (
-            <Box backgroundColor="gray.200" borderRadius={4} p={2} m={2}>
+            <FormContainer>
               <FileUpload isLoading={fileLoading} handleSubmit={submitFile} />
-            </Box>
+            </FormContainer>
           )}
           {fileView && (
             <SimpleGrid columns={[1, 1, 2]}>

@@ -17,6 +17,7 @@ import JobsiteMaterialCreate from "../../../Forms/JobsiteMaterial/JobsiteMateria
 import MaterialShipmentCard from "../../../Common/MaterialShipment/MaterialShipmentCard";
 import JobsiteMaterialCard from "./JobsiteMaterialCard";
 import Permission from "../../../Common/Permission";
+import FormContainer from "../../../Common/FormContainer";
 
 interface IJobsiteMaterialsCosting {
   jobsite: JobsiteFullSnippetFragment;
@@ -59,12 +60,12 @@ const JobsiteMaterialsCosting = ({ jobsite }: IJobsiteMaterialsCosting) => {
         </HStack>
       </Flex>
       {addForm && (
-        <Box backgroundColor="gray.200" borderRadius={4} p={2} m={2}>
+        <FormContainer>
           <JobsiteMaterialCreate
             onSuccess={() => setAddForm(false)}
             jobsiteId={jobsite._id}
           />
-        </Box>
+        </FormContainer>
       )}
       {nonCostedList && (
         <Box p={4} borderRadius={6} backgroundColor="red.100">

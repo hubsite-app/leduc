@@ -1,11 +1,18 @@
-import { Box, Button, Flex, IconButton, SimpleGrid } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  FormLabel,
+  IconButton,
+  SimpleGrid,
+} from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiTrash } from "react-icons/fi";
 import {
   DefaultRateSnippetFragment,
   RateSnippetFragment,
 } from "../../../generated/graphql";
-import Number from "./Number";
+import FormContainer from "../FormContainer";
 import Rates from "./Rates";
 import TextField from "./TextField";
 
@@ -16,6 +23,7 @@ interface IDefaultRates {
   ) => void;
   isLoading?: boolean;
   allowDeletion?: boolean;
+  label?: string;
 }
 
 const DefaultRates = ({
@@ -23,6 +31,7 @@ const DefaultRates = ({
   onChange,
   isLoading,
   allowDeletion = false,
+  label,
 }: IDefaultRates) => {
   /**
    * ----- Variables -----
@@ -100,15 +109,17 @@ const DefaultRates = ({
 
   return (
     <Box>
+      {label && (
+        <FormLabel fontWeight="bold" mb={0} mt={1} ml={1}>
+          {label}
+        </FormLabel>
+      )}
       {defaultRates.map((def, index) => (
-        <Flex
+        <FormContainer
           key={index}
           justifyContent="space-between"
+          display="flex"
           flexDir="row"
-          backgroundColor="gray.200"
-          borderRadius={4}
-          p={2}
-          m={2}
         >
           <SimpleGrid
             columns={[1, 1, 2]}
@@ -136,7 +147,7 @@ const DefaultRates = ({
               onClick={() => removeRate(index)}
             />
           )}
-        </Flex>
+        </FormContainer>
       ))}
       <Flex justifyContent="end">
         <Button

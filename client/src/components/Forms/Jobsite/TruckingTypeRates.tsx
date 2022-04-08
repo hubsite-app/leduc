@@ -1,4 +1,11 @@
-import { Box, Button, Flex, IconButton, SimpleGrid } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  GridItem,
+  IconButton,
+} from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiTrash } from "react-icons/fi";
 import {
@@ -6,6 +13,7 @@ import {
   TruckingRateTypes,
   TruckingTypeRateSnippetFragment,
 } from "../../../generated/graphql";
+import FormContainer from "../../Common/FormContainer";
 import TextField from "../../Common/forms/TextField";
 import TruckingRates from "../../Common/forms/TruckingRates";
 
@@ -107,32 +115,34 @@ const TruckingTypeRates = ({
   return (
     <Box>
       {truckingRates.map((rate, index) => (
-        <Flex
+        <FormContainer
           key={index}
           justifyContent="space-between"
+          display="flex"
           flexDir="row"
-          backgroundColor="gray.200"
-          borderRadius={4}
-          p={2}
-          m={2}
         >
-          <SimpleGrid
-            columns={[1, 1, 2]}
-            spacing={2}
+          <Grid
+            templateColumns="repeat(6, 1fr)"
+            gap={2}
             w={allowDeletion ? "95%" : "100%"}
           >
-            <TextField
-              value={rate.title}
-              label="Title"
-              isDisabled={isLoading}
-              onChange={(e) => setTitle(e.target.value, index)}
-            />
-            <TruckingRates
-              rates={rate.rates}
-              isLoading={isLoading}
-              onChange={(rates) => setRates(rates, index)}
-            />
-          </SimpleGrid>
+            <GridItem colSpan={[6, 6, 6, 6, 2]}>
+              <TextField
+                value={rate.title}
+                label="Title"
+                isDisabled={isLoading}
+                onChange={(e) => setTitle(e.target.value, index)}
+              />
+            </GridItem>
+            <GridItem colSpan={[6, 6, 6, 6, 4]}>
+              <TruckingRates
+                rates={rate.rates}
+                isLoading={isLoading}
+                onChange={(rates) => setRates(rates, index)}
+                label="Rates"
+              />
+            </GridItem>
+          </Grid>
           {allowDeletion && (
             <IconButton
               m="auto"
@@ -142,7 +152,7 @@ const TruckingTypeRates = ({
               onClick={() => removeRate(index)}
             />
           )}
-        </Flex>
+        </FormContainer>
       ))}
       <Flex justifyContent="end">
         <Button
