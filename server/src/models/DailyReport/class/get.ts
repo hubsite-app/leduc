@@ -10,6 +10,7 @@ import {
   EmployeeWork,
   EmployeeWorkDocument,
   Jobsite,
+  JobsiteDayReportDocument,
   JobsiteDocument,
   MaterialShipment,
   MaterialShipmentDocument,
@@ -176,6 +177,33 @@ const existingReport = (
   });
 };
 
+const byJobsiteDayReport = (
+  DailyReport: DailyReportModel,
+  jobsiteDayReport: JobsiteDayReportDocument
+) => {
+  return new Promise<DailyReportDocument[]>(async (resolve, reject) => {
+    try {
+      if (!jobsiteDayReport.jobsite || !jobsiteDayReport.date)
+        throw new Error("jobsiteDayReport does not have the correct fields");
+
+      const startOfDay = dayjs(jobsiteDayReport.date).startOf("day").toDate();
+      const endOfDay = dayjs(jobsiteDayReport.date).endOf("day").toDate();
+
+      const dailyReports = await DailyReport.find({
+        date: {
+          $gte: startOfDay,
+          $lt: endOfDay,
+        },
+        jobsite: jobsiteDayReport.jobsite,
+      });
+
+      resolve(dailyReports);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 /**
  * ----- Methods -----
  */
@@ -323,6 +351,7 @@ export default {
   search,
   list,
   existingReport,
+  byJobsiteDayReport,
   jobsite,
   crew,
   employeeWork,

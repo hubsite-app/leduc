@@ -20,6 +20,16 @@ const createEmployees = () => {
         name: "Base Foreman 1",
         jobTitle: "Foreman",
         crews: [_ids.crews.base_1._id],
+        rates: [
+          {
+            date: new Date("2022-01-01"),
+            rate: 25,
+          },
+          {
+            date: new Date("2021-01-01"),
+            rate: 20,
+          },
+        ],
       });
 
       const base_operator_1 = new Employee({

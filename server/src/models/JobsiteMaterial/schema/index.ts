@@ -4,6 +4,7 @@ import { MaterialClass, CompanyClass } from "@models";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import { RateClass } from "@typescript/models";
+import validateMongooseArrayLength from "@validation/validateMongooseArrayLength";
 
 @ObjectType()
 export class JobsiteMaterialSchema {
@@ -31,10 +32,7 @@ export class JobsiteMaterialSchema {
     type: () => [RateClass],
     required: true,
     default: [],
-    validate: {
-      validator: (val) => val.length > 0,
-      message: "must have at least one rate",
-    },
+    validate: validateMongooseArrayLength(),
   })
   public rates!: RateClass[];
 

@@ -6,6 +6,7 @@ export * from "./EmployeeWork";
 export * from "./File";
 export * from "./Invoice";
 export * from "./Jobsite";
+export * from "./JobsiteDayReport";
 export * from "./JobsiteMaterial";
 export * from "./Material";
 export * from "./MaterialShipment";
@@ -135,6 +136,22 @@ export interface JobsiteModel extends ReturnModelType<typeof JobsiteClass> {}
 
 export const Jobsite = getModelForClass(JobsiteClass, {
   schemaOptions: { collection: "jobsites" },
+});
+
+/**
+ * ----- Jobsite Day Report -----
+ */
+
+import { JobsiteDayReportClass } from "./JobsiteDayReport/class";
+
+export interface JobsiteDayReportDocument
+  extends DocumentType<JobsiteDayReportClass> {}
+
+export interface JobsiteDayReportModel
+  extends ReturnModelType<typeof JobsiteDayReportClass> {}
+
+export const JobsiteDayReport = getModelForClass(JobsiteDayReportClass, {
+  schemaOptions: { collection: "jobsiteDayReports" },
 });
 
 /**

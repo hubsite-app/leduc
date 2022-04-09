@@ -3,6 +3,7 @@ import {
   Company,
   Invoice,
   Jobsite,
+  JobsiteDayReportDocument,
   JobsiteDocument,
   JobsiteMaterial,
   Material,
@@ -150,10 +151,25 @@ const setTruckingRates = (jobsiteId: string, data: TruckingTypeRateData[]) => {
   });
 };
 
+const generateDayReports = (jobsiteId: string) => {
+  return new Promise<JobsiteDocument>(async (resolve, reject) => {
+    try {
+      const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;
+
+      await jobsite.generateDayReports();
+
+      resolve(jobsite);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   create,
   addMaterial,
   addExpenseInvoice,
   addRevenueInvoice,
   setTruckingRates,
+  generateDayReports,
 };

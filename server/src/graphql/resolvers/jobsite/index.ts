@@ -5,6 +5,8 @@ import {
   InvoiceClass,
   Jobsite,
   JobsiteClass,
+  JobsiteDayReport,
+  JobsiteDayReportClass,
   JobsiteDocument,
   JobsiteMaterialClass,
   MaterialShipmentClass,
@@ -20,6 +22,7 @@ import {
 } from "type-graphql";
 import { InvoiceData } from "../invoice/mutations";
 import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
+import { JobsiteMonthlyReportClass } from "../jobsiteMonthlyReport";
 import mutations, {
   JobsiteCreateData,
   TruckingTypeRateData,
@@ -59,6 +62,11 @@ export default class JobsiteResolver {
   @FieldResolver(() => [MaterialShipmentClass])
   async nonCostedMaterialShipments(@Root() jobsite: JobsiteDocument) {
     return jobsite.getNonCostedMaterialShipments();
+  }
+
+  @FieldResolver(() => [JobsiteDayReportClass])
+  async dayReports(@Root() jobsite: JobsiteDocument) {
+    return jobsite.getDayReports();
   }
 
   /**
@@ -125,5 +133,11 @@ export default class JobsiteResolver {
     @Arg("data", () => [TruckingTypeRateData]) data: TruckingTypeRateData[]
   ) {
     return mutations.setTruckingRates(id, data);
+  }
+
+  @Authorized(["ADMIN", "PM"])
+  @Mutation(() => JobsiteClass)
+  async jobsiteGenerateDayReports(@Arg("id") id: string) {
+    return mutations.generateDayReports(id);
   }
 }

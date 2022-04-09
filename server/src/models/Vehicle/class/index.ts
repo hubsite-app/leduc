@@ -39,6 +39,10 @@ export class VehicleClass extends VehicleSchema {
     return get.crews(this);
   }
 
+  public async getRateForTime(this: VehicleDocument, date: Date) {
+    return get.rateForTime(this, date);
+  }
+
   /**
    * ----- Create -----
    */

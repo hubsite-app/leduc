@@ -7,6 +7,8 @@ import {
   DailyReportDocument,
   Invoice,
   InvoiceDocument,
+  JobsiteDayReport,
+  JobsiteDayReportDocument,
   JobsiteDocument,
   JobsiteMaterial,
   JobsiteMaterialDocument,
@@ -211,6 +213,20 @@ const nonCostedMaterialShipments = (jobsite: JobsiteDocument) => {
   });
 };
 
+const dayReports = (jobsite: JobsiteDocument) => {
+  return new Promise<JobsiteDayReportDocument[]>(async (resolve, reject) => {
+    try {
+      const jobsiteDayReports = await JobsiteDayReport.find({
+        jobsite: jobsite._id,
+      });
+
+      resolve(jobsiteDayReports);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   byId,
   search,
@@ -221,4 +237,5 @@ export default {
   expenseInvoices,
   revenueInvoices,
   nonCostedMaterialShipments,
+  dayReports,
 };

@@ -13,6 +13,8 @@ import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import { TruckingTypeRateClass } from "./subDocuments";
 
+export * from "./subDocuments";
+
 @ObjectType()
 @post<JobsiteDocument>("save", async (jobsite) => {
   await ES_updateJobsite(jobsite);

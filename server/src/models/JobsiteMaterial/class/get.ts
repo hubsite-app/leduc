@@ -10,6 +10,7 @@ import {
   MaterialShipment,
 } from "@models";
 import { GetByIDOptions, Id } from "@typescript/models";
+import getRateForTime from "@utils/getRateForTime";
 import populateOptions from "@utils/populateOptions";
 
 /**
@@ -113,10 +114,21 @@ const completedQuantity = (jobsiteMaterial: JobsiteMaterialDocument) => {
   });
 };
 
+const rateForTime = (jobsiteMaterial: JobsiteMaterialDocument, date: Date) => {
+  return new Promise<number>(async (resolve, reject) => {
+    try {
+      resolve(getRateForTime(jobsiteMaterial.rates, date));
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   byId,
   material,
   supplier,
   jobsite,
   completedQuantity,
+  rateForTime,
 };

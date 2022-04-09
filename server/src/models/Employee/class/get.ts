@@ -15,6 +15,7 @@ import populateOptions from "@utils/populateOptions";
 import ElasticsearchClient from "@elasticsearch/client";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 import { IEmployeeSearchObject } from "@typescript/employee";
+import getRateForTime from "@utils/getRateForTime";
 
 /**
  * ----- Static Methods -----
@@ -164,6 +165,16 @@ const signup = (employee: EmployeeDocument) => {
   });
 };
 
+const rateForTime = (employee: EmployeeDocument, date: Date) => {
+  return new Promise<number>(async (resolve, reject) => {
+    try {
+      resolve(getRateForTime(employee.rates, date));
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   byId,
   search,
@@ -172,4 +183,5 @@ export default {
   user,
   crews,
   signup,
+  rateForTime,
 };

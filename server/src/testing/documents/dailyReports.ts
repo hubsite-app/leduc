@@ -5,6 +5,7 @@ export interface SeededDailyReports {
   jobsite_1_base_1_1: DailyReportDocument;
   jobsite_1_base_1_2: DailyReportDocument;
   jobsite_2_base_1_1: DailyReportDocument;
+  jobsite_1_base_1_3: DailyReportDocument;
 }
 
 const createDailyReports = () => {
@@ -25,6 +26,20 @@ const createDailyReports = () => {
         reportNote: _ids.reportNotes.jobsite_1_base_1_1_note_1._id,
         temporaryEmployees: [_ids.employees.temp_1._id],
         temporaryVehicles: [_ids.vehicles.temp_1._id],
+      });
+
+      const jobsite_1_base_1_3 = new DailyReport({
+        _id: _ids.dailyReports.jobsite_1_base_1_3._id,
+        date: new Date("2022-02-23 7:00 am"),
+        jobsite: _ids.jobsites.jobsite_1._id,
+        crew: _ids.crews.base_1._id,
+        approved: true,
+        employeeWork: [],
+        vehicleWork: [],
+        production: [],
+        materialShipment: [],
+        temporaryEmployees: [],
+        temporaryVehicles: [],
       });
 
       const jobsite_1_base_1_2 = new DailyReport({
@@ -55,6 +70,7 @@ const createDailyReports = () => {
       const dailyReports = {
         jobsite_1_base_1_1,
         jobsite_1_base_1_2,
+        jobsite_1_base_1_3,
         jobsite_2_base_1_1,
       };
 

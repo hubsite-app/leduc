@@ -40,6 +40,10 @@ export class JobsiteMaterialClass extends JobsiteMaterialSchema {
     return get.completedQuantity(this);
   }
 
+  public async getRateForTime(this: JobsiteMaterialDocument, date: Date) {
+    return get.rateForTime(this, date);
+  }
+
   /**
    * ----- Create -----
    */

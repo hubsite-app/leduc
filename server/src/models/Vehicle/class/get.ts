@@ -6,6 +6,7 @@ import populateOptions from "@utils/populateOptions";
 import ElasticsearchClient from "@elasticsearch/client";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 import { IVehicleSearchObject } from "@typescript/vehicle";
+import getRateForTime from "@utils/getRateForTime";
 
 /**
  * ----- Static Methods -----
@@ -119,9 +120,20 @@ const crews = (vehicle: VehicleDocument) => {
   });
 };
 
+const rateForTime = (vehicle: VehicleDocument, date: Date) => {
+  return new Promise<number>(async (resolve, reject) => {
+    try {
+      resolve(getRateForTime(vehicle.rates, date));
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   byId,
   search,
   byCode,
   crews,
+  rateForTime,
 };

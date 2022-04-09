@@ -1,0 +1,80 @@
+{
+  "jobsite": "jobsite-reference",
+  "date": "March 1st, 2022",
+  "dailyReports": ["dailyReportId"],
+  "employees": [
+    {
+      "employee": "employee-reference",
+      "employeeWork": ["employee-work-reference"],
+      "rate": 5,
+      "hours": 10,
+      "crewType": "crewType"
+    }
+  ],
+  "vehicles": [
+    {
+      "vehicle": "vehicle-reference",
+      "vehicleWork": ["vehicle-work-reference"],
+      "rate": 5,
+      "hours": 10,
+      "crewType": "crewType"
+    }
+  ],
+  "materials": [
+    {
+      "jobsiteMaterial": "jobsite-material-reference",
+      "materialShipments": ["material-shipment-reference"],
+      "quantity": 12,
+      "rate": 15,
+      "crewType": "crewType"
+    }
+  ],
+  "nonCostedMaterials": [
+    {
+      "material": "material-reference",
+      "supplier": "material-supplier",
+      "quantity": 5,
+      "materialShipments": ["material-shipment-reference"],
+      "crewType": "crewType"
+    }
+  ],
+  "trucking": [
+    {
+      "title": "trucking-type-name",
+      "quantity": 15,
+      "hours-*": 2,
+      "type": "quantity | hours",
+      "materialShipments": ["material-shipment-reference"],
+      "rate": 15
+    }
+  ],
+  "revenue": [
+    {
+      "invoice": "invoice-reference",
+      "value": 12,
+      "internal": false
+    }
+  ],
+  "expenses": [
+    {
+      "invoice": "invoice-reference",
+      "value": 14,
+      "internal": false
+    }
+  ],
+  "summaries": {
+    "employeeWorkHours": 5,
+    "employeeWorkCost": 5,
+    "equipmentHours": 5,
+    "equipmentCost": 5,
+    "materialQuantity": 5,
+    "materialCost": 5,
+    "truckingQuantity": 5,
+    "truckingHours": 5,
+    "truckingCost": 5,
+    "externalExpenseInvoices": 5,
+    "internalExpenseInvoices": 5,
+    "externalRevenueInvoices": 5,
+    "internalRevenueInvoices": 5
+  }
+}

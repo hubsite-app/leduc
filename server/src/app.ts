@@ -12,19 +12,28 @@ import CompanyResolver from "@graphql/resolvers/company";
 import CrewResolver from "@graphql/resolvers/crew";
 import DailyReportResolver from "@graphql/resolvers/dailyReport";
 import EmployeeResolver from "@graphql/resolvers/employee";
+import EmployeeReportResolver from "@graphql/resolvers/employeeReport";
 import EmployeeWorkResolver from "@graphql/resolvers/employeeWork";
 import FileResolver from "@graphql/resolvers/file";
 import InvoiceResolver from "@graphql/resolvers/invoice";
+import InvoiceReportResolver from "@graphql/resolvers/invoiceReport";
 import JobsiteResolver from "@graphql/resolvers/jobsite";
+import JobsiteDayReportResolver from "@graphql/resolvers/jobsiteDayReport";
 import JobsiteMaterialResolver from "@graphql/resolvers/jobsiteMaterial";
+import JobsiteMonthlyReportResolver from "@graphql/resolvers/jobsiteMonthlyReport";
 import MaterialResolver from "@graphql/resolvers/material";
+import MaterialReportResolver from "@graphql/resolvers/materialReport";
 import MaterialShipmentResolver from "@graphql/resolvers/materialShipment";
+import NonCostedMaterialReportResolver from "@graphql/resolvers/nonCostedMaterialReport";
 import ProductionResolver from "@graphql/resolvers/production";
 import ReportNoteResolver from "@graphql/resolvers/reportNote";
 import SignupResolver from "@graphql/resolvers/signup";
+import SummaryReportResolver from "@graphql/resolvers/summaryReport";
 import SystemResolver from "@graphql/resolvers/system";
+import TruckingReportResolver from "@graphql/resolvers/truckingReport";
 import UserResolver from "@graphql/resolvers/user";
 import VehicleResolver from "@graphql/resolvers/vehicle";
+import VehicleReportResolver from "@graphql/resolvers/vehicleReport";
 import VehicleWorkResolver from "@graphql/resolvers/vehicleWork";
 
 import SearchResolver from "@graphql/resolvers/search";
@@ -46,20 +55,29 @@ const createApp = async () => {
       CrewResolver,
       DailyReportResolver,
       EmployeeResolver,
+      EmployeeReportResolver,
       EmployeeWorkResolver,
       FileResolver,
       InvoiceResolver,
+      InvoiceReportResolver,
       JobsiteResolver,
+      JobsiteDayReportResolver,
       JobsiteMaterialResolver,
+      JobsiteMonthlyReportResolver,
       MaterialResolver,
+      MaterialReportResolver,
       MaterialShipmentResolver,
+      NonCostedMaterialReportResolver,
       ProductionResolver,
       ReportNoteResolver,
       SearchResolver,
       SignupResolver,
+      SummaryReportResolver,
       SystemResolver,
+      TruckingReportResolver,
       UserResolver,
       VehicleResolver,
+      VehicleReportResolver,
       VehicleWorkResolver,
     ],
     authChecker,

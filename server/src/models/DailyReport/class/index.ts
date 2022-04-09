@@ -5,6 +5,7 @@ import {
   DailyReportModel,
   EmployeeDocument,
   EmployeeWorkDocument,
+  JobsiteDayReportDocument,
   JobsiteDocument,
   MaterialShipmentDocument,
   ProductionDocument,
@@ -64,6 +65,13 @@ export class DailyReportClass extends DailyReportSchema {
     date: Date
   ) {
     return get.existingReport(this, jobsiteId, crewId, date);
+  }
+
+  public static async getByJobsiteDayReport(
+    this: DailyReportModel,
+    jobsiteDayReport: JobsiteDayReportDocument
+  ) {
+    return get.byJobsiteDayReport(this, jobsiteDayReport);
   }
 
   public async getJobsite(this: DailyReportDocument) {

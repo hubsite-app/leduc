@@ -22,6 +22,7 @@ import {
 } from "@typescript/jobsite";
 import create from "./create";
 import update from "./update";
+import interact from "./interact";
 
 @ObjectType()
 export class JobsiteClass extends JobsiteSchema {
@@ -73,6 +74,10 @@ export class JobsiteClass extends JobsiteSchema {
     return get.nonCostedMaterialShipments(this);
   }
 
+  public async getDayReports(this: JobsiteDocument) {
+    return get.dayReports(this);
+  }
+
   /**
    * ----- Create -----
    */
@@ -111,5 +116,13 @@ export class JobsiteClass extends JobsiteSchema {
     truckingRates: ITruckingTypeRateData[]
   ) {
     return update.truckingRates(this, truckingRates);
+  }
+
+  /**
+   * ----- Interact -----
+   */
+
+  public async generateDayReports(this: JobsiteDocument) {
+    return interact.generateDayReports(this);
   }
 }
