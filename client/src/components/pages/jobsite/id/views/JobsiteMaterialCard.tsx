@@ -7,13 +7,13 @@ import {
   StatLabel,
   StatNumber,
 } from "@chakra-ui/react";
-import { JobsiteMaterialCardSnippetFragment } from "../../../../generated/graphql";
-import formatNumber from "../../../../utils/formatNumber";
-import JobsiteMaterialProgressBar from "../../../Common/JobsiteMaterial/ProgressBar";
+import { JobsiteMaterialCardSnippetFragment } from "../../../../../generated/graphql";
+import formatNumber from "../../../../../utils/formatNumber";
+import JobsiteMaterialProgressBar from "../../../../Common/JobsiteMaterial/ProgressBar";
 import { FiEdit, FiX } from "react-icons/fi";
-import JobsiteMaterialUpdate from "../../../Forms/JobsiteMaterial/JobsiteMaterialUpdate";
-import Permission from "../../../Common/Permission";
-import FormContainer from "../../../Common/FormContainer";
+import JobsiteMaterialUpdate from "../../../../Forms/JobsiteMaterial/JobsiteMaterialUpdate";
+import Permission from "../../../../Common/Permission";
+import FormContainer from "../../../../Common/FormContainer";
 
 interface IJobsiteMaterialCard {
   jobsiteMaterial: JobsiteMaterialCardSnippetFragment;

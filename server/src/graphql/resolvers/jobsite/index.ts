@@ -5,12 +5,12 @@ import {
   InvoiceClass,
   Jobsite,
   JobsiteClass,
-  JobsiteDayReport,
   JobsiteDayReportClass,
   JobsiteDocument,
   JobsiteMaterialClass,
   MaterialShipmentClass,
 } from "@models";
+import { JobsiteMonthReportClass } from "models/JobsiteMonthReport";
 import {
   Arg,
   Authorized,
@@ -22,7 +22,6 @@ import {
 } from "type-graphql";
 import { InvoiceData } from "../invoice/mutations";
 import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
-import { JobsiteMonthlyReportClass } from "../jobsiteMonthlyReport";
 import mutations, {
   JobsiteCreateData,
   TruckingTypeRateData,
@@ -67,6 +66,11 @@ export default class JobsiteResolver {
   @FieldResolver(() => [JobsiteDayReportClass])
   async dayReports(@Root() jobsite: JobsiteDocument) {
     return jobsite.getDayReports();
+  }
+
+  @FieldResolver(() => [JobsiteMonthReportClass])
+  async monthReports(@Root() jobsite: JobsiteDocument) {
+    return jobsite.getMonthReports();
   }
 
   /**

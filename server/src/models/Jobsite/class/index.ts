@@ -78,6 +78,10 @@ export class JobsiteClass extends JobsiteSchema {
     return get.dayReports(this);
   }
 
+  public async getMonthReports(this: JobsiteDocument) {
+    return get.monthReports(this);
+  }
+
   /**
    * ----- Create -----
    */

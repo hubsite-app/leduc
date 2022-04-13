@@ -2,7 +2,7 @@ import { Heading } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import ClientOnly from "../../components/Common/ClientOnly";
 import Container from "../../components/Common/Container";
-import JobsiteClientContent from "../../components/pages/jobsite/ClientContent";
+import JobsiteClientContent from "../../components/pages/jobsite/id/ClientContent";
 import { PageJobsiteSsrComp, ssrJobsiteSsr } from "../../generated/page";
 
 const Jobsite: PageJobsiteSsrComp = ({ data }) => {

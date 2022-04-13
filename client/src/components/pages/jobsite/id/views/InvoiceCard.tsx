@@ -1,11 +1,11 @@
 import React from "react";
 import { Box, Flex, IconButton, Text } from "@chakra-ui/react";
-import { InvoiceCardSnippetFragment } from "../../../../generated/graphql";
-import formatNumber from "../../../../utils/formatNumber";
+import { InvoiceCardSnippetFragment } from "../../../../../generated/graphql";
+import formatNumber from "../../../../../utils/formatNumber";
 import { FiEdit, FiX } from "react-icons/fi";
-import InvoiceUpdate from "../../../Forms/Invoice/InvoiceUpdate";
-import Permission from "../../../Common/Permission";
-import FormContainer from "../../../Common/FormContainer";
+import InvoiceUpdate from "../../../../Forms/Invoice/InvoiceUpdate";
+import Permission from "../../../../Common/Permission";
+import FormContainer from "../../../../Common/FormContainer";
 
 interface IInvoiceCard {
   invoice: InvoiceCardSnippetFragment;

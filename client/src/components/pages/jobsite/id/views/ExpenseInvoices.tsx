@@ -1,12 +1,12 @@
 import { Box, Center, Flex, Heading, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
-import { JobsiteFullSnippetFragment } from "../../../../generated/graphql";
-import Card from "../../../Common/Card";
-import FormContainer from "../../../Common/FormContainer";
-import Permission from "../../../Common/Permission";
-import ShowMore from "../../../Common/ShowMore";
-import JobsiteExpenseInvoiceCreate from "../../../Forms/Jobsite/ExpenseInvoiceCreate";
+import { JobsiteFullSnippetFragment } from "../../../../../generated/graphql";
+import Card from "../../../../Common/Card";
+import FormContainer from "../../../../Common/FormContainer";
+import Permission from "../../../../Common/Permission";
+import ShowMore from "../../../../Common/ShowMore";
+import JobsiteExpenseInvoiceCreate from "../../../../Forms/Jobsite/ExpenseInvoiceCreate";
 import InvoiceCard from "./InvoiceCard";
 
 interface IExpenseInvoices {

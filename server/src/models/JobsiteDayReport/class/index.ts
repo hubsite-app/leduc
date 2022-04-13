@@ -4,6 +4,7 @@ import {
   JobsiteDayReportModel,
   JobsiteDocument,
 } from "@models";
+import { Id } from "@typescript/models";
 import { ObjectType } from "type-graphql";
 import { JobsiteDayReportSchema } from "../schema";
 import build from "./build";
@@ -23,6 +24,14 @@ export class JobsiteDayReportClass extends JobsiteDayReportSchema {
     jobsite: JobsiteDocument
   ) {
     return get.byJobsite(this, jobsite);
+  }
+
+  public static async getByJobsiteAndMonth(
+    this: JobsiteDayReportModel,
+    jobsiteId: Id,
+    date: Date
+  ) {
+    return get.byJobsiteAndMonth(this, jobsiteId, date);
   }
 
   public async getJobsite(this: JobsiteDayReportDocument) {

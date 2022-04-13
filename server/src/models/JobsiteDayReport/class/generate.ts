@@ -126,7 +126,7 @@ const employeeReports = (
               employeeWorkObject[i].work.employee!.toString() &&
             employeeObjects[j].crewType === employeeWorkObject[i].crewType
           )
-            matchedIndex === j;
+            matchedIndex = j;
         }
 
         if (matchedIndex === -1) {
@@ -233,7 +233,7 @@ const vehicleReports = (
               vehicleWorkObject[i].work.vehicle!.toString() &&
             vehicleObjects[j].crewType === vehicleWorkObject[i].crewType
           )
-            matchedIndex === j;
+            matchedIndex = j;
         }
 
         if (matchedIndex === -1) {
@@ -344,7 +344,7 @@ const materialReports = (
             jobsiteMaterialObjects[j].crewType ===
               materialShipmentObjects[i].crewType
           )
-            matchedIndex === j;
+            matchedIndex = j;
         }
 
         if (matchedIndex === -1) {
@@ -468,7 +468,7 @@ const nonCostedMaterialReports = (
             uniqueMaterialObjects[j].crewType ===
               materialShipmentObjects[i].crewType
           )
-            matchedIndex === j;
+            matchedIndex = j;
         }
 
         if (matchedIndex === -1) {
@@ -585,7 +585,7 @@ const truckingReports = (
             uniqueTruckingObjects[j].crewType ===
               materialShipmentObjects[i].crewType
           )
-            matchedIndex === j;
+            matchedIndex = j;
         }
 
         if (matchedIndex === -1) {

@@ -9,15 +9,15 @@ import {
 import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
 
-import { JobsiteFullSnippetFragment } from "../../../../generated/graphql";
-import Card from "../../../Common/Card";
-import ShowMore from "../../../Common/ShowMore";
-import Warning from "../../../Common/Warning";
-import JobsiteMaterialCreate from "../../../Forms/JobsiteMaterial/JobsiteMaterialCreate";
-import MaterialShipmentCard from "../../../Common/MaterialShipment/MaterialShipmentCard";
+import { JobsiteFullSnippetFragment } from "../../../../../generated/graphql";
+import Card from "../../../../Common/Card";
+import ShowMore from "../../../../Common/ShowMore";
+import Warning from "../../../../Common/Warning";
+import JobsiteMaterialCreate from "../../../../Forms/JobsiteMaterial/JobsiteMaterialCreate";
+import MaterialShipmentCard from "../../../../Common/MaterialShipment/MaterialShipmentCard";
 import JobsiteMaterialCard from "./JobsiteMaterialCard";
-import Permission from "../../../Common/Permission";
-import FormContainer from "../../../Common/FormContainer";
+import Permission from "../../../../Common/Permission";
+import FormContainer from "../../../../Common/FormContainer";
 
 interface IJobsiteMaterialsCosting {
   jobsite: JobsiteFullSnippetFragment;

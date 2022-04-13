@@ -14,6 +14,10 @@ const jobsite = (jobsiteId: string) => {
   return `/jobsite/${jobsiteId}`;
 };
 
+const jobsiteMonthReport = (reportId: string) => {
+  return `/jobsite-month-report/${reportId}`;
+};
+
 const dailyReport = (dailyReportId: string) => {
   return `/daily-report/${dailyReportId}`;
 };
@@ -23,6 +27,7 @@ const createLink = {
   vehicle,
   crew,
   jobsite,
+  jobsiteMonthReport,
   dailyReport,
 };
 

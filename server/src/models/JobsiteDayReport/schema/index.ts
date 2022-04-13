@@ -1,5 +1,10 @@
-import { prop, Ref } from "@typegoose/typegoose";
-import { DailyReportClass, JobsiteClass } from "@models";
+import { post, prop, Ref } from "@typegoose/typegoose";
+import {
+  DailyReportClass,
+  JobsiteClass,
+  JobsiteDayReportDocument,
+  JobsiteMonthReport,
+} from "@models";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import {
@@ -11,10 +16,17 @@ import {
   TruckingReportClass,
   VehicleReportClass,
 } from "./subDocument";
+import SchemaVersions from "@constants/SchemaVersions";
 
 export * from "./subDocument";
 
 @ObjectType()
+@post<JobsiteDayReportDocument>("save", async (jobsiteDayReport) => {
+  await JobsiteMonthReport.buildDocumentAndSave({
+    jobsiteId: jobsiteDayReport.jobsite!,
+    date: jobsiteDayReport.date,
+  });
+})
 export class JobsiteDayReportSchema {
   @Field(() => ID, { nullable: false })
   public _id!: Types.ObjectId;
@@ -66,4 +78,8 @@ export class JobsiteDayReportSchema {
   @Field(() => SummaryReportClass, { nullable: false })
   @prop({ type: () => SummaryReportClass, required: true, default: {} })
   public summary!: SummaryReportClass;
+
+  @Field()
+  @prop({ required: true, default: SchemaVersions.JobsiteDayReport })
+  public schemaVersion!: number;
 }

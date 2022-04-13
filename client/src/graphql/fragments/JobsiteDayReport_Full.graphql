@@ -1,0 +1,75 @@
+fragment JobsiteDayReportFullSnippet on JobsiteDayReportClass {
+  _id
+  date
+  employees {
+    ...JobsiteDayReportEmployeeSnippet
+  }
+  vehicles {
+    _id
+    vehicle {
+      name
+    }
+    vehicleWork {
+      jobTitle
+    }
+    rate
+    hours
+    crewType
+  }
+  materials {
+    _id
+    jobsiteMaterial {
+      ...JobsiteMaterialCardSnippet
+    }
+    rate
+    quantity
+    crewType
+  }
+  nonCostedMaterials {
+    _id
+    materialName
+    supplierName
+    quantity
+    crewType
+  }
+  trucking {
+    _id
+    truckingType
+    quantity
+    hours
+    type
+    rate
+    crewType
+  }
+  expenseInvoices {
+    _id
+    invoice {
+      ...InvoiceCardSnippet
+    }
+    value
+    internal
+  }
+  revenueInvoices {
+    _id
+    invoice {
+      ...InvoiceCardSnippet
+    }
+    value
+    internal
+  }
+  summary {
+    employeeHours
+    employeeCost
+    vehicleHours
+    vehicleCost
+    materialQuantity
+    materialCost
+    truckingQuantity
+    truckingHours
+    truckingCost
+    externalExpenseInvoiceValue
+    internalExpenseInvoiceValue
+    externalRevenueInvoiceValue
+    internalRevenueInvoiceValue
+  }
+}

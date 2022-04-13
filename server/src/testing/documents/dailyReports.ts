@@ -17,7 +17,10 @@ const createDailyReports = () => {
         jobsite: _ids.jobsites.jobsite_1._id,
         crew: _ids.crews.base_1._id,
         approved: true,
-        employeeWork: [_ids.employeeWork.jobsite_1_base_1_1_base_foreman_1._id],
+        employeeWork: [
+          _ids.employeeWork.jobsite_1_base_1_1_base_foreman_1._id,
+          _ids.employeeWork.jobsite_1_base_1_1_base_foreman_2._id,
+        ],
         vehicleWork: [_ids.vehicleWork.jobsite_1_base_1_1_skidsteer_1._id],
         production: [_ids.productions.jobsite_1_base_1_1_production_1._id],
         materialShipment: [
@@ -30,6 +33,7 @@ const createDailyReports = () => {
 
       const jobsite_1_base_1_3 = new DailyReport({
         _id: _ids.dailyReports.jobsite_1_base_1_3._id,
+        // same date to test jobsite day report creation
         date: new Date("2022-02-23 7:00 am"),
         jobsite: _ids.jobsites.jobsite_1._id,
         crew: _ids.crews.base_1._id,

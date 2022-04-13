@@ -1,0 +1,10 @@
+fragment JobsiteMonthReportFullSnippet on JobsiteMonthReportClass {
+  ...JobsiteMonthReportCardSnippet
+  crewTypes
+  dayReports {
+    ...JobsiteDayReportFullSnippet
+  }
+  jobsite {
+    ...JobsiteCardSnippet
+  }
+}

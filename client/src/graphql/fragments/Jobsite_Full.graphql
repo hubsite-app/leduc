@@ -8,6 +8,9 @@ fragment JobsiteFullSnippet on JobsiteClass {
   crews {
     ...CrewCardSnippet
   }
+  monthReports {
+    ...JobsiteMonthReportCardSnippet
+  }
   dailyReports {
     ...DailyReportCardSnippet
   }

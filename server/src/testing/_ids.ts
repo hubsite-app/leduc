@@ -86,6 +86,9 @@ const _ids = {
     jobsite_1_base_1_1_base_foreman_1: {
       _id: Types.ObjectId("621667718d92575bd6dc70d5"),
     },
+    jobsite_1_base_1_1_base_foreman_2: {
+      _id: Types.ObjectId("62561436e466aa29d292a133"),
+    },
   },
   vehicleWork: {
     jobsite_1_base_1_1_skidsteer_1: {

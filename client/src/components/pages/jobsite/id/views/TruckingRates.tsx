@@ -1,11 +1,11 @@
 import { Center, Flex, Heading, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FiEdit, FiX } from "react-icons/fi";
-import { JobsiteFullSnippetFragment } from "../../../../generated/graphql";
-import Card from "../../../Common/Card";
-import TruckingTypeRatesTable from "../../../Common/Jobsite/TruckingTypeRatesTable";
-import Permission from "../../../Common/Permission";
-import JobsiteTruckingRates from "../../../Forms/Jobsite/JobsiteTruckingRates";
+import { JobsiteFullSnippetFragment } from "../../../../../generated/graphql";
+import Card from "../../../../Common/Card";
+import TruckingTypeRatesTable from "../../../../Common/Jobsite/TruckingTypeRatesTable";
+import Permission from "../../../../Common/Permission";
+import JobsiteTruckingRates from "../../../../Forms/Jobsite/JobsiteTruckingRates";
 
 interface ITruckingRates {
   jobsite: JobsiteFullSnippetFragment;

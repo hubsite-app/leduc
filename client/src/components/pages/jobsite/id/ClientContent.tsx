@@ -1,10 +1,13 @@
 import { Box, SimpleGrid, Text } from "@chakra-ui/react";
 import React from "react";
-import { useJobsiteFullQuery, UserRoles } from "../../../generated/graphql";
-import Card from "../../Common/Card";
-import DailyReportListCard from "../../Common/DailyReport/DailyReportListCard";
-import Loading from "../../Common/Loading";
-import Permission from "../../Common/Permission";
+import { useJobsiteFullQuery, UserRoles } from "../../../../generated/graphql";
+import createLink from "../../../../utils/createLink";
+import Card from "../../../Common/Card";
+import DailyReportListCard from "../../../Common/DailyReport/DailyReportListCard";
+import JobsiteMonthlyReportList from "../../../Common/JobsiteMonthlyReport/List";
+import Loading from "../../../Common/Loading";
+import Permission from "../../../Common/Permission";
+import TextLink from "../../../Common/TextLink";
 import ExpenseInvoices from "./views/ExpenseInvoices";
 import JobsiteMaterialsCosting from "./views/JobsiteMaterials";
 import RevenueInvoices from "./views/RevenueInvoices";
@@ -58,6 +61,9 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
               <ExpenseInvoices jobsite={jobsite} />
               <RevenueInvoices jobsite={jobsite} />
             </SimpleGrid>
+            <JobsiteMonthlyReportList
+              jobsiteMonthReports={jobsite.monthReports}
+            />
           </Permission>
           <DailyReportListCard dailyReports={jobsite.dailyReports} />
         </Box>

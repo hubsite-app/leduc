@@ -171,6 +171,22 @@ export const JobsiteMaterial = getModelForClass(JobsiteMaterialClass, {
 });
 
 /**
+ * ----- Jobsite Day Report -----
+ */
+
+import { JobsiteMonthReportClass } from "./JobsiteMonthReport/class";
+
+export interface JobsiteMonthReportDocument
+  extends DocumentType<JobsiteMonthReportClass> {}
+
+export interface JobsiteMonthReportModel
+  extends ReturnModelType<typeof JobsiteMonthReportClass> {}
+
+export const JobsiteMonthReport = getModelForClass(JobsiteMonthReportClass, {
+  schemaOptions: { collection: "jobsiteMonthReports" },
+});
+
+/**
  * ----- Material -----
  */
 

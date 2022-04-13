@@ -685,6 +685,41 @@ export const ssrFileFull = {
       withPage: withPageFileFull,
       usePage: useFileFull,
     }
+export async function getServerPageJobsiteMonthReportFull
+    (options: Omit<Apollo.QueryOptions<Types.JobsiteMonthReportFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsiteMonthReportFullQuery>({ ...options, query: Operations.JobsiteMonthReportFullDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsiteMonthReportFull = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteMonthReportFullQuery, Types.JobsiteMonthReportFullQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsiteMonthReportFullDocument, options);
+};
+export type PageJobsiteMonthReportFullComp = React.FC<{data?: Types.JobsiteMonthReportFullQuery, error?: Apollo.ApolloError}>;
+export const withPageJobsiteMonthReportFull = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteMonthReportFullQuery, Types.JobsiteMonthReportFullQueryVariables>) => (WrappedComponent:PageJobsiteMonthReportFullComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsiteMonthReportFullDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsiteMonthReportFull = {
+      getServerPage: getServerPageJobsiteMonthReportFull,
+      withPage: withPageJobsiteMonthReportFull,
+      usePage: useJobsiteMonthReportFull,
+    }
 export async function getServerPageJobsiteSearch
     (options: Omit<Apollo.QueryOptions<Types.JobsiteSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
