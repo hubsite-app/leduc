@@ -20,8 +20,8 @@ import {
   VehicleReportClass,
   NonCostedMaterialReportClass,
   TruckingReportClass,
-  InvoiceReportClass,
-  SummaryReportClass,
+  DaySummaryReportClass,
+  CrewTypeDaySummaryClass,
 } from "../schema/subDocument";
 
 const reports = (jobsiteDayReport: JobsiteDayReportDocument) => {
@@ -59,14 +59,10 @@ const reports = (jobsiteDayReport: JobsiteDayReportDocument) => {
       await jobsiteDayReport.generateTruckingReports(dailyReports);
 
       /**
-       * Generate Expense Invoice reports
+       * Generate Crew Types
        */
-      await jobsiteDayReport.generateExpenseInvoiceReports();
 
-      /**
-       * Generate Revenue Invoice reports
-       */
-      await jobsiteDayReport.generateRevenueInvoiceReports();
+      await jobsiteDayReport.generateCrewTypes();
 
       /**
        * Generate Summary report
@@ -670,52 +666,44 @@ const truckingReports = (
   });
 };
 
-const expenseInvoiceReports = (jobsiteDayReport: JobsiteDayReportDocument) => {
+const crewTypes = (jobsiteDayReport: JobsiteDayReportDocument) => {
   return new Promise<void>(async (resolve, reject) => {
     try {
-      // Get all expense invoices
-      const jobsite = await jobsiteDayReport.getJobsite();
-      const expenseInvoices = await jobsite.getExpenseInvoices();
+      const crewTypes: CrewTypes[] = [];
 
-      const invoices: InvoiceReportClass[] = [];
-      for (let i = 0; i < expenseInvoices.length; i++) {
-        const invoice: InvoiceReportClass = {
-          invoice: expenseInvoices[i]._id,
-          value: expenseInvoices[i].cost,
-          internal: expenseInvoices[i].internal,
-        };
-
-        invoices.push(invoice);
+      // Employee Crew Types
+      for (let j = 0; j < jobsiteDayReport.employees.length; j++) {
+        if (!crewTypes.includes(jobsiteDayReport.employees[j].crewType))
+          crewTypes.push(jobsiteDayReport.employees[j].crewType);
       }
 
-      jobsiteDayReport.expenseInvoices = invoices;
-
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
-
-const revenueInvoiceReports = (jobsiteDayReport: JobsiteDayReportDocument) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      // Get all revenue invoices
-      const jobsite = await jobsiteDayReport.getJobsite();
-      const revenueInvoices = await jobsite.getExpenseInvoices();
-
-      const invoices: InvoiceReportClass[] = [];
-      for (let i = 0; i < revenueInvoices.length; i++) {
-        const invoice: InvoiceReportClass = {
-          invoice: revenueInvoices[i]._id,
-          value: revenueInvoices[i].cost,
-          internal: revenueInvoices[i].internal,
-        };
-
-        invoices.push(invoice);
+      // Vehicle Crew Types
+      for (let j = 0; j < jobsiteDayReport.vehicles.length; j++) {
+        if (!crewTypes.includes(jobsiteDayReport.vehicles[j].crewType))
+          crewTypes.push(jobsiteDayReport.vehicles[j].crewType);
       }
 
-      jobsiteDayReport.revenueInvoices = invoices;
+      // Material Crew Types
+      for (let j = 0; j < jobsiteDayReport.materials.length; j++) {
+        if (!crewTypes.includes(jobsiteDayReport.materials[j].crewType))
+          crewTypes.push(jobsiteDayReport.materials[j].crewType);
+      }
+
+      // Non-costed Material Crew Types
+      for (let j = 0; j < jobsiteDayReport.nonCostedMaterials.length; j++) {
+        if (
+          !crewTypes.includes(jobsiteDayReport.nonCostedMaterials[j].crewType)
+        )
+          crewTypes.push(jobsiteDayReport.nonCostedMaterials[j].crewType);
+      }
+
+      // Trucking Crew Types
+      for (let j = 0; j < jobsiteDayReport.trucking.length; j++) {
+        if (!crewTypes.includes(jobsiteDayReport.trucking[j].crewType))
+          crewTypes.push(jobsiteDayReport.trucking[j].crewType);
+      }
+
+      jobsiteDayReport.crewTypes = crewTypes;
 
       resolve();
     } catch (e) {
@@ -727,93 +715,148 @@ const revenueInvoiceReports = (jobsiteDayReport: JobsiteDayReportDocument) => {
 const summaryReport = (jobsiteDayReport: JobsiteDayReportDocument) => {
   return new Promise<void>(async (resolve, reject) => {
     try {
+      const crewTypeSummaries: CrewTypeDaySummaryClass[] = [];
+      const crewTypeIndices: { [crewType in CrewTypes]?: number } = {};
+      for (let i = 0; i < jobsiteDayReport.crewTypes.length; i++) {
+        const crewType = jobsiteDayReport.crewTypes[i];
+
+        crewTypeSummaries.push({
+          crewType,
+          employeeCost: 0,
+          employeeHours: 0,
+          materialCost: 0,
+          materialQuantity: 0,
+          truckingCost: 0,
+          truckingHours: 0,
+          truckingQuantity: 0,
+          vehicleCost: 0,
+          vehicleHours: 0,
+          nonCostedMaterialQuantity: 0,
+        });
+
+        crewTypeIndices[crewType] = crewTypeSummaries.length - 1;
+      }
+
+      /**
+       * Employees
+       */
       let employeeHours = 0,
         employeeCost = 0;
       for (let i = 0; i < jobsiteDayReport.employees.length; i++) {
-        employeeHours += jobsiteDayReport.employees[i].hours;
+        const report = jobsiteDayReport.employees[i];
 
-        employeeCost +=
-          jobsiteDayReport.employees[i].hours *
-          jobsiteDayReport.employees[i].rate;
+        const hours = report.hours;
+        const cost = report.hours * report.rate;
+
+        employeeHours += jobsiteDayReport.employees[i].hours;
+        employeeCost += cost;
+
+        crewTypeSummaries[crewTypeIndices[report.crewType]!].employeeHours +=
+          hours;
+        crewTypeSummaries[crewTypeIndices[report.crewType]!].employeeCost +=
+          cost;
       }
 
+      /**
+       * Vehicles
+       */
       let vehicleHours = 0,
         vehicleCost = 0;
       for (let i = 0; i < jobsiteDayReport.vehicles.length; i++) {
-        vehicleHours += jobsiteDayReport.vehicles[i].hours;
+        const report = jobsiteDayReport.vehicles[i];
 
-        vehicleCost +=
-          jobsiteDayReport.vehicles[i].hours *
-          jobsiteDayReport.vehicles[i].rate;
+        const hours = report.hours;
+        const cost = report.hours * report.rate;
+
+        vehicleHours += hours;
+
+        vehicleCost += cost;
+
+        crewTypeSummaries[crewTypeIndices[report.crewType]!].vehicleHours +=
+          hours;
+        crewTypeSummaries[crewTypeIndices[report.crewType]!].vehicleCost +=
+          cost;
       }
 
+      /**
+       * Materials
+       */
       let materialQuantity = 0,
         materialCost = 0;
       for (let i = 0; i < jobsiteDayReport.materials.length; i++) {
-        materialQuantity += jobsiteDayReport.materials[i].quantity;
+        const report = jobsiteDayReport.materials[i];
 
-        materialCost +=
-          jobsiteDayReport.materials[i].quantity *
-          jobsiteDayReport.materials[i].rate;
+        const quantity = report.quantity;
+        const cost = report.quantity * report.rate;
+
+        materialQuantity += jobsiteDayReport.materials[i].quantity;
+        materialCost += cost;
+
+        crewTypeSummaries[crewTypeIndices[report.crewType]!].materialQuantity +=
+          quantity;
+        crewTypeSummaries[crewTypeIndices[report.crewType]!].materialCost +=
+          cost;
       }
 
+      /**
+       * Non Costed Materials
+       */
+      let nonCostedMaterialQuantity = 0;
+      for (let i = 0; i < jobsiteDayReport.nonCostedMaterials.length; i++) {
+        const report = jobsiteDayReport.nonCostedMaterials[i];
+
+        const quantity = report.quantity;
+
+        materialQuantity += quantity;
+
+        crewTypeSummaries[
+          crewTypeIndices[report.crewType]!
+        ].nonCostedMaterialQuantity += quantity;
+      }
+
+      /**
+       * Trucking
+       */
       let truckingQuantity = 0,
         truckingHours = 0,
         truckingCost = 0;
       for (let i = 0; i < jobsiteDayReport.trucking.length; i++) {
-        truckingQuantity += jobsiteDayReport.trucking[i].quantity;
+        const report = jobsiteDayReport.trucking[i];
 
-        truckingHours += jobsiteDayReport.trucking[i].hours || 0;
-
-        if (jobsiteDayReport.trucking[i].type === "Hour") {
-          truckingCost +=
-            jobsiteDayReport.trucking[i].rate *
-            (jobsiteDayReport.trucking[i].hours || 0);
-        } else if (jobsiteDayReport.trucking[i].type === "Quantity") {
-          truckingCost +=
-            jobsiteDayReport.trucking[i].rate &
-            jobsiteDayReport.trucking[i].quantity;
+        const quantity = report.quantity;
+        const hours = report.hours || 0;
+        let cost = 0;
+        if (report.type === "Hour") {
+          cost = report.rate * (report.hours || 0);
+        } else if (report.type === "Quantity") {
+          cost = report.rate & report.quantity;
         }
+
+        truckingQuantity += quantity;
+        crewTypeSummaries[crewTypeIndices[report.crewType]!].truckingQuantity +=
+          quantity;
+
+        truckingHours += hours;
+        crewTypeSummaries[crewTypeIndices[report.crewType]!].truckingHours +=
+          hours;
+
+        truckingCost += cost;
+        crewTypeSummaries[crewTypeIndices[report.crewType]!].truckingCost +=
+          cost;
       }
 
-      let externalExpenseInvoiceValue = 0,
-        internalExpenseInvoiceValue = 0;
-      for (let i = 0; i < jobsiteDayReport.expenseInvoices.length; i++) {
-        if (jobsiteDayReport.expenseInvoices[i].internal) {
-          internalExpenseInvoiceValue +=
-            jobsiteDayReport.expenseInvoices[i].value;
-        } else {
-          externalExpenseInvoiceValue +=
-            jobsiteDayReport.expenseInvoices[i].value;
-        }
-      }
-
-      let externalRevenueInvoiceValue = 0,
-        internalRevenueInvoiceValue = 0;
-      for (let i = 0; i < jobsiteDayReport.revenueInvoices.length; i++) {
-        if (jobsiteDayReport.revenueInvoices[i].internal) {
-          internalRevenueInvoiceValue +=
-            jobsiteDayReport.revenueInvoices[i].value;
-        } else {
-          externalRevenueInvoiceValue +=
-            jobsiteDayReport.revenueInvoices[i].value;
-        }
-      }
-
-      const summary: SummaryReportClass = {
+      const summary: DaySummaryReportClass = {
+        crewTypeSummaries,
         employeeHours,
         employeeCost,
         vehicleHours,
         vehicleCost,
         materialQuantity,
         materialCost,
+        nonCostedMaterialQuantity,
         truckingQuantity,
         truckingHours,
         truckingCost,
-        internalExpenseInvoiceValue,
-        externalExpenseInvoiceValue,
-        internalRevenueInvoiceValue,
-        externalRevenueInvoiceValue,
       };
 
       jobsiteDayReport.summary = summary;
@@ -832,7 +875,6 @@ export default {
   materialReports,
   nonCostedMaterialReports,
   truckingReports,
-  expenseInvoiceReports,
-  revenueInvoiceReports,
+  crewTypes,
   summaryReport,
 };

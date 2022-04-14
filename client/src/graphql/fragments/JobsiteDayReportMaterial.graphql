@@ -1,0 +1,9 @@
+fragment JobsiteDayReportMaterialSnippet on MaterialReportClass {
+  _id
+  jobsiteMaterial {
+    ...JobsiteMaterialCardSnippet
+  }
+  rate
+  quantity
+  crewType
+}

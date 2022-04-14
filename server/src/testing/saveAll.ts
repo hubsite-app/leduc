@@ -30,7 +30,9 @@ const saveAll = (skip?: SkipSave[]) => {
         const employees = await Employee.find();
         logger.info(`Saving ${employees.length} employee documents`);
         for (let i = 0; i < employees.length; i++) {
-          await employees[i].save();
+          try {
+            await employees[i].save();
+          } catch {}
         }
       }
 
@@ -39,7 +41,9 @@ const saveAll = (skip?: SkipSave[]) => {
         const vehicles = await Vehicle.find();
         logger.info(`Saving ${vehicles.length} vehicle documents`);
         for (let i = 0; i < vehicles.length; i++) {
-          await vehicles[i].save();
+          try {
+            await vehicles[i].save();
+          } catch (e) {}
         }
       }
 
@@ -48,7 +52,9 @@ const saveAll = (skip?: SkipSave[]) => {
         const jobsites = await Jobsite.find();
         logger.info(`Saving ${jobsites.length} jobsite documents`);
         for (let i = 0; i < jobsites.length; i++) {
-          await jobsites[i].save();
+          try {
+            await jobsites[i].save();
+          } catch (e) {}
         }
       }
 
@@ -61,7 +67,9 @@ const saveAll = (skip?: SkipSave[]) => {
             dailyReports[i].reportNote = undefined;
           }
 
-          await dailyReports[i].save();
+          try {
+            await dailyReports[i].save();
+          } catch (e) {}
         }
       }
 
@@ -70,7 +78,9 @@ const saveAll = (skip?: SkipSave[]) => {
         const crews = await Crew.find();
         logger.info(`Saving ${crews.length} crew documents`);
         for (let i = 0; i < crews.length; i++) {
-          await crews[i].save();
+          try {
+            await crews[i].save();
+          } catch (e) {}
         }
       }
 
@@ -79,7 +89,9 @@ const saveAll = (skip?: SkipSave[]) => {
         const materials = await Material.find();
         logger.info(`Saving ${materials.length} material documents`);
         for (let i = 0; i < materials.length; i++) {
-          await materials[i].save();
+          try {
+            await materials[i].save();
+          } catch (e) {}
         }
       }
 
@@ -88,7 +100,9 @@ const saveAll = (skip?: SkipSave[]) => {
         const companies = await Company.find();
         logger.info(`Saving ${companies.length} company documents`);
         for (let i = 0; i < companies.length; i++) {
-          await companies[i].save();
+          try {
+            await companies[i].save();
+          } catch (e) {}
         }
       }
 

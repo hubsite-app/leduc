@@ -1,0 +1,9 @@
+fragment JobsiteDayReportTruckingSnippet on TruckingReportClass {
+  _id
+  truckingType
+  quantity
+  hours
+  type
+  rate
+  crewType
+}

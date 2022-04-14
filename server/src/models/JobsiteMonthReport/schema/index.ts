@@ -4,6 +4,9 @@ import { CrewTypes } from "@typescript/crew";
 import { JobsiteClass, JobsiteDayReportClass } from "@models";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
+import { InvoiceReportClass, MonthSummaryReportClass } from "./subDocuments";
+
+export * from "./subDocuments";
 
 @ObjectType()
 export class JobsiteMonthReportSchema {
@@ -21,6 +24,18 @@ export class JobsiteMonthReportSchema {
   @Field(() => [JobsiteDayReportClass], { nullable: false })
   @prop({ ref: () => JobsiteDayReportClass, default: [], required: true })
   public dayReports!: Ref<JobsiteDayReportClass>[];
+
+  @Field(() => [InvoiceReportClass], { nullable: false })
+  @prop({ type: () => InvoiceReportClass, required: true, default: [] })
+  public expenseInvoices!: InvoiceReportClass[];
+
+  @Field(() => [InvoiceReportClass], { nullable: false })
+  @prop({ type: () => InvoiceReportClass, required: true, default: [] })
+  public revenueInvoices!: InvoiceReportClass[];
+
+  @Field(() => MonthSummaryReportClass, { nullable: false })
+  @prop({ type: () => MonthSummaryReportClass, required: true, default: {} })
+  public summary!: MonthSummaryReportClass;
 
   @Field(() => [CrewTypes], { nullable: false })
   @prop({ type: [String], enum: CrewTypes, required: true, default: [] })

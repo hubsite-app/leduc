@@ -7,4 +7,16 @@ fragment JobsiteMonthReportFullSnippet on JobsiteMonthReportClass {
   jobsite {
     ...JobsiteCardSnippet
   }
+  expenseInvoices {
+    ...JobsiteDayReportInvoiceSnippet
+  }
+  revenueInvoices {
+    ...JobsiteDayReportInvoiceSnippet
+  }
+  summary {
+    externalExpenseInvoiceValue
+    internalExpenseInvoiceValue
+    externalRevenueInvoiceValue
+    internalRevenueInvoiceValue
+  }
 }

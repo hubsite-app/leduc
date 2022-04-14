@@ -11,8 +11,8 @@ import {
 import React from "react";
 import {
   CrewTypes,
-  EmployeeCardSnippetFragment,
-  JobsiteDayReportEmployeeSnippetFragment,
+  VehicleCardSnippetFragment,
+  JobsiteDayReportVehicleSnippetFragment,
   JobsiteDayReportFullSnippetFragment,
 } from "../../../generated/graphql";
 import createLink from "../../../utils/createLink";
@@ -20,62 +20,60 @@ import formatDate from "../../../utils/formatDate";
 import formatNumber from "../../../utils/formatNumber";
 import TextLink from "../../Common/TextLink";
 
-interface IEmployee {
-  employee: EmployeeCardSnippetFragment;
-  reports: (JobsiteDayReportEmployeeSnippetFragment | null)[];
+interface IVehicle {
+  vehicle: VehicleCardSnippetFragment;
+  reports: (JobsiteDayReportVehicleSnippetFragment | null)[];
   totalHours: number;
   totalCost: number;
 }
 
-interface IJobsiteMonthEmployeeReports {
+interface IJobsiteMonthVehicleReports {
   dayReports: JobsiteDayReportFullSnippetFragment[];
   crewType: CrewTypes;
 }
 
-const JobsiteMonthEmployeeReports = ({
+const JobsiteMonthVehicleReports = ({
   dayReports,
   crewType,
-}: IJobsiteMonthEmployeeReports) => {
+}: IJobsiteMonthVehicleReports) => {
   /**
    * ----- Variables -----
    */
 
   /**
-   * @desc all reports w/ employee reports for the crew type
+   * @desc all reports w/ vehicle reports for the crew type
    */
   const relevantReports: JobsiteDayReportFullSnippetFragment[] =
     React.useMemo(() => {
       return dayReports.filter(
         (report) =>
-          report.employees.length > 0 &&
-          report.employees
-            .map((employee) => employee.crewType)
-            .includes(crewType)
+          report.vehicles.length > 0 &&
+          report.vehicles.map((vehicle) => vehicle.crewType).includes(crewType)
       );
     }, [crewType, dayReports]);
 
   /**
-   * @desc catalog of all employees and their reports
+   * @desc catalog of all vehicles and their reports
    */
-  const employeeReports: IEmployee[] = React.useMemo(() => {
-    const employees: IEmployee[] = [];
+  const vehicleReports: IVehicle[] = React.useMemo(() => {
+    const vehicles: IVehicle[] = [];
 
-    // Instantiate employees
+    // Instantiate vehicles
     for (let i = 0; i < relevantReports.length; i++) {
       const report = relevantReports[i];
 
-      for (let j = 0; j < report.employees.length; j++) {
-        const employeeReport = report.employees[j];
+      for (let j = 0; j < report.vehicles.length; j++) {
+        const vehicleReport = report.vehicles[j];
 
         // Only add if crewType matches
-        if (employeeReport.crewType === crewType) {
-          const existingIndex = employees.findIndex(
-            (employee) => employee.employee._id === employeeReport.employee?._id
+        if (vehicleReport.crewType === crewType) {
+          const existingIndex = vehicles.findIndex(
+            (vehicle) => vehicle.vehicle._id === vehicleReport.vehicle?._id
           );
 
           if (existingIndex === -1) {
-            employees.push({
-              employee: employeeReport.employee!,
+            vehicles.push({
+              vehicle: vehicleReport.vehicle!,
               reports: [],
               totalCost: 0,
               totalHours: 0,
@@ -90,34 +88,34 @@ const JobsiteMonthEmployeeReports = ({
       const report = relevantReports[i];
 
       const populatedReportIndices: number[] = [];
-      for (let j = 0; j < report.employees.length; j++) {
-        const employeeReport = report.employees[j];
+      for (let j = 0; j < report.vehicles.length; j++) {
+        const vehicleReport = report.vehicles[j];
 
         // Only add if crewType matches
-        if (employeeReport.crewType === crewType) {
-          const existingIndex = employees.findIndex(
-            (employee) => employee.employee._id === employeeReport.employee?._id
+        if (vehicleReport.crewType === crewType) {
+          const existingIndex = vehicles.findIndex(
+            (vehicle) => vehicle.vehicle._id === vehicleReport.vehicle?._id
           );
 
           if (existingIndex !== -1) {
-            employees[existingIndex].reports.push(employeeReport);
+            vehicles[existingIndex].reports.push(vehicleReport);
             populatedReportIndices.push(existingIndex);
           }
         }
       }
 
-      // Set null for each employee report that wasn't seen
+      // Set null for each vehicle report that wasn't seen
       if (populatedReportIndices.length > 0)
-        for (let j = 0; j < employees.length; j++) {
+        for (let j = 0; j < vehicles.length; j++) {
           if (!populatedReportIndices.includes(j)) {
-            employees[j].reports.push(null);
+            vehicles[j].reports.push(null);
           }
         }
     }
 
     // Generate totals
-    for (let i = 0; i < employees.length; i++) {
-      const reports = employees[i];
+    for (let i = 0; i < vehicles.length; i++) {
+      const reports = vehicles[i];
 
       let totalHours = 0,
         totalCost = 0;
@@ -134,21 +132,21 @@ const JobsiteMonthEmployeeReports = ({
       reports.totalHours = totalHours;
     }
 
-    return employees;
+    return vehicles;
   }, [crewType, relevantReports]);
 
   const totals: { hours: number; cost: number } = React.useMemo(() => {
     let totalHours = 0,
       totalCost = 0;
-    for (let i = 0; i < employeeReports.length; i++) {
-      totalHours += employeeReports[i].totalHours;
-      totalCost += employeeReports[i].totalCost;
+    for (let i = 0; i < vehicleReports.length; i++) {
+      totalHours += vehicleReports[i].totalHours;
+      totalCost += vehicleReports[i].totalCost;
     }
     return {
       hours: totalHours,
       cost: totalCost,
     };
-  }, [employeeReports]);
+  }, [vehicleReports]);
 
   /**
    * ----- Rendering -----
@@ -163,10 +161,10 @@ const JobsiteMonthEmployeeReports = ({
       m={2}
     >
       <Table variant="striped" colorScheme="red">
-        <TableCaption>Employee costing for {crewType} crew</TableCaption>
+        <TableCaption>Vehicle costing for {crewType} crew</TableCaption>
         <Thead>
           <Tr>
-            <Th>Employee</Th>
+            <Th>Vehicle</Th>
             <Th isNumeric>Total Hours</Th>
             <Th whiteSpace="break-spaces" isNumeric>
               Total Cost
@@ -179,11 +177,11 @@ const JobsiteMonthEmployeeReports = ({
           </Tr>
         </Thead>
         <Tbody>
-          {employeeReports.map((reports) => (
-            <Tr key={reports.employee._id}>
+          {vehicleReports.map((reports) => (
+            <Tr key={reports.vehicle._id}>
               <Th>
-                <TextLink link={createLink.employee(reports.employee._id)}>
-                  {reports.employee.name}
+                <TextLink link={createLink.vehicle(reports.vehicle._id)}>
+                  {reports.vehicle.name}
                 </TextLink>
               </Th>
               <Th isNumeric>{reports.totalHours}</Th>
@@ -205,7 +203,7 @@ const JobsiteMonthEmployeeReports = ({
               <Th isNumeric key={report._id}>
                 {report.summary.crewTypeSummaries.find(
                   (summary) => summary.crewType === crewType
-                )?.employeeHours || 0}
+                )?.vehicleHours || 0}
               </Th>
             ))}
           </Tr>
@@ -215,4 +213,4 @@ const JobsiteMonthEmployeeReports = ({
   );
 };
 
-export default JobsiteMonthEmployeeReports;
+export default JobsiteMonthVehicleReports;

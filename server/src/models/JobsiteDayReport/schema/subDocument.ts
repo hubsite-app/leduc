@@ -190,31 +190,7 @@ export interface TruckingReportDocument
   extends DocumentType<TruckingReportClass> {}
 
 @ObjectType()
-export class InvoiceReportClass {
-  @Field(() => ID, { nullable: false })
-  public _id?: Types.ObjectId;
-
-  @Field(() => InvoiceClass, { nullable: false })
-  @prop({ ref: () => InvoiceClass, required: true })
-  public invoice!: Ref<InvoiceClass>;
-
-  @Field(() => Float, { nullable: false })
-  @prop({ required: true })
-  public value!: number;
-
-  @Field(() => Boolean, { nullable: false })
-  @prop({ required: true })
-  public internal!: boolean;
-}
-
-export interface InvoiceReportDocument
-  extends DocumentType<InvoiceReportClass> {}
-
-@ObjectType()
-export class SummaryReportClass {
-  @Field(() => ID, { nullable: false })
-  public _id?: Types.ObjectId;
-
+class SummaryBaseReport {
   @Field(() => Float, { nullable: false })
   @prop({ required: true })
   public employeeHours!: number;
@@ -241,6 +217,10 @@ export class SummaryReportClass {
 
   @Field(() => Float, { nullable: false })
   @prop({ required: true })
+  public nonCostedMaterialQuantity!: number;
+
+  @Field(() => Float, { nullable: false })
+  @prop({ required: true })
   public truckingQuantity!: number;
 
   @Field(() => Float, { nullable: false })
@@ -250,23 +230,27 @@ export class SummaryReportClass {
   @Field(() => Float, { nullable: false })
   @prop({ required: true })
   public truckingCost!: number;
-
-  @Field(() => Float, { nullable: false })
-  @prop({ required: true })
-  public externalExpenseInvoiceValue!: number;
-
-  @Field(() => Float, { nullable: false })
-  @prop({ required: true })
-  public internalExpenseInvoiceValue!: number;
-
-  @Field(() => Float, { nullable: false })
-  @prop({ required: true })
-  public externalRevenueInvoiceValue!: number;
-
-  @Field(() => Float, { nullable: false })
-  @prop({ required: true })
-  public internalRevenueInvoiceValue!: number;
 }
 
-export interface SummaryReportDocument
-  extends DocumentType<SummaryReportClass> {}
+@ObjectType()
+export class DaySummaryReportClass extends SummaryBaseReport {
+  @Field(() => ID, { nullable: false })
+  public _id?: Types.ObjectId;
+
+  @Field(() => [CrewTypeDaySummaryClass], { nullable: false })
+  @prop({ type: () => CrewTypeDaySummaryClass, required: true, default: [] })
+  public crewTypeSummaries!: CrewTypeDaySummaryClass[];
+}
+
+export interface DaySummaryReportDocument
+  extends DocumentType<DaySummaryReportClass> {}
+
+@ObjectType()
+export class CrewTypeDaySummaryClass extends SummaryBaseReport {
+  @Field(() => ID, { nullable: false })
+  public _id?: Types.ObjectId;
+
+  @Field(() => CrewTypes, { nullable: false })
+  @prop({ enum: CrewTypes, required: true })
+  public crewType!: CrewTypes;
+}

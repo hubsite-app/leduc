@@ -1,0 +1,7 @@
+fragment JobsiteDayReportNonCostedMaterialSnippet on NonCostedMaterialReportClass {
+  _id
+  materialName
+  supplierName
+  quantity
+  crewType
+}

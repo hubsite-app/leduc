@@ -112,15 +112,11 @@ export class JobsiteDayReportClass extends JobsiteDayReportSchema {
     return generate.truckingReports(this, dailyReports);
   }
 
-  public async generateExpenseInvoiceReports(this: JobsiteDayReportDocument) {
-    return generate.expenseInvoiceReports(this);
-  }
-
-  public async generateRevenueInvoiceReports(this: JobsiteDayReportDocument) {
-    return generate.revenueInvoiceReports(this);
-  }
-
   public async generateSummaryReports(this: JobsiteDayReportDocument) {
     return generate.summaryReport(this);
+  }
+
+  public async generateCrewTypes(this: JobsiteDayReportDocument) {
+    return generate.crewTypes(this);
   }
 }

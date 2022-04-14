@@ -4,6 +4,7 @@ import { GetByIDOptions, Id } from "@typescript/models";
 import { ObjectType } from "type-graphql";
 import { JobsiteMonthReportSchema } from "../schema";
 import build from "./build";
+import generate from "./generate";
 import get from "./get";
 
 @ObjectType()
@@ -45,5 +46,21 @@ export class JobsiteMonthReportClass extends JobsiteMonthReportSchema {
     data: IJobsiteMonthReportBuild
   ) {
     return build.documentAndSave(this, data);
+  }
+
+  /**
+   * ----- Generate -----
+   */
+
+  public async generateExpenseInvoiceReports(this: JobsiteMonthReportDocument) {
+    return generate.expenseInvoiceReports(this);
+  }
+
+  public async generateRevenueInvoiceReports(this: JobsiteMonthReportDocument) {
+    return generate.revenueInvoiceReports(this);
+  }
+
+  public async generateSummary(this: JobsiteMonthReportDocument) {
+    return generate.summary(this);
   }
 }

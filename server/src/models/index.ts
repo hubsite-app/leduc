@@ -8,6 +8,7 @@ export * from "./Invoice";
 export * from "./Jobsite";
 export * from "./JobsiteDayReport";
 export * from "./JobsiteMaterial";
+export * from "./JobsiteMonthReport";
 export * from "./Material";
 export * from "./MaterialShipment";
 export * from "./Production";
@@ -171,7 +172,7 @@ export const JobsiteMaterial = getModelForClass(JobsiteMaterialClass, {
 });
 
 /**
- * ----- Jobsite Day Report -----
+ * ----- Jobsite Month Report -----
  */
 
 import { JobsiteMonthReportClass } from "./JobsiteMonthReport/class";

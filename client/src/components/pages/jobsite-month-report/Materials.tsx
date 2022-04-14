@@ -11,74 +11,74 @@ import {
 import React from "react";
 import {
   CrewTypes,
-  EmployeeCardSnippetFragment,
-  JobsiteDayReportEmployeeSnippetFragment,
+  JobsiteDayReportMaterialSnippetFragment,
   JobsiteDayReportFullSnippetFragment,
+  JobsiteMaterialCardSnippetFragment,
 } from "../../../generated/graphql";
-import createLink from "../../../utils/createLink";
 import formatDate from "../../../utils/formatDate";
 import formatNumber from "../../../utils/formatNumber";
-import TextLink from "../../Common/TextLink";
 
-interface IEmployee {
-  employee: EmployeeCardSnippetFragment;
-  reports: (JobsiteDayReportEmployeeSnippetFragment | null)[];
-  totalHours: number;
+interface IMaterial {
+  jobsiteMaterial: JobsiteMaterialCardSnippetFragment;
+  reports: (JobsiteDayReportMaterialSnippetFragment | null)[];
+  totalQuantity: number;
   totalCost: number;
 }
 
-interface IJobsiteMonthEmployeeReports {
+interface IJobsiteMonthMaterialReports {
   dayReports: JobsiteDayReportFullSnippetFragment[];
   crewType: CrewTypes;
 }
 
-const JobsiteMonthEmployeeReports = ({
+const JobsiteMonthMaterialReports = ({
   dayReports,
   crewType,
-}: IJobsiteMonthEmployeeReports) => {
+}: IJobsiteMonthMaterialReports) => {
   /**
    * ----- Variables -----
    */
 
   /**
-   * @desc all reports w/ employee reports for the crew type
+   * @desc all reports w/ material reports for the crew type
    */
   const relevantReports: JobsiteDayReportFullSnippetFragment[] =
     React.useMemo(() => {
       return dayReports.filter(
         (report) =>
-          report.employees.length > 0 &&
-          report.employees
-            .map((employee) => employee.crewType)
+          report.materials.length > 0 &&
+          report.materials
+            .map((material) => material.crewType)
             .includes(crewType)
       );
     }, [crewType, dayReports]);
 
   /**
-   * @desc catalog of all employees and their reports
+   * @desc catalog of all materials and their reports
    */
-  const employeeReports: IEmployee[] = React.useMemo(() => {
-    const employees: IEmployee[] = [];
+  const materialReports: IMaterial[] = React.useMemo(() => {
+    const materials: IMaterial[] = [];
 
-    // Instantiate employees
+    // Instantiate materials
     for (let i = 0; i < relevantReports.length; i++) {
       const report = relevantReports[i];
 
-      for (let j = 0; j < report.employees.length; j++) {
-        const employeeReport = report.employees[j];
+      for (let j = 0; j < report.materials.length; j++) {
+        const materialReport = report.materials[j];
 
         // Only add if crewType matches
-        if (employeeReport.crewType === crewType) {
-          const existingIndex = employees.findIndex(
-            (employee) => employee.employee._id === employeeReport.employee?._id
+        if (materialReport.crewType === crewType) {
+          const existingIndex = materials.findIndex(
+            (material) =>
+              material.jobsiteMaterial._id ===
+              materialReport.jobsiteMaterial?._id
           );
 
           if (existingIndex === -1) {
-            employees.push({
-              employee: employeeReport.employee!,
+            materials.push({
+              jobsiteMaterial: materialReport.jobsiteMaterial!,
               reports: [],
               totalCost: 0,
-              totalHours: 0,
+              totalQuantity: 0,
             });
           }
         }
@@ -90,65 +90,67 @@ const JobsiteMonthEmployeeReports = ({
       const report = relevantReports[i];
 
       const populatedReportIndices: number[] = [];
-      for (let j = 0; j < report.employees.length; j++) {
-        const employeeReport = report.employees[j];
+      for (let j = 0; j < report.materials.length; j++) {
+        const materialReport = report.materials[j];
 
         // Only add if crewType matches
-        if (employeeReport.crewType === crewType) {
-          const existingIndex = employees.findIndex(
-            (employee) => employee.employee._id === employeeReport.employee?._id
+        if (materialReport.crewType === crewType) {
+          const existingIndex = materials.findIndex(
+            (material) =>
+              material.jobsiteMaterial._id ===
+              materialReport.jobsiteMaterial?._id
           );
 
           if (existingIndex !== -1) {
-            employees[existingIndex].reports.push(employeeReport);
+            materials[existingIndex].reports.push(materialReport);
             populatedReportIndices.push(existingIndex);
           }
         }
       }
 
-      // Set null for each employee report that wasn't seen
+      // Set null for each material report that wasn't seen
       if (populatedReportIndices.length > 0)
-        for (let j = 0; j < employees.length; j++) {
+        for (let j = 0; j < materials.length; j++) {
           if (!populatedReportIndices.includes(j)) {
-            employees[j].reports.push(null);
+            materials[j].reports.push(null);
           }
         }
     }
 
     // Generate totals
-    for (let i = 0; i < employees.length; i++) {
-      const reports = employees[i];
+    for (let i = 0; i < materials.length; i++) {
+      const reports = materials[i];
 
-      let totalHours = 0,
+      let totalQuantity = 0,
         totalCost = 0;
       for (let j = 0; j < reports.reports.length; j++) {
         const report = reports.reports[j];
 
         if (report) {
-          totalHours += report.hours;
-          totalCost += report.hours * report.rate;
+          totalQuantity += report.quantity;
+          totalCost += report.quantity * report.rate;
         }
       }
 
       reports.totalCost = totalCost;
-      reports.totalHours = totalHours;
+      reports.totalQuantity = totalQuantity;
     }
 
-    return employees;
+    return materials;
   }, [crewType, relevantReports]);
 
-  const totals: { hours: number; cost: number } = React.useMemo(() => {
-    let totalHours = 0,
+  const totals: { quantity: number; cost: number } = React.useMemo(() => {
+    let totalQuantity = 0,
       totalCost = 0;
-    for (let i = 0; i < employeeReports.length; i++) {
-      totalHours += employeeReports[i].totalHours;
-      totalCost += employeeReports[i].totalCost;
+    for (let i = 0; i < materialReports.length; i++) {
+      totalQuantity += materialReports[i].totalQuantity;
+      totalCost += materialReports[i].totalCost;
     }
     return {
-      hours: totalHours,
+      quantity: totalQuantity,
       cost: totalCost,
     };
-  }, [employeeReports]);
+  }, [materialReports]);
 
   /**
    * ----- Rendering -----
@@ -163,11 +165,11 @@ const JobsiteMonthEmployeeReports = ({
       m={2}
     >
       <Table variant="striped" colorScheme="red">
-        <TableCaption>Employee costing for {crewType} crew</TableCaption>
+        <TableCaption>Material costing for {crewType} crew</TableCaption>
         <Thead>
           <Tr>
-            <Th>Employee</Th>
-            <Th isNumeric>Total Hours</Th>
+            <Th>Material</Th>
+            <Th isNumeric>Total Quantity</Th>
             <Th whiteSpace="break-spaces" isNumeric>
               Total Cost
             </Th>
@@ -179,18 +181,14 @@ const JobsiteMonthEmployeeReports = ({
           </Tr>
         </Thead>
         <Tbody>
-          {employeeReports.map((reports) => (
-            <Tr key={reports.employee._id}>
-              <Th>
-                <TextLink link={createLink.employee(reports.employee._id)}>
-                  {reports.employee.name}
-                </TextLink>
-              </Th>
-              <Th isNumeric>{reports.totalHours}</Th>
+          {materialReports.map((reports) => (
+            <Tr key={reports.jobsiteMaterial._id}>
+              <Th>{reports.jobsiteMaterial.material.name}</Th>
+              <Th isNumeric>{reports.totalQuantity}</Th>
               <Th isNumeric>${formatNumber(reports.totalCost)}</Th>
               {reports.reports.map((report) => (
                 <Th isNumeric key={report?._id}>
-                  {report?.hours || ""}
+                  {report?.quantity || ""}
                 </Th>
               ))}
             </Tr>
@@ -199,13 +197,13 @@ const JobsiteMonthEmployeeReports = ({
         <Tfoot>
           <Tr>
             <Th>Totals</Th>
-            <Th isNumeric>{totals.hours}</Th>
+            <Th isNumeric>{totals.quantity}</Th>
             <Th isNumeric>${formatNumber(totals.cost)}</Th>
             {relevantReports.map((report) => (
               <Th isNumeric key={report._id}>
                 {report.summary.crewTypeSummaries.find(
                   (summary) => summary.crewType === crewType
-                )?.employeeHours || 0}
+                )?.materialQuantity || 0}
               </Th>
             ))}
           </Tr>
@@ -215,4 +213,4 @@ const JobsiteMonthEmployeeReports = ({
   );
 };
 
-export default JobsiteMonthEmployeeReports;
+export default JobsiteMonthMaterialReports;

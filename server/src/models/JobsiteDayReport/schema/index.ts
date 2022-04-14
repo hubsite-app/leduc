@@ -9,14 +9,14 @@ import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import {
   EmployeeReportClass,
-  InvoiceReportClass,
   MaterialReportClass,
   NonCostedMaterialReportClass,
-  SummaryReportClass,
+  DaySummaryReportClass,
   TruckingReportClass,
   VehicleReportClass,
 } from "./subDocument";
 import SchemaVersions from "@constants/SchemaVersions";
+import { CrewTypes } from "@typescript/crew";
 
 export * from "./subDocument";
 
@@ -67,17 +67,13 @@ export class JobsiteDayReportSchema {
   @prop({ type: () => TruckingReportClass, required: true, default: [] })
   public trucking!: TruckingReportClass[];
 
-  @Field(() => [InvoiceReportClass], { nullable: false })
-  @prop({ type: () => InvoiceReportClass, required: true, default: [] })
-  public expenseInvoices!: InvoiceReportClass[];
+  @Field(() => DaySummaryReportClass, { nullable: false })
+  @prop({ type: () => DaySummaryReportClass, required: true, default: {} })
+  public summary!: DaySummaryReportClass;
 
-  @Field(() => [InvoiceReportClass], { nullable: false })
-  @prop({ type: () => InvoiceReportClass, required: true, default: [] })
-  public revenueInvoices!: InvoiceReportClass[];
-
-  @Field(() => SummaryReportClass, { nullable: false })
-  @prop({ type: () => SummaryReportClass, required: true, default: {} })
-  public summary!: SummaryReportClass;
+  @Field(() => [CrewTypes], { nullable: false })
+  @prop({ type: [String], enum: CrewTypes, required: true, default: [] })
+  public crewTypes!: CrewTypes[];
 
   @Field()
   @prop({ required: true, default: SchemaVersions.JobsiteDayReport })
