@@ -1,0 +1,5 @@
+query JobsiteMonthReportCard($id: ID!) {
+  jobsiteMonthReport(id: $id) {
+    ...JobsiteMonthReportCardSnippet
+  }
+}

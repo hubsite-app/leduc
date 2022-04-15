@@ -1,0 +1,4 @@
+fragment UpdateSnippet on UpdateClass {
+  status
+  lastUpdatedAt
+}

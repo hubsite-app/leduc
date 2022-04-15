@@ -1,0 +1,9 @@
+mutation InvoiceUpdateForJobsite(
+  $id: String!
+  $jobsiteId: ID!
+  $data: InvoiceData!
+) {
+  invoiceUpdateForJobsite(id: $id, jobsiteId: $jobsiteId, data: $data) {
+    ...InvoiceCardSnippet
+  }
+}
