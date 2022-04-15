@@ -1,14 +1,30 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { prop, Ref } from "@typegoose/typegoose";
+import { post, prop, Ref } from "@typegoose/typegoose";
 import { CrewTypes } from "@typescript/crew";
-import { JobsiteClass, JobsiteDayReportClass } from "@models";
+import {
+  JobsiteClass,
+  JobsiteDayReportClass,
+  JobsiteMonthReportDocument,
+} from "@models";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import { InvoiceReportClass, MonthSummaryReportClass } from "./subDocuments";
+import { UpdateClass } from "@typescript/models";
+import pubsub from "@pubsub";
+import { PubSubTopics } from "@typescript/pubSub";
 
 export * from "./subDocuments";
 
 @ObjectType()
+@post<JobsiteMonthReportDocument>("save", async (jobsiteMonthReport) => {
+  console.log(jobsiteMonthReport._id);
+  await pubsub.publish(
+    `${PubSubTopics.JOBSITE_MONTH_REPORT}_${jobsiteMonthReport._id}`,
+    {
+      id: jobsiteMonthReport._id,
+    }
+  );
+})
 export class JobsiteMonthReportSchema {
   @Field(() => ID, { nullable: false })
   public _id!: Types.ObjectId;
@@ -40,6 +56,10 @@ export class JobsiteMonthReportSchema {
   @Field(() => [CrewTypes], { nullable: false })
   @prop({ type: [String], enum: CrewTypes, required: true, default: [] })
   public crewTypes!: CrewTypes[];
+
+  @Field(() => UpdateClass, { nullable: false })
+  @prop({ type: () => UpdateClass, required: true, default: {} })
+  public update!: UpdateClass;
 
   @Field()
   @prop({ required: true, default: SchemaVersions.JobsiteMonthReport })

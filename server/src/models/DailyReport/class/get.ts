@@ -195,6 +195,7 @@ const byJobsiteDayReport = (
           $lt: endOfDay,
         },
         jobsite: jobsiteDayReport.jobsite,
+        approved: true,
       });
 
       resolve(dailyReports);

@@ -1,12 +1,27 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { prop, Ref } from "@typegoose/typegoose";
-import { MaterialClass, CompanyClass } from "@models";
+import { post, prop, Ref } from "@typegoose/typegoose";
+import { MaterialClass, CompanyClass, JobsiteMaterialDocument } from "@models";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import { RateClass } from "@typescript/models";
 import validateMongooseArrayLength from "@validation/validateMongooseArrayLength";
+import { logger } from "@logger";
 
 @ObjectType()
+@post<JobsiteMaterialDocument>("save", async (jobsiteMaterial) => {
+  try {
+    await jobsiteMaterial.requestReportUpdate();
+  } catch (e: any) {
+    logger.error(`Jobsite Material post save error: ${e.message}`);
+  }
+})
+@post<JobsiteMaterialDocument>("remove", async (jobsiteMaterial) => {
+  try {
+    await jobsiteMaterial.requestReportUpdate();
+  } catch (e: any) {
+    logger.error(`Jobsite Material post remove error: ${e.message}`);
+  }
+})
 export class JobsiteMaterialSchema {
   @Field(() => ID, { nullable: false })
   public _id!: Types.ObjectId;

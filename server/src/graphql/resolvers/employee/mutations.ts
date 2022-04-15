@@ -1,7 +1,8 @@
 import { RatesData } from "@graphql/types/mutation";
 import { Crew, CrewDocument, Employee, EmployeeDocument } from "@models";
+import pubsub from "@pubsub";
 import { Id } from "@typescript/models";
-import { Field, InputType } from "type-graphql";
+import { Field, InputType, Publisher } from "type-graphql";
 
 @InputType()
 export class EmployeeCreateData {

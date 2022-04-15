@@ -12,6 +12,7 @@ export enum CrewTypes {
   BasePrep = "Base Prep",
   FormTruck = "Form Truck",
   BreakoutCB = "Breakout / CB",
+  Other = "Other",
 }
 
 registerEnumType(CrewTypes, {

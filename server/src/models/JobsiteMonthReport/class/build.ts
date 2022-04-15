@@ -1,9 +1,9 @@
-import { JobsiteDayReport, JobsiteMonthReportModel } from "@models";
-import { CrewTypes } from "@typescript/crew";
+import { JobsiteMonthReportModel } from "@models";
 import { IJobsiteMonthReportBuild } from "@typescript/jobsiteMonthReport";
+import { UpdateStatus } from "@typescript/models";
 import dayjs from "dayjs";
 
-const documentAndSave = (
+const requestBuild = (
   JobsiteMonthReport: JobsiteMonthReportModel,
   data: IJobsiteMonthReportBuild
 ) => {
@@ -22,29 +22,8 @@ const documentAndSave = (
         });
       }
 
-      const dayReports = await JobsiteDayReport.getByJobsiteAndMonth(
-        data.jobsiteId,
-        data.date
-      );
-
-      jobsiteMonthReport.dayReports = dayReports.map((report) => report._id);
-
-      const crewTypes: CrewTypes[] = [];
-      for (let i = 0; i < dayReports.length; i++) {
-        const dayReport = dayReports[i];
-
-        for (let j = 0; j < dayReport.crewTypes.length; j++) {
-          if (!crewTypes.includes(dayReport.crewTypes[j]))
-            crewTypes.push(dayReport.crewTypes[j]);
-        }
-      }
-
-      jobsiteMonthReport.crewTypes = crewTypes;
-
-      await jobsiteMonthReport.generateExpenseInvoiceReports();
-      await jobsiteMonthReport.generateRevenueInvoiceReports();
-
-      await jobsiteMonthReport.generateSummary();
+      if (jobsiteMonthReport.update.status !== UpdateStatus.Pending)
+        jobsiteMonthReport.update.status = UpdateStatus.Requested;
 
       await jobsiteMonthReport.save();
 
@@ -56,5 +35,5 @@ const documentAndSave = (
 };
 
 export default {
-  documentAndSave,
+  requestBuild,
 };

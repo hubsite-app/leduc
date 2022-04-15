@@ -32,7 +32,9 @@ const saveAll = (skip?: SkipSave[]) => {
         for (let i = 0; i < employees.length; i++) {
           try {
             await employees[i].save();
-          } catch {}
+          } catch (e: any) {
+            logger.error(`Employee Save All error: ${e.message}`);
+          }
         }
       }
 
@@ -43,7 +45,9 @@ const saveAll = (skip?: SkipSave[]) => {
         for (let i = 0; i < vehicles.length; i++) {
           try {
             await vehicles[i].save();
-          } catch (e) {}
+          } catch (e: any) {
+            logger.error(`Vehicle Save All error: ${e.message}`);
+          }
         }
       }
 
@@ -54,7 +58,9 @@ const saveAll = (skip?: SkipSave[]) => {
         for (let i = 0; i < jobsites.length; i++) {
           try {
             await jobsites[i].save();
-          } catch (e) {}
+          } catch (e: any) {
+            logger.error(`Jobsite Save All error: ${e.message}`);
+          }
         }
       }
 
@@ -69,7 +75,9 @@ const saveAll = (skip?: SkipSave[]) => {
 
           try {
             await dailyReports[i].save();
-          } catch (e) {}
+          } catch (e: any) {
+            logger.error(`Daily Report Save All error: ${e.message}`);
+          }
         }
       }
 
@@ -80,7 +88,9 @@ const saveAll = (skip?: SkipSave[]) => {
         for (let i = 0; i < crews.length; i++) {
           try {
             await crews[i].save();
-          } catch (e) {}
+          } catch (e: any) {
+            logger.error(`Crew Save All error: ${e.message}`);
+          }
         }
       }
 
@@ -91,7 +101,9 @@ const saveAll = (skip?: SkipSave[]) => {
         for (let i = 0; i < materials.length; i++) {
           try {
             await materials[i].save();
-          } catch (e) {}
+          } catch (e: any) {
+            logger.error(`Material Save All error: ${e.message}`);
+          }
         }
       }
 
@@ -102,7 +114,9 @@ const saveAll = (skip?: SkipSave[]) => {
         for (let i = 0; i < companies.length; i++) {
           try {
             await companies[i].save();
-          } catch (e) {}
+          } catch (e: any) {
+            logger.error(`Company Save All error: ${e.message}`);
+          }
         }
       }
 

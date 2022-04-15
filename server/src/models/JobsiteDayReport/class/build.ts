@@ -3,6 +3,7 @@ import {
   JobsiteDayReportModel,
   JobsiteDocument,
 } from "@models";
+import { UpdateStatus } from "@typescript/models";
 import dayjs from "dayjs";
 
 const allForJobsite = (
@@ -11,15 +12,13 @@ const allForJobsite = (
 ) => {
   return new Promise<JobsiteDayReportDocument[]>(async (resolve, reject) => {
     try {
-      // Get all existing reports
-      const existingReports = await JobsiteDayReport.getByJobsite(jobsite);
-      const existingReportDates = existingReports.map((report) => report.date);
-
       // Get all existing jobsite daily reports
       const dailyReports = await jobsite.getDailyReports();
-      const dailyReportDates = dailyReports.map((report) => report.date);
+      const dailyReportDates = dailyReports
+        .filter((report) => report.approved === true)
+        .map((report) => report.date);
 
-      // Get all unique dates on this jobsite O(log(n))
+      // Get all unique dates on this jobsite
       const uniqueDates = dailyReportDates.filter((date, index, array) => {
         let match = false;
         for (let i = index; i >= 0; i--) {
@@ -29,38 +28,14 @@ const allForJobsite = (
         return !match;
       });
 
-      // Create a catalog of dates and reports
-      const uniqueDateObjects: {
-        date: Date;
-        report?: JobsiteDayReportDocument;
-      }[] = [];
-      for (let i = 0; i < uniqueDates.length; i++) {
-        const uniqueDate = uniqueDates[i];
-
-        let report: JobsiteDayReportDocument | undefined;
-        for (let j = 0; j < existingReportDates.length; j++) {
-          if (dayjs(uniqueDate).isSame(dayjs(existingReportDates[j]), "day"))
-            report = existingReports[j];
-        }
-
-        uniqueDateObjects.push({
-          date: uniqueDate,
-          report,
-        });
-      }
-
       const reports: JobsiteDayReportDocument[] = [];
-      for (let i = 0; i < uniqueDateObjects.length; i++) {
-        const object = uniqueDateObjects[i];
-
-        if (object.report) {
-          await object.report.updateAndSaveDocument();
-          reports.push(object.report);
-        } else {
-          reports.push(
-            await JobsiteDayReport.createAndSaveDocument(jobsite, object.date)
-          );
-        }
+      for (let i = 0; i < uniqueDates.length; i++) {
+        reports.push(
+          await JobsiteDayReport.requestBuildForJobsiteDay(
+            jobsite,
+            uniqueDates[i]
+          )
+        );
       }
 
       resolve(reports);
@@ -70,6 +45,35 @@ const allForJobsite = (
   });
 };
 
+const forJobsiteDay = (
+  JobsiteDayReport: JobsiteDayReportModel,
+  jobsite: JobsiteDocument,
+  day: Date
+) => {
+  return new Promise<JobsiteDayReportDocument>(async (resolve, reject) => {
+    try {
+      let jobsiteDayReport = await JobsiteDayReport.getByJobsiteAndDay(
+        jobsite._id,
+        day
+      );
+
+      if (!jobsiteDayReport) {
+        jobsiteDayReport = await JobsiteDayReport.createDocument(jobsite, day);
+      }
+
+      if (jobsiteDayReport.update.status !== UpdateStatus.Pending)
+        jobsiteDayReport.update.status = UpdateStatus.Requested;
+
+      await jobsiteDayReport.save();
+
+      resolve(jobsiteDayReport);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   allForJobsite,
+  forJobsiteDay,
 };

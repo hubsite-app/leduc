@@ -30,18 +30,18 @@ export class MonthSummaryReportClass {
   public _id?: Types.ObjectId;
 
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public externalExpenseInvoiceValue!: number;
 
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public internalExpenseInvoiceValue!: number;
 
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public externalRevenueInvoiceValue!: number;
 
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public internalRevenueInvoiceValue!: number;
 }

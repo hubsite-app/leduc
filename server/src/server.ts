@@ -14,6 +14,7 @@ import updateDocuments from "@utils/updateDocuments";
 import saveAll, { SkipSave } from "@testing/saveAll";
 import { Company, System } from "@models";
 import elasticsearch from "./elasticsearch";
+import workers from "@workers";
 
 const main = async () => {
   try {
@@ -41,7 +42,7 @@ const main = async () => {
       if (production) {
         // await saveAll();
       } else {
-        await saveAll([SkipSave.DailyReport]);
+        // await saveAll();
       }
 
       await System.validateSystem();
@@ -49,6 +50,8 @@ const main = async () => {
 
       await updateDocuments();
     }
+
+    workers();
   } catch (error: any) {
     console.error(error);
   }

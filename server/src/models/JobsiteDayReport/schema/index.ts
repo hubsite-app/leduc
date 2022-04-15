@@ -17,16 +17,11 @@ import {
 } from "./subDocument";
 import SchemaVersions from "@constants/SchemaVersions";
 import { CrewTypes } from "@typescript/crew";
+import { UpdateClass } from "@typescript/models";
 
 export * from "./subDocument";
 
 @ObjectType()
-@post<JobsiteDayReportDocument>("save", async (jobsiteDayReport) => {
-  await JobsiteMonthReport.buildDocumentAndSave({
-    jobsiteId: jobsiteDayReport.jobsite!,
-    date: jobsiteDayReport.date,
-  });
-})
 export class JobsiteDayReportSchema {
   @Field(() => ID, { nullable: false })
   public _id!: Types.ObjectId;
@@ -74,6 +69,10 @@ export class JobsiteDayReportSchema {
   @Field(() => [CrewTypes], { nullable: false })
   @prop({ type: [String], enum: CrewTypes, required: true, default: [] })
   public crewTypes!: CrewTypes[];
+
+  @Field(() => UpdateClass, { nullable: false })
+  @prop({ type: () => UpdateClass, required: true, default: {} })
+  public update!: UpdateClass;
 
   @Field()
   @prop({ required: true, default: SchemaVersions.JobsiteDayReport })

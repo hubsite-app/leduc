@@ -16,10 +16,6 @@ const document = (
         date: date,
       });
 
-      await jobsiteDayReport.generateReports();
-
-      await jobsiteDayReport.save();
-
       resolve(jobsiteDayReport);
     } catch (e) {
       reject(e);

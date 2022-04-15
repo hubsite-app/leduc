@@ -1,6 +1,6 @@
 import { prop } from "@typegoose/typegoose";
 import { FilterQuery, Types } from "mongoose";
-import { Field, Float, ID, ObjectType } from "type-graphql";
+import { Field, Float, ID, ObjectType, registerEnumType } from "type-graphql";
 
 export interface GetByIDOptions {
   throwError?: boolean;
@@ -64,4 +64,28 @@ export interface IDefaultRateData {
   _id?: Id;
   title: string;
   rates: IRatesData[];
+}
+
+export enum UpdateStatus {
+  Requested = "requested",
+  Pending = "pending",
+  Updated = "updated",
+}
+
+registerEnumType(UpdateStatus, {
+  name: "UpdateStatus",
+});
+
+@ObjectType()
+export class UpdateClass {
+  @Field(() => ID, { nullable: true })
+  public _id?: Types.ObjectId;
+
+  @Field(() => UpdateStatus, { nullable: false })
+  @prop({ required: true, enum: UpdateStatus })
+  public status!: UpdateStatus;
+
+  @Field({ nullable: true })
+  @prop()
+  public lastUpdatedAt?: Date;
 }

@@ -29,25 +29,16 @@ afterAll(async () => {
 
 describe("Jobsite Day Report Class", () => {
   describe("BUILD", () => {
-    describe("buildAllForJobsite", () => {
+    describe("requestBuildForJobsiteDay", () => {
       describe("success", () => {
-        test("should successfully build all necessary reports", async () => {
-          await JobsiteDayReport.buildAllForJobsite(
-            documents.jobsites.jobsite_1
-          );
+        test("should successfully build", async () => {
+          const jobsiteDayReport =
+            await JobsiteDayReport.requestBuildForJobsiteDay(
+              documents.jobsites.jobsite_1,
+              documents.dailyReports.jobsite_1_base_1_1.date
+            );
 
-          const dayReports = await documents.jobsites.jobsite_1.getDayReports();
-
-          expect(dayReports.length).toBe(2);
-
-          expect(dayReports[0].dailyReports.length).toBe(1);
-
-          expect(dayReports[1].dailyReports.length).toBe(2);
-
-          const report = dayReports[1];
-
-          expect(report.employees.length).toBe(1);
-          expect(report.vehicles.length).toBe(1);
+          expect(jobsiteDayReport).toBeDefined();
         });
       });
     });

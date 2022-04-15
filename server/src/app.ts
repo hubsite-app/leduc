@@ -1,8 +1,12 @@
 import express from "express";
+import { createServer } from "http";
+import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
+import { Server } from "ws";
+import { useServer } from "graphql-ws/lib/use/ws";
 import cors from "cors";
 import { graphqlUploadExpress } from "graphql-upload";
 import { buildTypeDefsAndResolvers } from "type-graphql";
-import { makeExecutableSchema } from "graphql-tools";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServer } from "apollo-server-express";
 import jwt from "jsonwebtoken";
 
@@ -42,6 +46,7 @@ import SearchResolver from "@graphql/resolvers/search";
 import { User, UserDocument } from "@models";
 import authChecker from "@utils/authChecker";
 import { logger } from "@logger";
+import pubsub from "@pubsub";
 
 const createApp = async () => {
   const app = express();
@@ -83,12 +88,22 @@ const createApp = async () => {
       VehicleWorkResolver,
     ],
     authChecker,
+    pubSub: pubsub,
   });
 
   const schema = makeExecutableSchema({
     resolvers: resolvers,
     typeDefs,
   });
+
+  const httpServer = createServer(app);
+
+  const wsServer = new Server({
+    server: httpServer,
+    path: "/graphql",
+  });
+
+  const serverCleanup = useServer({ schema }, wsServer);
 
   const apolloServer = new ApolloServer({
     schema,
@@ -109,12 +124,20 @@ const createApp = async () => {
         res,
       };
     },
-    uploads: false,
+    // uploads: false,
     plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
       {
-        requestDidStart: () => {
+        async serverWillStart() {
           return {
-            didEncounterErrors: (context) => {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+        async requestDidStart() {
+          return {
+            async didEncounterErrors(context) {
               if (process.env.NODE_ENV !== "test")
                 logger.error({
                   message: context.errors[0].message || "Apollo request error",
@@ -138,12 +161,14 @@ const createApp = async () => {
     })
   );
 
+  await apolloServer.start();
+
   apolloServer.applyMiddleware({
     app,
     cors: false,
   });
 
-  return app;
+  return httpServer;
 };
 
 export default createApp;

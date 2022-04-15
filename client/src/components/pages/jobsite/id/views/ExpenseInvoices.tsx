@@ -7,7 +7,7 @@ import FormContainer from "../../../../Common/FormContainer";
 import Permission from "../../../../Common/Permission";
 import ShowMore from "../../../../Common/ShowMore";
 import JobsiteExpenseInvoiceCreate from "../../../../Forms/Jobsite/ExpenseInvoiceCreate";
-import InvoiceCard from "./InvoiceCard";
+import InvoiceCardForJobsite from "./InvoiceCard";
 
 interface IExpenseInvoices {
   jobsite: JobsiteFullSnippetFragment;
@@ -51,7 +51,11 @@ const ExpenseInvoices = ({ jobsite }: IExpenseInvoices) => {
         {jobsite.expenseInvoices.length > 0 ? (
           <ShowMore
             list={jobsite.expenseInvoices.map((invoice) => (
-              <InvoiceCard invoice={invoice} key={invoice._id} />
+              <InvoiceCardForJobsite
+                invoice={invoice}
+                key={invoice._id}
+                jobsiteId={jobsite._id}
+              />
             ))}
           />
         ) : (

@@ -6,6 +6,7 @@ import { JobsiteMonthReportSchema } from "../schema";
 import build from "./build";
 import generate from "./generate";
 import get from "./get";
+import update from "./update";
 
 @ObjectType()
 export class JobsiteMonthReportClass extends JobsiteMonthReportSchema {
@@ -29,6 +30,14 @@ export class JobsiteMonthReportClass extends JobsiteMonthReportSchema {
     return get.byJobsiteAndDate(this, jobsiteId, date);
   }
 
+  public static async getByUpdateRequested(this: JobsiteMonthReportModel) {
+    return get.byUpdateRequested(this);
+  }
+
+  public static async getByUpdatePending(this: JobsiteMonthReportModel) {
+    return get.byUpdatePending(this);
+  }
+
   public async getDayReports(this: JobsiteMonthReportDocument) {
     return get.dayReports(this);
   }
@@ -41,11 +50,22 @@ export class JobsiteMonthReportClass extends JobsiteMonthReportSchema {
    * ----- Build -----
    */
 
-  public static async buildDocumentAndSave(
+  public static async requestBuild(
     this: JobsiteMonthReportModel,
     data: IJobsiteMonthReportBuild
   ) {
-    return build.documentAndSave(this, data);
+    return build.requestBuild(this, data);
+  }
+
+  /**
+   * ----- Update -----
+   */
+
+  /**
+   * @desc generates all reports, should only be used in the worker
+   */
+  public async updateAndSaveDocument(this: JobsiteMonthReportDocument) {
+    return update.document(this);
   }
 
   /**

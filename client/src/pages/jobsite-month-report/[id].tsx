@@ -1,25 +1,17 @@
 import { Heading } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import Breadcrumbs from "../../components/Common/Breadcrumbs";
-import Card from "../../components/Common/Card";
 import Container from "../../components/Common/Container";
-import JobsiteMonthCrewType from "../../components/pages/jobsite-month-report/CrewType";
-import JobsiteMonthEmployeeReports from "../../components/pages/jobsite-month-report/Employees";
-import JobsiteMonthExpenseInvoiceReports from "../../components/pages/jobsite-month-report/ExpenseInvoices";
-import JobsiteMonthMaterialReports from "../../components/pages/jobsite-month-report/Materials";
-import JobsiteMonthNonCostedMaterialReports from "../../components/pages/jobsite-month-report/NonCostedMaterials";
-import JobsiteMonthRevenueInvoiceReports from "../../components/pages/jobsite-month-report/RevenueInvoices";
-import JobsiteMonthSummary from "../../components/pages/jobsite-month-report/Summary";
-import JobsiteMonthTruckingReports from "../../components/pages/jobsite-month-report/Trucking";
-import JobsiteMonthVehicleReports from "../../components/pages/jobsite-month-report/Vehicles";
 import {
-  PageJobsiteMonthReportFullComp,
-  ssrJobsiteMonthReportFull,
+  PageJobsiteMonthReportCardComp,
+  ssrJobsiteMonthReportCard,
 } from "../../generated/page";
 import createLink from "../../utils/createLink";
 import formatDate from "../../utils/formatDate";
+import JobsiteMonthReportClientContent from "../../components/pages/jobsite-month-report/ClientContent";
+import ClientOnly from "../../components/Common/ClientOnly";
 
-const JobsiteMonthlyReport: PageJobsiteMonthReportFullComp = ({ data }) => {
+const JobsiteMonthlyReport: PageJobsiteMonthReportCardComp = ({ data }) => {
   const jobsiteMonthReport = data?.jobsiteMonthReport!;
 
   /**
@@ -53,20 +45,9 @@ const JobsiteMonthlyReport: PageJobsiteMonthReportFullComp = ({ data }) => {
         {formatDate(jobsiteMonthReport.startOfMonth, "MMMM YYYY", true)}:{" "}
         {jobsiteMonthReport.jobsite.name} ({jobsiteMonthReport.jobsite.jobcode})
       </Heading>
-      <JobsiteMonthSummary jobsiteMonthReport={jobsiteMonthReport} />
-      <JobsiteMonthExpenseInvoiceReports
-        jobsiteMonthReport={jobsiteMonthReport}
-      />
-      <JobsiteMonthRevenueInvoiceReports
-        jobsiteMonthReport={jobsiteMonthReport}
-      />
-      {jobsiteMonthReport.crewTypes.map((crewType) => (
-        <JobsiteMonthCrewType
-          key={crewType}
-          crewType={crewType}
-          jobsiteMonthReport={jobsiteMonthReport}
-        />
-      ))}
+      <ClientOnly>
+        <JobsiteMonthReportClientContent id={jobsiteMonthReport._id} />
+      </ClientOnly>
     </Container>
   );
 };
@@ -75,7 +56,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...ctx
 }) => {
-  const res = await ssrJobsiteMonthReportFull.getServerPage(
+  const res = await ssrJobsiteMonthReportCard.getServerPage(
     { variables: { id: params?.id as string } },
     ctx
   );

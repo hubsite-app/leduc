@@ -1,5 +1,6 @@
 import SchemaVersions from "@constants/SchemaVersions";
 import { ES_updateDailyReport } from "@elasticsearch/helpers/dailyReport";
+import { logger } from "@logger";
 import {
   CrewClass,
   DailyReportDocument,
@@ -19,6 +20,11 @@ import { Field, ID, ObjectType } from "type-graphql";
 @ObjectType()
 @post<DailyReportDocument>("save", async (dailyReport) => {
   await ES_updateDailyReport(dailyReport);
+  try {
+    await dailyReport.requestReportUpdate();
+  } catch (e: any) {
+    logger.error(`Daily report post save error: ${e.message}`);
+  }
 })
 export class DailyReportSchema {
   @Field(() => ID, { nullable: false })

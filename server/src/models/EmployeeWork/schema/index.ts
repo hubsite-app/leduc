@@ -1,10 +1,25 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { DailyReportClass, EmployeeClass } from "@models";
-import { prop, Ref } from "@typegoose/typegoose";
+import { logger } from "@logger";
+import { DailyReportClass, EmployeeClass, EmployeeWorkDocument } from "@models";
+import { post, prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
+@post<EmployeeWorkDocument>("save", async (employeeWork) => {
+  try {
+    await employeeWork.requestReportUpdate();
+  } catch (e: any) {
+    logger.error(`Employee work post save error: ${e.message}`);
+  }
+})
+@post<EmployeeWorkDocument>("remove", async (employeeWork) => {
+  try {
+    await employeeWork.requestReportUpdate();
+  } catch (e: any) {
+    logger.error(`Employee work post remove error: ${e.message}`);
+  }
+})
 export class EmployeeWorkSchema {
   @Field(() => ID, { nullable: false })
   public _id!: Types.ObjectId;

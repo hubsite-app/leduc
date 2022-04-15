@@ -192,43 +192,43 @@ export interface TruckingReportDocument
 @ObjectType()
 class SummaryBaseReport {
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public employeeHours!: number;
 
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public employeeCost!: number;
 
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public vehicleHours!: number;
 
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public vehicleCost!: number;
 
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public materialQuantity!: number;
 
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public materialCost!: number;
 
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public nonCostedMaterialQuantity!: number;
 
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public truckingQuantity!: number;
 
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public truckingHours!: number;
 
   @Field(() => Float, { nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, default: 0 })
   public truckingCost!: number;
 }
 

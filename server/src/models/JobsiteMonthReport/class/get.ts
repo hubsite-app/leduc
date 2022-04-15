@@ -6,7 +6,7 @@ import {
   JobsiteMonthReportDocument,
   JobsiteMonthReportModel,
 } from "@models";
-import { GetByIDOptions, Id } from "@typescript/models";
+import { GetByIDOptions, Id, UpdateStatus } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 import dayjs from "dayjs";
 
@@ -64,6 +64,34 @@ const byJobsiteAndDate = (
   );
 };
 
+const byUpdateRequested = (JobsiteMonthReport: JobsiteMonthReportModel) => {
+  return new Promise<JobsiteMonthReportDocument[]>(async (resolve, reject) => {
+    try {
+      const reports = await JobsiteMonthReport.find({
+        "update.status": UpdateStatus.Requested,
+      });
+
+      resolve(reports);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const byUpdatePending = (JobsiteMonthReport: JobsiteMonthReportModel) => {
+  return new Promise<JobsiteMonthReportDocument[]>(async (resolve, reject) => {
+    try {
+      const reports = await JobsiteMonthReport.find({
+        "update.status": UpdateStatus.Pending,
+      });
+
+      resolve(reports);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 /**
  * ----- Methods -----
  */
@@ -98,6 +126,8 @@ const jobsite = (jobsiteMonthReport: JobsiteMonthReportDocument) => {
 export default {
   byId,
   byJobsiteAndDate,
+  byUpdateRequested,
+  byUpdatePending,
   dayReports,
   jobsite,
 };

@@ -1,11 +1,31 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { DailyReportClass, VehicleClass, JobsiteMaterialClass } from "@models";
-import { prop, Ref } from "@typegoose/typegoose";
+import { logger } from "@logger";
+import {
+  DailyReportClass,
+  VehicleClass,
+  JobsiteMaterialClass,
+  MaterialShipmentDocument,
+} from "@models";
+import { post, prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import { VehicleObjectClass } from "./subDocuments";
 
 @ObjectType()
+@post<MaterialShipmentDocument>("save", async (materialShipment) => {
+  try {
+    await materialShipment.requestReportUpdate();
+  } catch (e: any) {
+    logger.error(`Jobsite Material post save error: ${e.message}`);
+  }
+})
+@post<MaterialShipmentDocument>("remove", async (materialShipment) => {
+  try {
+    await materialShipment.requestReportUpdate();
+  } catch (e: any) {
+    logger.error(`Jobsite Material post remove error: ${e.message}`);
+  }
+})
 export class MaterialShipmentSchema {
   @Field(() => ID, { nullable: false })
   public _id!: Types.ObjectId;

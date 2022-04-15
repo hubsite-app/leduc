@@ -7,7 +7,7 @@ import FormContainer from "../../../../Common/FormContainer";
 import Permission from "../../../../Common/Permission";
 import ShowMore from "../../../../Common/ShowMore";
 import JobsiteRevenueInvoiceCreate from "../../../../Forms/Jobsite/RevenueInvoiceCreate";
-import InvoiceCard from "./InvoiceCard";
+import InvoiceCardForJobsite from "./InvoiceCard";
 
 interface IRevenueInvoices {
   jobsite: JobsiteFullSnippetFragment;
@@ -51,7 +51,11 @@ const RevenueInvoices = ({ jobsite }: IRevenueInvoices) => {
         {jobsite.revenueInvoices.length > 0 ? (
           <ShowMore
             list={jobsite.revenueInvoices.map((invoice) => (
-              <InvoiceCard invoice={invoice} key={invoice._id} />
+              <InvoiceCardForJobsite
+                invoice={invoice}
+                key={invoice._id}
+                jobsiteId={jobsite._id}
+              />
             ))}
           />
         ) : (

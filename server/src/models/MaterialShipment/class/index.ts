@@ -15,6 +15,7 @@ import { MaterialShipmentSchema } from "..";
 import create from "./create";
 import get from "./get";
 import remove from "./remove";
+import reports from "./reports";
 import update from "./update";
 import validate from "./validate";
 
@@ -100,5 +101,13 @@ export class MaterialShipmentClass extends MaterialShipmentSchema {
 
   public async fullDelete(this: MaterialShipmentDocument) {
     return remove.fullDelete(this);
+  }
+
+  /**
+   * ----- Report -----
+   */
+
+  public async requestReportUpdate(this: MaterialShipmentDocument) {
+    return reports.requestUpdate(this);
   }
 }

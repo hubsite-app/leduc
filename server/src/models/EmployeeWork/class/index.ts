@@ -12,6 +12,7 @@ import {
 } from "@typescript/employeeWork";
 import remove from "./remove";
 import create from "./create";
+import reports from "./reports";
 
 @ObjectType()
 export class EmployeeWorkClass extends EmployeeWorkSchema {
@@ -75,5 +76,13 @@ export class EmployeeWorkClass extends EmployeeWorkSchema {
 
   public async fullDelete(this: EmployeeWorkDocument) {
     return remove.fullDelete(this);
+  }
+
+  /**
+   * ----- Reports -----
+   */
+
+  public async requestReportUpdate(this: EmployeeWorkDocument) {
+    return reports.requestUpdate(this);
   }
 }

@@ -8,6 +8,7 @@ import { ObjectType } from "type-graphql";
 import { JobsiteMaterialSchema } from "../schema";
 import create from "./create";
 import get from "./get";
+import reports from "./reports";
 import update from "./update";
 
 @ObjectType()
@@ -64,5 +65,13 @@ export class JobsiteMaterialClass extends JobsiteMaterialSchema {
     data: IJobsiteMaterialUpdate
   ) {
     return update.document(this, data);
+  }
+
+  /**
+   * ----- Report -----
+   */
+
+  public async requestReportUpdate(this: JobsiteMaterialDocument) {
+    return reports.requestUpdate(this);
   }
 }

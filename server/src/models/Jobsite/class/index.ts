@@ -126,7 +126,7 @@ export class JobsiteClass extends JobsiteSchema {
    * ----- Interact -----
    */
 
-  public async generateDayReports(this: JobsiteDocument) {
-    return interact.generateDayReports(this);
+  public async requestGenerateDayReports(this: JobsiteDocument) {
+    return interact.requestGenerateDayReports(this);
   }
 }

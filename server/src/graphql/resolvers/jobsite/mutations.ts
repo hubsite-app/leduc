@@ -156,7 +156,7 @@ const generateDayReports = (jobsiteId: string) => {
     try {
       const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;
 
-      await jobsite.generateDayReports();
+      await jobsite.requestGenerateDayReports();
 
       resolve(jobsite);
     } catch (e) {

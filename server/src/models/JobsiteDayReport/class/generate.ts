@@ -95,14 +95,19 @@ const employeeReports = (
       }
       const employeeWorkObject: EmployeeWorkObject[] = [];
       for (let i = 0; i < dailyReports.length; i++) {
-        const crew = await dailyReports[i].getCrew();
+        let crewType = CrewTypes.Other;
+        try {
+          crewType = (await dailyReports[i].getCrew()).type;
+        } catch (e) {
+          logger.error("employeeReports: unable to find crew");
+        }
 
         employeeWorkObject.push.apply(
           employeeWorkObject,
           (await dailyReports[i].getEmployeeWork()).map((work) => {
             return {
               work,
-              crewType: crew.type,
+              crewType,
             };
           })
         );
@@ -202,14 +207,19 @@ const vehicleReports = (
       }
       const vehicleWorkObject: VehicleWorkObject[] = [];
       for (let i = 0; i < dailyReports.length; i++) {
-        const crew = await dailyReports[i].getCrew();
+        let crewType = CrewTypes.Other;
+        try {
+          crewType = (await dailyReports[i].getCrew()).type;
+        } catch (e) {
+          logger.error("vehicleReports: unable to find crew");
+        }
 
         vehicleWorkObject.push.apply(
           vehicleWorkObject,
           (await dailyReports[i].getVehicleWork()).map((work) => {
             return {
               work,
-              crewType: crew.type,
+              crewType,
             };
           })
         );
@@ -305,7 +315,12 @@ const materialReports = (
       }
       const materialShipmentObjects: ShipmentObject[] = [];
       for (let i = 0; i < dailyReports.length; i++) {
-        const crew = await dailyReports[i].getCrew();
+        let crewType = CrewTypes.Other;
+        try {
+          crewType = (await dailyReports[i].getCrew()).type;
+        } catch (e) {
+          logger.error("materialReports: unable to find crew");
+        }
 
         const materialShipments = await dailyReports[i].getMaterialShipments();
         const sortedShipments = materialShipments.filter(
@@ -317,7 +332,7 @@ const materialReports = (
           sortedShipments.map((shipment) => {
             return {
               materialShipment: shipment,
-              crewType: crew.type,
+              crewType,
             };
           })
         );
@@ -428,7 +443,12 @@ const nonCostedMaterialReports = (
       }
       const materialShipmentObjects: ShipmentObject[] = [];
       for (let i = 0; i < dailyReports.length; i++) {
-        const crew = await dailyReports[i].getCrew();
+        let crewType = CrewTypes.Other;
+        try {
+          crewType = (await dailyReports[i].getCrew()).type;
+        } catch (e) {
+          logger.error("nonCostedMaterials: unable to find crew");
+        }
 
         const materialShipments = await dailyReports[i].getMaterialShipments();
         const sortedShipments = materialShipments.filter(
@@ -440,7 +460,7 @@ const nonCostedMaterialReports = (
           sortedShipments.map((shipment) => {
             return {
               materialShipment: shipment,
-              crewType: crew.type,
+              crewType,
             };
           })
         );
@@ -502,8 +522,8 @@ const nonCostedMaterialReports = (
         // Create and push report
         try {
           const materialReport: NonCostedMaterialReportClass = {
-            materialName: uniqueMaterialObject.materialName,
-            supplierName: uniqueMaterialObject.supplierName,
+            materialName: uniqueMaterialObject.materialName || "Not Found",
+            supplierName: uniqueMaterialObject.supplierName || "Not Found",
             materialShipments: uniqueMaterialObject.materialShipments.map(
               (object) => object._id
             ),
@@ -545,7 +565,12 @@ const truckingReports = (
       }
       const materialShipmentObjects: ShipmentObject[] = [];
       for (let i = 0; i < dailyReports.length; i++) {
-        const crew = await dailyReports[i].getCrew();
+        let crewType = CrewTypes.Other;
+        try {
+          crewType = (await dailyReports[i].getCrew()).type;
+        } catch (e) {
+          logger.error("truckingReports: unable to find crew");
+        }
 
         const materialShipments = await dailyReports[i].getMaterialShipments();
 
@@ -559,7 +584,7 @@ const truckingReports = (
           sortedShipments.map((shipment) => {
             return {
               materialShipment: shipment,
-              crewType: crew.type,
+              crewType,
             };
           })
         );

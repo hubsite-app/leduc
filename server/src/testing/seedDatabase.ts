@@ -57,6 +57,8 @@ const seedDatabase = () => {
 
       // Create documents
 
+      const jobsites = await createJobsites();
+
       const companies = await createCompanies();
       const crews = await createCrews();
       const dailyReports = await createDailyReports();
@@ -64,7 +66,6 @@ const seedDatabase = () => {
       const employeeWork = await createEmployeeWork();
       const files = await createFiles();
       const invoices = await createInvoices();
-      const jobsites = await createJobsites();
       const jobsiteMaterials = await createJobsiteMaterials();
       const materials = await createMaterials();
       const materialShipments = await createMaterialShipments();

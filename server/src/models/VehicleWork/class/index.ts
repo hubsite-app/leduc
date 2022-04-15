@@ -9,6 +9,7 @@ import { VehicleWorkSchema } from "..";
 import create from "./create";
 import get from "./get";
 import remove from "./remove";
+import reports from "./reports";
 import update from "./update";
 
 @ObjectType()
@@ -69,5 +70,13 @@ export class VehicleWorkClass extends VehicleWorkSchema {
 
   public async fullDelete(this: VehicleWorkDocument) {
     return remove.fullDelete(this);
+  }
+
+  /**
+   * ----- Reports -----
+   */
+
+  public async requestReportUpdate(this: VehicleWorkDocument) {
+    return reports.requestUpdate(this);
   }
 }

@@ -1,10 +1,18 @@
 import * as React from "react";
 
 import { createUploadLink } from "apollo-upload-client";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  split,
+} from "@apollo/client";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
 import { setContext } from "@apollo/client/link/context";
 import { localStorageTokenKey } from "../../contexts/Auth";
 import useStorage from "../../hooks/useStorage";
+import { getMainDefinition } from "@apollo/client/utilities";
 
 export default function MyApolloProvider({
   children,
@@ -13,17 +21,24 @@ export default function MyApolloProvider({
 }) {
   const { getItem } = useStorage();
 
+  const token = getItem(localStorageTokenKey);
+
   const httpLink = createUploadLink({
-    uri: `${
-      process.env.NEXT_PUBLIC_API_URL
-        ? process.env.NEXT_PUBLIC_API_URL
-        : "/graphql"
-    }`,
+    uri: process.env.NEXT_PUBLIC_API_URL,
   });
 
-  const authLink = setContext((_, { headers }) => {
-    const token = getItem(localStorageTokenKey);
+  const wsLink = process.browser
+    ? new GraphQLWsLink(
+        createClient({
+          url: "ws://localhost:8080/graphql",
+          connectionParams: {
+            Authorization: token || "",
+          },
+        })
+      )
+    : null;
 
+  const authLink = setContext((_, { headers }) => {
     return {
       headers: {
         ...headers,
@@ -32,8 +47,22 @@ export default function MyApolloProvider({
     };
   });
 
+  const splitLink = process.browser
+    ? split(
+        ({ query }) => {
+          const definition = getMainDefinition(query);
+          return (
+            definition.kind === "OperationDefinition" &&
+            definition.operation === "subscription"
+          );
+        },
+        wsLink!,
+        authLink.concat(httpLink)
+      )
+    : httpLink;
+
   const client = new ApolloClient({
-    link: authLink.concat(httpLink),
+    link: splitLink,
     cache: new InMemoryCache({
       typePolicies: {
         Query: {

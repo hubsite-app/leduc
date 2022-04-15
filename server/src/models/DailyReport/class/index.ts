@@ -28,6 +28,7 @@ import {
 import update from "./update";
 import remove from "./remove";
 import create from "./create";
+import reports from "./reports";
 
 @ObjectType()
 export class DailyReportClass extends DailyReportSchema {
@@ -236,5 +237,13 @@ export class DailyReportClass extends DailyReportSchema {
     materialShipment: MaterialShipmentDocument
   ) {
     return remove.materialShipment(this, materialShipment);
+  }
+
+  /**
+   * ----- Reports -----
+   */
+
+  public async requestReportUpdate(this: DailyReportDocument) {
+    return reports.requestUpdate(this);
   }
 }

@@ -29,6 +29,8 @@
     "baseUrl": "src",
     "paths": {
       "@models": ["./models"],
+      "@workers": ["./workers"],
+      "@pubsub": ["./pubsub"],
       "@testing/*": ["testing/*"],
       "@constants/*": ["constants/*"],
       "@config/*": ["config/*"],

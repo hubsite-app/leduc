@@ -8,11 +8,15 @@ import {
   SignupClass,
   UserClass,
 } from "@models";
+import pubsub from "@pubsub";
 import {
   Arg,
   Authorized,
   FieldResolver,
   Mutation,
+  Publisher,
+  PubSub,
+  PubSubEngine,
   Query,
   Resolver,
   Root,

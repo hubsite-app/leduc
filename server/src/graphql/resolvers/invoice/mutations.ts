@@ -1,4 +1,11 @@
-import { Company, Invoice, InvoiceDocument } from "@models";
+import {
+  Company,
+  Invoice,
+  InvoiceDocument,
+  Jobsite,
+  JobsiteMonthReport,
+} from "@models";
+import { Id } from "@typescript/models";
 import { Field, InputType } from "type-graphql";
 
 @InputType()
@@ -22,10 +29,16 @@ export class InvoiceData {
   public internal!: boolean;
 }
 
-const update = (invoiceId: string, data: InvoiceData) => {
+const updateForJobsite = (
+  invoiceId: string,
+  jobsiteId: Id,
+  data: InvoiceData
+) => {
   return new Promise<InvoiceDocument>(async (resolve, reject) => {
     try {
       const invoice = (await Invoice.getById(invoiceId, { throwError: true }))!;
+
+      const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;
 
       const company = (await Company.getById(data.companyId, {
         throwError: true,
@@ -38,6 +51,11 @@ const update = (invoiceId: string, data: InvoiceData) => {
 
       await invoice.save();
 
+      await JobsiteMonthReport.requestBuild({
+        jobsiteId: jobsite._id,
+        date: invoice.date,
+      });
+
       resolve(invoice);
     } catch (e) {
       reject(e);
@@ -46,5 +64,5 @@ const update = (invoiceId: string, data: InvoiceData) => {
 };
 
 export default {
-  update,
+  updateForJobsite,
 };

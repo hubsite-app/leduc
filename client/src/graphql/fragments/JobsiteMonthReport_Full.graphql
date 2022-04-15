@@ -4,9 +4,6 @@ fragment JobsiteMonthReportFullSnippet on JobsiteMonthReportClass {
   dayReports {
     ...JobsiteDayReportFullSnippet
   }
-  jobsite {
-    ...JobsiteCardSnippet
-  }
   expenseInvoices {
     ...JobsiteDayReportInvoiceSnippet
   }

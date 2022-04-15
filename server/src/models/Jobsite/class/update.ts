@@ -2,6 +2,7 @@ import {
   InvoiceDocument,
   JobsiteDocument,
   JobsiteMaterialDocument,
+  JobsiteMonthReport,
 } from "@models";
 import { ITruckingTypeRateData } from "@typescript/jobsite";
 
@@ -18,6 +19,8 @@ const addMaterial = (
       if (existingIndex === -1) {
         jobsite.materials.push(jobsiteMaterial._id);
       }
+
+      await jobsite.requestGenerateDayReports();
 
       resolve();
     } catch (e) {
@@ -40,6 +43,11 @@ const addExpenseInvoice = (
         jobsite.expenseInvoices.push(invoice._id);
       }
 
+      await JobsiteMonthReport.requestBuild({
+        date: invoice.date,
+        jobsiteId: jobsite._id,
+      });
+
       resolve();
     } catch (e) {
       reject(e);
@@ -61,6 +69,11 @@ const addRevenueInvoice = (
         jobsite.revenueInvoices.push(invoice._id);
       }
 
+      await JobsiteMonthReport.requestBuild({
+        date: invoice.date,
+        jobsiteId: jobsite._id,
+      });
+
       resolve();
     } catch (e) {
       reject(e);
@@ -75,6 +88,8 @@ const truckingRates = (
   return new Promise<void>(async (resolve, reject) => {
     try {
       jobsite.truckingRates = truckingRates;
+
+      await jobsite.requestGenerateDayReports();
 
       resolve();
     } catch (e) {

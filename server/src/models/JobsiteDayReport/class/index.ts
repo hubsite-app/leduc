@@ -34,6 +34,22 @@ export class JobsiteDayReportClass extends JobsiteDayReportSchema {
     return get.byJobsiteAndMonth(this, jobsiteId, date);
   }
 
+  public static async getByJobsiteAndDay(
+    this: JobsiteDayReportModel,
+    jobsiteId: Id,
+    day: Date
+  ) {
+    return get.byJobsiteAndDay(this, jobsiteId, day);
+  }
+
+  public static async getByUpdateRequested(this: JobsiteDayReportModel) {
+    return get.byUpdateRequested(this);
+  }
+
+  public static async getByUpdatePending(this: JobsiteDayReportModel) {
+    return get.byUpdatePending(this);
+  }
+
   public async getJobsite(this: JobsiteDayReportDocument) {
     return get.jobsite(this);
   }
@@ -42,18 +58,26 @@ export class JobsiteDayReportClass extends JobsiteDayReportSchema {
    * ----- Build -----
    */
 
-  public static async buildAllForJobsite(
+  public static async requestBuildAllForJobsite(
     this: JobsiteDayReportModel,
     jobsite: JobsiteDocument
   ) {
     return build.allForJobsite(this, jobsite);
   }
 
+  public static async requestBuildForJobsiteDay(
+    this: JobsiteDayReportModel,
+    jobsite: JobsiteDocument,
+    day: Date
+  ) {
+    return build.forJobsiteDay(this, jobsite, day);
+  }
+
   /**
    * ----- Create -----
    */
 
-  public static async createAndSaveDocument(
+  public static async createDocument(
     this: JobsiteDayReportModel,
     jobsite: JobsiteDocument,
     date: Date

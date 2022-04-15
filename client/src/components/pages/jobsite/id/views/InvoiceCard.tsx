@@ -3,15 +3,19 @@ import { Box, Flex, IconButton, Text } from "@chakra-ui/react";
 import { InvoiceCardSnippetFragment } from "../../../../../generated/graphql";
 import formatNumber from "../../../../../utils/formatNumber";
 import { FiEdit, FiX } from "react-icons/fi";
-import InvoiceUpdate from "../../../../Forms/Invoice/InvoiceUpdate";
+import InvoiceUpdateForJobsite from "../../../../Forms/Invoice/InvoiceUpdateForJobsite";
 import Permission from "../../../../Common/Permission";
 import FormContainer from "../../../../Common/FormContainer";
 
-interface IInvoiceCard {
+interface IInvoiceCardForJobsite {
   invoice: InvoiceCardSnippetFragment;
+  jobsiteId: string;
 }
 
-const InvoiceCard = ({ invoice }: IInvoiceCard) => {
+const InvoiceCardForJobsite = ({
+  invoice,
+  jobsiteId,
+}: IInvoiceCardForJobsite) => {
   /**
    * ----- Hook Initialization -----
    */
@@ -41,11 +45,11 @@ const InvoiceCard = ({ invoice }: IInvoiceCard) => {
       </Flex>
       {edit && (
         <FormContainer>
-          <InvoiceUpdate invoice={invoice} />
+          <InvoiceUpdateForJobsite invoice={invoice} jobsiteId={jobsiteId} />
         </FormContainer>
       )}
     </Box>
   );
 };
 
-export default InvoiceCard;
+export default InvoiceCardForJobsite;
