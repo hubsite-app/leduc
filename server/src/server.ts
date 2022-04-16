@@ -40,7 +40,7 @@ const main = async () => {
 
     if (process.env.NODE !== "test") {
       if (production) {
-        // await saveAll();
+        await saveAll();
       } else {
         // await saveAll();
       }
@@ -51,7 +51,7 @@ const main = async () => {
       await updateDocuments();
     }
 
-    workers();
+    // workers();
   } catch (error: any) {
     console.error(error);
   }

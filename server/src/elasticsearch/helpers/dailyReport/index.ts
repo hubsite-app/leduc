@@ -29,8 +29,8 @@ export const ES_updateDailyReport = (dailyReport: DailyReportDocument) => {
         try {
           jobsite = await dailyReport.getJobsite();
           crew = await dailyReport.getCrew();
-        } catch (e) {
-          logger.error(e);
+        } catch (e: any) {
+          logger.error(`Daily Report ES update error ${e.message}`);
         }
 
         await ElasticsearchClient.update({

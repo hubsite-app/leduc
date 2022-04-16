@@ -31,6 +31,8 @@ const saveAll = (skip?: SkipSave[]) => {
         logger.info(`Saving ${employees.length} employee documents`);
         for (let i = 0; i < employees.length; i++) {
           try {
+            if (!employees[i].name) employees[i].name = "Placeholder";
+
             await employees[i].save();
           } catch (e: any) {
             logger.error(`Employee Save All error: ${e.message}`);
@@ -57,6 +59,8 @@ const saveAll = (skip?: SkipSave[]) => {
         logger.info(`Saving ${jobsites.length} jobsite documents`);
         for (let i = 0; i < jobsites.length; i++) {
           try {
+            if (!jobsites[i].name) jobsites[i].name = "Placeholder";
+
             await jobsites[i].save();
           } catch (e: any) {
             logger.error(`Jobsite Save All error: ${e.message}`);

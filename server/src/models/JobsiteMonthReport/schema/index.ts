@@ -17,7 +17,6 @@ export * from "./subDocuments";
 
 @ObjectType()
 @post<JobsiteMonthReportDocument>("save", async (jobsiteMonthReport) => {
-  console.log(jobsiteMonthReport._id);
   await pubsub.publish(
     `${PubSubTopics.JOBSITE_MONTH_REPORT}_${jobsiteMonthReport._id}`,
     {
