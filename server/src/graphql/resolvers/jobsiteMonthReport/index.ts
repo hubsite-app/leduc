@@ -3,10 +3,10 @@ import {
   JobsiteDayReportClass,
   JobsiteMonthReport,
   JobsiteMonthReportDocument,
+  JobsiteMonthReportClass,
 } from "@models";
 import { Id } from "@typescript/models";
 import { PubSubTopics } from "@typescript/pubSub";
-import { JobsiteMonthReportClass } from "models/JobsiteMonthReport";
 import {
   Arg,
   FieldResolver,
