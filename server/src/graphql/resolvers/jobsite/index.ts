@@ -9,8 +9,8 @@ import {
   JobsiteDocument,
   JobsiteMaterialClass,
   MaterialShipmentClass,
+  JobsiteMonthReportClass,
 } from "@models";
-import { JobsiteMonthReportClass } from "models/JobsiteMonthReport";
 import {
   Arg,
   Authorized,
