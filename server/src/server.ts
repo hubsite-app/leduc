@@ -15,6 +15,7 @@ import saveAll, { SkipSave } from "@testing/saveAll";
 import { Company, System } from "@models";
 import elasticsearch from "./elasticsearch";
 import workers from "@workers";
+import clearES from "@testing/clearES";
 
 const main = async () => {
   try {
@@ -29,6 +30,8 @@ const main = async () => {
         // await seedDatabase();
       }
     }
+
+    await clearES();
 
     await elasticsearch();
 

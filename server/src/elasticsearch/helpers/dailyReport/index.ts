@@ -54,3 +54,19 @@ export const ES_updateDailyReport = (dailyReport: DailyReportDocument) => {
     }
   });
 };
+
+export const ES_clearDailyReport = () => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      logger.debug(`Clearing daily report index in ES`);
+
+      await ElasticsearchClient.indices.delete({
+        index: ElasticSearchIndices.DailyReport,
+      });
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};

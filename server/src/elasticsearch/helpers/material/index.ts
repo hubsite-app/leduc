@@ -41,3 +41,19 @@ export const ES_updateMaterial = (material: MaterialDocument) => {
     }
   });
 };
+
+export const ES_clearMaterial = () => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      logger.debug(`Clearing material index in ES`);
+
+      await ElasticsearchClient.indices.delete({
+        index: ElasticSearchIndices.Material,
+      });
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};

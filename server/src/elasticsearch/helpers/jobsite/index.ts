@@ -42,3 +42,19 @@ export const ES_updateJobsite = (jobsite: JobsiteDocument) => {
     }
   });
 };
+
+export const ES_clearJobsite = () => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      logger.debug(`Clearing jobsite index in ES`);
+
+      await ElasticsearchClient.indices.delete({
+        index: ElasticSearchIndices.Jobsite,
+      });
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};

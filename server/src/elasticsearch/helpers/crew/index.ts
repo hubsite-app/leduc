@@ -41,3 +41,19 @@ export const ES_updateCrew = (crew: CrewDocument) => {
     }
   });
 };
+
+export const ES_clearCrew = () => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      logger.debug(`Clearing crew index in ES`);
+
+      await ElasticsearchClient.indices.delete({
+        index: ElasticSearchIndices.Crew,
+      });
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};

@@ -43,3 +43,19 @@ export const ES_updateVehicle = (vehicle: VehicleDocument) => {
     }
   });
 };
+
+export const ES_clearVehicle = () => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      logger.debug(`Clearing vehicle index in ES`);
+
+      await ElasticsearchClient.indices.delete({
+        index: ElasticSearchIndices.Vehicle,
+      });
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};

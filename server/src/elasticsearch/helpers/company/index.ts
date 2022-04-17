@@ -41,3 +41,19 @@ export const ES_updateCompany = (material: CompanyDocument) => {
     }
   });
 };
+
+export const ES_clearCompany = () => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      logger.debug(`Clearing company index in ES`);
+
+      await ElasticsearchClient.indices.delete({
+        index: ElasticSearchIndices.Company,
+      });
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};

@@ -42,3 +42,19 @@ export const ES_updateEmployee = (employee: EmployeeDocument) => {
     }
   });
 };
+
+export const ES_clearEmployee = () => {
+  return new Promise<void>(async (resolve, reject) => {
+    try {
+      logger.debug(`Clearing employee index in ES`);
+
+      await ElasticsearchClient.indices.delete({
+        index: ElasticSearchIndices.Employee,
+      });
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
