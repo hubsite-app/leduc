@@ -15,7 +15,6 @@ import saveAll, { SkipSave } from "@testing/saveAll";
 import { Company, System } from "@models";
 import elasticsearch from "./elasticsearch";
 import workers from "@workers";
-import clearES from "@testing/clearES";
 
 const main = async () => {
   try {
@@ -31,8 +30,6 @@ const main = async () => {
       }
     }
 
-    await clearES();
-
     await elasticsearch();
 
     let port = process.env.PORT || 8080;
@@ -43,7 +40,7 @@ const main = async () => {
 
     if (process.env.NODE !== "test") {
       if (production) {
-        await saveAll();
+        // await saveAll();
       } else {
         // await saveAll();
       }
@@ -54,7 +51,7 @@ const main = async () => {
       await updateDocuments();
     }
 
-    // workers();
+    workers();
   } catch (error: any) {
     console.error(error);
   }
