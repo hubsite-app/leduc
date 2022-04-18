@@ -26,6 +26,14 @@ export class JobsiteDayReportClass extends JobsiteDayReportSchema {
     return get.byJobsite(this, jobsite);
   }
 
+  public static async getByJobsiteAndYear(
+    this: JobsiteDayReportModel,
+    jobsiteId: Id,
+    date: Date
+  ) {
+    return get.byJobsiteAndYear(this, jobsiteId, date);
+  }
+
   public static async getByJobsiteAndMonth(
     this: JobsiteDayReportModel,
     jobsiteId: Id,

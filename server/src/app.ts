@@ -26,10 +26,11 @@ import JobsiteResolver from "@graphql/resolvers/jobsite";
 import JobsiteDayReportResolver from "@graphql/resolvers/jobsiteDayReport";
 import JobsiteMaterialResolver from "@graphql/resolvers/jobsiteMaterial";
 import JobsiteMonthReportResolver from "@graphql/resolvers/jobsiteMonthReport";
+import JobsiteYearReportResolver from "@graphql/resolvers/jobsiteYearReport";
 import MaterialResolver from "@graphql/resolvers/material";
 import MaterialReportResolver from "@graphql/resolvers/materialReport";
 import MaterialShipmentResolver from "@graphql/resolvers/materialShipment";
-import MonthSummaryReportResolver from "@graphql/resolvers/monthSummaryReport";
+import RangeSummaryReportResolver from "@graphql/resolvers/rangeSummaryReport";
 import NonCostedMaterialReportResolver from "@graphql/resolvers/nonCostedMaterialReport";
 import ProductionResolver from "@graphql/resolvers/production";
 import ReportNoteResolver from "@graphql/resolvers/reportNote";
@@ -71,12 +72,13 @@ const createApp = async () => {
       JobsiteDayReportResolver,
       JobsiteMaterialResolver,
       JobsiteMonthReportResolver,
+      JobsiteYearReportResolver,
       MaterialResolver,
       MaterialReportResolver,
       MaterialShipmentResolver,
-      MonthSummaryReportResolver,
       NonCostedMaterialReportResolver,
       ProductionResolver,
+      RangeSummaryReportResolver,
       ReportNoteResolver,
       SearchResolver,
       SignupResolver,

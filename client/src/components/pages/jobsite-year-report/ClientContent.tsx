@@ -1,32 +1,32 @@
 import { Box, Heading } from "@chakra-ui/react";
 import React from "react";
 import {
-  JobsiteMonthReportSubDocument,
-  useJobsiteMonthReportFullQuery,
+  JobsiteYearReportSubDocument,
+  useJobsiteYearReportFullQuery,
 } from "../../../generated/graphql";
 import formatDate from "../../../utils/formatDate";
 import JobsiteReport from "../../Common/JobsiteReport";
 import Loading from "../../Common/Loading";
 
-interface IJobsiteMonthReportClientContent {
+interface IJobsiteYearReportClientContent {
   id: string;
 }
 
-const JobsiteMonthReportClientContent = ({
+const JobsiteYearReportClientContent = ({
   id,
-}: IJobsiteMonthReportClientContent) => {
+}: IJobsiteYearReportClientContent) => {
   /**
    * ----- Hook Initialization -----
    */
 
-  const { data, loading, subscribeToMore } = useJobsiteMonthReportFullQuery({
+  const { data, loading, subscribeToMore } = useJobsiteYearReportFullQuery({
     variables: {
       id,
     },
   });
 
   subscribeToMore({
-    document: JobsiteMonthReportSubDocument,
+    document: JobsiteYearReportSubDocument,
     variables: {
       id,
     },
@@ -34,7 +34,7 @@ const JobsiteMonthReportClientContent = ({
       if (!subscriptionData) return prev;
       return {
         //@ts-expect-error
-        jobsiteMonthReport: subscriptionData.data.jobsiteMonthReportSub!,
+        jobsiteYearReport: subscriptionData.data.jobsiteYearReportSub!,
       };
     },
   });
@@ -44,25 +44,25 @@ const JobsiteMonthReportClientContent = ({
    */
 
   return React.useMemo(() => {
-    if (data?.jobsiteMonthReport && !loading) {
-      let { jobsiteMonthReport } = data;
+    if (data?.jobsiteYearReport && !loading) {
+      let { jobsiteYearReport } = data;
 
       return (
         <Box>
           <Heading size="sm" color="gray.400">
-            {jobsiteMonthReport.update.status} - Last Updated:{" "}
-            {jobsiteMonthReport.update.lastUpdatedAt
+            {jobsiteYearReport.update.status} - Last Updated:{" "}
+            {jobsiteYearReport.update.lastUpdatedAt
               ? formatDate(
-                  jobsiteMonthReport.update.lastUpdatedAt,
+                  jobsiteYearReport.update.lastUpdatedAt,
                   "MMMM hh:mm a, YYYY"
                 )
               : "Never"}
           </Heading>
-          <JobsiteReport report={jobsiteMonthReport} />
+          <JobsiteReport report={jobsiteYearReport} />
         </Box>
       );
     } else return <Loading />;
   }, [data, loading]);
 };
 
-export default JobsiteMonthReportClientContent;
+export default JobsiteYearReportClientContent;

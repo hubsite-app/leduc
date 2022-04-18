@@ -3,7 +3,6 @@ import { DocumentType, prop, Ref } from "@typegoose/typegoose";
 import { Field, Float, ID, ObjectType } from "type-graphql";
 import { CrewTypes } from "@typescript/crew";
 import {
-  InvoiceClass,
   VehicleClass,
   VehicleWorkClass,
   JobsiteMaterialClass,

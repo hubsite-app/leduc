@@ -25,6 +25,28 @@ const byJobsite = (
   });
 };
 
+const byJobsiteAndYear = (
+  JobsiteDayReport: JobsiteDayReportModel,
+  jobsiteId: Id,
+  date: Date
+) => {
+  return new Promise<JobsiteDayReportDocument[]>(async (resolve, reject) => {
+    try {
+      const reports = await JobsiteDayReport.find({
+        jobsite: jobsiteId,
+        date: {
+          $gte: dayjs(date).startOf("year").toDate(),
+          $lt: dayjs(date).endOf("year").toDate(),
+        },
+      });
+
+      resolve(reports);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const byJobsiteAndMonth = (
   JobsiteDayReport: JobsiteDayReportModel,
   jobsiteId: Id,
@@ -115,6 +137,7 @@ const jobsite = (jobsiteDayReport: JobsiteDayReportDocument) => {
 
 export default {
   byJobsite,
+  byJobsiteAndYear,
   byJobsiteAndMonth,
   byJobsiteAndDay,
   byUpdateRequested,

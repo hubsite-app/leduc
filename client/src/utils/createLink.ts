@@ -18,6 +18,10 @@ const jobsiteMonthReport = (reportId: string) => {
   return `/jobsite-month-report/${reportId}`;
 };
 
+const jobsiteYearReport = (reportId: string) => {
+  return `/jobsite-year-report/${reportId}`;
+};
+
 const dailyReport = (dailyReportId: string) => {
   return `/daily-report/${dailyReportId}`;
 };
@@ -28,6 +32,7 @@ const createLink = {
   crew,
   jobsite,
   jobsiteMonthReport,
+  jobsiteYearReport,
   dailyReport,
 };
 

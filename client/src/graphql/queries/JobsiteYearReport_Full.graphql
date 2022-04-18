@@ -1,0 +1,5 @@
+query JobsiteYearReportFull($id: ID!) {
+  jobsiteYearReport(id: $id) {
+    ...JobsiteYearReportFullSnippet
+  }
+}

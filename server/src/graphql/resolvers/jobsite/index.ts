@@ -10,6 +10,7 @@ import {
   JobsiteMaterialClass,
   MaterialShipmentClass,
   JobsiteMonthReportClass,
+  JobsiteYearReportClass,
 } from "@models";
 import {
   Arg,
@@ -71,6 +72,11 @@ export default class JobsiteResolver {
   @FieldResolver(() => [JobsiteMonthReportClass])
   async monthReports(@Root() jobsite: JobsiteDocument) {
     return jobsite.getMonthReports();
+  }
+
+  @FieldResolver(() => [JobsiteYearReportClass])
+  async yearReports(@Root() jobsite: JobsiteDocument) {
+    return jobsite.getYearReports();
   }
 
   /**

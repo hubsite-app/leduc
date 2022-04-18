@@ -790,6 +790,76 @@ export const ssrJobsiteSearch = {
       withPage: withPageJobsiteSearch,
       usePage: useJobsiteSearch,
     }
+export async function getServerPageJobsiteYearReportCard
+    (options: Omit<Apollo.QueryOptions<Types.JobsiteYearReportCardQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsiteYearReportCardQuery>({ ...options, query: Operations.JobsiteYearReportCardDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsiteYearReportCard = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearReportCardQuery, Types.JobsiteYearReportCardQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsiteYearReportCardDocument, options);
+};
+export type PageJobsiteYearReportCardComp = React.FC<{data?: Types.JobsiteYearReportCardQuery, error?: Apollo.ApolloError}>;
+export const withPageJobsiteYearReportCard = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearReportCardQuery, Types.JobsiteYearReportCardQueryVariables>) => (WrappedComponent:PageJobsiteYearReportCardComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsiteYearReportCardDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsiteYearReportCard = {
+      getServerPage: getServerPageJobsiteYearReportCard,
+      withPage: withPageJobsiteYearReportCard,
+      usePage: useJobsiteYearReportCard,
+    }
+export async function getServerPageJobsiteYearReportFull
+    (options: Omit<Apollo.QueryOptions<Types.JobsiteYearReportFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsiteYearReportFullQuery>({ ...options, query: Operations.JobsiteYearReportFullDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsiteYearReportFull = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearReportFullQuery, Types.JobsiteYearReportFullQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsiteYearReportFullDocument, options);
+};
+export type PageJobsiteYearReportFullComp = React.FC<{data?: Types.JobsiteYearReportFullQuery, error?: Apollo.ApolloError}>;
+export const withPageJobsiteYearReportFull = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearReportFullQuery, Types.JobsiteYearReportFullQueryVariables>) => (WrappedComponent:PageJobsiteYearReportFullComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsiteYearReportFullDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsiteYearReportFull = {
+      getServerPage: getServerPageJobsiteYearReportFull,
+      withPage: withPageJobsiteYearReportFull,
+      usePage: useJobsiteYearReportFull,
+    }
 export async function getServerPageJobsiteFull
     (options: Omit<Apollo.QueryOptions<Types.JobsiteFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -1349,4 +1419,39 @@ export const ssrJobsiteMonthReportSub = {
       getServerPage: getServerPageJobsiteMonthReportSub,
       withPage: withPageJobsiteMonthReportSub,
       usePage: useJobsiteMonthReportSub,
+    }
+export async function getServerPageJobsiteYearReportSub
+    (options: Omit<Apollo.QueryOptions<Types.JobsiteYearReportSubSubscriptionVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsiteYearReportSubSubscription>({ ...options, query: Operations.JobsiteYearReportSubDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsiteYearReportSub = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearReportSubSubscription, Types.JobsiteYearReportSubSubscriptionVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsiteYearReportSubDocument, options);
+};
+export type PageJobsiteYearReportSubComp = React.FC<{data?: Types.JobsiteYearReportSubSubscription, error?: Apollo.ApolloError}>;
+export const withPageJobsiteYearReportSub = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearReportSubSubscription, Types.JobsiteYearReportSubSubscriptionVariables>) => (WrappedComponent:PageJobsiteYearReportSubComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsiteYearReportSubDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsiteYearReportSub = {
+      getServerPage: getServerPageJobsiteYearReportSub,
+      withPage: withPageJobsiteYearReportSub,
+      usePage: useJobsiteYearReportSub,
     }

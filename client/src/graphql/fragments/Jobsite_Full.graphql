@@ -11,6 +11,9 @@ fragment JobsiteFullSnippet on JobsiteClass {
   monthReports {
     ...JobsiteMonthReportCardSnippet
   }
+  yearReports {
+    ...JobsiteYearReportCardSnippet
+  }
   dailyReports {
     ...DailyReportCardSnippet
   }

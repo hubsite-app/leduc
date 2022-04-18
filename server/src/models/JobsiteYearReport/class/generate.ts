@@ -1,15 +1,15 @@
-import { JobsiteMonthReportDocument } from "@models";
+import { JobsiteYearReportDocument } from "@models";
 import { InvoiceReportClass } from "@typescript/invoice";
 import { RangeSummaryReportClass } from "@typescript/jobsiteReports";
 import dayjs from "dayjs";
 
 const expenseInvoiceReports = (
-  jobsiteMonthReport: JobsiteMonthReportDocument
+  jobsiteYearReport: JobsiteYearReportDocument
 ) => {
   return new Promise<void>(async (resolve, reject) => {
     try {
       // Get all expense invoices
-      const jobsite = await jobsiteMonthReport.getJobsite();
+      const jobsite = await jobsiteYearReport.getJobsite();
       const expenseInvoices = await jobsite.getExpenseInvoices();
 
       const invoices: InvoiceReportClass[] = [];
@@ -18,8 +18,8 @@ const expenseInvoiceReports = (
 
         if (
           dayjs(expenseInvoice.date).isSame(
-            dayjs(jobsiteMonthReport.startOfMonth),
-            "month"
+            dayjs(jobsiteYearReport.startOfYear),
+            "year"
           )
         ) {
           const invoice: InvoiceReportClass = {
@@ -32,7 +32,7 @@ const expenseInvoiceReports = (
         }
       }
 
-      jobsiteMonthReport.expenseInvoices = invoices;
+      jobsiteYearReport.expenseInvoices = invoices;
 
       resolve();
     } catch (e) {
@@ -42,12 +42,12 @@ const expenseInvoiceReports = (
 };
 
 const revenueInvoiceReports = (
-  jobsiteMonthReport: JobsiteMonthReportDocument
+  jobsiteYearReport: JobsiteYearReportDocument
 ) => {
   return new Promise<void>(async (resolve, reject) => {
     try {
       // Get all revenue invoices
-      const jobsite = await jobsiteMonthReport.getJobsite();
+      const jobsite = await jobsiteYearReport.getJobsite();
       const revenueInvoices = await jobsite.getRevenueInvoices();
 
       const invoices: InvoiceReportClass[] = [];
@@ -56,8 +56,8 @@ const revenueInvoiceReports = (
 
         if (
           dayjs(revenueInvoice.date).isSame(
-            dayjs(jobsiteMonthReport.startOfMonth),
-            "month"
+            dayjs(jobsiteYearReport.startOfYear),
+            "year"
           )
         ) {
           const invoice: InvoiceReportClass = {
@@ -70,7 +70,7 @@ const revenueInvoiceReports = (
         }
       }
 
-      jobsiteMonthReport.revenueInvoices = invoices;
+      jobsiteYearReport.revenueInvoices = invoices;
 
       resolve();
     } catch (e) {
@@ -79,30 +79,30 @@ const revenueInvoiceReports = (
   });
 };
 
-const summary = (jobsiteMonthReport: JobsiteMonthReportDocument) => {
+const summary = (jobsiteYearReport: JobsiteYearReportDocument) => {
   return new Promise<void>(async (resolve, reject) => {
     try {
       let externalExpenseInvoiceValue = 0,
         internalExpenseInvoiceValue = 0;
-      for (let i = 0; i < jobsiteMonthReport.expenseInvoices.length; i++) {
-        if (jobsiteMonthReport.expenseInvoices[i].internal) {
+      for (let i = 0; i < jobsiteYearReport.expenseInvoices.length; i++) {
+        if (jobsiteYearReport.expenseInvoices[i].internal) {
           internalExpenseInvoiceValue +=
-            jobsiteMonthReport.expenseInvoices[i].value;
+            jobsiteYearReport.expenseInvoices[i].value;
         } else {
           externalExpenseInvoiceValue +=
-            jobsiteMonthReport.expenseInvoices[i].value;
+            jobsiteYearReport.expenseInvoices[i].value;
         }
       }
 
       let externalRevenueInvoiceValue = 0,
         internalRevenueInvoiceValue = 0;
-      for (let i = 0; i < jobsiteMonthReport.revenueInvoices.length; i++) {
-        if (jobsiteMonthReport.revenueInvoices[i].internal) {
+      for (let i = 0; i < jobsiteYearReport.revenueInvoices.length; i++) {
+        if (jobsiteYearReport.revenueInvoices[i].internal) {
           internalRevenueInvoiceValue +=
-            jobsiteMonthReport.revenueInvoices[i].value;
+            jobsiteYearReport.revenueInvoices[i].value;
         } else {
           externalRevenueInvoiceValue +=
-            jobsiteMonthReport.revenueInvoices[i].value;
+            jobsiteYearReport.revenueInvoices[i].value;
         }
       }
 
@@ -113,7 +113,7 @@ const summary = (jobsiteMonthReport: JobsiteMonthReportDocument) => {
         internalRevenueInvoiceValue,
       };
 
-      jobsiteMonthReport.summary = summary;
+      jobsiteYearReport.summary = summary;
 
       resolve();
     } catch (e) {

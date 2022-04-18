@@ -1,26 +1,26 @@
 import SchemaVersions from "@constants/SchemaVersions";
 import { post, prop } from "@typegoose/typegoose";
-import { JobsiteMonthReportDocument } from "@models";
+import { JobsiteYearReportDocument } from "@models";
 import { Field, ObjectType } from "type-graphql";
 import pubsub from "@pubsub";
 import { PubSubTopics } from "@typescript/pubSub";
 import { JobsiteReportBaseClass } from "@typescript/jobsiteReports";
 
 @ObjectType()
-@post<JobsiteMonthReportDocument>("save", async (jobsiteMonthReport) => {
+@post<JobsiteYearReportDocument>("save", async (jobsiteYearReport) => {
   await pubsub.publish(
-    `${PubSubTopics.JOBSITE_MONTH_REPORT}_${jobsiteMonthReport._id}`,
+    `${PubSubTopics.JOBSITE_YEAR_REPORT}_${jobsiteYearReport._id}`,
     {
-      id: jobsiteMonthReport._id,
+      id: jobsiteYearReport._id,
     }
   );
 })
-export class JobsiteMonthReportSchema extends JobsiteReportBaseClass {
+export class JobsiteYearReportSchema extends JobsiteReportBaseClass {
   @Field(() => Date, { nullable: false })
   @prop({ required: true })
-  public startOfMonth!: Date;
+  public startOfYear!: Date;
 
   @Field()
-  @prop({ required: true, default: SchemaVersions.JobsiteMonthReport })
+  @prop({ required: true, default: SchemaVersions.JobsiteYearReport })
   public schemaVersion!: number;
 }

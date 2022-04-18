@@ -15,6 +15,8 @@ import {
   JobsiteModel,
   JobsiteMonthReport,
   JobsiteMonthReportDocument,
+  JobsiteYearReport,
+  JobsiteYearReportDocument,
   MaterialShipment,
   MaterialShipmentDocument,
 } from "@models";
@@ -243,6 +245,20 @@ const monthReports = (jobsite: JobsiteDocument) => {
   });
 };
 
+const yearReports = (jobsite: JobsiteDocument) => {
+  return new Promise<JobsiteYearReportDocument[]>(async (resolve, reject) => {
+    try {
+      const jobsiteYearReports = await JobsiteYearReport.find({
+        jobsite: jobsite._id,
+      });
+
+      resolve(jobsiteYearReports);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 export default {
   byId,
   search,
@@ -255,4 +271,5 @@ export default {
   nonCostedMaterialShipments,
   dayReports,
   monthReports,
+  yearReports,
 };
