@@ -2,13 +2,14 @@ import { useToast } from "@chakra-ui/react";
 import React from "react";
 import { useEmployeeCreateForm } from "../../../forms/employee";
 import {
+  EmployeeCardSnippetFragment,
   EmployeeCreateData,
   useEmployeeCreateMutation,
 } from "../../../generated/graphql";
 import SubmitButton from "../../Common/forms/SubmitButton";
 
 interface IEmployeeCreateForm {
-  onSuccess?: () => void;
+  onSuccess?: (employee: EmployeeCardSnippetFragment) => void;
 }
 
 const EmployeeCreateForm = ({ onSuccess }: IEmployeeCreateForm) => {
@@ -32,7 +33,7 @@ const EmployeeCreateForm = ({ onSuccess }: IEmployeeCreateForm) => {
         const res = await create({ variables: { data } });
 
         if (res.data?.employeeCreate) {
-          if (onSuccess) onSuccess();
+          if (onSuccess) onSuccess(res.data.employeeCreate);
         } else {
           toast({
             status: "error",

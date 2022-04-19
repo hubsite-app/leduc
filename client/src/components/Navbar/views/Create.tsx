@@ -179,8 +179,9 @@ const NavbarCreate = () => {
               <ModalCloseButton />
               <ModalBody>
                 <EmployeeCreateForm
-                  onSuccess={() => {
+                  onSuccess={(employee) => {
                     setForm(undefined);
+                    router.push(createLink.employee(employee._id));
                   }}
                 />
               </ModalBody>

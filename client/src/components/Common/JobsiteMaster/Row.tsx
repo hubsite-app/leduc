@@ -87,10 +87,13 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
    */
 
   return (
-    <Tr>
+    <Tr filter={loading ? "blur(2px)" : undefined}>
       <Th>
         {jobsiteYearReport ? (
-          <TextLink link={createLink.jobsite(jobsiteYearReport.jobsite._id)}>
+          <TextLink
+            link={createLink.jobsite(jobsiteYearReport.jobsite._id)}
+            whiteSpace="nowrap"
+          >
             {jobsiteYearReport.jobsite.jobcode}
           </TextLink>
         ) : (
