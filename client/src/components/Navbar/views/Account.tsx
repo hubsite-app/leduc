@@ -11,6 +11,8 @@ import {
 import { useRouter } from "next/router";
 import { useAuth } from "../../../contexts/Auth";
 import Loading from "../../Common/Loading";
+import Permission from "../../Common/Permission";
+import { UserRoles } from "../../../generated/graphql";
 
 const NavbarAccount = () => {
   const {
@@ -37,8 +39,16 @@ const NavbarAccount = () => {
           </MenuButton>
           <MenuList>
             <MenuGroup>
+              <Permission minRole={UserRoles.ProjectManager}>
+                <MenuItem onClick={() => router.push("/jobsite-reports")}>
+                  Jobsite Reports
+                </MenuItem>
+              </Permission>
               <MenuItem onClick={() => router.push("/daily-reports")}>
                 Daily Reports
+              </MenuItem>
+              <MenuItem onClick={() => router.push("/jobsites")}>
+                Jobsites
               </MenuItem>
 
               <MenuDivider />

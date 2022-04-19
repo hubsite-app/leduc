@@ -9,6 +9,7 @@ export * from "./Jobsite";
 export * from "./JobsiteDayReport";
 export * from "./JobsiteMaterial";
 export * from "./JobsiteMonthReport";
+export * from "./JobsiteYearMasterReport";
 export * from "./JobsiteYearReport";
 export * from "./Material";
 export * from "./MaterialShipment";
@@ -187,6 +188,25 @@ export interface JobsiteMonthReportModel
 export const JobsiteMonthReport = getModelForClass(JobsiteMonthReportClass, {
   schemaOptions: { collection: "jobsiteMonthReports" },
 });
+
+/**
+ * ----- Jobsite Year Master Report -----
+ */
+
+import { JobsiteYearMasterReportClass } from "./JobsiteYearMasterReport/class";
+
+export interface JobsiteYearMasterReportDocument
+  extends DocumentType<JobsiteYearMasterReportClass> {}
+
+export interface JobsiteYearMasterReportModel
+  extends ReturnModelType<typeof JobsiteYearMasterReportClass> {}
+
+export const JobsiteYearMasterReport = getModelForClass(
+  JobsiteYearMasterReportClass,
+  {
+    schemaOptions: { collection: "jobsiteYearMasterReports" },
+  }
+);
 
 /**
  * ----- Jobsite Year Report -----

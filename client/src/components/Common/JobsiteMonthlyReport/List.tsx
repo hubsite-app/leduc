@@ -24,12 +24,19 @@ const JobsiteMonthlyReportList = ({
       <Flex flexDir="column" py={2} px={4}>
         {jobsiteMonthReports.length > 0 ? (
           <ShowMore
-            list={jobsiteMonthReports.map((report) => (
-              <JobsiteMonthlyReportCard
-                key={report._id}
-                jobsiteMonthlyReport={report}
-              />
-            ))}
+            list={jobsiteMonthReports
+              .slice()
+              .sort(
+                (a, b) =>
+                  new Date(b.startOfMonth).getTime() -
+                  new Date(a.startOfMonth).getTime()
+              )
+              .map((report) => (
+                <JobsiteMonthlyReportCard
+                  key={report._id}
+                  jobsiteMonthlyReport={report}
+                />
+              ))}
           />
         ) : (
           <Center>No Reports</Center>

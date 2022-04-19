@@ -12,6 +12,7 @@ import {
   JobsiteMonthReportClass,
   JobsiteYearReportClass,
 } from "@models";
+import { ListOptionData } from "@typescript/graphql";
 import {
   Arg,
   Authorized,
@@ -86,6 +87,14 @@ export default class JobsiteResolver {
   @Query(() => JobsiteClass)
   async jobsite(@Arg("id") id: string) {
     return Jobsite.getById(id);
+  }
+
+  @Query(() => [JobsiteClass])
+  async jobsites(
+    @Arg("options", () => ListOptionData, { nullable: true })
+    options?: ListOptionData
+  ) {
+    return Jobsite.getList(options);
   }
 
   @Query(() => [JobsiteClass])

@@ -13,6 +13,19 @@ const JobsiteYearlyReportList = ({
   jobsiteYearReports,
 }: IJobsiteYearlyReportList) => {
   /**
+   * ----- Variables -----
+   */
+
+  const sortedReports = React.useMemo(() => {
+    return jobsiteYearReports
+      .slice()
+      .sort(
+        (a, b) =>
+          new Date(b.startOfYear).getTime() - new Date(a.startOfYear).getTime()
+      );
+  }, [jobsiteYearReports]);
+
+  /**
    * ----- Rendering -----
    */
 
@@ -24,12 +37,19 @@ const JobsiteYearlyReportList = ({
       <Flex flexDir="column" py={2} px={4}>
         {jobsiteYearReports.length > 0 ? (
           <ShowMore
-            list={jobsiteYearReports.map((report) => (
-              <JobsiteYearlyReportCard
-                key={report._id}
-                jobsiteYearlyReport={report}
-              />
-            ))}
+            list={jobsiteYearReports
+              .slice()
+              .sort(
+                (a, b) =>
+                  new Date(b.startOfYear).getTime() -
+                  new Date(a.startOfYear).getTime()
+              )
+              .map((report) => (
+                <JobsiteYearlyReportCard
+                  key={report._id}
+                  jobsiteYearlyReport={report}
+                />
+              ))}
           />
         ) : (
           <Center>No Reports</Center>

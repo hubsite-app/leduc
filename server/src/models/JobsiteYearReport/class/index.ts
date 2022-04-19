@@ -30,6 +30,10 @@ export class JobsiteYearReportClass extends JobsiteYearReportSchema {
     return get.byJobsiteAndDate(this, jobsiteId, date);
   }
 
+  public static async getByDate(this: JobsiteYearReportModel, date: Date) {
+    return get.byDate(this, date);
+  }
+
   public static async getByUpdateRequested(this: JobsiteYearReportModel) {
     return get.byUpdateRequested(this);
   }

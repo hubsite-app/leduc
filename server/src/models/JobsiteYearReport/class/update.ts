@@ -1,4 +1,8 @@
-import { JobsiteDayReport, JobsiteYearReportDocument } from "@models";
+import {
+  JobsiteDayReport,
+  JobsiteYearMasterReport,
+  JobsiteYearReportDocument,
+} from "@models";
 import { CrewTypes } from "@typescript/crew";
 import { UpdateStatus } from "@typescript/models";
 
@@ -33,6 +37,8 @@ const document = (jobsiteYearReport: JobsiteYearReportDocument) => {
       jobsiteYearReport.update.lastUpdatedAt = new Date();
 
       await jobsiteYearReport.save();
+
+      await JobsiteYearMasterReport.requestBuild(jobsiteYearReport.startOfYear);
 
       resolve();
     } catch (e) {

@@ -10,6 +10,7 @@ import createLink from "../../utils/createLink";
 import formatDate from "../../utils/formatDate";
 import JobsiteYearReportClientContent from "../../components/pages/jobsite-year-report/ClientContent";
 import ClientOnly from "../../components/Common/ClientOnly";
+import jobsiteName from "../../utils/jobsiteName";
 
 const JobsiteYearlyReport: PageJobsiteYearReportCardComp = ({ data }) => {
   const jobsiteYearReport = data?.jobsiteYearReport!;
@@ -24,16 +25,21 @@ const JobsiteYearlyReport: PageJobsiteYearReportCardComp = ({ data }) => {
         crumbs={[
           {
             title: "Jobsites",
+            link: "/jobsites",
           },
           {
-            title: `${jobsiteYearReport.jobsite.jobcode} - ${jobsiteYearReport.jobsite.name}`,
+            title: jobsiteName(
+              jobsiteYearReport.jobsite.name,
+              jobsiteYearReport.jobsite.jobcode
+            ),
             link: createLink.jobsite(jobsiteYearReport.jobsite._id),
           },
           {
-            title: "Reports",
+            title: "Year Reports",
           },
           {
             title: formatDate(jobsiteYearReport.startOfYear, "YYYY", true),
+            isCurrentPage: true,
           },
         ]}
       />

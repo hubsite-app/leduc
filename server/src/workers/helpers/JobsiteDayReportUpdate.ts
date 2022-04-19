@@ -7,8 +7,6 @@ const JobsiteDayReportUpdateHelper = () => {
     try {
       const jobsiteDayReports = await JobsiteDayReport.getByUpdateRequested();
 
-      console.log("day", jobsiteDayReports.length);
-
       // Set all to pending
       for (let i = 0; i < jobsiteDayReports.length; i++) {
         try {

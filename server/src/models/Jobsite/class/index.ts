@@ -12,14 +12,10 @@ import { JobsiteSchema } from "..";
 import get from "./get";
 import {
   GetByIDOptions,
-  IDefaultRateData,
+  IListOptions,
   ISearchOptions,
 } from "@typescript/models";
-import {
-  IJobsiteCreate,
-  ITruckingRateData,
-  ITruckingTypeRateData,
-} from "@typescript/jobsite";
+import { IJobsiteCreate, ITruckingTypeRateData } from "@typescript/jobsite";
 import create from "./create";
 import update from "./update";
 import interact from "./interact";
@@ -44,6 +40,13 @@ export class JobsiteClass extends JobsiteSchema {
     options?: ISearchOptions
   ) {
     return get.search(this, searchString, options);
+  }
+
+  public static async getList(
+    this: JobsiteModel,
+    options?: IListOptions<JobsiteDocument>
+  ) {
+    return get.list(this, options);
   }
 
   public static async getByCrew(this: JobsiteModel, crew: CrewDocument) {

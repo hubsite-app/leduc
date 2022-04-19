@@ -10,6 +10,7 @@ export default {
   JobsiteDayReport: 1,
   JobsiteMaterial: 1,
   JobsiteMonthReport: 1,
+  JobsiteYearMasterReport: 1,
   JobsiteYearReport: 1,
   Material: 1,
   MaterialShipment: 2,

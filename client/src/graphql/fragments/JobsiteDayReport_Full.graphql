@@ -17,28 +17,6 @@ fragment JobsiteDayReportFullSnippet on JobsiteDayReportClass {
     ...JobsiteDayReportTruckingSnippet
   }
   summary {
-    crewTypeSummaries {
-      crewType
-      employeeHours
-      employeeCost
-      vehicleHours
-      vehicleCost
-      materialQuantity
-      materialCost
-      nonCostedMaterialQuantity
-      truckingQuantity
-      truckingHours
-      truckingCost
-    }
-    employeeHours
-    employeeCost
-    vehicleHours
-    vehicleCost
-    materialQuantity
-    materialCost
-    nonCostedMaterialQuantity
-    truckingQuantity
-    truckingHours
-    truckingCost
+    ...OnSiteSummaryReportSnippet
   }
 }

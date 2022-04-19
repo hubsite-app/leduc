@@ -64,6 +64,20 @@ const byJobsiteAndDate = (
   );
 };
 
+const byDate = (JobsiteYearReport: JobsiteYearReportModel, date: Date) => {
+  return new Promise<JobsiteYearReportDocument[]>(async (resolve, reject) => {
+    try {
+      const jobsiteYearlyReports = await JobsiteYearReport.find({
+        startOfYear: dayjs(date).startOf("year").toDate(),
+      });
+
+      resolve(jobsiteYearlyReports);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const byUpdateRequested = (JobsiteYearReport: JobsiteYearReportModel) => {
   return new Promise<JobsiteYearReportDocument[]>(async (resolve, reject) => {
     try {
@@ -125,6 +139,7 @@ const jobsite = (jobsiteYearReport: JobsiteYearReportDocument) => {
 
 export default {
   byId,
+  byDate,
   byJobsiteAndDate,
   byUpdateRequested,
   byUpdatePending,

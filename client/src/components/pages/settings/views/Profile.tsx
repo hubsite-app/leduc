@@ -33,6 +33,7 @@ const ProfileSettings = () => {
           </Card>
           {/* <Card heading={<Heading size="md">Settings</Heading>}>
             <Text fontWeight="bold">Home View</Text>
+
             <Flex flexDir="row" justifyContent="space-evenly" w="100%">
               <HomeViewBox>
                 <ProprietaryIcon />

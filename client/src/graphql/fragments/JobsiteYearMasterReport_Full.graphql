@@ -1,0 +1,7 @@
+fragment JobsiteYearMasterReportFullSnippet on JobsiteYearMasterReportClass {
+  ...JobsiteYearMasterReportCardSnippet
+  reports {
+    ...JobsiteYearMasterReportItemSnippet
+  }
+  crewTypes
+}

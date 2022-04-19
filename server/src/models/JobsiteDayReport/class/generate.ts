@@ -11,6 +11,10 @@ import {
   VehicleWorkDocument,
 } from "@models";
 import { CrewTypes } from "@typescript/crew";
+import {
+  CrewTypeOnSiteSummaryClass,
+  OnSiteSummaryReportClass,
+} from "@typescript/jobsiteReports";
 import { Id } from "@typescript/models";
 import getTruckingRateForTime from "@utils/getTruckingRateForTime";
 import dayjs from "dayjs";
@@ -20,8 +24,6 @@ import {
   VehicleReportClass,
   NonCostedMaterialReportClass,
   TruckingReportClass,
-  DaySummaryReportClass,
-  CrewTypeDaySummaryClass,
 } from "../schema/subDocument";
 
 const reports = (jobsiteDayReport: JobsiteDayReportDocument) => {
@@ -740,7 +742,7 @@ const crewTypes = (jobsiteDayReport: JobsiteDayReportDocument) => {
 const summaryReport = (jobsiteDayReport: JobsiteDayReportDocument) => {
   return new Promise<void>(async (resolve, reject) => {
     try {
-      const crewTypeSummaries: CrewTypeDaySummaryClass[] = [];
+      const crewTypeSummaries: CrewTypeOnSiteSummaryClass[] = [];
       const crewTypeIndices: { [crewType in CrewTypes]?: number } = {};
       for (let i = 0; i < jobsiteDayReport.crewTypes.length; i++) {
         const crewType = jobsiteDayReport.crewTypes[i];
@@ -870,7 +872,7 @@ const summaryReport = (jobsiteDayReport: JobsiteDayReportDocument) => {
           cost;
       }
 
-      const summary: DaySummaryReportClass = {
+      const summary: OnSiteSummaryReportClass = {
         crewTypeSummaries,
         employeeHours,
         employeeCost,

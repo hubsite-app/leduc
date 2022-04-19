@@ -1,0 +1,25 @@
+fragment OnSiteSummaryReportSnippet on OnSiteSummaryReportClass {
+  crewTypeSummaries {
+    crewType
+    employeeHours
+    employeeCost
+    vehicleHours
+    vehicleCost
+    materialQuantity
+    materialCost
+    nonCostedMaterialQuantity
+    truckingQuantity
+    truckingHours
+    truckingCost
+  }
+  employeeHours
+  employeeCost
+  vehicleHours
+  vehicleCost
+  materialQuantity
+  materialCost
+  nonCostedMaterialQuantity
+  truckingQuantity
+  truckingHours
+  truckingCost
+}

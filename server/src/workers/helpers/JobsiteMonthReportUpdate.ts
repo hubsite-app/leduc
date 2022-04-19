@@ -8,8 +8,6 @@ const JobsiteMonthReportUpdateHelper = () => {
       const jobsiteMonthReports =
         await JobsiteMonthReport.getByUpdateRequested();
 
-      console.log("month", jobsiteMonthReports.length);
-
       // Set all to pending
       for (let i = 0; i < jobsiteMonthReports.length; i++) {
         try {

@@ -7,8 +7,6 @@ const JobsiteYearReportUpdateHelper = () => {
     try {
       const jobsiteYearReports = await JobsiteYearReport.getByUpdateRequested();
 
-      console.log("year", jobsiteYearReports.length);
-
       // Set all to pending
       for (let i = 0; i < jobsiteYearReports.length; i++) {
         try {

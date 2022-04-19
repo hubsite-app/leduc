@@ -55,6 +55,7 @@ import { getApolloClient , ApolloClientContext} from '../withApollo';
 
 
 
+
 export async function getServerPageCompanies
     (options: Omit<Apollo.QueryOptions<Types.CompaniesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -790,6 +791,111 @@ export const ssrJobsiteSearch = {
       withPage: withPageJobsiteSearch,
       usePage: useJobsiteSearch,
     }
+export async function getServerPageJobsiteYearMasterReportCard
+    (options: Omit<Apollo.QueryOptions<Types.JobsiteYearMasterReportCardQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsiteYearMasterReportCardQuery>({ ...options, query: Operations.JobsiteYearMasterReportCardDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsiteYearMasterReportCard = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearMasterReportCardQuery, Types.JobsiteYearMasterReportCardQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsiteYearMasterReportCardDocument, options);
+};
+export type PageJobsiteYearMasterReportCardComp = React.FC<{data?: Types.JobsiteYearMasterReportCardQuery, error?: Apollo.ApolloError}>;
+export const withPageJobsiteYearMasterReportCard = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearMasterReportCardQuery, Types.JobsiteYearMasterReportCardQueryVariables>) => (WrappedComponent:PageJobsiteYearMasterReportCardComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsiteYearMasterReportCardDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsiteYearMasterReportCard = {
+      getServerPage: getServerPageJobsiteYearMasterReportCard,
+      withPage: withPageJobsiteYearMasterReportCard,
+      usePage: useJobsiteYearMasterReportCard,
+    }
+export async function getServerPageJobsiteYearMasterReportFull
+    (options: Omit<Apollo.QueryOptions<Types.JobsiteYearMasterReportFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsiteYearMasterReportFullQuery>({ ...options, query: Operations.JobsiteYearMasterReportFullDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsiteYearMasterReportFull = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearMasterReportFullQuery, Types.JobsiteYearMasterReportFullQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsiteYearMasterReportFullDocument, options);
+};
+export type PageJobsiteYearMasterReportFullComp = React.FC<{data?: Types.JobsiteYearMasterReportFullQuery, error?: Apollo.ApolloError}>;
+export const withPageJobsiteYearMasterReportFull = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearMasterReportFullQuery, Types.JobsiteYearMasterReportFullQueryVariables>) => (WrappedComponent:PageJobsiteYearMasterReportFullComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsiteYearMasterReportFullDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsiteYearMasterReportFull = {
+      getServerPage: getServerPageJobsiteYearMasterReportFull,
+      withPage: withPageJobsiteYearMasterReportFull,
+      usePage: useJobsiteYearMasterReportFull,
+    }
+export async function getServerPageJobsiteYearMasterReports
+    (options: Omit<Apollo.QueryOptions<Types.JobsiteYearMasterReportsQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsiteYearMasterReportsQuery>({ ...options, query: Operations.JobsiteYearMasterReportsDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsiteYearMasterReports = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearMasterReportsQuery, Types.JobsiteYearMasterReportsQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsiteYearMasterReportsDocument, options);
+};
+export type PageJobsiteYearMasterReportsComp = React.FC<{data?: Types.JobsiteYearMasterReportsQuery, error?: Apollo.ApolloError}>;
+export const withPageJobsiteYearMasterReports = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearMasterReportsQuery, Types.JobsiteYearMasterReportsQueryVariables>) => (WrappedComponent:PageJobsiteYearMasterReportsComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsiteYearMasterReportsDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsiteYearMasterReports = {
+      getServerPage: getServerPageJobsiteYearMasterReports,
+      withPage: withPageJobsiteYearMasterReports,
+      usePage: useJobsiteYearMasterReports,
+    }
 export async function getServerPageJobsiteYearReportCard
     (options: Omit<Apollo.QueryOptions<Types.JobsiteYearReportCardQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -859,6 +965,41 @@ export const ssrJobsiteYearReportFull = {
       getServerPage: getServerPageJobsiteYearReportFull,
       withPage: withPageJobsiteYearReportFull,
       usePage: useJobsiteYearReportFull,
+    }
+export async function getServerPageJobsiteYearReportSummary
+    (options: Omit<Apollo.QueryOptions<Types.JobsiteYearReportSummaryQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsiteYearReportSummaryQuery>({ ...options, query: Operations.JobsiteYearReportSummaryDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsiteYearReportSummary = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearReportSummaryQuery, Types.JobsiteYearReportSummaryQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsiteYearReportSummaryDocument, options);
+};
+export type PageJobsiteYearReportSummaryComp = React.FC<{data?: Types.JobsiteYearReportSummaryQuery, error?: Apollo.ApolloError}>;
+export const withPageJobsiteYearReportSummary = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearReportSummaryQuery, Types.JobsiteYearReportSummaryQueryVariables>) => (WrappedComponent:PageJobsiteYearReportSummaryComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsiteYearReportSummaryDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsiteYearReportSummary = {
+      getServerPage: getServerPageJobsiteYearReportSummary,
+      withPage: withPageJobsiteYearReportSummary,
+      usePage: useJobsiteYearReportSummary,
     }
 export async function getServerPageJobsiteFull
     (options: Omit<Apollo.QueryOptions<Types.JobsiteFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
@@ -964,6 +1105,41 @@ export const ssrJobsiteFetchSearch = {
       getServerPage: getServerPageJobsiteFetchSearch,
       withPage: withPageJobsiteFetchSearch,
       usePage: useJobsiteFetchSearch,
+    }
+export async function getServerPageJobsites
+    (options: Omit<Apollo.QueryOptions<Types.JobsitesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsitesQuery>({ ...options, query: Operations.JobsitesDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsites = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsitesQuery, Types.JobsitesQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsitesDocument, options);
+};
+export type PageJobsitesComp = React.FC<{data?: Types.JobsitesQuery, error?: Apollo.ApolloError}>;
+export const withPageJobsites = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsitesQuery, Types.JobsitesQueryVariables>) => (WrappedComponent:PageJobsitesComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsitesDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsites = {
+      getServerPage: getServerPageJobsites,
+      withPage: withPageJobsites,
+      usePage: useJobsites,
     }
 export async function getServerPageMaterialSearch
     (options: Omit<Apollo.QueryOptions<Types.MaterialSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
@@ -1419,6 +1595,41 @@ export const ssrJobsiteMonthReportSub = {
       getServerPage: getServerPageJobsiteMonthReportSub,
       withPage: withPageJobsiteMonthReportSub,
       usePage: useJobsiteMonthReportSub,
+    }
+export async function getServerPageJobsiteYearMasterReportSub
+    (options: Omit<Apollo.QueryOptions<Types.JobsiteYearMasterReportSubSubscriptionVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsiteYearMasterReportSubSubscription>({ ...options, query: Operations.JobsiteYearMasterReportSubDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsiteYearMasterReportSub = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearMasterReportSubSubscription, Types.JobsiteYearMasterReportSubSubscriptionVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsiteYearMasterReportSubDocument, options);
+};
+export type PageJobsiteYearMasterReportSubComp = React.FC<{data?: Types.JobsiteYearMasterReportSubSubscription, error?: Apollo.ApolloError}>;
+export const withPageJobsiteYearMasterReportSub = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteYearMasterReportSubSubscription, Types.JobsiteYearMasterReportSubSubscriptionVariables>) => (WrappedComponent:PageJobsiteYearMasterReportSubComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsiteYearMasterReportSubDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsiteYearMasterReportSub = {
+      getServerPage: getServerPageJobsiteYearMasterReportSub,
+      withPage: withPageJobsiteYearMasterReportSub,
+      usePage: useJobsiteYearMasterReportSub,
     }
 export async function getServerPageJobsiteYearReportSub
     (options: Omit<Apollo.QueryOptions<Types.JobsiteYearReportSubSubscriptionVariables>, 'query'>, ctx: ApolloClientContext ){

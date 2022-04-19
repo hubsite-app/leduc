@@ -32,7 +32,8 @@ export default function MyApolloProvider({
         createClient({
           url: "ws://localhost:8080/graphql",
           connectionParams: {
-            Authorization: token || "",
+            Authorization:
+              localStorage.getItem(localStorageTokenKey) || token || "",
           },
         })
       )
@@ -42,7 +43,8 @@ export default function MyApolloProvider({
     return {
       headers: {
         ...headers,
-        authorization: token || "",
+        authorization:
+          localStorage.getItem(localStorageTokenKey) || token || "",
       },
     };
   });
@@ -74,6 +76,12 @@ export default function MyApolloProvider({
               },
             },
             materials: {
+              keyArgs: [],
+              merge: (existing = [], incoming) => {
+                return [...existing, ...incoming];
+              },
+            },
+            jobsites: {
               keyArgs: [],
               merge: (existing = [], incoming) => {
                 return [...existing, ...incoming];

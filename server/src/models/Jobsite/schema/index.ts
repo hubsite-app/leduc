@@ -85,6 +85,10 @@ export class JobsiteSchema {
   @prop({ required: true, default: SchemaVersions.Jobsite })
   public schemaVersion!: number;
 
+  @Field({ nullable: false })
+  @prop({ required: true, default: Date.now })
+  public createdAt!: Date;
+
   /**
    * @deprecated dailyReports holds the link to the jobsite
    */

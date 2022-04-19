@@ -1,23 +1,18 @@
-import { post, prop, Ref } from "@typegoose/typegoose";
-import {
-  DailyReportClass,
-  JobsiteClass,
-  JobsiteDayReportDocument,
-  JobsiteMonthReport,
-} from "@models";
+import { prop, Ref } from "@typegoose/typegoose";
+import { DailyReportClass, JobsiteClass } from "@models";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import {
   EmployeeReportClass,
   MaterialReportClass,
   NonCostedMaterialReportClass,
-  DaySummaryReportClass,
   TruckingReportClass,
   VehicleReportClass,
 } from "./subDocument";
 import SchemaVersions from "@constants/SchemaVersions";
 import { CrewTypes } from "@typescript/crew";
 import { UpdateClass } from "@typescript/models";
+import { OnSiteSummaryReportClass } from "@typescript/jobsiteReports";
 
 export * from "./subDocument";
 
@@ -62,9 +57,9 @@ export class JobsiteDayReportSchema {
   @prop({ type: () => TruckingReportClass, required: true, default: [] })
   public trucking!: TruckingReportClass[];
 
-  @Field(() => DaySummaryReportClass, { nullable: false })
-  @prop({ type: () => DaySummaryReportClass, required: true, default: {} })
-  public summary!: DaySummaryReportClass;
+  @Field(() => OnSiteSummaryReportClass, { nullable: false })
+  @prop({ type: () => OnSiteSummaryReportClass, required: true, default: {} })
+  public summary!: OnSiteSummaryReportClass;
 
   @Field(() => [CrewTypes], { nullable: false })
   @prop({ type: [String], enum: CrewTypes, required: true, default: [] })

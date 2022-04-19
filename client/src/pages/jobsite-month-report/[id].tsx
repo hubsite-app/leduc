@@ -10,6 +10,7 @@ import createLink from "../../utils/createLink";
 import formatDate from "../../utils/formatDate";
 import JobsiteMonthReportClientContent from "../../components/pages/jobsite-month-report/ClientContent";
 import ClientOnly from "../../components/Common/ClientOnly";
+import jobsiteName from "../../utils/jobsiteName";
 
 const JobsiteMonthlyReport: PageJobsiteMonthReportCardComp = ({ data }) => {
   const jobsiteMonthReport = data?.jobsiteMonthReport!;
@@ -24,13 +25,17 @@ const JobsiteMonthlyReport: PageJobsiteMonthReportCardComp = ({ data }) => {
         crumbs={[
           {
             title: "Jobsites",
+            link: "/jobsites",
           },
           {
-            title: `${jobsiteMonthReport.jobsite.jobcode} - ${jobsiteMonthReport.jobsite.name}`,
+            title: jobsiteName(
+              jobsiteMonthReport.jobsite.name,
+              jobsiteMonthReport.jobsite.jobcode
+            ),
             link: createLink.jobsite(jobsiteMonthReport.jobsite._id),
           },
           {
-            title: "Reports",
+            title: "Month Reports",
           },
           {
             title: formatDate(
@@ -38,6 +43,7 @@ const JobsiteMonthlyReport: PageJobsiteMonthReportCardComp = ({ data }) => {
               "MMMM YYYY",
               true
             ),
+            isCurrentPage: true,
           },
         ]}
       />

@@ -20,7 +20,12 @@ import {
   MaterialShipment,
   MaterialShipmentDocument,
 } from "@models";
-import { GetByIDOptions, Id, ISearchOptions } from "@typescript/models";
+import {
+  GetByIDOptions,
+  Id,
+  IListOptions,
+  ISearchOptions,
+} from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 import { IJobsiteSearchObject } from "@typescript/jobsite";
 import ElasticsearchClient from "@elasticsearch/client";
@@ -102,6 +107,33 @@ const search = (
       }
 
       resolve(jobsites);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const listDefaultOptions: IListOptions<JobsiteDocument> = {
+  pageLimit: 25,
+  offset: 0,
+};
+const list = (
+  Jobsite: JobsiteModel,
+  options?: IListOptions<JobsiteDocument>
+) => {
+  return new Promise<JobsiteDocument[]>(async (resolve, reject) => {
+    try {
+      options = populateOptions(options, listDefaultOptions);
+
+      const jobsite = await Jobsite.find(options?.query || {}, undefined, {
+        limit: options?.pageLimit,
+        skip: options?.offset,
+        sort: {
+          date: -1,
+        },
+      }).sort({ jobcode: "desc" });
+
+      resolve(jobsite);
     } catch (e) {
       reject(e);
     }
@@ -262,6 +294,7 @@ const yearReports = (jobsite: JobsiteDocument) => {
 export default {
   byId,
   search,
+  list,
   byCrew,
   crews,
   dailyReports,
