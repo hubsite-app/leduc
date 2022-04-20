@@ -13,7 +13,7 @@ import FormContainer from "../FormContainer";
 import Number from "./Number";
 import TextField from "./TextField";
 
-interface RateError {
+export interface IRateError {
   date?: {
     message?: string;
   };
@@ -26,7 +26,7 @@ export interface IRates {
   rates: RateSnippetFragment[];
   onChange?: (rates: Omit<RateSnippetFragment, "__typename">[]) => void;
   isLoading?: boolean;
-  errors?: RateError[];
+  errors?: IRateError[];
   label?: string;
 }
 

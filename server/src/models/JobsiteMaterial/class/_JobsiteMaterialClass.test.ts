@@ -2,7 +2,7 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 
 import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 import { disconnectAndStopServer, prepareDatabase } from "@testing/jestDB";
-import { Jobsite, JobsiteMaterial } from "@models";
+import { JobsiteMaterial } from "@models";
 import { IJobsiteMaterialCreate } from "@typescript/jobsiteMaterial";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
@@ -47,7 +47,7 @@ describe("Jobsite Material Class", () => {
   describe("CREATE", () => {
     describe("createDocument", () => {
       describe("success", () => {
-        test("should successfully create new jobsite materials", async () => {
+        test("should successfully create new jobsite materials, not delivered", async () => {
           const data: IJobsiteMaterialCreate = {
             jobsite: documents.jobsites.jobsite_2,
             material: documents.materials.material_1,
@@ -60,17 +60,100 @@ describe("Jobsite Material Class", () => {
               },
             ],
             unit: "tonnes",
+            delivered: false,
+            deliveredRates: [],
           };
 
           const jobsiteMaterial = await JobsiteMaterial.createDocument(data);
 
           await jobsiteMaterial.save();
 
+          await documents.jobsites.jobsite_2.save();
+
           expect(jobsiteMaterial).toBeDefined();
 
           expect(
             data.jobsite.materials.includes(jobsiteMaterial._id.toString())
           ).toBeTruthy();
+        });
+
+        test("should successfully create new jobsite materials, delivered", async () => {
+          const data: IJobsiteMaterialCreate = {
+            jobsite: documents.jobsites.jobsite_2,
+            material: documents.materials.material_1,
+            supplier: documents.companies.company_1,
+            quantity: 1000,
+            rates: [],
+            unit: "tonnes",
+            delivered: true,
+            deliveredRates: [
+              {
+                title: "Tandem",
+                rates: [
+                  {
+                    date: new Date(),
+                    rate: 100,
+                  },
+                ],
+              },
+            ],
+          };
+
+          const jobsiteMaterial = await JobsiteMaterial.createDocument(data);
+
+          await jobsiteMaterial.save();
+
+          await documents.jobsites.jobsite_2.save();
+
+          expect(jobsiteMaterial).toBeDefined();
+
+          expect(
+            data.jobsite.materials.includes(jobsiteMaterial._id.toString())
+          ).toBeTruthy();
+        });
+      });
+
+      describe("error", () => {
+        test("should error without rates if not delivered", async () => {
+          expect.assertions(1);
+
+          const data: IJobsiteMaterialCreate = {
+            jobsite: documents.jobsites.jobsite_2,
+            material: documents.materials.material_1,
+            supplier: documents.companies.company_1,
+            quantity: 1000,
+            rates: [],
+            unit: "tonnes",
+            delivered: false,
+            deliveredRates: [],
+          };
+
+          try {
+            await JobsiteMaterial.createDocument(data);
+          } catch (e: any) {
+            expect(e.message).toBe("Must provide rates");
+          }
+        });
+
+        test("should error without delivered rates if necessary", async () => {
+          expect.assertions(1);
+
+          const data: IJobsiteMaterialCreate = {
+            jobsite: documents.jobsites.jobsite_2,
+            material: documents.materials.material_1,
+            supplier: documents.companies.company_1,
+            quantity: 1000,
+            rates: [],
+            unit: "tonnes",
+            delivered: true,
+            deliveredRates: [],
+          };
+
+          try {
+            await JobsiteMaterial.createDocument(data);
+          } catch (e: any) {
+            expect(e.message).toBe("Must provide delivered rates");
+          }
         });
       });
     });

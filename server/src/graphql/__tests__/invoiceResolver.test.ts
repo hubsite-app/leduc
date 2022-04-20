@@ -44,8 +44,8 @@ describe("Invoice Resolver", () => {
   describe("MUTATIONS", () => {
     describe("invoiceUpdate", () => {
       const invoiceUpdate = `
-        mutation InvoiceUpdate($id: String!, $data: InvoiceData!) {
-          invoiceUpdate(id: $id, data: $data) {
+        mutation InvoiceUpdate($id: String!, $jobsiteId: ID!, $data: InvoiceData!) {
+          invoiceUpdateForJobsite(id: $id, jobsiteId: $jobsiteId, data: $data) {
             _id
             company {
               name
@@ -78,13 +78,16 @@ describe("Invoice Resolver", () => {
               variables: {
                 data,
                 id: documents.invoices.jobsite_3_invoice_1._id,
+                jobsiteId: documents.jobsites.jobsite_3._id,
               },
             })
             .set("Authorization", token);
 
+          console.log(res.body);
+
           expect(res.status).toBe(200);
 
-          expect(res.body.data.invoiceUpdate._id).toBe(
+          expect(res.body.data.invoiceUpdateForJobsite._id).toBe(
             documents.invoices.jobsite_3_invoice_1._id.toString()
           );
 

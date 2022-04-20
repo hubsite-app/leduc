@@ -25,12 +25,14 @@ const JobsiteMaterialUpdate = ({
 
   const [update, { loading }] = useJobsiteMaterialUpdateMutation();
 
-  const { FormComponents } = useJobsiteMaterialUpdateForm({
+  const { FormComponents, delivered } = useJobsiteMaterialUpdateForm({
     defaultValues: {
       supplierId: jobsiteMaterial.supplier._id,
       quantity: jobsiteMaterial.quantity,
       unit: jobsiteMaterial.unit,
       rates: jobsiteMaterial.rates,
+      delivered: jobsiteMaterial.delivered,
+      deliveredRates: jobsiteMaterial.deliveredRates,
     },
   });
 
@@ -81,7 +83,12 @@ const JobsiteMaterialUpdate = ({
         <FormComponents.Quantity isLoading={loading} />
         <FormComponents.Unit isLoading={loading} />
       </SimpleGrid>
-      <FormComponents.Rates isLoading={loading} />
+      <FormComponents.Delivered isLoading={loading} />
+      {delivered ? (
+        <FormComponents.DeliveredRates isLoading={loading} />
+      ) : (
+        <FormComponents.Rates isLoading={loading} />
+      )}
       <SubmitButton isLoading={loading} />
     </FormComponents.Form>
   );

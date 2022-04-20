@@ -1,4 +1,4 @@
-import { RatesData } from "@graphql/types/mutation";
+import { DefaultRateData, RatesData } from "@graphql/types/mutation";
 import { Company, JobsiteMaterial, JobsiteMaterialDocument } from "@models";
 import { Field, Float, InputType } from "type-graphql";
 
@@ -16,8 +16,14 @@ export class JobsiteMaterialCreateData {
   @Field({ nullable: false })
   public unit!: string;
 
-  @Field(() => [RatesData], { nullable: false })
+  @Field(() => [RatesData], { nullable: true })
   public rates!: RatesData[];
+
+  @Field(() => Boolean, { nullable: false })
+  public delivered!: boolean;
+
+  @Field(() => [DefaultRateData], { nullable: true })
+  public deliveredRates!: DefaultRateData[];
 }
 
 @InputType()
@@ -33,6 +39,12 @@ export class JobsiteMaterialUpdateData {
 
   @Field(() => [RatesData], { nullable: false })
   public rates!: RatesData[];
+
+  @Field(() => Boolean, { nullable: false })
+  public delivered!: boolean;
+
+  @Field(() => [DefaultRateData], { nullable: true })
+  public deliveredRates!: DefaultRateData[];
 }
 
 const update = (id: string, data: JobsiteMaterialUpdateData) => {

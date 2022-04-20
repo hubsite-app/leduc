@@ -1,5 +1,6 @@
+import { DefaultRateData } from "@graphql/types/mutation";
 import { CompanyDocument, JobsiteDocument, MaterialDocument } from "@models";
-import { RateClass } from "./models";
+import { IDefaultRateData, RateClass } from "./models";
 
 export interface IJobsiteMaterialCreate {
   jobsite: JobsiteDocument;
@@ -8,6 +9,8 @@ export interface IJobsiteMaterialCreate {
   quantity: number;
   unit: string;
   rates: RateClass[];
+  delivered: boolean;
+  deliveredRates: IDefaultRateData[];
 }
 
 export interface IJobsiteMaterialUpdate {
@@ -15,4 +18,6 @@ export interface IJobsiteMaterialUpdate {
   quantity: number;
   unit: string;
   rates: RateClass[];
+  delivered: boolean;
+  deliveredRates: IDefaultRateData[];
 }

@@ -20,6 +20,26 @@ import {
 import Number, { INumber } from "../components/Common/forms/Number";
 import Units, { IUnit } from "../components/Common/forms/Unit";
 import Rates, { IRates } from "../components/Common/forms/Rates";
+import { DefaultRatesSchema, RatesSchema } from "./yupSchema";
+import Checkbox, { ICheckbox } from "../components/Common/forms/Checkbox";
+import DefaultRates, {
+  IDefaultRateError,
+  IDefaultRates,
+} from "../components/Common/forms/DefaultRates";
+
+const defaultRates = [
+  {
+    rate: 0,
+    date: new Date(),
+  },
+];
+
+const defaultDeliveredRates = [
+  {
+    title: "",
+    rates: defaultRates,
+  },
+];
 
 const JobsiteMaterialCreateSchema = yup
   .object()
@@ -28,18 +48,9 @@ const JobsiteMaterialCreateSchema = yup
     supplierId: yup.string().required("please enter a supplier"),
     quantity: yup.number().required("please enter a quantity"),
     unit: yup.string().required("please enter a unit"),
-    rates: yup.array().of(
-      yup.object().shape({
-        date: yup
-          .date()
-          .required("please provide a date")
-          .typeError("please provide a date"),
-        rate: yup
-          .number()
-          .required("please provide a rate")
-          .typeError("please provide a rate"),
-      })
-    ),
+    rates: RatesSchema,
+    delivered: yup.boolean().required(),
+    deliveredRates: DefaultRatesSchema,
   })
   .required();
 
@@ -48,18 +59,27 @@ export const useJobsiteMaterialCreateForm = (options?: UseFormProps) => {
     resolver: yupResolver(JobsiteMaterialCreateSchema),
     defaultValues: {
       quantity: 0,
-      rates: [
-        {
-          rate: 0,
-          date: new Date(),
-        },
-      ],
+      rates: defaultRates,
+      delivered: false,
+      deliveredRates: defaultDeliveredRates,
       ...options?.defaultValues,
     },
     ...options,
   });
 
-  const { handleSubmit, control, setValue } = form;
+  const { handleSubmit, control, setValue, watch } = form;
+
+  const delivered: boolean = watch("delivered");
+
+  React.useEffect(() => {
+    if (delivered) {
+      setValue("rates", []);
+      setValue("deliveredRates", defaultDeliveredRates);
+    } else {
+      setValue("deliveredRates", []);
+      setValue("rates", defaultRates);
+    }
+  }, [delivered, setValue]);
 
   const FormComponents = {
     Form: ({
@@ -171,10 +191,52 @@ export const useJobsiteMaterialCreateForm = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
+    Delivered: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="delivered"
+            render={({ field }) => (
+              <Checkbox
+                {...props}
+                {...field}
+                isChecked={field.value}
+                isDisabled={isLoading}
+              >
+                Delivered
+              </Checkbox>
+            )}
+          />
+        ),
+        [isLoading, props]
+      ),
+    DeliveredRates: ({
+      ...props
+    }: IFormProps<Omit<IDefaultRates, "defaultRates">>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="deliveredRates"
+            render={({ field, fieldState }) => (
+              <DefaultRates
+                {...field}
+                {...props}
+                errors={fieldState.error as IDefaultRateError[] | undefined}
+                titleName="Trucking Type"
+                defaultRates={field.value}
+              />
+            )}
+          />
+        ),
+        [props]
+      ),
   };
 
   return {
     FormComponents,
+    delivered,
     ...form,
   };
 };
@@ -185,18 +247,9 @@ const JobsiteMaterialUpdateSchema = yup
     supplierId: yup.string().required("please enter a supplier"),
     quantity: yup.number().required("please enter a quantity"),
     unit: yup.string().required("please enter a unit"),
-    rates: yup.array().of(
-      yup.object().shape({
-        date: yup
-          .date()
-          .required("please provide a date")
-          .typeError("please provide a date"),
-        rate: yup
-          .number()
-          .required("please provide a rate")
-          .typeError("please provide a rate"),
-      })
-    ),
+    rates: RatesSchema,
+    delivered: yup.boolean().required(),
+    deliveredRates: DefaultRatesSchema,
   })
   .required();
 
@@ -205,13 +258,17 @@ export const useJobsiteMaterialUpdateForm = (options?: UseFormProps) => {
     resolver: yupResolver(JobsiteMaterialUpdateSchema),
     defaultValues: {
       quantity: 0,
-      rate: 0,
+      rates: defaultRates,
+      delivered: false,
+      deliveredRates: defaultDeliveredRates,
       ...options?.defaultValues,
     },
     ...options,
   });
 
-  const { handleSubmit, control, setValue } = form;
+  const { handleSubmit, control, setValue, watch, formState } = form;
+
+  const delivered: boolean = watch("delivered");
 
   const FormComponents = {
     Form: ({
@@ -301,10 +358,52 @@ export const useJobsiteMaterialUpdateForm = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
+    Delivered: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="delivered"
+            render={({ field }) => (
+              <Checkbox
+                {...props}
+                {...field}
+                isChecked={field.value}
+                isDisabled={isLoading}
+              >
+                Delivered
+              </Checkbox>
+            )}
+          />
+        ),
+        [isLoading, props]
+      ),
+    DeliveredRates: ({
+      ...props
+    }: IFormProps<Omit<IDefaultRates, "defaultRates">>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="deliveredRates"
+            render={({ field, fieldState }) => (
+              <DefaultRates
+                {...field}
+                {...props}
+                errors={fieldState.error as IDefaultRateError[] | undefined}
+                titleName="Trucking Type"
+                defaultRates={field.value}
+              />
+            )}
+          />
+        ),
+        [props]
+      ),
   };
 
   return {
     FormComponents,
+    delivered,
     ...form,
   };
 };

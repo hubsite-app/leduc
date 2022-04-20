@@ -14,4 +14,13 @@ fragment JobsiteMaterialCardSnippet on JobsiteMaterialClass {
     date
     rate
   }
+  delivered
+  deliveredRates {
+    _id
+    title
+    rates {
+      date
+      rate
+    }
+  }
 }

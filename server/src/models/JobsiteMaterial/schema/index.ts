@@ -3,8 +3,7 @@ import { post, prop, Ref } from "@typegoose/typegoose";
 import { MaterialClass, CompanyClass, JobsiteMaterialDocument } from "@models";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
-import { RateClass } from "@typescript/models";
-import validateMongooseArrayLength from "@validation/validateMongooseArrayLength";
+import { DefaultRateClass, RateClass } from "@typescript/models";
 import { logger } from "@logger";
 
 @ObjectType()
@@ -47,9 +46,16 @@ export class JobsiteMaterialSchema {
     type: () => [RateClass],
     required: true,
     default: [],
-    validate: validateMongooseArrayLength(),
   })
   public rates!: RateClass[];
+
+  @Field({ nullable: false })
+  @prop({ required: true, default: false })
+  public delivered!: Boolean;
+
+  @Field(() => [DefaultRateClass], { nullable: false })
+  @prop({ type: () => [DefaultRateClass], required: true, default: [] })
+  public deliveredRates!: DefaultRateClass[];
 
   @Field({ nullable: false })
   @prop({ required: true, default: Date.now })

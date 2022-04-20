@@ -23,7 +23,7 @@ const JobsiteMaterialCreate = ({
 
   const toast = useToast();
 
-  const { FormComponents } = useJobsiteMaterialCreateForm();
+  const { FormComponents, delivered } = useJobsiteMaterialCreateForm();
 
   const [create, { loading }] = useJobsiteAddMaterialMutation();
 
@@ -77,7 +77,12 @@ const JobsiteMaterialCreate = ({
         <FormComponents.Quantity isLoading={loading} />
         <FormComponents.Unit isLoading={loading} />
       </SimpleGrid>
-      <FormComponents.Rates isLoading={loading} />
+      <FormComponents.Delivered isLoading={loading} />
+      {delivered ? (
+        <FormComponents.DeliveredRates isLoading={loading} />
+      ) : (
+        <FormComponents.Rates isLoading={loading} />
+      )}
       <SubmitButton isLoading={loading} />
     </FormComponents.Form>
   );

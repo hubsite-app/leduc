@@ -32,6 +32,7 @@ const JobsiteMaterialCard = ({ jobsiteMaterial }: IJobsiteMaterialCard) => {
         <Stat>
           <StatLabel fontWeight="bold">
             {jobsiteMaterial.material.name} - {jobsiteMaterial.supplier.name}
+            {jobsiteMaterial.delivered && " (Delivered)"}
           </StatLabel>
           <StatNumber>
             {formatNumber(jobsiteMaterial.completedQuantity)}{" "}

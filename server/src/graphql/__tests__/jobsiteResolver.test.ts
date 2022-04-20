@@ -195,6 +195,8 @@ describe("Jobsite Resolver", () => {
               },
             ],
             unit: "tonnes",
+            delivered: false,
+            deliveredRates: [],
           };
 
           const res = await request(app)

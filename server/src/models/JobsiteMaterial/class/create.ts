@@ -13,7 +13,11 @@ const document = (
         quantity: data.quantity,
         unit: data.unit,
         rates: data.rates,
+        delivered: data.delivered,
+        deliveredRates: data.deliveredRates,
       });
+
+      await jobsiteMaterial.validateDocument();
 
       await data.jobsite.addMaterial(jobsiteMaterial);
 

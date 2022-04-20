@@ -63,7 +63,7 @@ describe("Jobsite Material Resolver", () => {
       `;
 
       describe("success", () => {
-        test("should successfully update invoice", async () => {
+        test("should successfully update invoice w/o delivered", async () => {
           const token = await jestLogin(app, documents.users.admin_user.email);
 
           const data: JobsiteMaterialUpdateData = {
@@ -76,6 +76,8 @@ describe("Jobsite Material Resolver", () => {
             ],
             supplierId: documents.companies.company_1._id.toString(),
             unit: "tonnes",
+            delivered: false,
+            deliveredRates: [],
           };
 
           const res = await request(app)

@@ -15,6 +15,12 @@ const document = (
 
       jobsiteMaterial.rates = data.rates;
 
+      jobsiteMaterial.delivered = data.delivered;
+
+      jobsiteMaterial.deliveredRates = data.deliveredRates;
+
+      await jobsiteMaterial.validateDocument();
+
       resolve();
     } catch (e) {
       reject(e);

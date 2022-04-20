@@ -13,25 +13,36 @@ import {
   RateSnippetFragment,
 } from "../../../generated/graphql";
 import FormContainer from "../FormContainer";
-import Rates from "./Rates";
+import Rates, { IRateError } from "./Rates";
 import TextField from "./TextField";
 
-interface IDefaultRates {
+export interface IDefaultRateError {
+  title?: {
+    message?: string;
+  };
+  rates: IRateError[];
+}
+
+export interface IDefaultRates {
   defaultRates: DefaultRateSnippetFragment[];
   onChange?: (
     defaultRates: Omit<DefaultRateSnippetFragment, "__typename">[]
   ) => void;
+  errors?: IDefaultRateError[];
   isLoading?: boolean;
   allowDeletion?: boolean;
   label?: string;
+  titleName?: string;
 }
 
 const DefaultRates = ({
   defaultRates,
   onChange,
+  errors = [],
   isLoading,
   allowDeletion = false,
   label,
+  titleName = "Title",
 }: IDefaultRates) => {
   /**
    * ----- Variables -----
@@ -120,6 +131,8 @@ const DefaultRates = ({
           justifyContent="space-between"
           display="flex"
           flexDir="row"
+          border="1px solid"
+          borderColor="gray.400"
         >
           <SimpleGrid
             columns={[1, 1, 2]}
@@ -128,14 +141,16 @@ const DefaultRates = ({
           >
             <TextField
               value={def.title}
-              label="Title"
+              label={titleName}
               isDisabled={isLoading}
+              errorMessage={errors[index]?.title?.message}
               onChange={(e) => setTitle(e.target.value, index)}
             />
             <Rates
               rates={def.rates}
               isLoading={isLoading}
               onChange={(rate) => setRates(rate, index)}
+              errors={errors[index]?.rates}
             />
           </SimpleGrid>
           {allowDeletion && (
