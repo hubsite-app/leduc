@@ -20,6 +20,7 @@ import formatNumber from "../../../utils/formatNumber";
 
 interface IMaterial {
   jobsiteMaterial: JobsiteMaterialCardSnippetFragment;
+  deliveredRateId?: string | null;
   reports: (JobsiteDayReportMaterialSnippetFragment | null)[];
   totalQuantity: number;
   totalCost: number;
@@ -70,7 +71,8 @@ const JobsiteReportMaterialReports = ({
           const existingIndex = materials.findIndex(
             (material) =>
               material.jobsiteMaterial._id ===
-              materialReport.jobsiteMaterial?._id
+                materialReport.jobsiteMaterial?._id &&
+              material.deliveredRateId === materialReport.deliveredRateId
           );
 
           if (existingIndex === -1) {
@@ -79,6 +81,7 @@ const JobsiteReportMaterialReports = ({
               reports: [],
               totalCost: 0,
               totalQuantity: 0,
+              deliveredRateId: materialReport.deliveredRateId,
             });
           }
         }
@@ -98,7 +101,8 @@ const JobsiteReportMaterialReports = ({
           const existingIndex = materials.findIndex(
             (material) =>
               material.jobsiteMaterial._id ===
-              materialReport.jobsiteMaterial?._id
+                materialReport.jobsiteMaterial?._id &&
+              material.deliveredRateId === materialReport.deliveredRateId
           );
 
           if (existingIndex !== -1) {
@@ -138,6 +142,8 @@ const JobsiteReportMaterialReports = ({
 
     return materials;
   }, [crewType, relevantReports]);
+
+  console.log("materialReports", materialReports);
 
   const totals: { quantity: number; cost: number } = React.useMemo(() => {
     let totalQuantity = 0,
@@ -181,9 +187,20 @@ const JobsiteReportMaterialReports = ({
           </Tr>
         </Thead>
         <Tbody>
-          {materialReports.map((reports) => (
-            <Tr key={reports.jobsiteMaterial._id}>
-              <Th>{reports.jobsiteMaterial.material.name}</Th>
+          {materialReports.map((reports, index) => (
+            <Tr key={index}>
+              <Th>
+                {reports.jobsiteMaterial.material.name}
+                {reports.jobsiteMaterial.deliveredRates.find(
+                  (rate) => rate._id === reports.deliveredRateId
+                )
+                  ? `: ${
+                      reports.jobsiteMaterial.deliveredRates.find(
+                        (rate) => rate._id === reports.deliveredRateId
+                      )?.title
+                    }`
+                  : ""}
+              </Th>
               <Th isNumeric>{reports.totalQuantity}</Th>
               <Th isNumeric>${formatNumber(reports.totalCost)}</Th>
               {reports.reports.map((report) => (

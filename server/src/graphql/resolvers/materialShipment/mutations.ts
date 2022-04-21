@@ -66,8 +66,11 @@ export class MaterialShipmentVehicleObjectData {
   @Field({ nullable: false })
   public vehicleCode!: string;
 
-  @Field({ nullable: false })
-  public truckingRateId!: string;
+  @Field({ nullable: true })
+  public truckingRateId?: string;
+
+  @Field({ nullable: true })
+  public deliveredRateId?: string;
 }
 
 @InputType()

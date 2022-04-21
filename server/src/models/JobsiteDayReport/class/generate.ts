@@ -16,6 +16,7 @@ import {
   OnSiteSummaryReportClass,
 } from "@typescript/jobsiteReports";
 import { Id } from "@typescript/models";
+import getRateForTime from "@utils/getRateForTime";
 import getTruckingRateForTime from "@utils/getTruckingRateForTime";
 import dayjs from "dayjs";
 import {
@@ -343,6 +344,7 @@ const materialReports = (
       // Catalog all jobsiteMaterials and their shipments
       const jobsiteMaterialObjects: {
         jobsiteMaterial: Id;
+        deliveredRateId?: Id;
         materialShipments: MaterialShipmentDocument[];
         crewType: CrewTypes;
       }[] = [];
@@ -355,7 +357,11 @@ const materialReports = (
                 i
               ].materialShipment.jobsiteMaterial!.toString() &&
             jobsiteMaterialObjects[j].crewType ===
-              materialShipmentObjects[i].crewType
+              materialShipmentObjects[i].crewType &&
+            jobsiteMaterialObjects[j].deliveredRateId?.toString() ===
+              materialShipmentObjects[
+                i
+              ].materialShipment.vehicleObject?.deliveredRateId?.toString()
           )
             matchedIndex = j;
         }
@@ -368,6 +374,9 @@ const materialReports = (
               ].materialShipment.jobsiteMaterial!.toString(),
             materialShipments: [materialShipmentObjects[i].materialShipment],
             crewType: materialShipmentObjects[i].crewType,
+            deliveredRateId:
+              materialShipmentObjects[i].materialShipment.vehicleObject
+                ?.deliveredRateId,
           });
         } else {
           jobsiteMaterialObjects[matchedIndex].materialShipments.push(
@@ -401,17 +410,47 @@ const materialReports = (
             }
           ))!;
 
-          const materialReport: MaterialReportClass = {
-            jobsiteMaterial: jobsiteMaterial._id,
-            materialShipments: jobsiteMaterialObject.materialShipments.map(
-              (object) => object._id
-            ),
-            crewType: jobsiteMaterialObject.crewType,
-            quantity,
-            rate: await jobsiteMaterial.getRateForTime(jobsiteDayReport.date),
-          };
+          if (jobsiteMaterialObject.deliveredRateId) {
+            const deliveredRate = jobsiteMaterial.deliveredRates.find(
+              (rate) =>
+                rate._id?.toString() ===
+                jobsiteMaterialObject.deliveredRateId?.toString()
+            );
 
-          materialReports.push(materialReport);
+            if (deliveredRate) {
+              const materialReport: MaterialReportClass = {
+                jobsiteMaterial: jobsiteMaterial._id,
+                deliveredRateId: deliveredRate._id,
+                materialShipments: jobsiteMaterialObject.materialShipments
+                  .filter(
+                    (shipment) =>
+                      shipment.vehicleObject?.deliveredRateId?.toString() ===
+                      deliveredRate._id!.toString()
+                  )
+                  .map((object) => object._id),
+                crewType: jobsiteMaterialObject.crewType,
+                quantity,
+                rate: getRateForTime(
+                  deliveredRate.rates,
+                  jobsiteDayReport.date
+                ),
+              };
+
+              materialReports.push(materialReport);
+            }
+          } else {
+            const materialReport: MaterialReportClass = {
+              jobsiteMaterial: jobsiteMaterial._id,
+              materialShipments: jobsiteMaterialObject.materialShipments.map(
+                (object) => object._id
+              ),
+              crewType: jobsiteMaterialObject.crewType,
+              quantity,
+              rate: await jobsiteMaterial.getRateForTime(jobsiteDayReport.date),
+            };
+
+            materialReports.push(materialReport);
+          }
         } catch (error: any) {
           logger.error("Unable to create material report");
         }
@@ -602,6 +641,8 @@ const truckingReports = (
         let matchedIndex = -1;
         for (let j = 0; j < uniqueTruckingObjects.length; j++) {
           if (
+            materialShipmentObjects[i].materialShipment.vehicleObject
+              ?.truckingRateId &&
             uniqueTruckingObjects[j].truckingRateId.toString() ===
               materialShipmentObjects[i].materialShipment.vehicleObject
                 ?.truckingRateId &&

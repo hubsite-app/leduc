@@ -1,4 +1,5 @@
 import { DailyReportDocument, JobsiteMaterialDocument } from "@models";
+import { Id } from "./models";
 
 interface IMaterialShipmentCreateBase {
   startTime?: Date;
@@ -7,7 +8,8 @@ interface IMaterialShipmentCreateBase {
     source: string;
     vehicleType: string;
     vehicleCode: string;
-    truckingRateId: string;
+    truckingRateId?: string;
+    deliveredRateId?: Id;
   };
   dailyReport: DailyReportDocument;
 }

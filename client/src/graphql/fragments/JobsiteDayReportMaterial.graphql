@@ -3,6 +3,7 @@ fragment JobsiteDayReportMaterialSnippet on MaterialReportClass {
   jobsiteMaterial {
     ...JobsiteMaterialCardSnippet
   }
+  deliveredRateId
   rate
   quantity
   crewType

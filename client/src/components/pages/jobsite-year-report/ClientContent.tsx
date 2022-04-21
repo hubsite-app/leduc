@@ -54,7 +54,7 @@ const JobsiteYearReportClientContent = ({
             {jobsiteYearReport.update.lastUpdatedAt
               ? formatDate(
                   jobsiteYearReport.update.lastUpdatedAt,
-                  "MMMM hh:mm a, YYYY"
+                  "MMMM D hh:mm a, YYYY"
                 )
               : "Never"}
           </Heading>

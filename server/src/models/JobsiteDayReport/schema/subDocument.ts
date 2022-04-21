@@ -87,6 +87,10 @@ export class MaterialReportClass {
   @prop({ ref: () => JobsiteMaterialClass, required: true })
   public jobsiteMaterial!: Ref<JobsiteMaterialClass>;
 
+  @Field(() => ID, { nullable: true })
+  @prop({ type: Types.ObjectId, required: false })
+  public deliveredRateId?: Types.ObjectId;
+
   @Field(() => [MaterialShipmentClass], { nullable: false })
   @prop({
     ref: () => MaterialShipmentClass,

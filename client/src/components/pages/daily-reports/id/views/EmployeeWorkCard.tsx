@@ -12,6 +12,7 @@ import {
   useEmployeeWorkUpdateMutation,
 } from "../../../../../generated/graphql";
 import convertHourToDate from "../../../../../utils/convertHourToDate";
+import formatNumber from "../../../../../utils/formatNumber";
 import hourString from "../../../../../utils/hourString";
 import FormContainer from "../../../../Common/FormContainer";
 import SubmitButton from "../../../../Common/forms/SubmitButton";
@@ -86,8 +87,8 @@ const EmployeeWorkCard = ({
    */
 
   const hours = React.useMemo(() => {
-    return Math.abs(
-      dayjs(employeeWork.endTime).diff(employeeWork.startTime, "hours")
+    return (
+      dayjs(employeeWork.endTime).diff(employeeWork.startTime, "minutes") / 60
     );
   }, [employeeWork.endTime, employeeWork.startTime]);
 
@@ -107,8 +108,8 @@ const EmployeeWorkCard = ({
           </Text>
           <Text>
             {dayjs(employeeWork.startTime).format("h:mm a")} -{" "}
-            {dayjs(employeeWork.endTime).format("h:mm a")} ({hours}{" "}
-            {hourString(hours)})
+            {dayjs(employeeWork.endTime).format("h:mm a")} (
+            {formatNumber(hours)} {hourString(hours)})
           </Text>
         </Box>
         <Flex flexDir="row">

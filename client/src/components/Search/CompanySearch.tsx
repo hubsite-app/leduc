@@ -99,6 +99,12 @@ const CompanySearch = ({
   }, []);
 
   React.useEffect(() => {
+    if (props.value && !isObjectId(props.value.toString())) {
+      setSearchString(props.value.toString());
+    }
+  }, [props.value]);
+
+  React.useEffect(() => {
     if (fetchData?.company && !fetchLoading) {
       setSearchString(fetchData.company.name);
       companySelected({
