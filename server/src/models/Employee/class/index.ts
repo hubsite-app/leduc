@@ -5,7 +5,7 @@ import { EmployeeDocument, EmployeeModel } from "@models";
 import { EmployeeSchema } from "../schema";
 import get from "./get";
 import { GetByIDOptions, IRatesData, ISearchOptions } from "@typescript/models";
-import { IEmployeeCreate } from "@typescript/employee";
+import { IEmployeeCreate, IEmployeeUpdate } from "@typescript/employee";
 import create from "./create";
 import update from "./update";
 
@@ -69,6 +69,10 @@ export class EmployeeClass extends EmployeeSchema {
   /**
    * ----- Update -----
    */
+
+  public async updateDocument(this: EmployeeDocument, data: IEmployeeUpdate) {
+    return update.document(this, data);
+  }
 
   public async updateRates(this: EmployeeDocument, data: IRatesData[]) {
     return update.rates(this, data);

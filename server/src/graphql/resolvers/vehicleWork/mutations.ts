@@ -3,8 +3,8 @@ import { Field, Float, InputType } from "type-graphql";
 
 @InputType()
 export class VehicleWorkJobData {
-  @Field(() => String, { nullable: false })
-  public jobTitle!: string;
+  @Field(() => String, { nullable: true })
+  public jobTitle?: string;
 
   @Field(() => Float, { nullable: false })
   public hours!: number;
@@ -21,8 +21,8 @@ export class VehicleWorkCreateData {
 
 @InputType()
 export class VehicleWorkUpdateData {
-  @Field({ nullable: false })
-  public jobTitle!: string;
+  @Field({ nullable: true })
+  public jobTitle?: string;
 
   @Field(() => Float, { nullable: false })
   public hours!: number;

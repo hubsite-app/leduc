@@ -1,0 +1,5 @@
+mutation VehicleUpdate($id: ID!, $data: VehicleUpdateData!) {
+  vehicleUpdate(id: $id, data: $data) {
+    ...VehicleFullSnippet
+  }
+}

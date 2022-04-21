@@ -184,11 +184,6 @@ const VehicleWorkCreateForm = ({
           hours: undefined,
         };
 
-        if (isEmpty(formData[i].jobs[j].jobTitle)) {
-          jobs[j].jobTitle = "please provide a job title";
-          valid = false;
-        }
-
         if (!formData[i].jobs[j].hours) {
           jobs[j].hours = "please provide hours";
           valid = false;
@@ -296,16 +291,6 @@ const VehicleWorkCreateForm = ({
               )}
               <SimpleGrid columns={[1, 1, 2]} spacing={2}>
                 <TextField
-                  label="Work Done"
-                  isDisabled={loading}
-                  value={job.jobTitle}
-                  bgColor="white"
-                  errorMessage={formErrors[dataIndex]?.jobs[jobIndex]?.jobTitle}
-                  onChange={(e) =>
-                    updateJobTitle(e.target.value, dataIndex, jobIndex)
-                  }
-                />
-                <TextField
                   label="Hours"
                   isDisabled={loading}
                   value={job.hours}
@@ -314,6 +299,16 @@ const VehicleWorkCreateForm = ({
                   errorMessage={formErrors[dataIndex]?.jobs[jobIndex]?.hours}
                   onChange={(e) =>
                     updateHours(e.target.value, dataIndex, jobIndex)
+                  }
+                />
+                <TextField
+                  label="Work Done (Optional)"
+                  isDisabled={loading}
+                  value={job.jobTitle || ""}
+                  bgColor="white"
+                  errorMessage={formErrors[dataIndex]?.jobs[jobIndex]?.jobTitle}
+                  onChange={(e) =>
+                    updateJobTitle(e.target.value, dataIndex, jobIndex)
                   }
                 />
               </SimpleGrid>

@@ -24,6 +24,10 @@ export interface ICrewCreate {
   type: CrewTypes;
 }
 
+export interface ICrewUpdate {
+  name: string;
+}
+
 export interface ICrewSearchObject {
   score: number;
   crew: CrewDocument;

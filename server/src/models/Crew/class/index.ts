@@ -7,7 +7,7 @@ import get from "./get";
 import { GetByIDOptions, Id, ISearchOptions } from "@typescript/models";
 import remove from "./remove";
 import update from "./update";
-import { ICrewCreate } from "@typescript/crew";
+import { ICrewCreate, ICrewUpdate } from "@typescript/crew";
 import create from "./create";
 
 @ObjectType()
@@ -67,6 +67,10 @@ export class CrewClass extends CrewSchema {
   /**
    * ----- Update -----
    */
+
+  public async updateDocument(this: CrewDocument, data: ICrewUpdate) {
+    return update.document(this, data);
+  }
 
   public async addEmployee(this: CrewDocument, employeeId: Id) {
     return update.addEmployee(this, employeeId);

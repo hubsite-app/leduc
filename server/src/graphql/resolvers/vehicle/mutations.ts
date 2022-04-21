@@ -21,6 +21,15 @@ export class VehicleCreateData {
   public sourceCompany?: string;
 }
 
+@InputType()
+export class VehicleUpdateData {
+  @Field({ nullable: false })
+  public name!: string;
+
+  @Field({ nullable: false })
+  public vehicleType!: string;
+}
+
 const create = (data: VehicleCreateData, crewId?: Id) => {
   return new Promise<VehicleDocument>(async (resolve, reject) => {
     try {
@@ -36,6 +45,22 @@ const create = (data: VehicleCreateData, crewId?: Id) => {
       await vehicle.save();
 
       if (crew) await crew.save();
+
+      resolve(vehicle);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const update = (id: Id, data: VehicleUpdateData) => {
+  return new Promise<VehicleDocument>(async (resolve, reject) => {
+    try {
+      const vehicle = (await Vehicle.getById(id, { throwError: true }))!;
+
+      await vehicle.updateDocument(data);
+
+      await vehicle.save();
 
       resolve(vehicle);
     } catch (e) {
@@ -62,5 +87,6 @@ const updateRates = (id: string, data: RatesData[]) => {
 
 export default {
   create,
+  update,
   updateRates,
 };

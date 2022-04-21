@@ -5,6 +5,8 @@ export interface IEmployeeCreate {
   jobTitle?: string;
 }
 
+export interface IEmployeeUpdate extends IEmployeeCreate {}
+
 export interface IEmployeeSearchObject {
   score: number;
   employee: EmployeeDocument;

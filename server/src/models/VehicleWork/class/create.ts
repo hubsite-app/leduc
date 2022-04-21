@@ -1,7 +1,6 @@
 import { Vehicle, VehicleWorkDocument, VehicleWorkModel } from "@models";
 import { Id } from "@typescript/models";
 import { IVehicleWorkCreate } from "@typescript/vehicleWork";
-import isEmpty from "@utils/isEmpty";
 
 const document = (VehicleWork: VehicleWorkModel, data: IVehicleWorkCreate) => {
   return new Promise<VehicleWorkDocument>(async (resolve, reject) => {
@@ -11,20 +10,15 @@ const document = (VehicleWork: VehicleWorkModel, data: IVehicleWorkCreate) => {
       if (!vehicle)
         throw new Error("VehicleWork.createDocument: unable to find vehicle");
 
-      if (!isEmpty(data.jobTitle)) {
-        const vehicleWork = new VehicleWork({
-          jobTitle: data.jobTitle,
-          hours: data.hours,
-          vehicle: data.vehicleId,
-        });
+      const vehicleWork = new VehicleWork({
+        jobTitle: data.jobTitle,
+        hours: data.hours,
+        vehicle: data.vehicleId,
+      });
 
-        await data.dailyReport.addVehicleWork(vehicleWork);
+      await data.dailyReport.addVehicleWork(vehicleWork);
 
-        resolve(vehicleWork);
-      } else
-        throw new Error(
-          "VehicleWork.createDocument: must provide a valid job title"
-        );
+      resolve(vehicleWork);
     } catch (e) {
       reject(e);
     }

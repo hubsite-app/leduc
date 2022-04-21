@@ -1,0 +1,5 @@
+mutation CrewUpdate($id: ID!, $data: CrewUpdateData!) {
+  crewUpdate(id: $id, data: $data) {
+    ...CrewFullSnippet
+  }
+}

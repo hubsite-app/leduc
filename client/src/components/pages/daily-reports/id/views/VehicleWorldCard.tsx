@@ -70,10 +70,18 @@ const VehicleWorkCard = ({ vehicleWork, editPermission }: IVehicleWorkCard) => {
       <Flex flexDir="row" justifyContent="space-between">
         <Box>
           <Text>
-            <Text as="span" fontWeight="bold">
-              {vehicleWork.jobTitle}
-            </Text>{" "}
-            - {vehicleWork.vehicle ? vehicleWork.vehicle.name : "Not Found"}
+            {vehicleWork.jobTitle ? (
+              <>
+                <Text as="span" fontWeight="bold">
+                  {vehicleWork.jobTitle}
+                </Text>{" "}
+                - {vehicleWork.vehicle ? vehicleWork.vehicle.name : "Not Found"}
+              </>
+            ) : (
+              <Text as="span" fontWeight="bold">
+                {vehicleWork.vehicle ? vehicleWork.vehicle.name : "Not Found"}
+              </Text>
+            )}
           </Text>
           <Text>
             {vehicleWork.hours} {hourString(vehicleWork.hours)}

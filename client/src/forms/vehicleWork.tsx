@@ -15,7 +15,7 @@ import TextField, { ITextField } from "../components/Common/forms/TextField";
 const VehicleWorkUpdate = yup
   .object()
   .shape({
-    jobTitle: yup.string().required("please provide a job title"),
+    jobTitle: yup.string(),
     hours: yup
       .number()
       .required("please provide hours")
@@ -50,7 +50,7 @@ export const useVehicleWorkUpdateForm = (options?: UseFormProps) => {
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}
-                label="Work Done"
+                label="Work Done (Optional)"
                 isDisabled={isLoading}
               />
             )}

@@ -10,7 +10,11 @@ import {
 import * as yup from "yup";
 
 import TextField, { ITextField } from "../components/Common/forms/TextField";
-import { CrewCreateData, CrewTypes } from "../generated/graphql";
+import {
+  CrewCreateData,
+  CrewTypes,
+  CrewUpdateData,
+} from "../generated/graphql";
 import { IFormProps } from "../typescript/forms";
 import CrewType, { ICrewType } from "../components/Forms/Crew/Type";
 
@@ -71,6 +75,56 @@ export const useCrewCreateForm = (options?: UseFormProps) => {
                 value={field.value as CrewTypes}
                 errorMessage={fieldState.error?.message}
                 label="Crew Type"
+                isDisabled={isLoading}
+              />
+            )}
+          />
+        ),
+        [isLoading, props]
+      ),
+  };
+
+  return {
+    FormComponents,
+    ...form,
+  };
+};
+
+const CrewUpdateSchema = yup
+  .object()
+  .shape({
+    name: yup.string().required("please provide a name"),
+  })
+  .required();
+
+export const useCrewUpdateForm = (options?: UseFormProps) => {
+  const form = useForm({
+    resolver: yupResolver(CrewUpdateSchema),
+    ...options,
+  });
+
+  const { handleSubmit, control } = form;
+
+  const FormComponents = {
+    Form: ({
+      children,
+      submitHandler,
+    }: {
+      children: React.ReactNode;
+      submitHandler: SubmitHandler<CrewUpdateData>;
+    }) => <form onSubmit={handleSubmit(submitHandler)}>{children}</form>,
+    Name: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="name"
+            render={({ field, fieldState }) => (
+              <TextField
+                {...props}
+                {...field}
+                errorMessage={fieldState.error?.message}
+                label="Name"
                 isDisabled={isLoading}
               />
             )}

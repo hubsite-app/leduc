@@ -2,6 +2,7 @@ import {
   Arg,
   Authorized,
   FieldResolver,
+  ID,
   Mutation,
   Query,
   Resolver,
@@ -9,9 +10,10 @@ import {
 } from "type-graphql";
 
 import { CrewClass, Vehicle, VehicleClass, VehicleDocument } from "@models";
-import mutations, { VehicleCreateData } from "./mutations";
+import mutations, { VehicleCreateData, VehicleUpdateData } from "./mutations";
 import { SearchOptions } from "@graphql/types/query";
 import { RatesData } from "@graphql/types/mutation";
+import { Id } from "@typescript/models";
 
 @Resolver(() => VehicleClass)
 export default class VehicleResolver {
@@ -55,6 +57,15 @@ export default class VehicleResolver {
     @Arg("crewId", { nullable: true }) crewId?: string
   ) {
     return mutations.create(data, crewId);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => VehicleClass)
+  async vehicleUpdate(
+    @Arg("id", () => ID) id: Id,
+    @Arg("data") data: VehicleUpdateData
+  ) {
+    return mutations.update(id, data);
   }
 
   @Authorized(["ADMIN"])

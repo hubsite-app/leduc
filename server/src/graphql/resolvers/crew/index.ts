@@ -8,16 +8,18 @@ import {
   JobsiteClass,
   VehicleClass,
 } from "@models";
+import { Id } from "@typescript/models";
 import {
   Arg,
   Authorized,
   FieldResolver,
+  ID,
   Mutation,
   Query,
   Resolver,
   Root,
 } from "type-graphql";
-import mutations, { CrewCreateData } from "./mutations";
+import mutations, { CrewCreateData, CrewUpdateData } from "./mutations";
 
 @Resolver(() => CrewClass)
 export default class CrewResolver {
@@ -74,10 +76,19 @@ export default class CrewResolver {
    * ----- Mutations -----
    */
 
-  @Authorized(["PM", 'ADMIN'])
+  @Authorized(["PM", "ADMIN"])
   @Mutation(() => CrewClass)
   async crewCreate(@Arg("data") data: CrewCreateData) {
     return mutations.create(data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => CrewClass)
+  async crewUpdate(
+    @Arg("id", () => ID) id: Id,
+    @Arg("data") data: CrewUpdateData
+  ) {
+    return mutations.update(id, data);
   }
 
   @Authorized()

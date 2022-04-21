@@ -12,6 +12,8 @@ import * as yup from "yup";
 import { EmployeeWorkUpdateData } from "../generated/graphql";
 import TextField, { ITextField } from "../components/Common/forms/TextField";
 import { IFormProps } from "../typescript/forms";
+import { ISelect } from "../components/Common/forms/Select";
+import EmployeeWorkSelect from "../components/Common/forms/EmployeeWorkSelect";
 
 const EmployeeWorkUpdate = yup
   .object()
@@ -38,14 +40,14 @@ export const useEmployeeWorkUpdateForm = (options?: UseFormProps) => {
       children: React.ReactNode;
       submitHandler: SubmitHandler<EmployeeWorkUpdateData>;
     }) => <form onSubmit={handleSubmit(submitHandler)}>{children}</form>,
-    JobTitle: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+    JobTitle: ({ isLoading, ...props }: IFormProps<Omit<ISelect, "options">>) =>
       React.useMemo(
         () => (
           <Controller
             control={control}
             name="jobTitle"
             render={({ field, fieldState }) => (
-              <TextField
+              <EmployeeWorkSelect
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}

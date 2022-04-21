@@ -25,6 +25,7 @@ import ErrorMessage from "../../../../Common/ErrorMessage";
 import dayjs from "dayjs";
 import isEmpty from "../../../../../utils/isEmpty";
 import EmployeeSearch from "../../../../Search/EmployeeSearch";
+import EmployeeWorkSelect from "../../../../Common/forms/EmployeeWorkSelect";
 
 type JobErrors = { jobTitle?: string; startTime?: string; endTime?: string };
 
@@ -324,11 +325,10 @@ const EmployeeHourCreateForm = ({
                   />
                 </Flex>
               )}
-              <TextField
+              <EmployeeWorkSelect
                 label="Work Done"
                 isDisabled={loading}
                 value={job.jobTitle}
-                bgColor="white"
                 errorMessage={formErrors[dataIndex]?.jobs[jobIndex]?.jobTitle}
                 onChange={(e) =>
                   updateJobTitle(e.target.value, dataIndex, jobIndex)

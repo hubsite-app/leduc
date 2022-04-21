@@ -5,7 +5,7 @@ import { VehicleDocument, VehicleModel } from "@models";
 import { VehicleSchema } from "..";
 import { GetByIDOptions, IRatesData, ISearchOptions } from "@typescript/models";
 import get from "./get";
-import { IVehicleCreate } from "@typescript/vehicle";
+import { IVehicleCreate, IVehicleUpdate } from "@typescript/vehicle";
 import create from "./create";
 import update from "./update";
 
@@ -54,6 +54,10 @@ export class VehicleClass extends VehicleSchema {
   /**
    * ----- Update -----
    */
+
+  public async updateDocument(this: VehicleDocument, data: IVehicleUpdate) {
+    return update.document(this, data);
+  }
 
   public async updateRates(this: VehicleDocument, data: IRatesData[]) {
     return update.rates(this, data);

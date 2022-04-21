@@ -9,10 +9,12 @@ import {
   UserClass,
 } from "@models";
 import pubsub from "@pubsub";
+import { Id } from "@typescript/models";
 import {
   Arg,
   Authorized,
   FieldResolver,
+  ID,
   Mutation,
   Publisher,
   PubSub,
@@ -21,7 +23,7 @@ import {
   Resolver,
   Root,
 } from "type-graphql";
-import mutations, { EmployeeCreateData } from "./mutations";
+import mutations, { EmployeeCreateData, EmployeeUpdateData } from "./mutations";
 
 @Resolver(() => EmployeeClass)
 export default class EmployeeResolver {
@@ -75,6 +77,15 @@ export default class EmployeeResolver {
     @Arg("crewId", { nullable: true }) crewId?: string
   ) {
     return mutations.create(data, crewId);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => EmployeeClass)
+  async employeeUpdate(
+    @Arg("id", () => ID) id: Id,
+    @Arg("data") data: EmployeeUpdateData
+  ) {
+    return mutations.update(id, data);
   }
 
   @Authorized(["ADMIN"])

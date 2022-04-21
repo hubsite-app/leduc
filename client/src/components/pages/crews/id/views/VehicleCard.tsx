@@ -2,10 +2,11 @@ import { Box, Flex, IconButton, Text } from "@chakra-ui/react";
 import { FiTrash } from "react-icons/fi";
 import {
   CrewFullSnippetFragment,
-  CrewSsrSnippetFragment,
   useCrewRemoveVehicleMutation,
   VehicleCardSnippetFragment,
 } from "../../../../../generated/graphql";
+import createLink from "../../../../../utils/createLink";
+import TextLink from "../../../../Common/TextLink";
 
 interface IVehicleCard {
   vehicle: VehicleCardSnippetFragment;
@@ -24,9 +25,9 @@ const VehicleCard = ({ vehicle, crew }: IVehicleCard) => {
     <Box p={2} w="100%" border="1px solid lightgray">
       <Flex flexDir="row" justifyContent="space-between">
         <Box>
-          <Text fontWeight="bold">
+          <TextLink link={createLink.vehicle(vehicle._id)} fontWeight="bold">
             {vehicle.name} ({vehicle.vehicleCode})
-          </Text>
+          </TextLink>
           <Text>{vehicle.vehicleType}</Text>
         </Box>
         <IconButton

@@ -8,6 +8,11 @@ export interface IVehicleCreate {
   sourceCompany?: string;
 }
 
+export interface IVehicleUpdate {
+  name: string;
+  vehicleType: string;
+}
+
 export interface IVehicleSearchObject {
   score: number;
   vehicle: VehicleDocument;

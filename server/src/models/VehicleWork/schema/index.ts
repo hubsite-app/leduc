@@ -15,9 +15,9 @@ export class VehicleWorkSchema {
   @Field(() => ID, { nullable: false })
   public _id!: Types.ObjectId;
 
-  @Field({ nullable: false })
-  @prop({ required: true, trim: true })
-  public jobTitle!: string;
+  @Field({ nullable: true })
+  @prop({ required: false, trim: true })
+  public jobTitle?: string;
 
   @Field({ nullable: false })
   @prop({ required: true })

@@ -27,8 +27,7 @@ const VehicleClientContent = ({ id }: IVehicleClientContent) => {
 
       return (
         <Box>
-          <Card>
-            <Heading size="md">Info</Heading>
+          <Card heading={<Heading size="md">Info</Heading>}>
             <Text>
               <Text fontWeight="bold" as="span">
                 Code:{" "}

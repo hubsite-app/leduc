@@ -5,6 +5,8 @@ import {
   EmployeeCardSnippetFragment,
   useCrewRemoveEmployeeMutation,
 } from "../../../../../generated/graphql";
+import createLink from "../../../../../utils/createLink";
+import TextLink from "../../../../Common/TextLink";
 
 interface IEmployeeCard {
   employee: EmployeeCardSnippetFragment;
@@ -23,7 +25,9 @@ const EmployeeCard = ({ employee, crew }: IEmployeeCard) => {
     <Box p={2} w="100%" border="1px solid lightgray">
       <Flex flexDir="row" justifyContent="space-between">
         <Box>
-          <Text fontWeight="bold">{employee.name}</Text>
+          <TextLink link={createLink.employee(employee._id)} fontWeight="bold">
+            {employee.name}
+          </TextLink>
           <Text>{employee.jobTitle}</Text>
         </Box>
         <IconButton

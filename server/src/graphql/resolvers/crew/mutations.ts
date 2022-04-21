@@ -12,10 +12,32 @@ export class CrewCreateData {
   public type!: CrewTypes;
 }
 
+@InputType()
+export class CrewUpdateData {
+  @Field({ nullable: false })
+  public name!: string;
+}
+
 const create = (data: CrewCreateData) => {
   return new Promise<CrewDocument>(async (resolve, reject) => {
     try {
       const crew = await Crew.createDocument(data);
+
+      await crew.save();
+
+      resolve(crew);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const update = (id: Id, data: CrewUpdateData) => {
+  return new Promise<CrewDocument>(async (resolve, reject) => {
+    try {
+      const crew = (await Crew.getById(id, { throwError: true }))!;
+
+      await crew.updateDocument(data);
 
       await crew.save();
 
@@ -92,6 +114,7 @@ const removeVehicle = (crewId: Id, vehicleId: Id) => {
 
 export default {
   create,
+  update,
   addEmployee,
   addVehicle,
   removeEmployee,
