@@ -1,0 +1,5 @@
+mutation SystemUpdateCompanyVehicleTypeDefaults($data: [DefaultRateData!]!) {
+  systemUpdateCompanyVehicleTypeDefaults(data: $data) {
+    ...SystemSnippet
+  }
+}

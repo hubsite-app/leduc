@@ -1,0 +1,5 @@
+mutation DailyReportCreate($data: DailyReportCreateData!) {
+  dailyReportCreate(data: $data) {
+    ...DailyReportFullSnippet
+  }
+}

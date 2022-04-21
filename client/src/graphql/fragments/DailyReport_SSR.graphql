@@ -1,0 +1,12 @@
+fragment DailyReportSSRSnippet on DailyReportClass {
+  _id
+  jobsite {
+    _id
+    name
+    jobcode
+  }
+  crew {
+    _id
+    name
+  }
+}

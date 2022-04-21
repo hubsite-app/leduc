@@ -1,0 +1,5 @@
+mutation EmployeeCreate($data: EmployeeCreateData!, $crewId: String) {
+  employeeCreate(data: $data, crewId: $crewId) {
+    ...EmployeeCardSnippet
+  }
+}

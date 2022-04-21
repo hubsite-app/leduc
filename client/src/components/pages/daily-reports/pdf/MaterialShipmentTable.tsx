@@ -1,0 +1,158 @@
+import { Text, View } from "@react-pdf/renderer";
+import dayjs from "dayjs";
+import { MaterialShipmentCardSnippetFragment } from "../../../../generated/graphql";
+
+interface IMaterialShipmentTable {
+  materialShipments: MaterialShipmentCardSnippetFragment[];
+}
+
+const MaterialShipmentColumnWidth = "25%";
+const MaterialShipmentQuantityColumnWidth = "25%";
+const MaterialShipmentVehicleColumnWidth = "35%";
+const MaterialShipmentHourColumnWidth = "15%";
+
+const MaterialShipmentTable = ({
+  materialShipments,
+}: IMaterialShipmentTable) => {
+  let totalQuantity = 0,
+    totalHours = 0;
+  materialShipments.forEach((shipment) => {
+    totalQuantity += shipment.quantity;
+
+    if (shipment.startTime && shipment.endTime)
+      totalHours +=
+        Math.abs(dayjs(shipment.startTime).diff(shipment.endTime, "minutes")) /
+        60;
+  });
+
+  return (
+    <View style={{ width: "50%" }}>
+      <Text style={{ fontSize: "10px" }}>MaterialShipments</Text>
+      <View style={{ margin: "5px" }}>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            borderBottom: "1px solid gray",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: "8px",
+              fontWeight: "bold",
+              width: MaterialShipmentColumnWidth,
+            }}
+          >
+            Shipment
+          </Text>
+          <Text
+            style={{
+              fontSize: "8px",
+              width: MaterialShipmentQuantityColumnWidth,
+            }}
+          >
+            Quantity
+          </Text>
+          <Text
+            style={{
+              fontSize: "8px",
+              width: MaterialShipmentVehicleColumnWidth,
+            }}
+          >
+            Vehicle
+          </Text>
+          <Text
+            style={{
+              fontSize: "8px",
+              width: MaterialShipmentHourColumnWidth,
+            }}
+          >
+            Hours
+          </Text>
+        </View>
+
+        <View>
+          {materialShipments.map((shipment) => (
+            <View key={shipment._id} style={{ marginVertical: "2px" }}>
+              <View style={{ display: "flex", flexDirection: "row" }}>
+                <Text
+                  style={{
+                    fontSize: "7px",
+                    width: MaterialShipmentColumnWidth,
+                  }}
+                >
+                  {shipment.supplier} {shipment.shipmentType}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: "7px",
+                    width: MaterialShipmentQuantityColumnWidth,
+                  }}
+                >
+                  {shipment.quantity} {shipment.unit}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: "7px",
+                    width: MaterialShipmentVehicleColumnWidth,
+                  }}
+                >
+                  {shipment.vehicleObject?.source} /{" "}
+                  {shipment.vehicleObject?.vehicleType} /{" "}
+                  {shipment.vehicleObject?.vehicleCode}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: "7px",
+                    width: MaterialShipmentHourColumnWidth,
+                  }}
+                >
+                  {shipment.startTime && shipment.endTime
+                    ? Math.abs(
+                        dayjs(shipment.startTime).diff(
+                          shipment.endTime,
+                          "minutes"
+                        )
+                      ) / 60
+                    : "N/A"}
+                </Text>
+              </View>
+            </View>
+          ))}
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              backgroundColor: "lightgray",
+            }}
+          >
+            <Text
+              style={{ fontSize: "7px", width: MaterialShipmentColumnWidth }}
+            >
+              Total
+            </Text>
+            <Text
+              style={{
+                fontSize: "7px",
+                width: MaterialShipmentQuantityColumnWidth,
+              }}
+            >
+              {totalQuantity}
+            </Text>
+            <View style={{ width: MaterialShipmentVehicleColumnWidth }}></View>
+            <Text
+              style={{
+                fontSize: "7px",
+                width: MaterialShipmentHourColumnWidth,
+              }}
+            >
+              {totalHours}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+export default MaterialShipmentTable;

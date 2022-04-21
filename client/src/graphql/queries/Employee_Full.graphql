@@ -1,0 +1,5 @@
+query EmployeeFull($id: String!) {
+  employee(id: $id) {
+    ...EmployeeFullSnippet
+  }
+}

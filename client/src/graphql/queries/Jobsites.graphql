@@ -1,0 +1,5 @@
+query Jobsites($options: ListOptionData) {
+  jobsites(options: $options) {
+    ...JobsiteCardSnippet
+  }
+}

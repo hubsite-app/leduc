@@ -1,0 +1,9 @@
+fragment JobsiteYearMasterReportItemSnippet on JobsiteYearMasterReportItemClass {
+  _id
+  report {
+    _id
+  }
+  summary {
+    ...OnSiteSummaryReportSnippet
+  }
+}

@@ -1,0 +1,5 @@
+mutation VehicleCreate($data: VehicleCreateData!, $crewId: String) {
+  vehicleCreate(data: $data, crewId: $crewId) {
+    ...VehicleCardSnippet
+  }
+}

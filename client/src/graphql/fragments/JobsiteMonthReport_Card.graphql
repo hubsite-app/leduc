@@ -1,0 +1,10 @@
+fragment JobsiteMonthReportCardSnippet on JobsiteMonthReportClass {
+  _id
+  startOfMonth
+  update {
+    ...UpdateSnippet
+  }
+  jobsite {
+    ...JobsiteCardSnippet
+  }
+}

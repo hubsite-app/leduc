@@ -1,0 +1,10 @@
+fragment JobsiteYearReportCardSnippet on JobsiteYearReportClass {
+  _id
+  startOfYear
+  update {
+    ...UpdateSnippet
+  }
+  jobsite {
+    ...JobsiteCardSnippet
+  }
+}

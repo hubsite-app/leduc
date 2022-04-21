@@ -1,0 +1,5 @@
+mutation CrewRemoveEmployee($crewId: String!, $employeeId: String!) {
+  crewRemoveEmployee(crewId: $crewId, employeeId: $employeeId) {
+    ...CrewFullSnippet
+  }
+}

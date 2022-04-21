@@ -1,0 +1,14 @@
+FROM node:lts-alpine
+
+WORKDIR /usr/src/app
+
+ENV CHOKIDAR_USEPOLLING=true
+ENV NODE_ENV=development
+ENV REACT_APP_ENV=development
+
+COPY package*.json ./
+RUN npm install -qy
+
+COPY . .
+
+CMD ["npm", "run", "dev"]

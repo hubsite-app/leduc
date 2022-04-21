@@ -1,0 +1,6 @@
+fragment VehicleSSRSnippet on VehicleClass {
+  _id
+  name
+  vehicleCode
+  vehicleType
+}

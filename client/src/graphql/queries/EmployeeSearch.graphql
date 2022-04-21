@@ -1,0 +1,5 @@
+query EmployeeSearch($searchString: String!, $options: SearchOptions) {
+  employeeSearch(searchString: $searchString, options: $options) {
+    ...EmployeeCardSnippet
+  }
+}

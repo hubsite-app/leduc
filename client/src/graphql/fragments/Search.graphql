@@ -1,0 +1,23 @@
+fragment SearchSnippet on SearchClass {
+  score
+  employee {
+    _id
+    name
+    jobTitle
+  }
+  vehicle {
+    _id
+    name
+    vehicleType
+    vehicleCode
+  }
+  jobsite {
+    ...JobsiteCardSnippet
+  }
+  dailyReport {
+    ...DailyReportCardSnippet
+  }
+  crew {
+    ...CrewCardSnippet
+  }
+}

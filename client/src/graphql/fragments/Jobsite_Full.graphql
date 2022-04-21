@@ -1,0 +1,35 @@
+fragment JobsiteFullSnippet on JobsiteClass {
+  _id
+  name
+  jobcode
+  description
+  location_url
+  active
+  crews {
+    ...CrewCardSnippet
+  }
+  monthReports {
+    ...JobsiteMonthReportCardSnippet
+  }
+  yearReports {
+    ...JobsiteYearReportCardSnippet
+  }
+  dailyReports {
+    ...DailyReportCardSnippet
+  }
+  materials {
+    ...JobsiteMaterialCardSnippet
+  }
+  expenseInvoices {
+    ...InvoiceCardSnippet
+  }
+  revenueInvoices {
+    ...InvoiceCardSnippet
+  }
+  truckingRates {
+    ...TruckingTypeRateSnippet
+  }
+  nonCostedMaterialShipments {
+    ...MaterialShipmentNonCostedSnippet
+  }
+}

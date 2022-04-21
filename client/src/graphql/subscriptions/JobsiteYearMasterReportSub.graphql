@@ -1,0 +1,5 @@
+subscription JobsiteYearMasterReportSub($id: ID!) {
+  jobsiteYearMasterReportSub(id: $id) {
+    ...JobsiteYearMasterReportFullSnippet
+  }
+}

@@ -1,0 +1,14 @@
+fragment FullUserSnippet on UserClass {
+  ...UserCardSnippet
+  employee {
+    _id
+    name
+    jobTitle
+    crews {
+      ...CrewCardSnippet
+    }
+  }
+  settings {
+    homeView
+  }
+}

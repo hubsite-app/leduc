@@ -1,0 +1,33 @@
+fragment DailyReportFullSnippet on DailyReportClass {
+  _id
+  date
+  jobCostApproved
+  payrollComplete
+  jobsite {
+    ...JobsiteForDailyReportSnippet
+  }
+  crew {
+    ...CrewFullSnippet
+  }
+  employeeWork {
+    ...EmployeeWorkCardSnippet
+  }
+  vehicleWork {
+    ...VehicleWorkCardSnippet
+  }
+  productions {
+    ...ProductionCardSnippet
+  }
+  materialShipments {
+    ...MaterialShipmentCardSnippet
+  }
+  reportNote {
+    ...ReportNoteFullSnippet
+  }
+  temporaryEmployees {
+    ...EmployeeCardSnippet
+  }
+  temporaryVehicles {
+    ...VehicleCardSnippet
+  }
+}

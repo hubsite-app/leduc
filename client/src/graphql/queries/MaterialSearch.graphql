@@ -1,0 +1,5 @@
+query MaterialSearch($searchString: String!, $options: SearchOptions) {
+  materialSearch(searchString: $searchString, options: $options) {
+    ...MaterialCardSnippet
+  }
+}

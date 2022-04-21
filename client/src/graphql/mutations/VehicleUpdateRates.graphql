@@ -1,0 +1,5 @@
+mutation VehicleUpdateRates($id: String!, $data: [RatesData!]!) {
+  vehicleUpdateRates(id: $id, data: $data) {
+    ...VehicleCardSnippet
+  }
+}

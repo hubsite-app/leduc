@@ -1,0 +1,5 @@
+mutation CrewRemoveVehicle($crewId: String!, $vehicleId: String!) {
+  crewRemoveVehicle(crewId: $crewId, vehicleId: $vehicleId) {
+    ...CrewFullSnippet
+  }
+}

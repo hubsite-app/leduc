@@ -1,0 +1,5 @@
+query SignupSSR($id: String!) {
+  signup(id: $id) {
+    ...SignupFullSnippet
+  }
+}

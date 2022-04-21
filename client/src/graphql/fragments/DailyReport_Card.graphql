@@ -1,0 +1,14 @@
+fragment DailyReportCardSnippet on DailyReportClass {
+  _id
+  date
+  jobCostApproved
+  payrollComplete
+  jobsite {
+    _id
+    name
+  }
+  crew {
+    _id
+    name
+  }
+}

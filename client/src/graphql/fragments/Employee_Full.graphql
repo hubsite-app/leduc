@@ -1,0 +1,13 @@
+fragment EmployeeFullSnippet on EmployeeClass {
+  ...EmployeeCardSnippet
+  user {
+    ...UserCardSnippet
+  }
+  crews {
+    _id
+    name
+  }
+  signup {
+    _id
+  }
+}

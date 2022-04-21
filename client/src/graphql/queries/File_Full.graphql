@@ -1,0 +1,5 @@
+query FileFull($id: String!) {
+  file(id: $id) {
+    ...FileFullSnippet
+  }
+}

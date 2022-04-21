@@ -1,0 +1,7 @@
+fragment SignupFullSnippet on SignupClass {
+  _id
+  employee {
+    _id
+    name
+  }
+}

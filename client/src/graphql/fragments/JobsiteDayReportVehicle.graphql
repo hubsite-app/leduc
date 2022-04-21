@@ -1,0 +1,12 @@
+fragment JobsiteDayReportVehicleSnippet on VehicleReportClass {
+  _id
+  vehicle {
+    ...VehicleCardSnippet
+  }
+  vehicleWork {
+    jobTitle
+  }
+  rate
+  hours
+  crewType
+}

@@ -1,0 +1,5 @@
+mutation DailyReportJobCostApprovalUpdate($id: String!, $approved: Boolean!) {
+  dailyReportJobCostApprovalUpdate(id: $id, approved: $approved) {
+    ...DailyReportFullSnippet
+  }
+}

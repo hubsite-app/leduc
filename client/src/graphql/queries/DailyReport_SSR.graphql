@@ -1,0 +1,5 @@
+query DailyReportSSR($id: String!) {
+  dailyReport(id: $id) {
+    ...DailyReportSSRSnippet
+  }
+}

@@ -1,0 +1,5 @@
+query DailyReportCard($id: String!) {
+  dailyReport(id: $id) {
+    ...DailyReportCardSnippet
+  }
+}

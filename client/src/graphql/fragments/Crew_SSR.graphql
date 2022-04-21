@@ -1,0 +1,5 @@
+fragment CrewSSRSnippet on CrewClass {
+  _id
+  name
+  type
+}

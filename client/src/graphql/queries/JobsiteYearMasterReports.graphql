@@ -1,0 +1,5 @@
+query JobsiteYearMasterReports {
+  jobsiteYearMasterReports {
+    ...JobsiteYearMasterReportCardSnippet
+  }
+}

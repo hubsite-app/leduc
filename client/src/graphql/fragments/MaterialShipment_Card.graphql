@@ -1,0 +1,19 @@
+fragment MaterialShipmentCardSnippet on MaterialShipmentClass {
+  _id
+  shipmentType
+  supplier
+  quantity
+  unit
+  startTime
+  endTime
+  noJobsiteMaterial
+  jobsiteMaterial {
+    ...JobsiteMaterialCardSnippet
+  }
+  vehicleObject {
+    source
+    vehicleType
+    vehicleCode
+  }
+  schemaVersion
+}

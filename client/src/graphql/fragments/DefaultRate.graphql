@@ -1,0 +1,8 @@
+fragment DefaultRateSnippet on DefaultRateClass {
+  _id
+  title
+  rates {
+    rate
+    date
+  }
+}

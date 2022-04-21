@@ -1,0 +1,10 @@
+fragment JobsiteYearReportSummarySnippet on JobsiteYearReportClass {
+  ...JobsiteYearReportCardSnippet
+  crewTypes
+  summary {
+    externalExpenseInvoiceValue
+    internalExpenseInvoiceValue
+    externalRevenueInvoiceValue
+    internalRevenueInvoiceValue
+  }
+}

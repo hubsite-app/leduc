@@ -1,0 +1,9 @@
+fragment VehicleCardSnippet on VehicleClass {
+  _id
+  name
+  vehicleCode
+  vehicleType
+  rates {
+    ...RateSnippet
+  }
+}

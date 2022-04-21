@@ -1,0 +1,5 @@
+query CompanyCard($id: String!) {
+  company(id: $id) {
+    ...CompanyCardSnippet
+  }
+}

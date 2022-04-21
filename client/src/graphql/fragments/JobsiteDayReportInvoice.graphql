@@ -1,0 +1,8 @@
+fragment JobsiteDayReportInvoiceSnippet on InvoiceReportClass {
+  _id
+  invoice {
+    ...InvoiceCardSnippet
+  }
+  value
+  internal
+}

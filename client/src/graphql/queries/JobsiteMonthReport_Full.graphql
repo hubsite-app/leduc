@@ -1,0 +1,5 @@
+query JobsiteMonthReportFull($id: ID!) {
+  jobsiteMonthReport(id: $id) {
+    ...JobsiteMonthReportFullSnippet
+  }
+}

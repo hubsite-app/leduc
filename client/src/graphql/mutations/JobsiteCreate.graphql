@@ -1,0 +1,5 @@
+mutation JobsiteCreate($data: JobsiteCreateData!) {
+  jobsiteCreate(data: $data) {
+    ...JobsiteFullSnippet
+  }
+}

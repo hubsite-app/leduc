@@ -1,0 +1,8 @@
+mutation DailyReportAddNoteFile(
+  $dailyReportId: String!
+  $data: FileCreateData!
+) {
+  dailyReportAddNoteFile(id: $dailyReportId, data: $data) {
+    ...DailyReportFullSnippet
+  }
+}

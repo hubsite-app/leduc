@@ -1,0 +1,5 @@
+fragment EmployeeSSRSnippet on EmployeeClass {
+  _id
+  name
+  jobTitle
+}

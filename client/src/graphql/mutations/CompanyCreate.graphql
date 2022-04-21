@@ -1,0 +1,5 @@
+mutation CompanyCreate($data: CompanyCreateData!) {
+  companyCreate(data: $data) {
+    ...CompanyCardSnippet
+  }
+}

@@ -1,0 +1,5 @@
+query CompanySearch($searchString: String!, $options: SearchOptions) {
+  companySearch(searchString: $searchString, options: $options) {
+    ...CompanyCardSnippet
+  }
+}

@@ -1,0 +1,22 @@
+fragment JobsiteDayReportFullSnippet on JobsiteDayReportClass {
+  _id
+  date
+  employees {
+    ...JobsiteDayReportEmployeeSnippet
+  }
+  vehicles {
+    ...JobsiteDayReportVehicleSnippet
+  }
+  materials {
+    ...JobsiteDayReportMaterialSnippet
+  }
+  nonCostedMaterials {
+    ...JobsiteDayReportNonCostedMaterialSnippet
+  }
+  trucking {
+    ...JobsiteDayReportTruckingSnippet
+  }
+  summary {
+    ...OnSiteSummaryReportSnippet
+  }
+}

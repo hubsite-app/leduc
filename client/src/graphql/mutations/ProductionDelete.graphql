@@ -1,0 +1,3 @@
+mutation ProductionDelete($id: String!) {
+  productionDelete(id: $id)
+}

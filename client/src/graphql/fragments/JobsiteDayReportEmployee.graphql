@@ -1,0 +1,12 @@
+fragment JobsiteDayReportEmployeeSnippet on EmployeeReportClass {
+  _id
+  employee {
+    ...EmployeeCardSnippet
+  }
+  employeeWork {
+    jobTitle
+  }
+  rate
+  hours
+  crewType
+}

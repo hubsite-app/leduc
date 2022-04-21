@@ -1,0 +1,5 @@
+query MaterialCard($id: String!) {
+  material(id: $id) {
+    ...MaterialCardSnippet
+  }
+}

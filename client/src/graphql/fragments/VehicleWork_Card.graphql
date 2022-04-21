@@ -1,0 +1,9 @@
+fragment VehicleWorkCardSnippet on VehicleWorkClass {
+  _id
+  hours
+  jobTitle
+  vehicle {
+    _id
+    name
+  }
+}

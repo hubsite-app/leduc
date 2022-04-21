@@ -1,0 +1,8 @@
+fragment UserCardSnippet on UserClass {
+  _id
+  name
+  email
+  role
+  admin
+  projectManager
+}

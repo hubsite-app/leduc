@@ -1,0 +1,5 @@
+query Users($options: ListOptionData) {
+  users(options: $options) {
+    ...UserCardSnippet
+  }
+}

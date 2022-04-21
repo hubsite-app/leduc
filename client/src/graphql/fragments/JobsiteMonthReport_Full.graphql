@@ -1,0 +1,19 @@
+fragment JobsiteMonthReportFullSnippet on JobsiteMonthReportClass {
+  ...JobsiteMonthReportCardSnippet
+  crewTypes
+  dayReports {
+    ...JobsiteDayReportFullSnippet
+  }
+  expenseInvoices {
+    ...JobsiteDayReportInvoiceSnippet
+  }
+  revenueInvoices {
+    ...JobsiteDayReportInvoiceSnippet
+  }
+  summary {
+    externalExpenseInvoiceValue
+    internalExpenseInvoiceValue
+    externalRevenueInvoiceValue
+    internalRevenueInvoiceValue
+  }
+}

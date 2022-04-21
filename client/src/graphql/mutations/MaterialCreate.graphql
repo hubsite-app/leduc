@@ -1,0 +1,5 @@
+mutation MaterialCreate($data: MaterialCreateData!) {
+  materialCreate(data: $data) {
+    ...MaterialFullSnippet
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "install",
+      "path": "client/",
+      "problemMatcher": [],
+      "label": "npm: install - client",
+      "detail": "install dependencies from package",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "npm",
+      "script": "install",
+      "path": "api/",
+      "problemMatcher": [],
+      "label": "npm: install - api",
+      "detail": "install dependencies from package",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "npm",
+      "script": "codegen",
+      "path": "client/",
+      "problemMatcher": [],
+      "label": "GraphQL Gen",
+      "detail": "generate graphql hooks",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "npm",
+      "script": "lint",
+      "path": "client/",
+      "label": "Client Lint",
+      "detail": "Run ESLint on Client code"
+    },
+    {
+      "label": "Docker Compose UP",
+      "type": "docker-compose",
+      "dockerCompose": {
+        "up": {
+          "detached": true,
+          "build": true
+        },
+        "files": ["${workspaceFolder}/docker-compose.yml"]
+      }
+    },
+    {
+      "label": "Docker Compose DOWN",
+      "type": "docker-compose",
+      "dockerCompose": {
+        "down": {},
+        "files": ["${workspaceFolder}/docker-compose.yml"]
+      }
+    },
+    {
+      "type": "typescript",
+      "tsconfig": "client/tsconfig.json",
+      "option": "watch",
+      "problemMatcher": ["$tsc-watch"],
+      "group": "build",
+      "label": "tsc: watch - client/tsconfig.json"
+    }
+  ]
+}

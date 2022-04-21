@@ -1,0 +1,5 @@
+mutation ReportNoteRemoveFile($reportNoteId: String!, $fileId: String!) {
+  reportNoteRemoveFile(reportNoteId: $reportNoteId, fileId: $fileId) {
+    ...ReportNoteFullSnippet
+  }
+}

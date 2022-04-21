@@ -1,0 +1,7 @@
+mutation SystemUpdateMaterialShipmentVehicleTypeDefaults(
+  $data: [DefaultRateData!]!
+) {
+  systemUpdateMaterialShipmentVehicleTypeDefaults(data: $data) {
+    ...SystemSnippet
+  }
+}

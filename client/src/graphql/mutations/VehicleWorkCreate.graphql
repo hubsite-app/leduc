@@ -1,0 +1,8 @@
+mutation VehicleWorkCreate(
+  $dailyReportId: String!
+  $data: [VehicleWorkCreateData!]!
+) {
+  vehicleWorkCreate(dailyReportId: $dailyReportId, data: $data) {
+    ...VehicleWorkCardSnippet
+  }
+}

@@ -1,0 +1,6 @@
+fragment VehicleSearchSnippet on VehicleClass {
+  _id
+  name
+  vehicleCode
+  vehicleType
+}

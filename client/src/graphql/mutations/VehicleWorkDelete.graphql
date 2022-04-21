@@ -1,0 +1,3 @@
+mutation VehicleWorkDelete($id: String!) {
+  vehicleWorkDelete(id: $id)
+}

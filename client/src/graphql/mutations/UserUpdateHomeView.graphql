@@ -1,0 +1,5 @@
+mutation UserUpdateHomeView($homeView: UserHomeViewSettings!) {
+  userUpdateHomeView(homeView: $homeView) {
+    _id
+  }
+}
