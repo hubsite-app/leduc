@@ -89,7 +89,7 @@ const vehicleWork = (
       totalHours += work.hours;
 
       return {
-        jobTitle: work.jobTitle,
+        jobTitle: work.jobTitle || "",
         hours: work.hours,
       };
     });
