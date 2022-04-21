@@ -3,6 +3,7 @@ import React from "react";
 import { useSystem } from "../../../../contexts/System";
 import Loading from "../../../Common/Loading";
 import SystemCompanyVehicleTypeDefaults from "../../../Common/System/CompanyVehicleTypeDefaults";
+import SystemLaborTypes from "../../../Common/System/LaborTypes";
 import SystemMaterialShipmentVehicleTypeDefaults from "../../../Common/System/MaterialShipmentVehicleTypeDefaults";
 import SystemUnits from "../../../Common/System/Units";
 
@@ -27,6 +28,7 @@ const SystemSettings = () => {
             <Heading size="md">System</Heading>
           </Flex>
           <SystemUnits system={system} />
+          <SystemLaborTypes system={system} />
           <SystemMaterialShipmentVehicleTypeDefaults system={system} />
           <SystemCompanyVehicleTypeDefaults system={system} />
         </Box>

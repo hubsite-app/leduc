@@ -26,6 +26,12 @@ export default class SystemResolver {
 
   @Authorized(["ADMIN"])
   @Mutation(() => SystemClass)
+  async systemUpdateLaborTypes(@Arg("data", () => [String]) data: string[]) {
+    return mutations.laborTypes(data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => SystemClass)
   async systemUpdateCompanyVehicleTypeDefaults(
     @Arg("data", () => [DefaultRateData]) data: DefaultRateData[]
   ) {

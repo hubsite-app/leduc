@@ -22,7 +22,7 @@ jobs:
             echo "NEXT_PUBLIC_APP_NAME=Paving" | cat >> ./client/.env.local
             echo "NEXT_PUBLIC_API_URL=https://paving.bowmark.ca/graphql" | cat >> ./client/.env.local
             echo "NEXT_PUBLIC_WS_API_URL=ws://paving.bowmark.ca/graphql" | cat >> ./client/.env.local
-            echo "NEXT_PUBLIC_WORK_TYPE='Subgrade Prep,Pit-Run,Base Gravel,Prime/Tack,Paving,Utilities,Management,Extra Work'" | cat >> ./client/.env.local
+            echo "NEXT_PUBLIC_ANALYTICS_ID=G-ZJFP23D24Y" | cat >> ./client/.env.local
             rm ./client/public/manifest.json
             cp ./client/public/manifest-paving.json ./client/public/manifest.json
             docker build -t $CLIENT_IMAGE_NAME:latest ./client
@@ -32,7 +32,7 @@ jobs:
             echo "NEXT_PUBLIC_APP_NAME=Concrete" | cat >> ./client/.env.local
             echo "NEXT_PUBLIC_API_URL=https://concrete.bowmark.ca/graphql" | cat >> ./client/.env.local
             echo "NEXT_PUBLIC_WS_API_URL=ws://concrete.bowmark.ca/graphql" | cat >> ./client/.env.local
-            echo "NEXT_PUBLIC_WORK_TYPE='Saw Cut,Breakout & Gravel,Rebar,Forming,Hand Pour,Slurry,String Line,Machine Pour,Concrete Supply,Backfill & Landscape Rehab,Extra Work'" | cat >> ./client/.env.local
+            echo "NEXT_PUBLIC_ANALYTICS_ID=G-8798JH035P" | cat >> ./client/.env.local
             rm ./client/public/manifest.json
             cp ./client/public/manifest-concrete.json ./client/public/manifest.json
             docker build -t $CLIENT_CONCRETE_IMAGE_NAME:latest ./client

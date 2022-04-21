@@ -17,6 +17,22 @@ const unitDefaults = (data: string[]) => {
   });
 };
 
+const laborTypes = (data: string[]) => {
+  return new Promise<SystemDocument>(async (resolve, reject) => {
+    try {
+      const system = await System.getSystem();
+
+      await system.updateLaborTypes(data);
+
+      await system.save();
+
+      resolve(system);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const companyVehicleTypeDefaults = (data: DefaultRateData[]) => {
   return new Promise<SystemDocument>(async (resolve, reject) => {
     try {
@@ -51,6 +67,7 @@ const materialShipmentVehicleTypeDefaults = (data: DefaultRateData[]) => {
 
 export default {
   unitDefaults,
+  laborTypes,
   companyVehicleTypeDefaults,
   materialShipmentVehicleTypeDefaults,
 };

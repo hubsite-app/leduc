@@ -13,6 +13,18 @@ const unitDefaults = (system: SystemDocument, units: string[]) => {
   });
 };
 
+const laborTypes = (system: SystemDocument, types: string[]) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      system.laborTypes = types;
+
+      resolve();
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const companyVehicleTypeDefaults = (
   system: SystemDocument,
   data: IDefaultRateData[]
@@ -45,6 +57,7 @@ const materialShipmentVehicleTypeDefaults = (
 
 export default {
   unitDefaults,
+  laborTypes,
   companyVehicleTypeDefaults,
   materialShipmentVehicleTypeDefaults,
 };
