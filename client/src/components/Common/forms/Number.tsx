@@ -52,6 +52,8 @@ const Number = ({
   inputRightElementProps,
   ...props
 }: INumber) => {
+  const [numberString, setNumberString] = React.useState(value);
+
   const stepperJSX = React.useMemo(() => {
     if (stepper) {
       return (
@@ -62,6 +64,14 @@ const Number = ({
       );
     } else return null;
   }, [stepper]);
+
+  const finalValue = React.useMemo(() => {
+    let val = value;
+    if (props.precision && val !== undefined) {
+      val = parseFloat(`${val}`).toFixed(props.precision);
+    }
+    return format ? format(val) : val;
+  }, [format, props.precision, value]);
 
   return (
     <FormControl isInvalid={!!errorMessage} margin="auto">
@@ -80,8 +90,12 @@ const Number = ({
           allowMouseWheel={allowMouseWheel}
           min={min}
           w="100%"
-          value={format ? format(value) : value}
+          value={
+            format ? format(numberString?.toString()) : numberString?.toString()
+          }
+          onInvalid={() => {}}
           onChange={(val, num) => {
+            setNumberString(val);
             if (onChange)
               if (parse) onChange(parse(val), num);
               else onChange(val, num);
