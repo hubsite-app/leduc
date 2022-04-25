@@ -150,8 +150,7 @@ const TruckingRates = ({
               value={rate.rate}
               isDisabled={isLoading}
               label="Rate"
-              format={(val) => `$${val}`}
-              parse={(val) => val.replace(/[$]/, "")}
+              inputLeftAddon="$"
               onChange={(_, number) => setRate(number, index)}
               errorMessage={errors && errors[index]?.rate?.message}
             />

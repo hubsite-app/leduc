@@ -13,6 +13,10 @@ export class SystemSchema {
   @prop({ type: () => [String], required: true, default: [] })
   public unitDefaults!: string[];
 
+  @Field(() => [String], { nullable: false })
+  @prop({ type: () => [String], required: true, default: [] })
+  public laborTypes!: string[];
+
   @Field(() => [DefaultRateClass], { nullable: false })
   @prop({ type: () => [DefaultRateClass], required: true, default: [] })
   public companyVehicleTypeDefaults!: DefaultRateClass[];

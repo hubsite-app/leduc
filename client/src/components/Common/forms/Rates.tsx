@@ -125,9 +125,9 @@ const Rates = ({ rates = [], onChange, isLoading, errors, label }: IRates) => {
               value={rate.rate}
               isDisabled={isLoading}
               label="Rate"
-              format={(val) => `$${val}`}
-              parse={(val) => val.replace(/[$]/, "")}
-              onChange={(_, number) => setRate(number, index)}
+              precision={2}
+              inputLeftAddon="$"
+              onChange={(_, num) => setRate(num, index)}
               errorMessage={errors && errors[index]?.rate?.message}
             />
           </SimpleGrid>

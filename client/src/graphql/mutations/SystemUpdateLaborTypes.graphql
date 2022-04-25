@@ -1,0 +1,5 @@
+mutation SystemUpdateLaborTypes($data: [String!]!) {
+  systemUpdateLaborTypes(data: $data) {
+    ...SystemSnippet
+  }
+}

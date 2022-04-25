@@ -9,6 +9,7 @@ const document = (System: SystemModel) => {
 
       const system = new System({
         unitDefaults: ["tonnes", "m2", "inches", "cm"],
+        laborTypes: [],
         companyVehicleTypeDefaults: [
           {
             title: "Tandem",
