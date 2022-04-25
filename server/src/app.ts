@@ -119,9 +119,9 @@ const createApp = async () => {
       let user: UserDocument | null = null;
 
       if (token) {
-        const decoded: any = jwt.decode(token);
+        const decoded = jwt.decode(token);
 
-        user = await User.getById(decoded?.userId);
+        user = await User.getById((decoded as jwt.JwtPayload)?.userId);
       }
 
       return {

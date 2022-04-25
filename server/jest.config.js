@@ -1,5 +1,7 @@
+/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { compilerOptions } = require("./tsconfig.json");
-const { pathsToModuleNameMapper } = require("ts-jest/utils");
+const { pathsToModuleNameMapper } = require("ts-jest");
 
 module.exports = {
   preset: "ts-jest",
@@ -10,4 +12,5 @@ module.exports = {
   testTimeout: 60000,
   globalSetup: "<rootDir>/testing/globalSetup.ts",
   rootDir: "src",
+  testRunner: "jasmine2",
 };

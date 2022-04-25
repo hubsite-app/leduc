@@ -6,16 +6,10 @@ import { Employee } from "@models";
 import { IEmployeeCreate } from "@typescript/employee";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
-const setupDatabase = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 beforeAll(async () => {
@@ -32,7 +26,7 @@ describe("Employee Class", () => {
   describe("CREATE", () => {
     describe("createDocument", () => {
       describe("success", () => {
-        test("should successfully create a new employee", async (done) => {
+        test("should successfully create a new employee", async () => {
           const data: IEmployeeCreate = {
             name: "New Employee",
             jobTitle: "Test",
@@ -42,8 +36,6 @@ describe("Employee Class", () => {
 
           expect(employee.name).toBe(data.name);
           expect(employee.jobTitle).toBe(data.jobTitle);
-
-          done();
         });
       });
 
@@ -58,8 +50,8 @@ describe("Employee Class", () => {
 
           try {
             await Employee.createDocument(data);
-          } catch (e: any) {
-            expect(e.message).toBe(
+          } catch (e: unknown) {
+            expect((e as Error).message).toBe(
               "Employee.createDocument: employee already exists with this name"
             );
           }

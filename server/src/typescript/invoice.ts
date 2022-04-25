@@ -39,5 +39,4 @@ export class InvoiceReportClass {
   public internal!: boolean;
 }
 
-export interface InvoiceReportDocument
-  extends DocumentType<InvoiceReportClass> {}
+export type InvoiceReportDocument = DocumentType<InvoiceReportClass>;

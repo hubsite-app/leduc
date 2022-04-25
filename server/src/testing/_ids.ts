@@ -63,6 +63,7 @@ const _ids = {
     },
     jobsite_2: {
       _id: Types.ObjectId("623e0c5d2afef82206a0ddab"),
+      truckingRates: [Types.ObjectId("626615c34e988c91ed92f909")],
     },
     jobsite_3: {
       _id: Types.ObjectId("623e1a1089ebc16dedabb5a6"),

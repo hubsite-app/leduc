@@ -7,20 +7,13 @@ import {
   IMaterialShipmentCreate,
   IMaterialShipmentUpdate,
 } from "@typescript/materialShipment";
-import { Types } from "aws-sdk/clients/acm";
 import _ids from "@testing/_ids";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
-const setupDatabase = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 beforeAll(async () => {
@@ -47,7 +40,7 @@ describe("Material Shipment Class", () => {
               vehicleCode: "12",
               vehicleType: "Tandem",
               truckingRateId:
-                documents.jobsites.jobsite_2.truckingRates[0]._id!.toString(),
+                documents.jobsites.jobsite_2.truckingRates[0]._id?.toString(),
             },
             noJobsiteMaterial: false,
             startTime: new Date("2022-02-25 11:00am"),
@@ -71,7 +64,7 @@ describe("Material Shipment Class", () => {
               vehicleCode: "11",
               vehicleType: "Tandem",
               truckingRateId:
-                documents.jobsites.jobsite_2.truckingRates[0]._id!.toString(),
+                documents.jobsites.jobsite_2.truckingRates[0]._id?.toString(),
             },
             noJobsiteMaterial: true,
           };
@@ -101,7 +94,7 @@ describe("Material Shipment Class", () => {
               vehicleCode: "12",
               vehicleType: "Tandem",
               truckingRateId:
-                documents.jobsites.jobsite_2.truckingRates[0]._id!.toString(),
+                documents.jobsites.jobsite_2.truckingRates[0]._id?.toString(),
             },
             noJobsiteMaterial: false,
             startTime: new Date("2022-02-25 11:00am"),
@@ -110,8 +103,8 @@ describe("Material Shipment Class", () => {
 
           try {
             await MaterialShipment.createDocument(data);
-          } catch (e: any) {
-            expect(e.message).toBe(
+          } catch (e: unknown) {
+            expect((e as Error).message).toBe(
               "this material does not belong to this jobsite"
             );
           }
@@ -126,7 +119,7 @@ describe("Material Shipment Class", () => {
               vehicleCode: "12",
               vehicleType: "Tandem",
               truckingRateId:
-                documents.jobsites.jobsite_2.truckingRates[0]._id!.toString(),
+                documents.jobsites.jobsite_2.truckingRates[0]._id?.toString(),
             },
             noJobsiteMaterial: false,
             startTime: new Date("2022-02-25 11:00am"),
@@ -137,8 +130,10 @@ describe("Material Shipment Class", () => {
 
           try {
             await MaterialShipment.createDocument(data);
-          } catch (e: any) {
-            expect(e.message).toBe("Must provide a jobsite material");
+          } catch (e) {
+            expect((e as Error).message).toBe(
+              "Must provide a jobsite material"
+            );
           }
         });
 
@@ -153,7 +148,7 @@ describe("Material Shipment Class", () => {
               vehicleCode: "12",
               vehicleType: "Tandem",
               truckingRateId:
-                documents.jobsites.jobsite_2.truckingRates[0]._id!.toString(),
+                documents.jobsites.jobsite_2.truckingRates[0]._id?.toString(),
             },
             noJobsiteMaterial: true,
             startTime: new Date("2022-02-25 11:00am"),
@@ -164,8 +159,8 @@ describe("Material Shipment Class", () => {
 
           try {
             await MaterialShipment.createDocument(data);
-          } catch (e: any) {
-            expect(e.message).toBe("Must provide a shipment type");
+          } catch (e) {
+            expect((e as Error).message).toBe("Must provide a shipment type");
           }
         });
 
@@ -180,7 +175,7 @@ describe("Material Shipment Class", () => {
               vehicleCode: "11",
               vehicleType: "Tandem",
               truckingRateId:
-                documents.jobsites.jobsite_2.truckingRates[0]._id!.toString(),
+                documents.jobsites.jobsite_2.truckingRates[0]._id?.toString(),
             },
             noJobsiteMaterial: true,
           };
@@ -189,8 +184,8 @@ describe("Material Shipment Class", () => {
 
           try {
             await MaterialShipment.createDocument(data);
-          } catch (e: any) {
-            expect(e.message).toBe("Must provide a supplier");
+          } catch (e) {
+            expect((e as Error).message).toBe("Must provide a supplier");
           }
         });
 
@@ -205,7 +200,7 @@ describe("Material Shipment Class", () => {
               vehicleCode: "11",
               vehicleType: "Tandem",
               truckingRateId:
-                documents.jobsites.jobsite_2.truckingRates[0]._id!.toString(),
+                documents.jobsites.jobsite_2.truckingRates[0]._id?.toString(),
             },
             noJobsiteMaterial: true,
           };
@@ -214,8 +209,8 @@ describe("Material Shipment Class", () => {
 
           try {
             await MaterialShipment.createDocument(data);
-          } catch (e: any) {
-            expect(e.message).toBe("Must provide a unit");
+          } catch (e) {
+            expect((e as Error).message).toBe("Must provide a unit");
           }
         });
       });

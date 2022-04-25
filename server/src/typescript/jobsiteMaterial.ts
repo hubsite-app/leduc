@@ -1,4 +1,3 @@
-import { DefaultRateData } from "@graphql/types/mutation";
 import { CompanyDocument, JobsiteDocument, MaterialDocument } from "@models";
 import { IDefaultRateData, RateClass } from "./models";
 

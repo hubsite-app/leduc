@@ -7,38 +7,31 @@ import createApp from "../../app";
 import _ids from "@testing/_ids";
 import { SignupData } from "@graphql/resolvers/user/mutations";
 import { Signup, User } from "@models";
-import { decode } from "jsonwebtoken";
+import { decode, JwtPayload } from "jsonwebtoken";
 import jestLogin from "@testing/jestLogin";
 import { UserRoles } from "@typescript/user";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { Server } from "http";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-let mongoServer: any, documents: SeededDatabase, app: any;
-function setupDatabase() {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+let mongoServer: MongoMemoryServer, documents: SeededDatabase, app: Server;
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
+  return;
+};
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   mongoServer = await prepareDatabase();
 
   app = await createApp();
 
   await setupDatabase();
-
-  done();
 });
 
-afterAll(async (done) => {
+afterAll(async () => {
   await disconnectAndStopServer(mongoServer);
-  done();
 });
 
 describe("User Resolver", () => {
@@ -202,12 +195,12 @@ describe("User Resolver", () => {
 
           expect(res.body.data.signup).toBeDefined();
 
-          const user = (await User.getById(
-            (decode(res.body.data.signup!) as any).userId!
-          ))!;
+          const user = await User.getById(
+            (decode(res.body.data.signup) as JwtPayload).userId
+          );
 
-          const employee = await user.getEmployee();
-          expect(employee!._id.toString()).toBe(
+          const employee = await user?.getEmployee();
+          expect(employee?._id.toString()).toBe(
             _ids.employees.base_laborer_3._id.toString()
           );
 
@@ -283,7 +276,7 @@ describe("User Resolver", () => {
 
           const user = await User.getById(res.body.data.userUpdateRole._id);
 
-          expect(user!.role).toBe(UserRoles.ProjectManager);
+          expect(user?.role).toBe(UserRoles.ProjectManager);
         });
       });
     });

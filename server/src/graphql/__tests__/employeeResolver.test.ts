@@ -8,35 +8,28 @@ import _ids from "@testing/_ids";
 import jestLogin from "@testing/jestLogin";
 import { RatesData } from "@graphql/types/mutation";
 import { Employee } from "@models";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { Server } from "http";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-let mongoServer: any, documents: SeededDatabase, app: any;
-function setupDatabase() {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+let mongoServer: MongoMemoryServer, documents: SeededDatabase, app: Server;
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
+  return;
+};
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   mongoServer = await prepareDatabase();
 
   app = await createApp();
 
   await setupDatabase();
-
-  done();
 });
 
-afterAll(async (done) => {
+afterAll(async () => {
   await disconnectAndStopServer(mongoServer);
-  done();
 });
 
 describe("Employee Resolver", () => {
@@ -131,15 +124,15 @@ describe("Employee Resolver", () => {
 
           expect(res.body.data.employeeUpdateRates._id).toBeDefined();
 
-          const employee = (await Employee.getById(
+          const employee = await Employee.getById(
             res.body.data.employeeUpdateRates._id,
             { throwError: true }
-          ))!;
+          );
 
-          expect(employee.rates.length).toBe(2);
+          expect(employee?.rates.length).toBe(2);
 
-          expect(employee.rates[0]).toMatchObject(data[0]);
-          expect(employee.rates[1]).toMatchObject(data[1]);
+          expect(employee?.rates[0]).toMatchObject(data[0]);
+          expect(employee?.rates[1]).toMatchObject(data[1]);
         });
       });
 

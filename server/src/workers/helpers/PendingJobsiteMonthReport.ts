@@ -1,27 +1,22 @@
-import { logger } from "@logger";
 import { JobsiteMonthReport } from "@models";
+import errorHandler from "@utils/errorHandler";
 
-const pendingJobsiteMonthReportUpdateHelper = () => {
-  return new Promise<void>(async (resolve, reject) => {
+const pendingJobsiteMonthReportUpdateHelper = async () => {
+  const jobsiteMonthReports = await JobsiteMonthReport.getByUpdatePending();
+
+  // Update
+  for (let i = 0; i < jobsiteMonthReports.length; i++) {
     try {
-      const jobsiteMonthReports = await JobsiteMonthReport.getByUpdatePending();
-
-      // Update
-      for (let i = 0; i < jobsiteMonthReports.length; i++) {
-        try {
-          await jobsiteMonthReports[i].updateAndSaveDocument();
-        } catch (e: any) {
-          logger.error(
-            `Jobsite month report ${jobsiteMonthReports[i]._id} pending worker error: ${e.message}`
-          );
-        }
-      }
-
-      resolve();
+      await jobsiteMonthReports[i].updateAndSaveDocument();
     } catch (e) {
-      reject(e);
+      errorHandler(
+        `Jobsite month report ${jobsiteMonthReports[i]._id} pending worker error`,
+        e
+      );
     }
-  });
+  }
+
+  return;
 };
 
 export default pendingJobsiteMonthReportUpdateHelper;

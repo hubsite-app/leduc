@@ -8,35 +8,28 @@ import _ids from "@testing/_ids";
 import { VehicleWorkCreateData } from "@graphql/resolvers/vehicleWork/mutations";
 import jestLogin from "@testing/jestLogin";
 import { DailyReport, VehicleWork } from "@models";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { Server } from "http";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-let mongoServer: any, documents: SeededDatabase, app: any;
-function setupDatabase() {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+let mongoServer: MongoMemoryServer, documents: SeededDatabase, app: Server;
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
+  return;
+};
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   mongoServer = await prepareDatabase();
 
   app = await createApp();
 
   await setupDatabase();
-
-  done();
 });
 
-afterAll(async (done) => {
+afterAll(async () => {
   await disconnectAndStopServer(mongoServer);
-  done();
 });
 
 describe("Vehicle Work Resolver", () => {
@@ -119,47 +112,11 @@ describe("Vehicle Work Resolver", () => {
           const dailyReport = await DailyReport.getById(
             documents.dailyReports.jobsite_1_base_1_1._id
           );
-          expect(dailyReport?.vehicleWork.includes(work!._id));
+          expect(dailyReport?.vehicleWork.includes(work?._id));
         });
       });
 
       describe("error", () => {
-        test("should error if a job title is missing", async () => {
-          const token = await jestLogin(
-            app,
-            documents.users.base_foreman_1_user.email
-          );
-
-          const data: VehicleWorkCreateData[] = [
-            {
-              vehicles: [documents.vehicles.personnel_truck_1._id.toString()],
-              jobs: [
-                {
-                  jobTitle: "",
-                  hours: 2,
-                },
-              ],
-            },
-          ];
-
-          const res = await request(app)
-            .post("/graphql")
-            .send({
-              query: vehicleWorkCreateMutation,
-              variables: {
-                dailyReportId: _ids.dailyReports.jobsite_1_base_1_1._id,
-                data,
-              },
-            })
-            .set("Authorization", token);
-
-          expect(res.status).toBe(200);
-
-          expect(res.body.errors[0].message).toMatch(
-            "must provide a valid job title"
-          );
-        });
-
         test("should error on empty vehicles array", async () => {
           const token = await jestLogin(
             app,

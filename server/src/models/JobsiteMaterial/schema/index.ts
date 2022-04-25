@@ -4,21 +4,21 @@ import { MaterialClass, CompanyClass, JobsiteMaterialDocument } from "@models";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import { DefaultRateClass, RateClass } from "@typescript/models";
-import { logger } from "@logger";
+import errorHandler from "@utils/errorHandler";
 
 @ObjectType()
 @post<JobsiteMaterialDocument>("save", async (jobsiteMaterial) => {
   try {
     await jobsiteMaterial.requestReportUpdate();
-  } catch (e: any) {
-    logger.error(`Jobsite Material post save error: ${e.message}`);
+  } catch (e) {
+    errorHandler("Jobsite Material post save error", e);
   }
 })
 @post<JobsiteMaterialDocument>("remove", async (jobsiteMaterial) => {
   try {
     await jobsiteMaterial.requestReportUpdate();
-  } catch (e: any) {
-    logger.error(`Jobsite Material post remove error: ${e.message}`);
+  } catch (e) {
+    errorHandler("Jobsite Material post remove error", e);
   }
 })
 export class JobsiteMaterialSchema {
@@ -51,7 +51,7 @@ export class JobsiteMaterialSchema {
 
   @Field({ nullable: false })
   @prop({ required: true, default: false })
-  public delivered!: Boolean;
+  public delivered!: boolean;
 
   @Field(() => [DefaultRateClass], { nullable: false })
   @prop({ type: () => [DefaultRateClass], required: true, default: [] })

@@ -4,45 +4,33 @@ import { prepareDatabase, disconnectAndStopServer } from "@testing/jestDB";
 import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 
 import createApp from "../../app";
-import _ids from "@testing/_ids";
 import jestLogin from "@testing/jestLogin";
-import { JobsiteMaterialCreateData } from "@graphql/resolvers/jobsiteMaterial/mutations";
-import { Invoice, Jobsite, JobsiteMaterial, System } from "@models";
-import { InvoiceData } from "@graphql/resolvers/invoice/mutations";
-import { JobsiteCreateData } from "@graphql/resolvers/jobsite/mutations";
 import {
   MaterialShipmentCreateData,
   MaterialShipmentShipmentData,
 } from "@graphql/resolvers/materialShipment/mutations";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { Server } from "http";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-let mongoServer: any, documents: SeededDatabase, app: any;
-function setupDatabase() {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+let mongoServer: MongoMemoryServer, documents: SeededDatabase, app: Server;
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
+  return;
+};
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   mongoServer = await prepareDatabase();
 
   app = await createApp();
 
   await setupDatabase();
-
-  done();
 });
 
-afterAll(async (done) => {
+afterAll(async () => {
   await disconnectAndStopServer(mongoServer);
-  done();
 });
 
 describe("Material Shipment Resolver", () => {
@@ -95,7 +83,7 @@ describe("Material Shipment Resolver", () => {
               vehicleObject: {
                 source: "Bow Mark",
                 truckingRateId:
-                  documents.jobsites.jobsite_2.truckingRates[0]._id!.toString(),
+                  documents.jobsites.jobsite_2.truckingRates[0]._id?.toString(),
                 vehicleCode: "B-12",
                 vehicleType: "Tandem",
               },

@@ -4,7 +4,9 @@ import JobsiteYearMasterReportUpdateHelper from "./helpers/JobsiteYearMasterRepo
 export default setInterval(async () => {
   try {
     await JobsiteYearMasterReportUpdateHelper();
-  } catch (e: any) {
-    logger.error(`JobsiteYearMasterReport Worker Error: ${e.message}`);
+  } catch (e: unknown) {
+    logger.error(
+      `JobsiteYearMasterReport Worker Error: ${(e as Error).message}`
+    );
   }
 }, 1 * 60 * 1000);

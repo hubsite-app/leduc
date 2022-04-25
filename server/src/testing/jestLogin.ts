@@ -1,40 +1,30 @@
-import { Express } from "express";
+import { Server } from "http";
 import request from "supertest";
 
-const jestLogin = (
-  app: Express,
-  email: string,
-  password: string = "password"
-) => {
-  return new Promise<string>(async (resolve, reject) => {
-    try {
-      const loginMutation = `
+const jestLogin = async (app: Server, email: string, password = "password") => {
+  const loginMutation = `
         mutation Login($data: LoginData!) {
           login(data: $data)
         }
       `;
 
-      const res = await request(app)
-        .post("/graphql")
-        .send({
-          query: loginMutation,
-          variables: {
-            data: {
-              email,
-              password,
-              rememberMe: true,
-            },
-          },
-        });
+  const res = await request(app)
+    .post("/graphql")
+    .send({
+      query: loginMutation,
+      variables: {
+        data: {
+          email,
+          password,
+          rememberMe: true,
+        },
+      },
+    });
 
-      if (!res.body.data || !res.body.data.login)
-        throw new Error(`Unable to login: ${JSON.stringify(res.body)}`);
+  if (!res.body.data || !res.body.data.login)
+    throw new Error(`Unable to login: ${JSON.stringify(res.body)}`);
 
-      resolve(res.body.data.login);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return res.body.data.login;
 };
 
 export default jestLogin;

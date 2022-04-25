@@ -47,60 +47,54 @@ export interface SeededDatabase {
   vehicleWork: SeededVehicleWork;
 }
 
-const seedDatabase = () => {
-  return new Promise<SeededDatabase>(async (resolve, reject) => {
-    try {
-      console.log("Database seeding...");
+const seedDatabase = async () => {
+  console.log("Database seeding...");
 
-      // Clear Database
-      await clearDatabase();
+  // Clear Database
+  await clearDatabase();
 
-      // Create documents
+  // Create documents
 
-      const jobsites = await createJobsites();
+  const jobsites = await createJobsites();
 
-      const companies = await createCompanies();
-      const crews = await createCrews();
-      const dailyReports = await createDailyReports();
-      const employees = await createEmployees();
-      const employeeWork = await createEmployeeWork();
-      const files = await createFiles();
-      const invoices = await createInvoices();
-      const jobsiteMaterials = await createJobsiteMaterials();
-      const materials = await createMaterials();
-      const materialShipments = await createMaterialShipments();
-      const productions = await createProductions();
-      const reportNotes = await createReportNotes();
-      const signups = await createSignups();
-      const users = await createUsers();
-      const vehicles = await createVehicles();
-      const vehicleWork = await createVehicleWork();
+  const companies = await createCompanies();
+  const crews = await createCrews();
+  const dailyReports = await createDailyReports();
+  const employees = await createEmployees();
+  const employeeWork = await createEmployeeWork();
+  const files = await createFiles();
+  const invoices = await createInvoices();
+  const jobsiteMaterials = await createJobsiteMaterials();
+  const materials = await createMaterials();
+  const materialShipments = await createMaterialShipments();
+  const productions = await createProductions();
+  const reportNotes = await createReportNotes();
+  const signups = await createSignups();
+  const users = await createUsers();
+  const vehicles = await createVehicles();
+  const vehicleWork = await createVehicleWork();
 
-      await System.validateSystem();
+  await System.validateSystem();
 
-      resolve({
-        companies,
-        crews,
-        dailyReports,
-        employees,
-        employeeWork,
-        files,
-        invoices,
-        jobsites,
-        jobsiteMaterials,
-        materials,
-        materialShipments,
-        productions,
-        reportNotes,
-        signups,
-        users,
-        vehicles,
-        vehicleWork,
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return {
+    companies,
+    crews,
+    dailyReports,
+    employees,
+    employeeWork,
+    files,
+    invoices,
+    jobsites,
+    jobsiteMaterials,
+    materials,
+    materialShipments,
+    productions,
+    reportNotes,
+    signups,
+    users,
+    vehicles,
+    vehicleWork,
+  };
 };
 
 export default seedDatabase;

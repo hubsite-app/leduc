@@ -16,56 +16,42 @@ import populateOptions from "@utils/populateOptions";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   VehicleWork: VehicleWorkModel,
   id: Id,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<VehicleWorkDocument | null>(async (resolve, reject) => {
-    try {
-      options = populateOptions(options, byIdDefaultOptions);
+): Promise<VehicleWorkDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-      const vehicleWork = await VehicleWork.findById(id);
+  const vehicleWork = await VehicleWork.findById(id);
 
-      if (!vehicleWork && options.throwError) {
-        throw new Error("VehicleWork.getById: Unable to find vehicle work");
-      }
+  if (!vehicleWork && options.throwError) {
+    throw new Error("VehicleWork.getById: Unable to find vehicle work");
+  }
 
-      resolve(vehicleWork);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return vehicleWork;
 };
 
 /**
  * ----- Methods -----
  */
 
-const vehicle = (vehicleWork: VehicleWorkDocument) => {
-  return new Promise<VehicleDocument | null>(async (resolve, reject) => {
-    try {
-      const vehicle = await Vehicle.getById(vehicleWork.vehicle || "");
+const vehicle = async (
+  vehicleWork: VehicleWorkDocument
+): Promise<VehicleDocument | null> => {
+  const vehicle = await Vehicle.getById(vehicleWork.vehicle || "");
 
-      resolve(vehicle);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return vehicle;
 };
 
-const dailyReport = (vehicleWork: VehicleWorkDocument) => {
-  return new Promise<DailyReportDocument | null>(async (resolve, reject) => {
-    try {
-      const dailyReport = await DailyReport.findOne({
-        vehicleWork: vehicleWork._id,
-      });
-
-      resolve(dailyReport);
-    } catch (e) {
-      reject(e);
-    }
+const dailyReport = async (
+  vehicleWork: VehicleWorkDocument
+): Promise<DailyReportDocument | null> => {
+  const dailyReport = await DailyReport.findOne({
+    vehicleWork: vehicleWork._id,
   });
+
+  return dailyReport;
 };
 
 export default {
