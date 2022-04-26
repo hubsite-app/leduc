@@ -200,7 +200,7 @@ const MaterialShipmentShipmentForm = ({
               isDisabled={isLoading}
               value={shipment.quantity}
               errorMessage={errors?.quantity}
-              onChange={(e) => updateQuantity(parseInt(e))}
+              onChange={(e) => updateQuantity(parseFloat(e))}
             />
             <Unit
               label="Units"
@@ -246,7 +246,7 @@ const MaterialShipmentShipmentForm = ({
             isDisabled={isLoading}
             value={shipment.quantity}
             errorMessage={errors?.quantity}
-            onChange={(e) => updateQuantity(parseInt(e))}
+            onChange={(e) => updateQuantity(parseFloat(e))}
           />
           {jobsiteMaterials
             .find((material) => shipment.jobsiteMaterialId === material._id)

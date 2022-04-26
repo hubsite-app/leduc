@@ -11,10 +11,10 @@ if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
 import mongoose from "mongoose";
 import createApp from "./app";
 import updateDocuments from "@utils/updateDocuments";
-// import saveAll from "@testing/saveAll";
 import { Company, System } from "@models";
 import elasticsearch from "./elasticsearch";
 import workers from "@workers";
+import saveAll, { SkipSave } from "@testing/saveAll";
 
 const main = async () => {
   try {
@@ -42,7 +42,7 @@ const main = async () => {
       if (production) {
         // await saveAll();
       } else {
-        // await saveAll();
+        await saveAll([SkipSave.DailyReport]);
       }
 
       await System.validateSystem();

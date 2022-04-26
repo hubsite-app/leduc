@@ -8,7 +8,6 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { isEmpty } from "lodash";
 import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
 
@@ -94,7 +93,7 @@ const VehicleWorkCreateForm = ({
         JSON.stringify(formData)
       );
 
-      formDataCopy[dataIndex].jobs[jobIndex].hours = parseInt(value);
+      formDataCopy[dataIndex].jobs[jobIndex].hours = parseFloat(value);
 
       setFormData(formDataCopy);
     },

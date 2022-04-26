@@ -254,6 +254,7 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                     backgroundColor="transparent"
                     icon={<FiArchive />}
                     aria-label="archive"
+                    isLoading={archiveLoading}
                     onClick={() => {
                       if (window.confirm("Are you sure?")) {
                         archive({
@@ -353,6 +354,7 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
     FormComponents,
     approvalLoading,
     archive,
+    archiveLoading,
     canUpdateJobsite,
     data?.dailyReport,
     editModalOpen,
