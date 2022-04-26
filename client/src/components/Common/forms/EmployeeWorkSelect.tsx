@@ -4,7 +4,10 @@ import Select, { ISelect } from "./Select";
 
 export interface IEmployeeWorkSelect extends Omit<ISelect, "options"> {}
 
-const EmployeeWorkSelect = ({ ...props }: IEmployeeWorkSelect) => {
+const EmployeeWorkSelect = ({
+  placeholder = "Select work",
+  ...props
+}: IEmployeeWorkSelect) => {
   /**
    * ------ Hook Initialization -----
    */
@@ -34,7 +37,7 @@ const EmployeeWorkSelect = ({ ...props }: IEmployeeWorkSelect) => {
    * ----- Rendering -----
    */
 
-  return <Select options={options} {...props} />;
+  return <Select placeholder={placeholder} options={options} {...props} />;
 };
 
 export default EmployeeWorkSelect;
