@@ -3,6 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/buildpack-deps:stretch
+    resource_class: large
     environment:
       SERVER_IMAGE_NAME: itsdevin/bow-mark-server
       CLIENT_IMAGE_NAME: itsdevin/bow-mark-client
