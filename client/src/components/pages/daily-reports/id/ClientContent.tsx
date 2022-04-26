@@ -250,23 +250,25 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                     aria-label="edit"
                     onClick={onEditModalOpen}
                   />
-                  <IconButton
-                    backgroundColor="transparent"
-                    icon={<FiArchive />}
-                    aria-label="archive"
-                    isLoading={archiveLoading}
-                    onClick={() => {
-                      if (window.confirm("Are you sure?")) {
-                        archive({
-                          variables: {
-                            id: data.dailyReport._id,
-                          },
-                        }).then(() => {
-                          router.push("/");
-                        });
-                      }
-                    }}
-                  />
+                  <Permission>
+                    <IconButton
+                      backgroundColor="transparent"
+                      icon={<FiArchive />}
+                      aria-label="archive"
+                      isLoading={archiveLoading}
+                      onClick={() => {
+                        if (window.confirm("Are you sure?")) {
+                          archive({
+                            variables: {
+                              id: data.dailyReport._id,
+                            },
+                          }).then(() => {
+                            router.push("/");
+                          });
+                        }
+                      }}
+                    />
+                  </Permission>
                 </Flex>
               </Permission>
             </Flex>
