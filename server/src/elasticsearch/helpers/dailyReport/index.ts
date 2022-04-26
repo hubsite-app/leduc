@@ -4,69 +4,54 @@ import { logger } from "@logger";
 import { ES_ensureDailyReportSettings } from "./settings";
 import { ES_ensureDailyReportMapping } from "./mapping";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
+import errorHandler from "@utils/errorHandler";
 
-export const ES_ensureDailyReportIndex = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      await ES_ensureDailyReportSettings();
-      await ES_ensureDailyReportMapping();
+export const ES_ensureDailyReportIndex = async () => {
+  await ES_ensureDailyReportSettings();
+  await ES_ensureDailyReportMapping();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
-export const ES_updateDailyReport = (dailyReport: DailyReportDocument) => {
-  return new Promise<void>(async (resolve, reject) => {
+export const ES_updateDailyReport = async (
+  dailyReport: DailyReportDocument
+) => {
+  if (process.env.NODE_ENV !== "test") {
+    logger.debug(`Updating dailyReport ${dailyReport._id} in ES`);
+
+    let crew: CrewDocument | undefined = undefined,
+      jobsite: JobsiteDocument | undefined = undefined;
     try {
-      if (process.env.NODE_ENV !== "test") {
-        logger.debug(`Updating dailyReport ${dailyReport._id} in ES`);
-
-        let crew: CrewDocument | undefined = undefined,
-          jobsite: JobsiteDocument | undefined = undefined;
-        try {
-          jobsite = await dailyReport.getJobsite();
-          crew = await dailyReport.getCrew();
-        } catch (e: any) {
-          logger.error(`Daily Report ES update error ${e.message}`);
-        }
-
-        await ElasticsearchClient.update({
-          index: ElasticSearchIndices.DailyReport,
-          id: dailyReport._id.toString(),
-          body: {
-            doc: {
-              date: dailyReport.date,
-              jobsiteName: jobsite?.name || "",
-              jobsiteCode: jobsite?.jobcode || "",
-              crewName: crew?.name || "",
-            },
-            doc_as_upsert: true,
-          },
-        });
-      }
-
-      resolve();
+      jobsite = await dailyReport.getJobsite();
+      crew = await dailyReport.getCrew();
     } catch (e) {
-      reject(e);
+      errorHandler("Daily Report ES update error", e);
     }
-  });
+
+    await ElasticsearchClient.update({
+      index: ElasticSearchIndices.DailyReport,
+      id: dailyReport._id.toString(),
+      body: {
+        doc: {
+          date: dailyReport.date,
+          jobsiteName: jobsite?.name || "",
+          jobsiteCode: jobsite?.jobcode || "",
+          crewName: crew?.name || "",
+        },
+        doc_as_upsert: true,
+      },
+    });
+  }
+
+  return;
 };
 
-export const ES_clearDailyReport = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      logger.debug(`Clearing daily report index in ES`);
+export const ES_clearDailyReport = async () => {
+  logger.debug("Clearing daily report index in ES");
 
-      await ElasticsearchClient.indices.delete({
-        index: ElasticSearchIndices.DailyReport,
-      });
-
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
+  await ElasticsearchClient.indices.delete({
+    index: ElasticSearchIndices.DailyReport,
   });
+
+  return;
 };

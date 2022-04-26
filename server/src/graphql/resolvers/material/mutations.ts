@@ -7,18 +7,12 @@ export class MaterialCreateData {
   public name!: string;
 }
 
-const create = (data: MaterialCreateData) => {
-  return new Promise<MaterialDocument>(async (resolve, reject) => {
-    try {
-      const material = await Material.createDocument(data);
+const create = async (data: MaterialCreateData): Promise<MaterialDocument> => {
+  const material = await Material.createDocument(data);
 
-      await material.save();
+  await material.save();
 
-      resolve(material);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return material;
 };
 
 export default {

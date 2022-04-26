@@ -6,48 +6,45 @@ import {
 import { CrewTypes } from "@typescript/crew";
 import { UpdateStatus } from "@typescript/models";
 
-const document = (jobsiteMonthReport: JobsiteMonthReportDocument) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const dayReports = await JobsiteDayReport.getByJobsiteAndMonth(
-        jobsiteMonthReport.jobsite!,
-        jobsiteMonthReport.startOfMonth
-      );
+const document = async (jobsiteMonthReport: JobsiteMonthReportDocument) => {
+  if (!jobsiteMonthReport.jobsite)
+    throw new Error("Jobsite month report does not have a jobsite");
 
-      jobsiteMonthReport.dayReports = dayReports.map((report) => report._id);
+  const dayReports = await JobsiteDayReport.getByJobsiteAndMonth(
+    jobsiteMonthReport.jobsite,
+    jobsiteMonthReport.startOfMonth
+  );
 
-      const crewTypes: CrewTypes[] = [];
-      for (let i = 0; i < dayReports.length; i++) {
-        const dayReport = dayReports[i];
+  jobsiteMonthReport.dayReports = dayReports.map((report) => report._id);
 
-        for (let j = 0; j < dayReport.crewTypes.length; j++) {
-          if (!crewTypes.includes(dayReport.crewTypes[j]))
-            crewTypes.push(dayReport.crewTypes[j]);
-        }
-      }
+  const crewTypes: CrewTypes[] = [];
+  for (let i = 0; i < dayReports.length; i++) {
+    const dayReport = dayReports[i];
 
-      jobsiteMonthReport.crewTypes = crewTypes;
-
-      await jobsiteMonthReport.generateExpenseInvoiceReports();
-      await jobsiteMonthReport.generateRevenueInvoiceReports();
-
-      await jobsiteMonthReport.generateSummary();
-
-      jobsiteMonthReport.update.status = UpdateStatus.Updated;
-      jobsiteMonthReport.update.lastUpdatedAt = new Date();
-
-      await jobsiteMonthReport.save();
-
-      await JobsiteYearReport.requestBuild({
-        jobsiteId: jobsiteMonthReport.jobsite!,
-        date: jobsiteMonthReport.startOfMonth,
-      });
-
-      resolve();
-    } catch (e) {
-      reject(e);
+    for (let j = 0; j < dayReport.crewTypes.length; j++) {
+      if (!crewTypes.includes(dayReport.crewTypes[j]))
+        crewTypes.push(dayReport.crewTypes[j]);
     }
+  }
+
+  jobsiteMonthReport.crewTypes = crewTypes;
+
+  await jobsiteMonthReport.generateExpenseInvoiceReports();
+  await jobsiteMonthReport.generateRevenueInvoiceReports();
+
+  await jobsiteMonthReport.generateSummary();
+
+  jobsiteMonthReport.update.status = UpdateStatus.Updated;
+  jobsiteMonthReport.update.lastUpdatedAt = new Date();
+
+  await jobsiteMonthReport.save();
+
+  await JobsiteYearReport.requestBuild({
+    jobsiteId: jobsiteMonthReport.jobsite,
+    date: jobsiteMonthReport.startOfMonth,
   });
+
+  return;
 };
 
 export default {

@@ -34,106 +34,84 @@ const login = (data: LoginData) => {
   return User.login(data.email, data.password, data.rememberMe);
 };
 
-const signup = (signupId: string, data: SignupData) => {
-  return new Promise<string>(async (resolve, reject) => {
-    try {
-      const signup = (await Signup.getById(signupId, { throwError: true }))!;
+const signup = async (signupId: string, data: SignupData): Promise<string> => {
+  const signup = await Signup.getById(signupId, { throwError: true });
+  if (!signup) throw new Error("Unable to find signup");
 
-      const user = await User.createDocument(signup, data);
+  const user = await User.createDocument(signup, data);
 
-      await user.save();
+  await user.save();
 
-      await signup.remove();
+  await signup.remove();
 
-      const token = await User.login(user.email, data.password, true);
+  const token = await User.login(user.email, data.password, true);
 
-      resolve(token);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return token;
 };
 
-const passwordResetRequest = (email: string) => {
-  return new Promise<boolean>(async (resolve, reject) => {
-    try {
-      const user = await User.getByEmail(email);
-      if (!user) throw new Error("Unable to find user with that email");
+const passwordResetRequest = async (email: string): Promise<boolean> => {
+  const user = await User.getByEmail(email);
+  if (!user) throw new Error("Unable to find user with that email");
 
-      const token = await user.setResetPasswordToken();
+  const token = await user.setResetPasswordToken();
 
-      await user.save();
+  await user.save();
 
-      await user.sendEmail({
-        subject: "Bow Mark - Password Reset",
-        html: `Follow link to reset password: ${token}`,
-        plainText: `Follow link to reset password: ${token}`,
-      });
-
-      resolve(true);
-    } catch (e) {
-      reject(e);
-    }
+  await user.sendEmail({
+    subject: "Bow Mark - Password Reset",
+    html: `Follow link to reset password: ${token}`,
+    plainText: `Follow link to reset password: ${token}`,
   });
+
+  return true;
 };
 
-const passwordReset = (password: string, token: string) => {
-  return new Promise<boolean>(async (resolve, reject) => {
-    try {
-      const user = await User.getByResetPasswordToken(token);
-      if (!user) throw new Error("Invalid token, please try the process again");
+const passwordReset = async (
+  password: string,
+  token: string
+): Promise<boolean> => {
+  const user = await User.getByResetPasswordToken(token);
+  if (!user) throw new Error("Invalid token, please try the process again");
 
-      const decoded = decode(token) as JwtPayload;
+  const decoded = decode(token) as JwtPayload;
 
-      if (decoded.exp! * 1000 < new Date().getTime())
-        throw new Error(
-          "Your reset link has expired, pleas try the proocess again"
-        );
+  if (decoded.exp && decoded.exp * 1000 < new Date().getTime())
+    throw new Error(
+      "Your reset link has expired, pleas try the proocess again"
+    );
 
-      await user.updatePassword(password);
+  await user.updatePassword(password);
 
-      await user.save();
+  await user.save();
 
-      resolve(true);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return true;
 };
 
-const role = (id: Id, role: UserRoles) => {
-  return new Promise<UserDocument>(async (resolve, reject) => {
-    try {
-      const user = (await User.getById(id, { throwError: true }))!;
+const role = async (id: Id, role: UserRoles): Promise<UserDocument> => {
+  const user = await User.getById(id, { throwError: true });
+  if (!user) throw new Error("Unable to find user");
 
-      await user.updateRole(role);
+  await user.updateRole(role);
 
-      await user.save();
+  await user.save();
 
-      resolve(user);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return user;
 };
 
-const updateHomeView = (context: IContext, homeView: UserHomeViewSettings) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      if (!context.user) throw new Error("cannot find user");
+const updateHomeView = async (
+  context: IContext,
+  homeView: UserHomeViewSettings
+): Promise<UserDocument> => {
+  if (!context.user) throw new Error("cannot find user");
 
-      if (parseInt(context.user.role.toString()) < 2 && homeView === 2)
-        throw new Error("User does not have permission for this home view");
+  if (parseInt(context.user.role.toString()) < 2 && homeView === 2)
+    throw new Error("User does not have permission for this home view");
 
-      await context.user.updateHomeView(homeView);
+  await context.user.updateHomeView(homeView);
 
-      await context.user.save();
+  await context.user.save();
 
-      resolve(context.user);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return context.user;
 };
 
 export default {

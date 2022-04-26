@@ -1,23 +1,17 @@
 import { EmployeeWorkDocument } from "@models";
 
-const fullDelete = (employeeWork: EmployeeWorkDocument) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const dailyReport = await employeeWork.getDailyReport();
+const fullDelete = async (employeeWork: EmployeeWorkDocument) => {
+  const dailyReport = await employeeWork.getDailyReport();
 
-      if (dailyReport) {
-        await dailyReport.removeEmployeeWork(employeeWork);
+  if (dailyReport) {
+    await dailyReport.removeEmployeeWork(employeeWork);
 
-        await dailyReport.save();
-      }
+    await dailyReport.save();
+  }
 
-      await employeeWork.remove();
+  await employeeWork.remove();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 export default {

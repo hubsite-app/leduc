@@ -1,17 +1,11 @@
 import { JobsiteMaterialDocument } from "@models";
 
-const requestUpdate = (jobsiteMaterial: JobsiteMaterialDocument) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const jobsite = await jobsiteMaterial.getJobsite();
+const requestUpdate = async (jobsiteMaterial: JobsiteMaterialDocument) => {
+  const jobsite = await jobsiteMaterial.getJobsite();
 
-      await jobsite.requestGenerateDayReports();
+  await jobsite.requestGenerateDayReports();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 export default {

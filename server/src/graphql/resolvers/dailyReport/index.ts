@@ -22,7 +22,6 @@ import {
   VehicleClass,
   VehicleWorkClass,
 } from "@models";
-import { ListOptionData } from "@typescript/graphql";
 import mutations, {
   DailyReportCreateData,
   DailyReportNoteUpdateData,

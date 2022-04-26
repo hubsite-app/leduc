@@ -29,38 +29,35 @@ export class InvoiceData {
   public internal!: boolean;
 }
 
-const updateForJobsite = (
+const updateForJobsite = async (
   invoiceId: string,
   jobsiteId: Id,
   data: InvoiceData
-) => {
-  return new Promise<InvoiceDocument>(async (resolve, reject) => {
-    try {
-      const invoice = (await Invoice.getById(invoiceId, { throwError: true }))!;
+): Promise<InvoiceDocument> => {
+  const invoice = await Invoice.getById(invoiceId, { throwError: true });
+  if (!invoice) throw new Error("Unable to find invoice");
 
-      const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;
+  const jobsite = await Jobsite.getById(jobsiteId, { throwError: true });
+  if (!jobsite) throw new Error("Unable to find jobsite");
 
-      const company = (await Company.getById(data.companyId, {
-        throwError: true,
-      }))!;
-
-      await invoice.updateDocument({
-        ...data,
-        company,
-      });
-
-      await invoice.save();
-
-      await JobsiteMonthReport.requestBuild({
-        jobsiteId: jobsite._id,
-        date: invoice.date,
-      });
-
-      resolve(invoice);
-    } catch (e) {
-      reject(e);
-    }
+  const company = await Company.getById(data.companyId, {
+    throwError: true,
   });
+  if (!company) throw new Error("Unable to find company");
+
+  await invoice.updateDocument({
+    ...data,
+    company,
+  });
+
+  await invoice.save();
+
+  await JobsiteMonthReport.requestBuild({
+    jobsiteId: jobsite._id,
+    date: invoice.date,
+  });
+
+  return invoice;
 };
 
 export default {

@@ -65,11 +65,11 @@
     },
     {
       "type": "typescript",
-      "tsconfig": "client/tsconfig.json",
+      "tsconfig": "server/tsconfig.json",
       "option": "watch",
       "problemMatcher": ["$tsc-watch"],
       "group": "build",
-      "label": "tsc: watch - client/tsconfig.json"
+      "label": "tsc: watch - server/tsconfig.json"
     }
   ]
 }

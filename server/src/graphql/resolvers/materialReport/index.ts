@@ -12,7 +12,7 @@ import { FieldResolver, Resolver, Root } from "type-graphql";
 export default class MaterialReportResolver {
   @FieldResolver(() => JobsiteMaterialClass)
   async jobsiteMaterial(@Root() materialReport: MaterialReportDocument) {
-    return JobsiteMaterial.getById(materialReport.jobsiteMaterial!);
+    return JobsiteMaterial.getById(materialReport.jobsiteMaterial || "");
   }
 
   @FieldResolver(() => [MaterialShipmentClass])

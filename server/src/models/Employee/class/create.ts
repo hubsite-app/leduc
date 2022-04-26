@@ -1,24 +1,21 @@
 import { EmployeeDocument, EmployeeModel } from "@models";
 import { IEmployeeCreate } from "@typescript/employee";
 
-const document = (Employee: EmployeeModel, data: IEmployeeCreate) => {
-  return new Promise<EmployeeDocument>(async (resolve, reject) => {
-    try {
-      const sameName = await Employee.getByName(data.name);
-      if (sameName)
-        throw new Error(
-          "Employee.createDocument: employee already exists with this name"
-        );
+const document = async (
+  Employee: EmployeeModel,
+  data: IEmployeeCreate
+): Promise<EmployeeDocument> => {
+  const sameName = await Employee.getByName(data.name);
+  if (sameName)
+    throw new Error(
+      "Employee.createDocument: employee already exists with this name"
+    );
 
-      const employee = new Employee({
-        ...data,
-      });
-
-      resolve(employee);
-    } catch (e) {
-      reject(e);
-    }
+  const employee = new Employee({
+    ...data,
   });
+
+  return employee;
 };
 
 export default {

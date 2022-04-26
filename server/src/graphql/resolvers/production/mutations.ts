@@ -25,57 +25,48 @@ export class ProductionUpdateData {
 @InputType()
 export class ProductionCreateData extends ProductionUpdateData {}
 
-const create = (dailyReportId: string, data: ProductionCreateData) => {
-  return new Promise<ProductionDocument>(async (resolve, reject) => {
-    try {
-      const dailyReport = (await DailyReport.getById(dailyReportId, {
-        throwError: true,
-      }))!;
-
-      const production = await Production.createDocument({
-        ...data,
-        dailyReport,
-      });
-
-      await production.save();
-
-      await dailyReport.save();
-
-      resolve(production);
-    } catch (e) {
-      reject(e);
-    }
+const create = async (
+  dailyReportId: string,
+  data: ProductionCreateData
+): Promise<ProductionDocument> => {
+  const dailyReport = await DailyReport.getById(dailyReportId, {
+    throwError: true,
   });
+  if (!dailyReport) throw new Error("Unable to find daily report");
+
+  const production = await Production.createDocument({
+    ...data,
+    dailyReport,
+  });
+
+  await production.save();
+
+  await dailyReport.save();
+
+  return production;
 };
 
-const update = (id: string, data: ProductionUpdateData) => {
-  return new Promise<ProductionDocument>(async (resolve, reject) => {
-    try {
-      const production = (await Production.getById(id, { throwError: true }))!;
+const update = async (
+  id: string,
+  data: ProductionUpdateData
+): Promise<ProductionDocument> => {
+  const production = await Production.getById(id, { throwError: true });
+  if (!production) throw new Error("Unable to find production");
 
-      await production.updateDocument(data);
+  await production.updateDocument(data);
 
-      await production.save();
+  await production.save();
 
-      resolve(production);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return production;
 };
 
-const remove = (id: string) => {
-  return new Promise<string>(async (resolve, reject) => {
-    try {
-      const production = (await Production.getById(id, { throwError: true }))!;
+const remove = async (id: string): Promise<string> => {
+  const production = await Production.getById(id, { throwError: true });
+  if (!production) throw new Error("Unable to find production");
 
-      await production.fullDelete();
+  await production.fullDelete();
 
-      resolve(production._id.toString());
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return production._id.toString();
 };
 
 export default {

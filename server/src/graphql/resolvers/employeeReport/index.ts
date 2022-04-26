@@ -12,7 +12,7 @@ import { FieldResolver, Resolver, Root } from "type-graphql";
 export default class EmployeeReportResolver {
   @FieldResolver(() => EmployeeClass, { nullable: true })
   async employee(@Root() employeeReport: EmployeeReportDocument) {
-    return Employee.getById(employeeReport.employee!);
+    return Employee.getById(employeeReport.employee || "");
   }
 
   @FieldResolver(() => [EmployeeWorkClass])

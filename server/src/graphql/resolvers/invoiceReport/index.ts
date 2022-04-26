@@ -6,6 +6,6 @@ import { FieldResolver, Resolver, Root } from "type-graphql";
 export default class InvoiceReportResolver {
   @FieldResolver(() => InvoiceClass)
   async invoice(@Root() invoiceReport: InvoiceReportDocument) {
-    return Invoice.getById(invoiceReport.invoice!);
+    return Invoice.getById(invoiceReport.invoice || "");
   }
 }

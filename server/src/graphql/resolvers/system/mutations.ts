@@ -1,68 +1,48 @@
 import { DefaultRateData } from "@graphql/types/mutation";
 import { System, SystemDocument } from "@models";
 
-const unitDefaults = (data: string[]) => {
-  return new Promise<SystemDocument>(async (resolve, reject) => {
-    try {
-      const system = await System.getSystem();
+const unitDefaults = async (data: string[]): Promise<SystemDocument> => {
+  const system = await System.getSystem();
 
-      await system.updateUnitDefaults(data);
+  await system.updateUnitDefaults(data);
 
-      await system.save();
+  await system.save();
 
-      resolve(system);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return system;
 };
 
-const laborTypes = (data: string[]) => {
-  return new Promise<SystemDocument>(async (resolve, reject) => {
-    try {
-      const system = await System.getSystem();
+const laborTypes = async (data: string[]): Promise<SystemDocument> => {
+  const system = await System.getSystem();
 
-      await system.updateLaborTypes(data);
+  await system.updateLaborTypes(data);
 
-      await system.save();
+  await system.save();
 
-      resolve(system);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return system;
 };
 
-const companyVehicleTypeDefaults = (data: DefaultRateData[]) => {
-  return new Promise<SystemDocument>(async (resolve, reject) => {
-    try {
-      const system = await System.getSystem();
+const companyVehicleTypeDefaults = async (
+  data: DefaultRateData[]
+): Promise<SystemDocument> => {
+  const system = await System.getSystem();
 
-      await system.updateCompanyVehicleTypeDefaults(data);
+  await system.updateCompanyVehicleTypeDefaults(data);
 
-      await system.save();
+  await system.save();
 
-      resolve(system);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return system;
 };
 
-const materialShipmentVehicleTypeDefaults = (data: DefaultRateData[]) => {
-  return new Promise<SystemDocument>(async (resolve, reject) => {
-    try {
-      const system = await System.getSystem();
+const materialShipmentVehicleTypeDefaults = async (
+  data: DefaultRateData[]
+): Promise<SystemDocument> => {
+  const system = await System.getSystem();
 
-      await system.updateMaterialShipmentVehicleTypeDefaults(data);
+  await system.updateMaterialShipmentVehicleTypeDefaults(data);
 
-      await system.save();
+  await system.save();
 
-      resolve(system);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return system;
 };
 
 export default {

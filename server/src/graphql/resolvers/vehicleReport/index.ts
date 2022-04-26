@@ -12,7 +12,7 @@ import { FieldResolver, Resolver, Root } from "type-graphql";
 export default class VehicleReportResolver {
   @FieldResolver(() => VehicleClass, { nullable: true })
   async vehicle(@Root() vehicleReport: VehicleReportDocument) {
-    return Vehicle.getById(vehicleReport.vehicle!);
+    return Vehicle.getById(vehicleReport.vehicle || "");
   }
 
   @FieldResolver(() => [VehicleWorkClass])

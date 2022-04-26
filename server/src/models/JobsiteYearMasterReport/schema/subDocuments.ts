@@ -10,5 +10,5 @@ export class JobsiteYearMasterReportItemClass extends JobsiteMasterReportItemCla
   public report!: Ref<JobsiteYearReportClass>;
 }
 
-export interface JobsiteYearMasterReportItemDocument
-  extends DocumentType<JobsiteYearMasterReportItemClass> {}
+export type JobsiteYearMasterReportItemDocument =
+  DocumentType<JobsiteYearMasterReportItemClass>;

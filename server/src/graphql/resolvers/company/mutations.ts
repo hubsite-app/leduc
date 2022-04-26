@@ -7,18 +7,12 @@ export class CompanyCreateData {
   public name!: string;
 }
 
-const create = (data: CompanyCreateData) => {
-  return new Promise<CompanyDocument>(async (resolve, reject) => {
-    try {
-      const company = await Company.createDocument(data);
+const create = async (data: CompanyCreateData): Promise<CompanyDocument> => {
+  const company = await Company.createDocument(data);
 
-      await company.save();
+  await company.save();
 
-      resolve(company);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return company;
 };
 
 export default {

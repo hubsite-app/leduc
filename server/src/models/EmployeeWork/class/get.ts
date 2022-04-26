@@ -14,60 +14,44 @@ import populateOptions from "@utils/populateOptions";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   EmployeeWork: EmployeeWorkModel,
   id: Types.ObjectId | string,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<EmployeeWorkDocument | null>(async (resolve, reject) => {
-    try {
-      options = populateOptions(options, byIdDefaultOptions);
+): Promise<EmployeeWorkDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-      const employeeWork = await EmployeeWork.findById(id);
+  const employeeWork = await EmployeeWork.findById(id);
 
-      if (!employeeWork && options.throwError) {
-        throw new Error("EmployeeWork.getById: unable to find employee work");
-      }
+  if (!employeeWork && options.throwError) {
+    throw new Error("EmployeeWork.getById: unable to find employee work");
+  }
 
-      resolve(employeeWork);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return employeeWork;
 };
 
-const employee = (employeeWork: EmployeeWorkDocument) => {
-  return new Promise<EmployeeDocument>(async (resolve, reject) => {
-    try {
-      if (!employeeWork.employee)
-        throw new Error(
-          "employeeWork.getEmployee: does not contain an employee"
-        );
+const employee = async (
+  employeeWork: EmployeeWorkDocument
+): Promise<EmployeeDocument> => {
+  if (!employeeWork.employee)
+    throw new Error("employeeWork.getEmployee: does not contain an employee");
 
-      const employee = await Employee.getById(employeeWork.employee);
+  const employee = await Employee.getById(employeeWork.employee);
 
-      if (!employee)
-        throw new Error("employeeWork.getEmployee: unable to find employee");
+  if (!employee)
+    throw new Error("employeeWork.getEmployee: unable to find employee");
 
-      resolve(employee);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return employee;
 };
 
-const dailyReport = (employeeWork: EmployeeWorkDocument) => {
-  return new Promise<DailyReportDocument | null>(async (resolve, reject) => {
-    try {
-      const dailyReport = await DailyReport.findOne({
-        employeeWork: employeeWork._id,
-      });
-
-      resolve(dailyReport);
-    } catch (e) {
-      reject(e);
-    }
+const dailyReport = async (
+  employeeWork: EmployeeWorkDocument
+): Promise<DailyReportDocument | null> => {
+  const dailyReport = await DailyReport.findOne({
+    employeeWork: employeeWork._id,
   });
+
+  return dailyReport;
 };
 
 export default {

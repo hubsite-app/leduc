@@ -3,32 +3,20 @@ import { IEmployeeUpdate } from "@typescript/employee";
 import { IRatesData } from "@typescript/models";
 import validateRates from "@validation/validateRates";
 
-const document = (employee: EmployeeDocument, data: IEmployeeUpdate) => {
-  return new Promise<void>((resolve, reject) => {
-    try {
-      employee.name = data.name;
+const document = async (employee: EmployeeDocument, data: IEmployeeUpdate) => {
+  employee.name = data.name;
 
-      employee.jobTitle = data.jobTitle;
+  employee.jobTitle = data.jobTitle;
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
-const rates = (employee: EmployeeDocument, data: IRatesData[]) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      await validateRates(data);
+const rates = async (employee: EmployeeDocument, data: IRatesData[]) => {
+  await validateRates(data);
 
-      employee.rates = data;
+  employee.rates = data;
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 export default {

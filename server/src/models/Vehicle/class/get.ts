@@ -7,6 +7,7 @@ import ElasticsearchClient from "@elasticsearch/client";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 import { IVehicleSearchObject } from "@typescript/vehicle";
 import getRateForTime from "@utils/getRateForTime";
+import { IHit } from "@typescript/elasticsearch";
 
 /**
  * ----- Static Methods -----
@@ -15,119 +16,96 @@ import getRateForTime from "@utils/getRateForTime";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   Vehicle: VehicleModel,
   id: Types.ObjectId | string,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<VehicleDocument | null>(async (resolve, reject) => {
-    try {
-      options = populateOptions(options, byIdDefaultOptions);
+): Promise<VehicleDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-      const vehicle = await Vehicle.findById(id);
+  const vehicle = await Vehicle.findById(id);
 
-      if (!vehicle && options.throwError) {
-        throw new Error("Vehicle.getById: Unable to find vehicle");
-      }
+  if (!vehicle && options.throwError) {
+    throw new Error("Vehicle.getById: Unable to find vehicle");
+  }
 
-      resolve(vehicle);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return vehicle;
 };
 
-const search = (
+const search = async (
   Vehicle: VehicleModel,
   searchString: string,
   options?: ISearchOptions
-) => {
-  return new Promise<IVehicleSearchObject[]>(async (resolve, reject) => {
-    try {
-      const res = await ElasticsearchClient.search({
-        index: ElasticSearchIndices.Vehicle,
-        body: {
-          query: {
-            multi_match: {
-              query: searchString.toLowerCase(),
-              fuzziness: "AUTO",
-              fields: ["name", "vehicleCode", "vehicleType"],
-            },
-          },
+): Promise<IVehicleSearchObject[]> => {
+  const res = await ElasticsearchClient.search({
+    index: ElasticSearchIndices.Vehicle,
+    body: {
+      query: {
+        multi_match: {
+          query: searchString.toLowerCase(),
+          fuzziness: "AUTO",
+          fields: ["name", "vehicleCode", "vehicleType"],
         },
-        size: options?.limit,
-      });
-
-      let vehicleObjects: { id: string; score: number }[] =
-        res.body.hits.hits.map((item: any) => {
-          return {
-            id: item._id,
-            score: item._score,
-          };
-        });
-
-      // Filter out blacklisted ids
-      if (options?.blacklistedIds) {
-        vehicleObjects = vehicleObjects.filter(
-          (object) => !options.blacklistedIds?.includes(object.id)
-        );
-      }
-
-      const vehicles: IVehicleSearchObject[] = [];
-      for (let i = 0; i < vehicleObjects.length; i++) {
-        const vehicle = await Vehicle.getById(vehicleObjects[i].id);
-        if (vehicle)
-          vehicles.push({
-            vehicle,
-            score: vehicleObjects[i].score,
-          });
-      }
-
-      resolve(vehicles);
-    } catch (e) {
-      reject(e);
-    }
+      },
+    },
+    size: options?.limit,
   });
+
+  let vehicleObjects: { id: string; score: number }[] = res.body.hits.hits.map(
+    (item: IHit) => {
+      return {
+        id: item._id,
+        score: item._score,
+      };
+    }
+  );
+
+  // Filter out blacklisted ids
+  if (options?.blacklistedIds) {
+    vehicleObjects = vehicleObjects.filter(
+      (object) => !options.blacklistedIds?.includes(object.id)
+    );
+  }
+
+  const vehicles: IVehicleSearchObject[] = [];
+  for (let i = 0; i < vehicleObjects.length; i++) {
+    const vehicle = await Vehicle.getById(vehicleObjects[i].id);
+    if (vehicle)
+      vehicles.push({
+        vehicle,
+        score: vehicleObjects[i].score,
+      });
+  }
+
+  return vehicles;
 };
 
-const byCode = (Vehicle: VehicleModel, code: string) => {
-  return new Promise<VehicleDocument | null>(async (resolve, reject) => {
-    try {
-      const vehicle = await Vehicle.findOne({
-        vehicleCode: { $regex: new RegExp(code, "i") },
-      });
-
-      resolve(vehicle);
-    } catch (e) {
-      reject(e);
-    }
+const byCode = async (
+  Vehicle: VehicleModel,
+  code: string
+): Promise<VehicleDocument | null> => {
+  const vehicle = await Vehicle.findOne({
+    vehicleCode: { $regex: new RegExp(code, "i") },
   });
+
+  return vehicle;
 };
 
 /**
  * ----- Methods -----
  */
 
-const crews = (vehicle: VehicleDocument) => {
-  return new Promise<CrewDocument[]>(async (resolve, reject) => {
-    try {
-      const crews = await Crew.find({ vehicles: vehicle._id });
+const crews = async (vehicle: VehicleDocument): Promise<CrewDocument[]> => {
+  const crews = await Crew.find({ vehicles: vehicle._id });
 
-      resolve(crews);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return crews;
 };
 
-const rateForTime = (vehicle: VehicleDocument, date: Date) => {
-  return new Promise<number>(async (resolve, reject) => {
-    try {
-      resolve(getRateForTime(vehicle.rates, date));
-    } catch (e) {
-      reject(e);
-    }
-  });
+const rateForTime = async (
+  vehicle: VehicleDocument,
+  date: Date
+): Promise<number> => {
+  return getRateForTime(vehicle.rates, date);
 };
 
 export default {

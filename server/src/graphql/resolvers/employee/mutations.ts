@@ -21,59 +21,54 @@ export class EmployeeUpdateData {
   public jobTitle!: string;
 }
 
-const create = (data: EmployeeCreateData, crewId?: Id) => {
-  return new Promise<EmployeeDocument>(async (resolve, reject) => {
-    try {
-      const employee = await Employee.createDocument(data);
+const create = async (
+  data: EmployeeCreateData,
+  crewId?: Id
+): Promise<EmployeeDocument> => {
+  const employee = await Employee.createDocument(data);
 
-      let crew: CrewDocument | undefined;
-      if (crewId) {
-        crew = (await Crew.getById(crewId, { throwError: true }))!;
+  let crew: CrewDocument | null = null;
+  if (crewId) {
+    crew = await Crew.getById(crewId, { throwError: true });
 
-        await crew.addEmployee(employee._id);
-      }
+    if (!crew) throw new Error("Unable to find crew");
 
-      await employee.save();
+    await crew.addEmployee(employee._id);
+  }
 
-      if (crew) crew.save();
+  await employee.save();
 
-      resolve(employee);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  if (crew) crew.save();
+
+  return employee;
 };
 
-const update = (id: Id, data: EmployeeUpdateData) => {
-  return new Promise<EmployeeDocument>(async (resolve, reject) => {
-    try {
-      const employee = (await Employee.getById(id, { throwError: true }))!;
+const update = async (
+  id: Id,
+  data: EmployeeUpdateData
+): Promise<EmployeeDocument> => {
+  const employee = await Employee.getById(id, { throwError: true });
+  if (!employee) throw new Error("Unable to find employee");
 
-      await employee.updateDocument(data);
+  await employee.updateDocument(data);
 
-      await employee.save();
+  await employee.save();
 
-      resolve(employee);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return employee;
 };
 
-const updateRates = (id: string, data: RatesData[]) => {
-  return new Promise<EmployeeDocument>(async (resolve, reject) => {
-    try {
-      const employee = (await Employee.getById(id, { throwError: true }))!;
+const updateRates = async (
+  id: string,
+  data: RatesData[]
+): Promise<EmployeeDocument> => {
+  const employee = await Employee.getById(id, { throwError: true });
+  if (!employee) throw new Error("Unable to find employee");
 
-      await employee.updateRates(data);
+  await employee.updateRates(data);
 
-      await employee.save();
+  await employee.save();
 
-      resolve(employee);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return employee;
 };
 
 export default {

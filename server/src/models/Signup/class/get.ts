@@ -14,57 +14,43 @@ import populateOptions from "@utils/populateOptions";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   Signup: SignupModel,
   id: Id,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<SignupDocument | null>(async (resolve, reject) => {
-    try {
-      options = populateOptions(options, byIdDefaultOptions);
+): Promise<SignupDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-      const signup = await Signup.findById(id);
+  const signup = await Signup.findById(id);
 
-      if (!signup && options.throwError) {
-        throw new Error("Signup.getById: unable to find report note");
-      }
+  if (!signup && options.throwError) {
+    throw new Error("Signup.getById: unable to find report note");
+  }
 
-      resolve(signup);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return signup;
 };
 
-const byEmployee = (Signup: SignupModel, employeeId: Id) => {
-  return new Promise<SignupDocument | null>(async (resolve, reject) => {
-    try {
-      const signup = await Signup.findOne({ employee: employeeId });
+const byEmployee = async (
+  Signup: SignupModel,
+  employeeId: Id
+): Promise<SignupDocument | null> => {
+  const signup = await Signup.findOne({ employee: employeeId });
 
-      resolve(signup);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return signup;
 };
 
 /**
  * ----- Methods -----
  */
 
-const employee = (signup: SignupDocument) => {
-  return new Promise<EmployeeDocument>(async (resolve, reject) => {
-    try {
-      const employee = await Employee.getById(signup.employee!);
+const employee = async (signup: SignupDocument): Promise<EmployeeDocument> => {
+  if (!signup.employee)
+    throw new Error("This signup does not have an employee");
+  const employee = await Employee.getById(signup.employee);
 
-      if (!employee)
-        throw new Error("signup.getEmployee: unable to find employee");
+  if (!employee) throw new Error("signup.getEmployee: unable to find employee");
 
-      resolve(employee);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return employee;
 };
 
 export default {

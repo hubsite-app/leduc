@@ -8,7 +8,6 @@ import {
   SignupClass,
   UserClass,
 } from "@models";
-import pubsub from "@pubsub";
 import { Id } from "@typescript/models";
 import {
   Arg,
@@ -16,9 +15,6 @@ import {
   FieldResolver,
   ID,
   Mutation,
-  Publisher,
-  PubSub,
-  PubSubEngine,
   Query,
   Resolver,
   Root,

@@ -10,49 +10,35 @@ import populateOptions from "@utils/populateOptions";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   File: FileModel,
   id: Id,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<FileDocument | null>(async (resolve, reject) => {
-    try {
-      options = populateOptions(options, byIdDefaultOptions);
+): Promise<FileDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-      const file = await File.findById(id);
+  const file = await File.findById(id);
 
-      if (!file && options.throwError) {
-        throw new Error("File.getById: unable to find file");
-      }
+  if (!file && options.throwError) {
+    throw new Error("File.getById: unable to find file");
+  }
 
-      resolve(file);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return file;
 };
 
 /**
  * ----- Methods -----
  */
 
-const buffer = (file: FileDocument) => {
-  return new Promise<string>(async (resolve, reject) => {
-    try {
-      const retreivedFile = await getFile(file._id.toString());
+const buffer = async (file: FileDocument): Promise<string> => {
+  const retreivedFile = await getFile(file._id.toString());
 
-      if (!retreivedFile || !retreivedFile.Body)
-        throw new Error("unable to retreive file from storage");
+  if (!retreivedFile || !retreivedFile.Body)
+    throw new Error("unable to retreive file from storage");
 
-      resolve(
-        `data:${file.mimetype};base64,${Buffer.from(
-          retreivedFile.Body
-        ).toString("base64")}`
-      );
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return `data:${file.mimetype};base64,${Buffer.from(
+    retreivedFile.Body
+  ).toString("base64")}`;
 };
 
 export default {

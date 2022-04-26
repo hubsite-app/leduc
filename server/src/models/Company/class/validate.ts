@@ -1,33 +1,27 @@
 import { CompanyModel } from "@models";
 
-const companies = (Company: CompanyModel) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const paving = await Company.findOne({ isBowMarkPaving: true });
-      if (!paving) {
-        const bowMarkPaving = new Company({
-          name: "Bow Mark Paving",
-          isBowMarkPaving: true,
-        });
+const companies = async (Company: CompanyModel) => {
+  const paving = await Company.findOne({ isBowMarkPaving: true });
+  if (!paving) {
+    const bowMarkPaving = new Company({
+      name: "Bow Mark Paving",
+      isBowMarkPaving: true,
+    });
 
-        await bowMarkPaving.save();
-      }
+    await bowMarkPaving.save();
+  }
 
-      const concrete = await Company.findOne({ isBowMarkConcrete: true });
-      if (!concrete) {
-        const bowMarkConcrete = new Company({
-          name: "Bow Mark Concrete",
-          isBowMarkConcrete: true,
-        });
+  const concrete = await Company.findOne({ isBowMarkConcrete: true });
+  if (!concrete) {
+    const bowMarkConcrete = new Company({
+      name: "Bow Mark Concrete",
+      isBowMarkConcrete: true,
+    });
 
-        await bowMarkConcrete.save();
-      }
+    await bowMarkConcrete.save();
+  }
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 export default {

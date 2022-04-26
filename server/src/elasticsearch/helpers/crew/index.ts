@@ -5,55 +5,37 @@ import { ES_ensureCrewSettings } from "./settings";
 import { ES_ensureCrewMapping } from "./mapping";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 
-export const ES_ensureCrewIndex = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      await ES_ensureCrewSettings();
-      await ES_ensureCrewMapping();
+export const ES_ensureCrewIndex = async () => {
+  await ES_ensureCrewSettings();
+  await ES_ensureCrewMapping();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
-export const ES_updateCrew = (crew: CrewDocument) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      if (process.env.NODE_ENV !== "test") {
-        logger.debug(`Updating crew ${crew._id} in ES`);
-        await ElasticsearchClient.update({
-          index: ElasticSearchIndices.Crew,
-          id: crew._id.toString(),
-          body: {
-            doc: {
-              name: crew.name,
-            },
-            doc_as_upsert: true,
-          },
-        });
-      }
+export const ES_updateCrew = async (crew: CrewDocument) => {
+  if (process.env.NODE_ENV !== "test") {
+    logger.debug(`Updating crew ${crew._id} in ES`);
+    await ElasticsearchClient.update({
+      index: ElasticSearchIndices.Crew,
+      id: crew._id.toString(),
+      body: {
+        doc: {
+          name: crew.name,
+        },
+        doc_as_upsert: true,
+      },
+    });
+  }
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
-export const ES_clearCrew = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      logger.debug(`Clearing crew index in ES`);
+export const ES_clearCrew = async () => {
+  logger.debug("Clearing crew index in ES");
 
-      await ElasticsearchClient.indices.delete({
-        index: ElasticSearchIndices.Crew,
-      });
-
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
+  await ElasticsearchClient.indices.delete({
+    index: ElasticSearchIndices.Crew,
   });
+
+  return;
 };

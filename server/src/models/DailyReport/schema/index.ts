@@ -1,6 +1,5 @@
 import SchemaVersions from "@constants/SchemaVersions";
 import { ES_updateDailyReport } from "@elasticsearch/helpers/dailyReport";
-import { logger } from "@logger";
 import {
   CrewClass,
   DailyReportDocument,
@@ -14,6 +13,7 @@ import {
   VehicleClass,
 } from "@models";
 import { post, prop, Ref } from "@typegoose/typegoose";
+import errorHandler from "@utils/errorHandler";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
@@ -22,8 +22,8 @@ import { Field, ID, ObjectType } from "type-graphql";
   await ES_updateDailyReport(dailyReport);
   try {
     await dailyReport.requestReportUpdate();
-  } catch (e: any) {
-    logger.error(`Daily report post save error: ${e.message}`);
+  } catch (e) {
+    errorHandler("Daily report post save error", e);
   }
 })
 export class DailyReportSchema {

@@ -6,96 +6,72 @@ import {
 } from "@models";
 import { ITruckingTypeRateData } from "@typescript/jobsite";
 
-const addMaterial = (
+const addMaterial = async (
   jobsite: JobsiteDocument,
   jobsiteMaterial: JobsiteMaterialDocument
 ) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const existingIndex = jobsite.materials.findIndex(
-        (material) => material?.toString() === jobsiteMaterial._id.toString()
-      );
+  const existingIndex = jobsite.materials.findIndex(
+    (material) => material?.toString() === jobsiteMaterial._id.toString()
+  );
 
-      if (existingIndex === -1) {
-        jobsite.materials.push(jobsiteMaterial._id);
-      }
+  if (existingIndex === -1) {
+    jobsite.materials.push(jobsiteMaterial._id);
+  }
 
-      await jobsite.requestGenerateDayReports();
+  await jobsite.requestGenerateDayReports();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
-const addExpenseInvoice = (
+const addExpenseInvoice = async (
   jobsite: JobsiteDocument,
   invoice: InvoiceDocument
 ) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const existingIndex = jobsite.expenseInvoices.findIndex(
-        (inv) => inv?.toString() === invoice._id.toString()
-      );
+  const existingIndex = jobsite.expenseInvoices.findIndex(
+    (inv) => inv?.toString() === invoice._id.toString()
+  );
 
-      if (existingIndex === -1) {
-        jobsite.expenseInvoices.push(invoice._id);
-      }
+  if (existingIndex === -1) {
+    jobsite.expenseInvoices.push(invoice._id);
+  }
 
-      await JobsiteMonthReport.requestBuild({
-        date: invoice.date,
-        jobsiteId: jobsite._id,
-      });
-
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
+  await JobsiteMonthReport.requestBuild({
+    date: invoice.date,
+    jobsiteId: jobsite._id,
   });
+
+  return;
 };
 
-const addRevenueInvoice = (
+const addRevenueInvoice = async (
   jobsite: JobsiteDocument,
   invoice: InvoiceDocument
 ) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const existingIndex = jobsite.revenueInvoices.findIndex(
-        (inv) => inv?.toString() === invoice._id.toString()
-      );
+  const existingIndex = jobsite.revenueInvoices.findIndex(
+    (inv) => inv?.toString() === invoice._id.toString()
+  );
 
-      if (existingIndex === -1) {
-        jobsite.revenueInvoices.push(invoice._id);
-      }
+  if (existingIndex === -1) {
+    jobsite.revenueInvoices.push(invoice._id);
+  }
 
-      await JobsiteMonthReport.requestBuild({
-        date: invoice.date,
-        jobsiteId: jobsite._id,
-      });
-
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
+  await JobsiteMonthReport.requestBuild({
+    date: invoice.date,
+    jobsiteId: jobsite._id,
   });
+
+  return;
 };
 
-const truckingRates = (
+const truckingRates = async (
   jobsite: JobsiteDocument,
   truckingRates: ITruckingTypeRateData[]
 ) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      jobsite.truckingRates = truckingRates;
+  jobsite.truckingRates = truckingRates;
 
-      await jobsite.requestGenerateDayReports();
+  await jobsite.requestGenerateDayReports();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 export default {

@@ -1,17 +1,11 @@
 import { MaterialShipmentDocument } from "@models";
 
-const requestUpdate = (materialShipment: MaterialShipmentDocument) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const dailyReport = await materialShipment.getDailyReport();
+const requestUpdate = async (materialShipment: MaterialShipmentDocument) => {
+  const dailyReport = await materialShipment.getDailyReport();
 
-      await dailyReport?.requestReportUpdate();
+  await dailyReport?.requestReportUpdate();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 export default {

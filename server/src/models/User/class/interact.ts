@@ -7,63 +7,48 @@ import bcrypt from "bcryptjs";
  * ----- Static Methods -----
  */
 
-const login = (
+const login = async (
   User: UserModel,
   email: string,
   password: string,
   rememberMe: boolean
-) => {
-  return new Promise<string>(async (resolve, reject) => {
-    try {
-      const user = await User.getByEmail(email);
-      if (!user) throw new Error("Invalid email or password provided");
+): Promise<string> => {
+  const user = await User.getByEmail(email);
+  if (!user) throw new Error("Invalid email or password provided");
 
-      if ((await user.checkPassword(password)) === false)
-        throw new Error("Invalid email or password provided");
+  if ((await user.checkPassword(password)) === false)
+    throw new Error("Invalid email or password provided");
 
-      let expiresIn = 24 * 60 * 60;
-      if (rememberMe) expiresIn = 30 * 24 * 60 * 60;
+  let expiresIn = 24 * 60 * 60;
+  if (rememberMe) expiresIn = 30 * 24 * 60 * 60;
 
-      const token = createJWT(
-        {
-          userId: user._id,
-        },
-        { expiresIn }
-      );
+  const token = createJWT(
+    {
+      userId: user._id,
+    },
+    { expiresIn }
+  );
 
-      resolve(token);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return token;
 };
 
 /**
  * ----- Methods -----
  */
 
-const checkPassword = (user: UserDocument, password: string) => {
-  return new Promise<boolean>(async (resolve, reject) => {
-    try {
-      const isMatch = await bcrypt.compare(password, user.password);
+const checkPassword = async (
+  user: UserDocument,
+  password: string
+): Promise<boolean> => {
+  const isMatch = await bcrypt.compare(password, user.password);
 
-      resolve(isMatch);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return isMatch;
 };
 
-const email = (user: UserDocument, data: IEmailData) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      await sendEmail(user.email, data);
+const email = async (user: UserDocument, data: IEmailData) => {
+  await sendEmail(user.email, data);
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 export default {

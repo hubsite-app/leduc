@@ -1,58 +1,37 @@
 import { SystemDocument } from "@models";
 import { IDefaultRateData } from "@typescript/models";
 
-const unitDefaults = (system: SystemDocument, units: string[]) => {
-  return new Promise<SystemDocument>(async (resolve, reject) => {
-    try {
-      system.unitDefaults = units;
+const unitDefaults = async (
+  system: SystemDocument,
+  units: string[]
+): Promise<SystemDocument> => {
+  system.unitDefaults = units;
 
-      resolve(system);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return system;
 };
 
-const laborTypes = (system: SystemDocument, types: string[]) => {
-  return new Promise<void>((resolve, reject) => {
-    try {
-      system.laborTypes = types;
+const laborTypes = async (system: SystemDocument, types: string[]) => {
+  system.laborTypes = types;
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
-const companyVehicleTypeDefaults = (
+const companyVehicleTypeDefaults = async (
   system: SystemDocument,
   data: IDefaultRateData[]
-) => {
-  return new Promise<SystemDocument>(async (resolve, reject) => {
-    try {
-      system.companyVehicleTypeDefaults = data;
+): Promise<SystemDocument> => {
+  system.companyVehicleTypeDefaults = data;
 
-      resolve(system);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return system;
 };
 
-const materialShipmentVehicleTypeDefaults = (
+const materialShipmentVehicleTypeDefaults = async (
   system: SystemDocument,
   data: IDefaultRateData[]
-) => {
-  return new Promise<SystemDocument>(async (resolve, reject) => {
-    try {
-      system.materialShipmentVehicleTypeDefaults = data;
+): Promise<SystemDocument> => {
+  system.materialShipmentVehicleTypeDefaults = data;
 
-      resolve(system);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return system;
 };
 
 export default {

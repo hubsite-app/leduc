@@ -1,31 +1,25 @@
 import { JobsiteMaterialDocument, JobsiteMaterialModel } from "@models";
 import { IJobsiteMaterialCreate } from "@typescript/jobsiteMaterial";
 
-const document = (
+const document = async (
   JobsiteMaterial: JobsiteMaterialModel,
   data: IJobsiteMaterialCreate
-) => {
-  return new Promise<JobsiteMaterialDocument>(async (resolve, reject) => {
-    try {
-      const jobsiteMaterial = new JobsiteMaterial({
-        material: data.material._id,
-        supplier: data.supplier._id,
-        quantity: data.quantity,
-        unit: data.unit,
-        rates: data.rates,
-        delivered: data.delivered,
-        deliveredRates: data.deliveredRates,
-      });
-
-      await jobsiteMaterial.validateDocument();
-
-      await data.jobsite.addMaterial(jobsiteMaterial);
-
-      resolve(jobsiteMaterial);
-    } catch (e) {
-      reject(e);
-    }
+): Promise<JobsiteMaterialDocument> => {
+  const jobsiteMaterial = new JobsiteMaterial({
+    material: data.material._id,
+    supplier: data.supplier._id,
+    quantity: data.quantity,
+    unit: data.unit,
+    rates: data.rates,
+    delivered: data.delivered,
+    deliveredRates: data.deliveredRates,
   });
+
+  await jobsiteMaterial.validateDocument();
+
+  await data.jobsite.addMaterial(jobsiteMaterial);
+
+  return jobsiteMaterial;
 };
 
 export default {

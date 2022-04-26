@@ -4,7 +4,6 @@ import { prepareDatabase, disconnectAndStopServer } from "@testing/jestDB";
 import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 
 import createApp from "../../app";
-import _ids from "@testing/_ids";
 import jestLogin from "@testing/jestLogin";
 import { JobsiteMaterialUpdateData } from "@graphql/resolvers/jobsiteMaterial/mutations";
 import { JobsiteMaterial } from "@models";
