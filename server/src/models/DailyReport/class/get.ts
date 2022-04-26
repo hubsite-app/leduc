@@ -175,6 +175,7 @@ const byJobsiteDayReport = async (
     },
     jobsite: jobsiteDayReport.jobsite,
     approved: true,
+    archived: false,
   });
 
   return dailyReports;

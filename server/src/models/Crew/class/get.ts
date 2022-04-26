@@ -132,7 +132,10 @@ const jobsites = async (crew: CrewDocument): Promise<JobsiteDocument[]> => {
 const dailyReports = async (
   crew: CrewDocument
 ): Promise<DailyReportDocument[]> => {
-  const dailyReports = await DailyReport.find({ crew: crew._id }).sort({
+  const dailyReports = await DailyReport.find({
+    crew: crew._id,
+    archived: false,
+  }).sort({
     date: -1,
   });
 

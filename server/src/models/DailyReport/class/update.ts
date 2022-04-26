@@ -157,6 +157,8 @@ const addTemporaryEmployee = async (
 const archive = async (dailyReport: DailyReportDocument) => {
   dailyReport.archived = true;
 
+  dailyReport.approved = false;
+
   return;
 };
 
