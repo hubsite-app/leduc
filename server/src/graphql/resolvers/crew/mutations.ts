@@ -94,6 +94,17 @@ const removeVehicle = async (
   return crew;
 };
 
+const archive = async (id: Id) => {
+  const crew = await Crew.getById(id);
+  if (!crew) throw new Error("Unable to find crew");
+
+  await crew.archive();
+
+  await crew.save();
+
+  return crew;
+};
+
 export default {
   create,
   update,
@@ -101,4 +112,5 @@ export default {
   addVehicle,
   removeEmployee,
   removeVehicle,
+  archive,
 };

@@ -77,4 +77,8 @@ export class EmployeeClass extends EmployeeSchema {
   public async updateRates(this: EmployeeDocument, data: IRatesData[]) {
     return update.rates(this, data);
   }
+
+  public async archive(this: EmployeeDocument) {
+    return update.archive(this);
+  }
 }

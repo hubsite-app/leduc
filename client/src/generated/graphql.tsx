@@ -36,6 +36,7 @@ export type CompanyCreateData = {
 export type CrewClass = {
   __typename?: 'CrewClass';
   _id: Scalars['ID'];
+  archivedAt: Scalars['DateTime'];
   dailyReports: Array<DailyReportClass>;
   employees: Array<EmployeeClass>;
   jobsites: Array<JobsiteClass>;
@@ -142,6 +143,7 @@ export type DefaultRateData = {
 export type EmployeeClass = {
   __typename?: 'EmployeeClass';
   _id: Scalars['ID'];
+  archivedAt: Scalars['DateTime'];
   crews: Array<CrewClass>;
   jobTitle?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -448,6 +450,7 @@ export type Mutation = {
   companyCreate: CompanyClass;
   crewAddEmployee: CrewClass;
   crewAddVehicle: CrewClass;
+  crewArchive: CrewClass;
   crewCreate: CrewClass;
   crewRemoveEmployee: CrewClass;
   crewRemoveVehicle: CrewClass;
@@ -461,6 +464,7 @@ export type Mutation = {
   dailyReportNoteUpdate: DailyReportClass;
   dailyReportPayrollCompleteUpdate: DailyReportClass;
   dailyReportUpdate: DailyReportClass;
+  employeeArchive: EmployeeClass;
   employeeCreate: EmployeeClass;
   employeeUpdate: EmployeeClass;
   employeeUpdateRates: EmployeeClass;
@@ -494,6 +498,7 @@ export type Mutation = {
   userPasswordResetRequest: Scalars['Boolean'];
   userUpdateHomeView: UserClass;
   userUpdateRole: UserClass;
+  vehicleArchive: VehicleClass;
   vehicleCreate: VehicleClass;
   vehicleUpdate: VehicleClass;
   vehicleUpdateRates: VehicleClass;
@@ -517,6 +522,11 @@ export type MutationCrewAddEmployeeArgs = {
 export type MutationCrewAddVehicleArgs = {
   crewId: Scalars['String'];
   vehicleId: Scalars['String'];
+};
+
+
+export type MutationCrewArchiveArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -592,6 +602,11 @@ export type MutationDailyReportPayrollCompleteUpdateArgs = {
 export type MutationDailyReportUpdateArgs = {
   data: DailyReportUpdateData;
   id: Scalars['String'];
+};
+
+
+export type MutationEmployeeArchiveArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -777,6 +792,11 @@ export type MutationUserUpdateHomeViewArgs = {
 export type MutationUserUpdateRoleArgs = {
   id: Scalars['String'];
   role: UserRoles;
+};
+
+
+export type MutationVehicleArchiveArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -1233,6 +1253,7 @@ export type UserSettings = {
 export type VehicleClass = {
   __typename?: 'VehicleClass';
   _id: Scalars['ID'];
+  archivedAt: Scalars['DateTime'];
   crews: Array<CrewClass>;
   name: Scalars['String'];
   rates: Array<RateClass>;
@@ -1445,6 +1466,13 @@ export type CrewAddVehicleMutationVariables = Exact<{
 
 export type CrewAddVehicleMutation = { __typename?: 'Mutation', crewAddVehicle: { __typename?: 'CrewClass', _id: string, name: string, type: CrewTypes, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }>, dailyReports: Array<{ __typename?: 'DailyReportClass', _id: string }> } };
 
+export type CrewArchiveMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type CrewArchiveMutation = { __typename?: 'Mutation', crewArchive: { __typename?: 'CrewClass', _id: string } };
+
 export type CrewCreateMutationVariables = Exact<{
   data: CrewCreateData;
 }>;
@@ -1545,6 +1573,13 @@ export type DailyReportUpdateMutationVariables = Exact<{
 
 
 export type DailyReportUpdateMutation = { __typename?: 'Mutation', dailyReportUpdate: { __typename?: 'DailyReportClass', _id: string, date: any, jobCostApproved: boolean, payrollComplete: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, materials: Array<{ __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, delivered: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'RateClass', _id?: string | null, date: any, rate: number }>, deliveredRates: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> }>, truckingRates: Array<{ __typename?: 'TruckingTypeRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'TruckingRateClass', rate: number, date: any, type: TruckingRateTypes }> }> }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: CrewTypes, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }>, dailyReports: Array<{ __typename?: 'DailyReportClass', _id: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle?: string | null, vehicle?: { __typename?: 'VehicleClass', _id: string, name: string } | null }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType?: string | null, supplier?: string | null, quantity: number, unit?: string | null, startTime?: any | null, endTime?: any | null, noJobsiteMaterial?: boolean | null, schemaVersion: number, jobsiteMaterial?: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, delivered: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'RateClass', _id?: string | null, date: any, rate: number }>, deliveredRates: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> } | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', _id: string, note: string, files: Array<{ __typename?: 'FileClass', _id: string, mimetype: string, description?: string | null }> } | null, temporaryEmployees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }>, temporaryVehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> } };
+
+export type EmployeeArchiveMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type EmployeeArchiveMutation = { __typename?: 'Mutation', employeeArchive: { __typename?: 'EmployeeClass', _id: string } };
 
 export type EmployeeCreateMutationVariables = Exact<{
   data: EmployeeCreateData;
@@ -1789,6 +1824,13 @@ export type UserUpdateRoleMutationVariables = Exact<{
 
 
 export type UserUpdateRoleMutation = { __typename?: 'Mutation', userUpdateRole: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean } };
+
+export type VehicleArchiveMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type VehicleArchiveMutation = { __typename?: 'Mutation', vehicleArchive: { __typename?: 'VehicleClass', _id: string } };
 
 export type VehicleCreateMutationVariables = Exact<{
   data: VehicleCreateData;
@@ -3055,6 +3097,39 @@ export function useCrewAddVehicleMutation(baseOptions?: Apollo.MutationHookOptio
 export type CrewAddVehicleMutationHookResult = ReturnType<typeof useCrewAddVehicleMutation>;
 export type CrewAddVehicleMutationResult = Apollo.MutationResult<CrewAddVehicleMutation>;
 export type CrewAddVehicleMutationOptions = Apollo.BaseMutationOptions<CrewAddVehicleMutation, CrewAddVehicleMutationVariables>;
+export const CrewArchiveDocument = gql`
+    mutation CrewArchive($id: ID!) {
+  crewArchive(id: $id) {
+    _id
+  }
+}
+    `;
+export type CrewArchiveMutationFn = Apollo.MutationFunction<CrewArchiveMutation, CrewArchiveMutationVariables>;
+
+/**
+ * __useCrewArchiveMutation__
+ *
+ * To run a mutation, you first call `useCrewArchiveMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCrewArchiveMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [crewArchiveMutation, { data, loading, error }] = useCrewArchiveMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useCrewArchiveMutation(baseOptions?: Apollo.MutationHookOptions<CrewArchiveMutation, CrewArchiveMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CrewArchiveMutation, CrewArchiveMutationVariables>(CrewArchiveDocument, options);
+      }
+export type CrewArchiveMutationHookResult = ReturnType<typeof useCrewArchiveMutation>;
+export type CrewArchiveMutationResult = Apollo.MutationResult<CrewArchiveMutation>;
+export type CrewArchiveMutationOptions = Apollo.BaseMutationOptions<CrewArchiveMutation, CrewArchiveMutationVariables>;
 export const CrewCreateDocument = gql`
     mutation CrewCreate($data: CrewCreateData!) {
   crewCreate(data: $data) {
@@ -3494,6 +3569,39 @@ export function useDailyReportUpdateMutation(baseOptions?: Apollo.MutationHookOp
 export type DailyReportUpdateMutationHookResult = ReturnType<typeof useDailyReportUpdateMutation>;
 export type DailyReportUpdateMutationResult = Apollo.MutationResult<DailyReportUpdateMutation>;
 export type DailyReportUpdateMutationOptions = Apollo.BaseMutationOptions<DailyReportUpdateMutation, DailyReportUpdateMutationVariables>;
+export const EmployeeArchiveDocument = gql`
+    mutation EmployeeArchive($id: ID!) {
+  employeeArchive(id: $id) {
+    _id
+  }
+}
+    `;
+export type EmployeeArchiveMutationFn = Apollo.MutationFunction<EmployeeArchiveMutation, EmployeeArchiveMutationVariables>;
+
+/**
+ * __useEmployeeArchiveMutation__
+ *
+ * To run a mutation, you first call `useEmployeeArchiveMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEmployeeArchiveMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [employeeArchiveMutation, { data, loading, error }] = useEmployeeArchiveMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEmployeeArchiveMutation(baseOptions?: Apollo.MutationHookOptions<EmployeeArchiveMutation, EmployeeArchiveMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EmployeeArchiveMutation, EmployeeArchiveMutationVariables>(EmployeeArchiveDocument, options);
+      }
+export type EmployeeArchiveMutationHookResult = ReturnType<typeof useEmployeeArchiveMutation>;
+export type EmployeeArchiveMutationResult = Apollo.MutationResult<EmployeeArchiveMutation>;
+export type EmployeeArchiveMutationOptions = Apollo.BaseMutationOptions<EmployeeArchiveMutation, EmployeeArchiveMutationVariables>;
 export const EmployeeCreateDocument = gql`
     mutation EmployeeCreate($data: EmployeeCreateData!, $crewId: String) {
   employeeCreate(data: $data, crewId: $crewId) {
@@ -4556,6 +4664,39 @@ export function useUserUpdateRoleMutation(baseOptions?: Apollo.MutationHookOptio
 export type UserUpdateRoleMutationHookResult = ReturnType<typeof useUserUpdateRoleMutation>;
 export type UserUpdateRoleMutationResult = Apollo.MutationResult<UserUpdateRoleMutation>;
 export type UserUpdateRoleMutationOptions = Apollo.BaseMutationOptions<UserUpdateRoleMutation, UserUpdateRoleMutationVariables>;
+export const VehicleArchiveDocument = gql`
+    mutation VehicleArchive($id: ID!) {
+  vehicleArchive(id: $id) {
+    _id
+  }
+}
+    `;
+export type VehicleArchiveMutationFn = Apollo.MutationFunction<VehicleArchiveMutation, VehicleArchiveMutationVariables>;
+
+/**
+ * __useVehicleArchiveMutation__
+ *
+ * To run a mutation, you first call `useVehicleArchiveMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVehicleArchiveMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [vehicleArchiveMutation, { data, loading, error }] = useVehicleArchiveMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVehicleArchiveMutation(baseOptions?: Apollo.MutationHookOptions<VehicleArchiveMutation, VehicleArchiveMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<VehicleArchiveMutation, VehicleArchiveMutationVariables>(VehicleArchiveDocument, options);
+      }
+export type VehicleArchiveMutationHookResult = ReturnType<typeof useVehicleArchiveMutation>;
+export type VehicleArchiveMutationResult = Apollo.MutationResult<VehicleArchiveMutation>;
+export type VehicleArchiveMutationOptions = Apollo.BaseMutationOptions<VehicleArchiveMutation, VehicleArchiveMutationVariables>;
 export const VehicleCreateDocument = gql`
     mutation VehicleCreate($data: VehicleCreateData!, $crewId: String) {
   vehicleCreate(data: $data, crewId: $crewId) {

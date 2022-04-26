@@ -119,7 +119,7 @@ const user = async (
 };
 
 const crews = async (employee: EmployeeDocument): Promise<CrewDocument[]> => {
-  const crews = await Crew.find({ employees: employee._id });
+  const crews = await Crew.find({ employees: employee._id, archivedAt: null });
 
   return crews;
 };

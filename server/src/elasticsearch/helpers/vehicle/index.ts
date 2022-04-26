@@ -15,18 +15,34 @@ export const ES_ensureVehicleIndex = async () => {
 export const ES_updateVehicle = async (vehicle: VehicleDocument) => {
   if (process.env.NODE_ENV !== "test") {
     logger.debug(`Updating vehicle ${vehicle._id} in ES`);
-    await ElasticsearchClient.update({
-      index: ElasticSearchIndices.Vehicle,
-      id: vehicle._id.toString(),
-      body: {
-        doc: {
-          name: vehicle.name,
-          vehicleCode: vehicle.vehicleCode,
-          vehicleType: vehicle.vehicleType,
+
+    if (!vehicle.archivedAt) {
+      await ElasticsearchClient.update({
+        index: ElasticSearchIndices.Vehicle,
+        id: vehicle._id.toString(),
+        body: {
+          doc: {
+            name: vehicle.name,
+            vehicleCode: vehicle.vehicleCode,
+            vehicleType: vehicle.vehicleType,
+          },
+          doc_as_upsert: true,
         },
-        doc_as_upsert: true,
-      },
-    });
+      });
+    } else {
+      const existing = await ElasticsearchClient.get({
+        id: vehicle._id.toString(),
+        index: ElasticSearchIndices.Vehicle,
+      });
+
+      // Remove if necessary
+      if (existing) {
+        await ElasticsearchClient.delete({
+          id: vehicle._id.toString(),
+          index: ElasticSearchIndices.Vehicle,
+        });
+      }
+    }
   }
 
   return;

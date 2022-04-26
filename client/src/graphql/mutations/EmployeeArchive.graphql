@@ -1,0 +1,5 @@
+mutation EmployeeArchive($id: ID!) {
+  employeeArchive(id: $id) {
+    _id
+  }
+}

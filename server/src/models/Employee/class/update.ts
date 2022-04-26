@@ -1,4 +1,4 @@
-import { EmployeeDocument } from "@models";
+import { CrewDocument, EmployeeDocument } from "@models";
 import { IEmployeeUpdate } from "@typescript/employee";
 import { IRatesData } from "@typescript/models";
 import validateRates from "@validation/validateRates";
@@ -19,7 +19,22 @@ const rates = async (employee: EmployeeDocument, data: IRatesData[]) => {
   return;
 };
 
+const archive = async (
+  employee: EmployeeDocument
+): Promise<{ crews: CrewDocument[] }> => {
+  employee.archivedAt = new Date();
+
+  const crews = await employee.getCrews();
+
+  for (let i = 0; i < crews.length; i++) {
+    await crews[i].removeEmployee(employee._id);
+  }
+
+  return { crews };
+};
+
 export default {
   document,
   rates,
+  archive,
 };

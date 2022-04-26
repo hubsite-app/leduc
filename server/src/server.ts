@@ -14,7 +14,8 @@ import updateDocuments from "@utils/updateDocuments";
 import { Company, System } from "@models";
 import elasticsearch from "./elasticsearch";
 import workers from "@workers";
-import saveAll, { SkipSave } from "@testing/saveAll";
+
+// import saveAll, { SkipSave } from "@testing/saveAll";
 
 const main = async () => {
   try {
@@ -42,7 +43,7 @@ const main = async () => {
       if (production) {
         // await saveAll();
       } else {
-        await saveAll([SkipSave.DailyReport]);
+        // await saveAll([SkipSave.DailyReport]);
       }
 
       await System.validateSystem();

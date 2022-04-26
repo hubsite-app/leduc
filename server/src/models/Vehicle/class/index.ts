@@ -62,4 +62,8 @@ export class VehicleClass extends VehicleSchema {
   public async updateRates(this: VehicleDocument, data: IRatesData[]) {
     return update.rates(this, data);
   }
+
+  public async archive(this: VehicleDocument) {
+    return update.archive(this);
+  }
 }

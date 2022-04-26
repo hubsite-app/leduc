@@ -75,7 +75,7 @@ const GeneralSearch = ({
         return {
           value: item.employee._id,
           label: `${item.employee.name} ${
-            !!item.employee.jobTitle && ` - ${item.employee.jobTitle}`
+            !!item.employee.jobTitle ? ` - ${item.employee.jobTitle}` : ""
           }`,
           extraData: {
             type: "employee",

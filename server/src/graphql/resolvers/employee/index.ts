@@ -92,4 +92,10 @@ export default class EmployeeResolver {
   ) {
     return mutations.updateRates(id, data);
   }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => EmployeeClass)
+  async employeeArchive(@Arg("id", () => ID) id: Id) {
+    return mutations.archive(id);
+  }
 }

@@ -96,7 +96,7 @@ const byCode = async (
  */
 
 const crews = async (vehicle: VehicleDocument): Promise<CrewDocument[]> => {
-  const crews = await Crew.find({ vehicles: vehicle._id });
+  const crews = await Crew.find({ vehicles: vehicle._id, archivedAt: null });
 
   return crews;
 };

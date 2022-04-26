@@ -33,8 +33,15 @@ const addVehicle = async (crew: CrewDocument, vehicleId: Id) => {
   return;
 };
 
+const archive = async (crew: CrewDocument) => {
+  crew.archivedAt = new Date();
+
+  return;
+};
+
 export default {
   document,
   addEmployee,
   addVehicle,
+  archive,
 };

@@ -71,8 +71,24 @@ const updateRates = async (
   return employee;
 };
 
+const archive = async (id: Id) => {
+  const employee = await Employee.getById(id);
+  if (!employee) throw new Error("Unable to find employee");
+
+  const { crews } = await employee.archive();
+
+  await employee.save();
+
+  for (let i = 0; i < crews.length; i++) {
+    crews[i].save();
+  }
+
+  return employee;
+};
+
 export default {
   create,
   update,
   updateRates,
+  archive,
 };

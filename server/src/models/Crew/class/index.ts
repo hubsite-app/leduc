@@ -80,6 +80,10 @@ export class CrewClass extends CrewSchema {
     return update.addVehicle(this, vehicleId);
   }
 
+  public async archive(this: CrewDocument) {
+    return update.archive(this);
+  }
+
   /**
    * ----- Remove -----
    */

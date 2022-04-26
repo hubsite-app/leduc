@@ -80,8 +80,24 @@ const updateRates = async (
   return vehicle;
 };
 
+const archive = async (id: Id) => {
+  const vehicle = await Vehicle.getById(id);
+  if (!vehicle) throw new Error("Unable to find vehicle");
+
+  const { crews } = await vehicle.archive();
+
+  await vehicle.save();
+
+  for (let i = 0; i < crews.length; i++) {
+    crews[i].save();
+  }
+
+  return vehicle;
+};
+
 export default {
   create,
   update,
   updateRates,
+  archive,
 };

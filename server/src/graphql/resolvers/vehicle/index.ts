@@ -76,4 +76,10 @@ export default class VehicleResolver {
   ) {
     return mutations.updateRates(id, data);
   }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => VehicleClass)
+  async vehicleArchive(@Arg("id", () => ID) id: Id) {
+    return mutations.archive(id);
+  }
 }

@@ -15,16 +15,32 @@ export const ES_ensureCrewIndex = async () => {
 export const ES_updateCrew = async (crew: CrewDocument) => {
   if (process.env.NODE_ENV !== "test") {
     logger.debug(`Updating crew ${crew._id} in ES`);
-    await ElasticsearchClient.update({
-      index: ElasticSearchIndices.Crew,
-      id: crew._id.toString(),
-      body: {
-        doc: {
-          name: crew.name,
+
+    if (!crew.archivedAt) {
+      await ElasticsearchClient.update({
+        index: ElasticSearchIndices.Crew,
+        id: crew._id.toString(),
+        body: {
+          doc: {
+            name: crew.name,
+          },
+          doc_as_upsert: true,
         },
-        doc_as_upsert: true,
-      },
-    });
+      });
+    } else {
+      const existing = await ElasticsearchClient.get({
+        id: crew._id.toString(),
+        index: ElasticSearchIndices.Crew,
+      });
+
+      // Remove if necessary
+      if (existing) {
+        await ElasticsearchClient.delete({
+          id: crew._id.toString(),
+          index: ElasticSearchIndices.Crew,
+        });
+      }
+    }
   }
 
   return;
