@@ -207,6 +207,10 @@ export class DailyReportClass extends DailyReportSchema {
     return update.addTemporaryVehicle(this, vehicle);
   }
 
+  public async archive(this: DailyReportDocument) {
+    return update.archive(this);
+  }
+
   /**
    * ----- Remove -----
    */

@@ -121,13 +121,20 @@ const list = async (
 ): Promise<DailyReportDocument[]> => {
   options = populateOptions(options, listDefaultOptions);
 
-  const dailyReports = await DailyReport.find(options?.query || {}, undefined, {
-    limit: options?.pageLimit,
-    skip: options?.offset,
-    sort: {
-      date: -1,
+  const dailyReports = await DailyReport.find(
+    {
+      archived: false,
+      ...options?.query,
     },
-  });
+    undefined,
+    {
+      limit: options?.pageLimit,
+      skip: options?.offset,
+      sort: {
+        date: -1,
+      },
+    }
+  );
 
   return dailyReports;
 };
@@ -141,6 +148,7 @@ const existingReport = async (
   const dailyReport = await DailyReport.findOne({
     crew: crewId,
     jobsite: jobsiteId,
+    archived: false,
     date: {
       $gte: dayjs(date).startOf("day").toDate(),
       $lt: dayjs(date).endOf("day").toDate(),

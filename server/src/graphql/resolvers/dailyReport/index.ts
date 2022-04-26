@@ -2,6 +2,7 @@ import {
   Arg,
   Authorized,
   FieldResolver,
+  ID,
   Mutation,
   Query,
   Resolver,
@@ -31,6 +32,7 @@ import { SearchOptions } from "@graphql/types/query";
 import { FileCreateData } from "../file/mutations";
 import { DailyReportListOptionData } from "./queries";
 import { FilterQuery } from "mongoose";
+import { Id } from "@typescript/models";
 
 @Resolver(() => DailyReportClass)
 export default class DailyReportResolver {
@@ -192,5 +194,11 @@ export default class DailyReportResolver {
     @Arg("data") data: FileCreateData
   ) {
     return mutations.addNoteFile(id, data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => DailyReportClass)
+  async dailyReportArchive(@Arg("id", () => ID) id: Id) {
+    return mutations.archive(id);
   }
 }

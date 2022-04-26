@@ -78,6 +78,10 @@ export class DailyReportSchema {
   @prop({ ref: () => VehicleClass, default: [] })
   public temporaryVehicles!: Ref<VehicleClass>[];
 
+  @Field(() => Boolean)
+  @prop({ required: true, default: false })
+  public archived!: boolean;
+
   @Field()
   @prop({ required: true, default: SchemaVersions.DailyReport })
   public schemaVersion!: number;

@@ -232,6 +232,17 @@ const addNoteFile = async (
   return dailyReport;
 };
 
+const archive = async (id: Id) => {
+  const dailyReport = await DailyReport.getById(id);
+  if (!dailyReport) throw new Error("Unable to find Daily Report");
+
+  await dailyReport.archive();
+
+  await dailyReport.save();
+
+  return dailyReport;
+};
+
 export default {
   create,
   update,
@@ -241,4 +252,5 @@ export default {
   updatePayrollComplete,
   addTemporaryEmployee,
   addTemporaryVehicle,
+  archive,
 };

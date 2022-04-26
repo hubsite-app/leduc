@@ -87,6 +87,7 @@ export type CrewUpdateData = {
 export type DailyReportClass = {
   __typename?: 'DailyReportClass';
   _id: Scalars['ID'];
+  archived: Scalars['Boolean'];
   crew: CrewClass;
   date: Scalars['DateTime'];
   employeeWork: Array<EmployeeWorkClass>;
@@ -454,6 +455,7 @@ export type Mutation = {
   dailyReportAddNoteFile: DailyReportClass;
   dailyReportAddTemporaryEmployee: DailyReportClass;
   dailyReportAddTemporaryVehicle: DailyReportClass;
+  dailyReportArchive: DailyReportClass;
   dailyReportCreate: DailyReportClass;
   dailyReportJobCostApprovalUpdate: DailyReportClass;
   dailyReportNoteUpdate: DailyReportClass;
@@ -556,6 +558,11 @@ export type MutationDailyReportAddTemporaryEmployeeArgs = {
 export type MutationDailyReportAddTemporaryVehicleArgs = {
   id: Scalars['String'];
   vehicleId: Scalars['String'];
+};
+
+
+export type MutationDailyReportArchiveArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -1492,6 +1499,13 @@ export type DailyReportAddTemporaryVehicleMutationVariables = Exact<{
 
 
 export type DailyReportAddTemporaryVehicleMutation = { __typename?: 'Mutation', dailyReportAddTemporaryVehicle: { __typename?: 'DailyReportClass', _id: string, date: any, jobCostApproved: boolean, payrollComplete: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, materials: Array<{ __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, delivered: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'RateClass', _id?: string | null, date: any, rate: number }>, deliveredRates: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> }>, truckingRates: Array<{ __typename?: 'TruckingTypeRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'TruckingRateClass', rate: number, date: any, type: TruckingRateTypes }> }> }, crew: { __typename?: 'CrewClass', _id: string, name: string, type: CrewTypes, employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }>, vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }>, dailyReports: Array<{ __typename?: 'DailyReportClass', _id: string }> }, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } }>, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle?: string | null, vehicle?: { __typename?: 'VehicleClass', _id: string, name: string } | null }>, productions: Array<{ __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description: string }>, materialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType?: string | null, supplier?: string | null, quantity: number, unit?: string | null, startTime?: any | null, endTime?: any | null, noJobsiteMaterial?: boolean | null, schemaVersion: number, jobsiteMaterial?: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, delivered: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'RateClass', _id?: string | null, date: any, rate: number }>, deliveredRates: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> } | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null } | null }>, reportNote?: { __typename?: 'ReportNoteClass', _id: string, note: string, files: Array<{ __typename?: 'FileClass', _id: string, mimetype: string, description?: string | null }> } | null, temporaryEmployees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }>, temporaryVehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> } };
+
+export type DailyReportArchiveMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DailyReportArchiveMutation = { __typename?: 'Mutation', dailyReportArchive: { __typename?: 'DailyReportClass', _id: string } };
 
 export type DailyReportCreateMutationVariables = Exact<{
   data: DailyReportCreateData;
@@ -3278,6 +3292,39 @@ export function useDailyReportAddTemporaryVehicleMutation(baseOptions?: Apollo.M
 export type DailyReportAddTemporaryVehicleMutationHookResult = ReturnType<typeof useDailyReportAddTemporaryVehicleMutation>;
 export type DailyReportAddTemporaryVehicleMutationResult = Apollo.MutationResult<DailyReportAddTemporaryVehicleMutation>;
 export type DailyReportAddTemporaryVehicleMutationOptions = Apollo.BaseMutationOptions<DailyReportAddTemporaryVehicleMutation, DailyReportAddTemporaryVehicleMutationVariables>;
+export const DailyReportArchiveDocument = gql`
+    mutation DailyReportArchive($id: ID!) {
+  dailyReportArchive(id: $id) {
+    _id
+  }
+}
+    `;
+export type DailyReportArchiveMutationFn = Apollo.MutationFunction<DailyReportArchiveMutation, DailyReportArchiveMutationVariables>;
+
+/**
+ * __useDailyReportArchiveMutation__
+ *
+ * To run a mutation, you first call `useDailyReportArchiveMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDailyReportArchiveMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [dailyReportArchiveMutation, { data, loading, error }] = useDailyReportArchiveMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDailyReportArchiveMutation(baseOptions?: Apollo.MutationHookOptions<DailyReportArchiveMutation, DailyReportArchiveMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DailyReportArchiveMutation, DailyReportArchiveMutationVariables>(DailyReportArchiveDocument, options);
+      }
+export type DailyReportArchiveMutationHookResult = ReturnType<typeof useDailyReportArchiveMutation>;
+export type DailyReportArchiveMutationResult = Apollo.MutationResult<DailyReportArchiveMutation>;
+export type DailyReportArchiveMutationOptions = Apollo.BaseMutationOptions<DailyReportArchiveMutation, DailyReportArchiveMutationVariables>;
 export const DailyReportCreateDocument = gql`
     mutation DailyReportCreate($data: DailyReportCreateData!) {
   dailyReportCreate(data: $data) {

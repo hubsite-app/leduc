@@ -154,6 +154,12 @@ const addTemporaryEmployee = async (
   return;
 };
 
+const archive = async (dailyReport: DailyReportDocument) => {
+  dailyReport.archived = true;
+
+  return;
+};
+
 const addTemporaryVehicle = async (
   dailyReport: DailyReportDocument,
   vehicle: VehicleDocument
@@ -184,4 +190,5 @@ export default {
   setReportNote,
   addTemporaryEmployee,
   addTemporaryVehicle,
+  archive,
 };
