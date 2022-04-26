@@ -1,11 +1,7 @@
 import React from "react";
-import {
-  CompanyCardSnippetFragment,
-  useCompanyCardLazyQuery,
-  useCompanySearchLazyQuery,
-} from "../../generated/graphql";
+import { useCompaniesQuery } from "../../generated/graphql";
 import isObjectId from "../../utils/isObjectId";
-import TextDropdown from "../Common/forms/TextDropdown";
+import TextDropdown, { IOptions } from "../Common/forms/TextDropdown";
 
 import { ITextField } from "../Common/forms/TextField";
 
@@ -26,74 +22,97 @@ const CompanySearch = ({
    * ----- Hook Initialization -----
    */
 
-  const [foundCompanies, setFoundCompanies] = React.useState<
-    CompanyCardSnippetFragment[]
-  >([]);
+  const { data } = useCompaniesQuery();
 
-  const [searchString, setSearchString] = React.useState(
-    props.defaultValue?.toString() || ""
-  );
+  const [options, setOptions] = React.useState<IOptions<{}>[]>([]);
+
+  const [searchString, setSearchString] = React.useState("");
 
   const [searchTimeout, setSearchTimeout] = React.useState<NodeJS.Timeout>();
-
-  const [search, { loading, data }] = useCompanySearchLazyQuery();
-
-  const [fetch, { loading: fetchLoading, data: fetchData }] =
-    useCompanyCardLazyQuery();
-
-  /**
-   * ----- Functions -----
-   */
-
-  const handleChange = (value: string) => {
-    setSearchString(value);
-    if (searchTimeout) clearTimeout(searchTimeout);
-    if (value !== "") {
-      setSearchTimeout(
-        setTimeout(() => {
-          search({
-            variables: {
-              searchString: value,
-              options: {
-                blacklistedIds,
-              },
-            },
-          });
-        }, 500)
-      );
-    } else setFoundCompanies([]);
-  };
 
   /**
    * ----- Variables -----
    */
 
-  const options = React.useMemo(() => {
-    return foundCompanies.map((company) => {
-      return {
-        label: company.name,
-        value: company._id,
-      };
-    });
-  }, [foundCompanies]);
+  const fullOptions: IOptions<{}>[] = React.useMemo(() => {
+    if (data?.companies) {
+      return data.companies.map((company) => {
+        return {
+          label: company.name,
+          value: company._id,
+        };
+      });
+    } else return [];
+  }, [data]);
+
+  /**
+   * ----- Functions -----
+   */
+
+  const setDefaultOptions = React.useCallback(() => {
+    if (data?.companies) {
+      setOptions(
+        data.companies.map((company) => {
+          return {
+            label: company.name,
+            value: company._id,
+          };
+        })
+      );
+    }
+  }, [data?.companies]);
+
+  const filterOptions = React.useCallback(
+    (searchString: string) => {
+      const fullOptionsCopy: IOptions<{}>[] = JSON.parse(
+        JSON.stringify(fullOptions)
+      );
+      setOptions(
+        fullOptionsCopy.filter((option) =>
+          option.label.toLowerCase().match(searchString.toLowerCase())
+        )
+      );
+    },
+    [fullOptions]
+  );
+
+  const handleChange = React.useCallback(
+    (value: string) => {
+      setSearchString(value);
+      if (searchTimeout) clearTimeout(searchTimeout);
+      if (value !== "") {
+        setSearchTimeout(
+          setTimeout(() => {
+            filterOptions(value);
+          }, 500)
+        );
+      } else setDefaultOptions();
+    },
+    [filterOptions, searchTimeout, setDefaultOptions]
+  );
 
   /**
    * ----- Use-effects and other logic -----
    */
 
   React.useEffect(() => {
-    if (!loading && data) {
-      setFoundCompanies(data.companySearch);
+    if (data?.companies) {
+      setDefaultOptions();
     }
-  }, [loading, data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   React.useEffect(() => {
     if (props.value && isObjectId(props.value.toString())) {
-      fetch({
-        variables: {
-          id: props.value.toString(),
-        },
-      });
+      const option = fullOptions.find((option) => option.value === props.value);
+
+      if (option) {
+        setSearchString(option.value);
+        companySelected({
+          _id: option.value,
+          name: option.label,
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -103,17 +122,6 @@ const CompanySearch = ({
       setSearchString(props.value.toString());
     }
   }, [props.value]);
-
-  React.useEffect(() => {
-    if (fetchData?.company && !fetchLoading) {
-      setSearchString(fetchData.company.name);
-      companySelected({
-        _id: fetchData.company._id,
-        name: fetchData.company.name,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchData, fetchLoading]);
 
   /**
    * ----- Rendering -----
@@ -129,7 +137,7 @@ const CompanySearch = ({
           _id: value.value,
           name: value.label,
         });
-        setFoundCompanies([]);
+        setDefaultOptions();
       }}
       handleSubmit={() => {
         if (handleSubmit) handleSubmit(searchString);

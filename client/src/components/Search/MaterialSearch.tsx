@@ -1,11 +1,7 @@
 import React from "react";
-import {
-  MaterialCardSnippetFragment,
-  useMaterialCardLazyQuery,
-  useMaterialSearchLazyQuery,
-} from "../../generated/graphql";
+import { useMaterialsQuery } from "../../generated/graphql";
 import isObjectId from "../../utils/isObjectId";
-import TextDropdown from "../Common/forms/TextDropdown";
+import TextDropdown, { IOptions } from "../Common/forms/TextDropdown";
 
 import { ITextField } from "../Common/forms/TextField";
 
@@ -26,88 +22,106 @@ const MaterialSearch = ({
    * ----- Hook Initialization -----
    */
 
-  const [foundMaterials, setFoundMaterials] = React.useState<
-    MaterialCardSnippetFragment[]
-  >([]);
+  const { data } = useMaterialsQuery();
 
-  const [searchString, setSearchString] = React.useState(
-    props.defaultValue?.toString() || ""
-  );
+  const [options, setOptions] = React.useState<IOptions<{}>[]>([]);
+
+  const [searchString, setSearchString] = React.useState("");
 
   const [searchTimeout, setSearchTimeout] = React.useState<NodeJS.Timeout>();
-
-  const [search, { loading, data }] = useMaterialSearchLazyQuery();
-
-  const [fetch, { loading: fetchLoading, data: fetchData }] =
-    useMaterialCardLazyQuery();
-
-  /**
-   * ----- Functions -----
-   */
-
-  const handleChange = (value: string) => {
-    setSearchString(value);
-    if (searchTimeout) clearTimeout(searchTimeout);
-    if (value !== "") {
-      setSearchTimeout(
-        setTimeout(() => {
-          search({
-            variables: {
-              searchString: value,
-              options: {
-                blacklistedIds,
-              },
-            },
-          });
-        }, 500)
-      );
-    } else setFoundMaterials([]);
-  };
 
   /**
    * ----- Variables -----
    */
 
-  const options = React.useMemo(() => {
-    return foundMaterials.map((material) => {
-      return {
-        label: material.name,
-        value: material._id,
-      };
-    });
-  }, [foundMaterials]);
+  const fullOptions: IOptions<{}>[] = React.useMemo(() => {
+    if (data?.materials) {
+      return data.materials.map((material) => {
+        return {
+          label: material.name,
+          value: material._id,
+        };
+      });
+    } else return [];
+  }, [data]);
+
+  /**
+   * ----- Functions -----
+   */
+
+  const setDefaultOptions = React.useCallback(() => {
+    if (data?.materials) {
+      setOptions(
+        data.materials.map((company) => {
+          return {
+            label: company.name,
+            value: company._id,
+          };
+        })
+      );
+    }
+  }, [data?.materials]);
+
+  const filterOptions = React.useCallback(
+    (searchString: string) => {
+      const fullOptionsCopy: IOptions<{}>[] = JSON.parse(
+        JSON.stringify(fullOptions)
+      );
+      setOptions(
+        fullOptionsCopy.filter((option) =>
+          option.label.toLowerCase().match(searchString.toLowerCase())
+        )
+      );
+    },
+    [fullOptions]
+  );
+
+  const handleChange = React.useCallback(
+    (value: string) => {
+      setSearchString(value);
+      if (searchTimeout) clearTimeout(searchTimeout);
+      if (value !== "") {
+        setSearchTimeout(
+          setTimeout(() => {
+            filterOptions(value);
+          }, 500)
+        );
+      } else setDefaultOptions();
+    },
+    [filterOptions, searchTimeout, setDefaultOptions]
+  );
 
   /**
    * ----- Use-effects and other logic -----
    */
 
   React.useEffect(() => {
-    if (!loading && data) {
-      setFoundMaterials(data.materialSearch);
+    if (data?.materials) {
+      setDefaultOptions();
     }
-  }, [loading, data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   React.useEffect(() => {
     if (props.value && isObjectId(props.value.toString())) {
-      fetch({
-        variables: {
-          id: props.value.toString(),
-        },
-      });
+      const option = fullOptions.find((option) => option.value === props.value);
+
+      if (option) {
+        setSearchString(option.value);
+        materialSelected({
+          _id: option.value,
+          name: option.label,
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
-    if (fetchData?.material && !fetchLoading) {
-      setSearchString(fetchData.material.name);
-      materialSelected({
-        _id: fetchData.material._id,
-        name: fetchData.material.name,
-      });
+    if (props.value && !isObjectId(props.value.toString())) {
+      setSearchString(props.value.toString());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchData, fetchLoading]);
+  }, [props.value]);
 
   /**
    * ----- Rendering -----
@@ -123,7 +137,7 @@ const MaterialSearch = ({
           _id: value.value,
           name: value.label,
         });
-        setFoundMaterials([]);
+        setDefaultOptions();
       }}
       handleSubmit={() => {
         if (handleSubmit) handleSubmit(searchString);
