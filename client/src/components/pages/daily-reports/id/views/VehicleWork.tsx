@@ -42,7 +42,11 @@ const VehicleWork = ({ dailyReport, editPermission }: IVehicleWork) => {
         {dailyReport.vehicleWork.length > 0 ? (
           <ShowMore
             list={dailyReport.vehicleWork.map((work) => (
-              <VehicleWorkCard vehicleWork={work} key={work._id} />
+              <VehicleWorkCard
+                vehicleWork={work}
+                key={work._id}
+                editPermission={editPermission}
+              />
             ))}
           />
         ) : (
