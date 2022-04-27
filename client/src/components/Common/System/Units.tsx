@@ -12,6 +12,7 @@ import { SystemSnippetFragment } from "../../../generated/graphql";
 import { FiEdit, FiX } from "react-icons/fi";
 import SystemUnitUpdate from "../../Forms/System/SystemUnitUpdate";
 import Permission from "../Permission";
+import InfoTooltip from "../Info";
 
 interface ISystemUnits {
   system: SystemSnippetFragment;
@@ -33,16 +34,23 @@ const SystemUnits = ({ system }: ISystemUnits) => {
   return (
     <Card>
       <Flex flexDir="row" justifyContent="space-between">
-        <Heading
-          my="auto"
-          ml={2}
-          size="md"
-          w="100%"
-          cursor="pointer"
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          Units
-        </Heading>
+        <Flex flexDir="row">
+          <Heading
+            my="auto"
+            ml={2}
+            size="md"
+            w="100%"
+            cursor="pointer"
+            onClick={() => setCollapsed(!collapsed)}
+          >
+            Units
+          </Heading>
+          <InfoTooltip
+            m="auto"
+            mx={1}
+            description="Units that can be selected throughout the app"
+          />
+        </Flex>
         <Permission>
           <IconButton
             aria-label="edit"

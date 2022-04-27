@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Flex,
+  Heading,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,6 +13,7 @@ import {
 import React from "react";
 import { FiPlus } from "react-icons/fi";
 import CompanyFullList from "../../../Common/Company/FullList";
+import InfoTooltip from "../../../Common/Info";
 import Permission from "../../../Common/Permission";
 import CompanyCreateForm from "../../../Forms/Company/CompanyCreate";
 
@@ -29,7 +31,11 @@ const CompanySettings = () => {
   return (
     <Box>
       <Permission>
-        <Flex justifyContent="end">
+        <Flex justifyContent="space-between">
+          <Flex flexDir="row">
+            <Heading>Companies</Heading>
+            <InfoTooltip description="A catalog of companies that can be selected throughout the app" />
+          </Flex>
           <Button
             backgroundColor="white"
             leftIcon={<FiPlus />}

@@ -10,6 +10,7 @@ import { FiEdit, FiX } from "react-icons/fi";
 import { SystemSnippetFragment } from "../../../generated/graphql";
 import SystemLaborTypesUpdate from "../../Forms/System/LaborTypes";
 import Card from "../Card";
+import InfoTooltip from "../Info";
 import Permission from "../Permission";
 
 interface ISystemLaborTypes {
@@ -32,16 +33,24 @@ const SystemLaborTypes = ({ system }: ISystemLaborTypes) => {
   return (
     <Card>
       <Flex flexDir="row" justifyContent="space-between">
-        <Heading
-          my="auto"
-          ml={2}
-          size="md"
-          w="100%"
-          cursor="pointer"
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          Labor Types
-        </Heading>
+        <Flex flexDir="row" w="auto">
+          <Heading
+            my="auto"
+            ml={2}
+            size="md"
+            w="100%"
+            cursor="pointer"
+            onClick={() => setCollapsed(!collapsed)}
+          >
+            Labor Types
+          </Heading>
+          <InfoTooltip
+            m="auto"
+            mx={1}
+            description="A catalog of options that can be selected for Employee Work"
+          />
+        </Flex>
+
         <Permission>
           <IconButton
             aria-label="edit"
