@@ -1,0 +1,5 @@
+query MaterialsCard($options: ListOptionData) {
+  materials(options: $options) {
+    ...MaterialCardSnippet
+  }
+}

@@ -1,0 +1,5 @@
+query MaterialsFull($options: ListOptionData) {
+  materials(options: $options) {
+    ...MaterialFullSnippet
+  }
+}
