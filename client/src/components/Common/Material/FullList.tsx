@@ -1,6 +1,6 @@
-import { Flex, Heading, IconButton } from "@chakra-ui/react";
+import { Flex, Heading, IconButton, Tooltip } from "@chakra-ui/react";
 import React from "react";
-import { FiDelete } from "react-icons/fi";
+import { FiTrash } from "react-icons/fi";
 
 import {
   MaterialsFullDocument,
@@ -55,20 +55,22 @@ const MaterialFullList = () => {
               <Flex flexDir="row" justifyContent="space-between">
                 <Heading size="md">{material.name}</Heading>
                 {material.canRemove && (
-                  <IconButton
-                    aria-label="delete"
-                    icon={<FiDelete />}
-                    backgroundColor="transparent"
-                    isLoading={removeLoading}
-                    onClick={() => {
-                      if (window.confirm("Are you sure?"))
-                        remove({
-                          variables: {
-                            id: material._id,
-                          },
-                        });
-                    }}
-                  />
+                  <Tooltip label="This material can be removed as it is not referenced by an existing Jobsite Material. It is still recommended that these are not deleted.">
+                    <IconButton
+                      aria-label="delete"
+                      icon={<FiTrash />}
+                      backgroundColor="transparent"
+                      isLoading={removeLoading}
+                      onClick={() => {
+                        if (window.confirm("Are you sure?"))
+                          remove({
+                            variables: {
+                              id: material._id,
+                            },
+                          });
+                      }}
+                    />
+                  </Tooltip>
                 )}
               </Flex>
             </Card>
