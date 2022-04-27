@@ -36,6 +36,15 @@ const byId = async (
   return jobsiteMaterial;
 };
 
+const byMaterial = async (
+  JobsiteMaterial: JobsiteMaterialModel,
+  materialId: Id
+): Promise<JobsiteMaterialDocument[]> => {
+  return await JobsiteMaterial.find({
+    material: materialId,
+  });
+};
+
 /**
  * ----- Methods -----
  */
@@ -103,6 +112,7 @@ const rateForTime = async (
 
 export default {
   byId,
+  byMaterial,
   material,
   supplier,
   jobsite,

@@ -1,4 +1,5 @@
 import { Material, MaterialDocument } from "@models";
+import { Id } from "@typescript/models";
 import { Field, InputType } from "type-graphql";
 
 @InputType()
@@ -15,6 +16,16 @@ const create = async (data: MaterialCreateData): Promise<MaterialDocument> => {
   return material;
 };
 
+const remove = async (id: Id) => {
+  const material = await Material.getById(id);
+  if (!material) throw new Error("Unable to find material");
+
+  await material.removeIfPossible();
+
+  return true;
+};
+
 export default {
   create,
+  remove,
 };

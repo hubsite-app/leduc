@@ -10,6 +10,7 @@ import {
 import get from "./get";
 import { IMaterialCreate } from "@typescript/material";
 import create from "./create";
+import remove from "./remove";
 
 @ObjectType()
 export class MaterialClass extends MaterialSchema {
@@ -53,5 +54,17 @@ export class MaterialClass extends MaterialSchema {
     data: IMaterialCreate
   ) {
     return create.document(this, data);
+  }
+
+  /**
+   * ----- REMOVE -----
+   */
+
+  public async removeIfPossible(this: MaterialDocument) {
+    return remove.ifPossible(this);
+  }
+
+  public async canRemove(this: MaterialDocument) {
+    return remove.canRemove(this);
   }
 }

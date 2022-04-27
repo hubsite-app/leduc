@@ -1,5 +1,5 @@
 import React from "react";
-import { useMaterialsQuery } from "../../generated/graphql";
+import { useMaterialsCardQuery } from "../../generated/graphql";
 import isObjectId from "../../utils/isObjectId";
 import TextDropdown, { IOptions } from "../Common/forms/TextDropdown";
 
@@ -22,7 +22,7 @@ const MaterialSearch = ({
    * ----- Hook Initialization -----
    */
 
-  const { data } = useMaterialsQuery();
+  const { data } = useMaterialsCardQuery();
 
   const [options, setOptions] = React.useState<IOptions<{}>[]>([]);
 

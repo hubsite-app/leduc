@@ -64,6 +64,7 @@ import { getApolloClient , ApolloClientContext} from '../withApollo';
 
 
 
+
 export async function getServerPageCompanies
     (options: Omit<Apollo.QueryOptions<Types.CompaniesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -1219,11 +1220,11 @@ export const ssrMaterialCard = {
       withPage: withPageMaterialCard,
       usePage: useMaterialCard,
     }
-export async function getServerPageMaterials
-    (options: Omit<Apollo.QueryOptions<Types.MaterialsQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+export async function getServerPageMaterialsCard
+    (options: Omit<Apollo.QueryOptions<Types.MaterialsCardQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
         
-        const data = await apolloClient.query<Types.MaterialsQuery>({ ...options, query: Operations.MaterialsDocument });
+        const data = await apolloClient.query<Types.MaterialsCardQuery>({ ...options, query: Operations.MaterialsCardDocument });
         
         const apolloState = apolloClient.cache.extract();
 
@@ -1235,24 +1236,59 @@ export async function getServerPageMaterials
             },
         };
       }
-export const useMaterials = (
-  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MaterialsQuery, Types.MaterialsQueryVariables>) => {
+export const useMaterialsCard = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MaterialsCardQuery, Types.MaterialsCardQueryVariables>) => {
   const router = useRouter();
   const options = optionsFunc ? optionsFunc(router) : {};
-  return useQuery(Operations.MaterialsDocument, options);
+  return useQuery(Operations.MaterialsCardDocument, options);
 };
-export type PageMaterialsComp = React.FC<{data?: Types.MaterialsQuery, error?: Apollo.ApolloError}>;
-export const withPageMaterials = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MaterialsQuery, Types.MaterialsQueryVariables>) => (WrappedComponent:PageMaterialsComp) : NextPage  => (props) => {
+export type PageMaterialsCardComp = React.FC<{data?: Types.MaterialsCardQuery, error?: Apollo.ApolloError}>;
+export const withPageMaterialsCard = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MaterialsCardQuery, Types.MaterialsCardQueryVariables>) => (WrappedComponent:PageMaterialsCardComp) : NextPage  => (props) => {
                 const router = useRouter()
                 const options = optionsFunc ? optionsFunc(router) : {};
-                const {data, error } = useQuery(Operations.MaterialsDocument, options)    
+                const {data, error } = useQuery(Operations.MaterialsCardDocument, options)    
                 return <WrappedComponent {...props} data={data} error={error} /> ;
                    
             }; 
-export const ssrMaterials = {
-      getServerPage: getServerPageMaterials,
-      withPage: withPageMaterials,
-      usePage: useMaterials,
+export const ssrMaterialsCard = {
+      getServerPage: getServerPageMaterialsCard,
+      withPage: withPageMaterialsCard,
+      usePage: useMaterialsCard,
+    }
+export async function getServerPageMaterialsFull
+    (options: Omit<Apollo.QueryOptions<Types.MaterialsFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.MaterialsFullQuery>({ ...options, query: Operations.MaterialsFullDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useMaterialsFull = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MaterialsFullQuery, Types.MaterialsFullQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.MaterialsFullDocument, options);
+};
+export type PageMaterialsFullComp = React.FC<{data?: Types.MaterialsFullQuery, error?: Apollo.ApolloError}>;
+export const withPageMaterialsFull = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MaterialsFullQuery, Types.MaterialsFullQueryVariables>) => (WrappedComponent:PageMaterialsFullComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.MaterialsFullDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrMaterialsFull = {
+      getServerPage: getServerPageMaterialsFull,
+      withPage: withPageMaterialsFull,
+      usePage: useMaterialsFull,
     }
 export async function getServerPageSearch
     (options: Omit<Apollo.QueryOptions<Types.SearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
