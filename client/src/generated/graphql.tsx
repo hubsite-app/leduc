@@ -424,7 +424,7 @@ export type MaterialShipmentClass = {
 
 export type MaterialShipmentCreateData = {
   shipments: Array<MaterialShipmentShipmentData>;
-  vehicleObject: MaterialShipmentVehicleObjectData;
+  vehicleObject?: InputMaybe<MaterialShipmentVehicleObjectData>;
 };
 
 export type MaterialShipmentShipmentData = {

@@ -4,7 +4,7 @@ import { Id } from "./models";
 interface IMaterialShipmentCreateBase {
   startTime?: Date;
   endTime?: Date;
-  vehicleObject: {
+  vehicleObject?: {
     source: string;
     vehicleType: string;
     vehicleCode: string;

@@ -56,7 +56,7 @@ describe("Material Shipment Resolver", () => {
       `;
 
       describe("success", () => {
-        test("should successfully create both types of material shipments", async () => {
+        test("should successfully create both types of material shipments and once without vehicle object", async () => {
           const token = await jestLogin(
             app,
             documents.users.base_foreman_1_user.email
@@ -88,6 +88,24 @@ describe("Material Shipment Resolver", () => {
                 vehicleType: "Tandem",
               },
             },
+            {
+              shipments: [
+                {
+                  noJobsiteMaterial: false,
+                  quantity: 100,
+                  jobsiteMaterialId:
+                    documents.jobsiteMaterials.jobsite_2_material_1._id.toString(),
+                },
+                {
+                  noJobsiteMaterial: true,
+                  jobsiteMaterialId: "",
+                  quantity: 50,
+                  shipmentType: "Shipment Type",
+                  supplier: "Burnco",
+                  unit: "tonnes",
+                },
+              ],
+            },
           ];
 
           const res = await request(app)
@@ -103,13 +121,27 @@ describe("Material Shipment Resolver", () => {
 
           expect(res.status).toBe(200);
 
-          expect(res.body.data.materialShipmentCreate.length).toBe(2);
+          expect(res.body.data.materialShipmentCreate.length).toBe(4);
+
           expect(
             res.body.data.materialShipmentCreate[0].noJobsiteMaterial
           ).toBeFalsy();
           expect(
             res.body.data.materialShipmentCreate[1].noJobsiteMaterial
           ).toBeTruthy();
+
+          expect(
+            res.body.data.materialShipmentCreate[2].noJobsiteMaterial
+          ).toBeFalsy();
+          expect(
+            res.body.data.materialShipmentCreate[2].vehicleObject
+          ).toBeUndefined();
+          expect(
+            res.body.data.materialShipmentCreate[3].noJobsiteMaterial
+          ).toBeTruthy();
+          expect(
+            res.body.data.materialShipmentCreate[3].vehicleObject
+          ).toBeUndefined();
         });
       });
     });

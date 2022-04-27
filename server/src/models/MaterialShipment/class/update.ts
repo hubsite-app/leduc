@@ -100,31 +100,33 @@ const jobsiteMaterial = async (
 
     materialShipment.jobsiteMaterial = jobsiteMaterial._id;
 
-    // Validate vehicle object
-    if (jobsiteMaterial.delivered) {
-      if (!materialShipment.vehicleObject?.deliveredRateId)
-        throw new Error("Must provide a delivered rate Id");
+    // Validate vehicle object if provided
+    if (materialShipment.vehicleObject) {
+      if (jobsiteMaterial.delivered) {
+        if (!materialShipment.vehicleObject?.deliveredRateId)
+          throw new Error("Must provide a delivered rate Id");
 
-      const rate = jobsiteMaterial.deliveredRates.find(
-        (rate) =>
-          rate._id?.toString() ===
-          materialShipment.vehicleObject?.deliveredRateId?.toString()
-      );
-      if (!rate) throw new Error("Could not find the delivered rate");
+        const rate = jobsiteMaterial.deliveredRates.find(
+          (rate) =>
+            rate._id?.toString() ===
+            materialShipment.vehicleObject?.deliveredRateId?.toString()
+        );
+        if (!rate) throw new Error("Could not find the delivered rate");
 
-      materialShipment.vehicleObject.truckingRateId = undefined;
-    } else {
-      if (!materialShipment.vehicleObject?.truckingRateId)
-        throw new Error("Must provide a trucking rate Id");
+        materialShipment.vehicleObject.truckingRateId = undefined;
+      } else {
+        if (!materialShipment.vehicleObject?.truckingRateId)
+          throw new Error("Must provide a trucking rate Id");
 
-      const rate = jobsite.truckingRates.find(
-        (rate) =>
-          rate._id?.toString() ===
-          materialShipment.vehicleObject?.truckingRateId?.toString()
-      );
-      if (!rate) throw new Error("Could not find trucking rate");
+        const rate = jobsite.truckingRates.find(
+          (rate) =>
+            rate._id?.toString() ===
+            materialShipment.vehicleObject?.truckingRateId?.toString()
+        );
+        if (!rate) throw new Error("Could not find trucking rate");
 
-      materialShipment.vehicleObject.deliveredRateId = undefined;
+        materialShipment.vehicleObject.deliveredRateId = undefined;
+      }
     }
   } else throw new Error("cannot add jobsite material to v1 material shipment");
 

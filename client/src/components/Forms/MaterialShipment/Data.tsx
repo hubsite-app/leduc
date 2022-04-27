@@ -1,10 +1,12 @@
 import { Box, Flex, IconButton, SimpleGrid, Text } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
+import { MaterialShipmentVehicleTypes } from "../../../constants/select";
 import {
   JobsiteMaterialCardSnippetFragment,
   MaterialShipmentCreateData,
   MaterialShipmentShipmentData,
+  MaterialShipmentVehicleObjectData,
   TruckingTypeRateSnippetFragment,
 } from "../../../generated/graphql";
 import isEmpty from "../../../utils/isEmpty";
@@ -67,6 +69,16 @@ const MaterialShipmentDataForm = ({
     };
   }, [jobsiteMaterials]);
 
+  const initialVehicleObject: MaterialShipmentVehicleObjectData =
+    React.useMemo(() => {
+      return {
+        source: "",
+        vehicleType: truckingRates[0]?.title || MaterialShipmentVehicleTypes[0],
+        vehicleCode: "",
+        truckingRateId: truckingRates[0]?._id || "",
+      };
+    }, [truckingRates]);
+
   const deliveredMaterial: JobsiteMaterialCardSnippetFragment | undefined =
     React.useMemo(() => {
       let deliveredMaterial: JobsiteMaterialCardSnippetFragment | undefined =
@@ -121,24 +133,33 @@ const MaterialShipmentDataForm = ({
 
   const updateVehicleSource = React.useCallback(
     (value: string) => {
+      if (!formDataCopy.vehicleObject)
+        formDataCopy.vehicleObject = initialVehicleObject;
+
       formDataCopy.vehicleObject.source = value;
 
       onChange(formDataCopy);
     },
-    [formDataCopy, onChange]
+    [formDataCopy, initialVehicleObject, onChange]
   );
 
   const updateVehicleCode = React.useCallback(
     (value: string) => {
+      if (!formDataCopy.vehicleObject)
+        formDataCopy.vehicleObject = initialVehicleObject;
+
       formDataCopy.vehicleObject.vehicleCode = value;
 
       onChange(formDataCopy);
     },
-    [formDataCopy, onChange]
+    [formDataCopy, initialVehicleObject, onChange]
   );
 
   const updateVehicleType = React.useCallback(
     (type: string, truckingRateId: string) => {
+      if (!formDataCopy.vehicleObject)
+        formDataCopy.vehicleObject = initialVehicleObject;
+
       formDataCopy.vehicleObject.vehicleType = type;
 
       if (deliveredMaterial) {
@@ -149,7 +170,7 @@ const MaterialShipmentDataForm = ({
 
       onChange(formDataCopy);
     },
-    [deliveredMaterial, formDataCopy, onChange]
+    [deliveredMaterial, formDataCopy, initialVehicleObject, onChange]
   );
 
   const updateShipment = React.useCallback(
@@ -231,7 +252,7 @@ const MaterialShipmentDataForm = ({
           label="Vehicle Source"
           isDisabled={isLoading}
           errorMessage={errors?.vehicleObject?.source}
-          value={formData.vehicleObject.source}
+          value={formData.vehicleObject?.source}
           companySelected={(company) => updateVehicleSource(company.name)}
           helperText={
             <>
@@ -247,6 +268,7 @@ const MaterialShipmentDataForm = ({
               e.target.value
             );
           }}
+          placeholder="Select vehicle type"
           options={vehicleTypeOptions}
           errorMessage={errors?.vehicleObject?.vehicleType}
           label="Vehicle Type"
@@ -260,7 +282,7 @@ const MaterialShipmentDataForm = ({
         <TextField
           label="Vehicle Code"
           isDisabled={isLoading}
-          value={formData.vehicleObject.vehicleCode}
+          value={formData.vehicleObject?.vehicleCode}
           errorMessage={errors?.vehicleObject?.vehicleCode}
           onChange={(e) => updateVehicleCode(e.target.value)}
           helperText="&nbsp;"

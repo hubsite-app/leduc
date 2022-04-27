@@ -80,6 +80,43 @@ describe("Material Shipment Class", () => {
             documents.companies.company_1.name
           );
         });
+
+        test("should create material shipment w/ jobsite material and no vehicle object", async () => {
+          const data: IMaterialShipmentCreate = {
+            dailyReport: documents.dailyReports.jobsite_2_base_1_1,
+            jobsiteMaterial: documents.jobsiteMaterials.jobsite_2_material_1,
+            quantity: 100,
+            noJobsiteMaterial: false,
+            startTime: new Date("2022-02-25 11:00am"),
+            endTime: new Date("2022-02-25 2:00pm"),
+          };
+
+          const materialShipment = await MaterialShipment.createDocument(data);
+
+          expect(materialShipment).toBeDefined();
+        });
+
+        test("should create material shipment w/o jobsite material and no vehicle object", async () => {
+          const data: IMaterialShipmentCreate = {
+            dailyReport: documents.dailyReports.jobsite_2_base_1_1,
+            shipmentType: documents.materials.material_1.name,
+            supplier: documents.companies.company_1.name,
+            quantity: 50,
+            unit: "tonnes",
+            noJobsiteMaterial: true,
+          };
+
+          const materialShipment = await MaterialShipment.createDocument(data);
+
+          expect(materialShipment).toBeDefined();
+
+          expect(materialShipment.shipmentType).toBe(
+            documents.materials.material_1.name
+          );
+          expect(materialShipment.supplier).toBe(
+            documents.companies.company_1.name
+          );
+        });
       });
 
       describe("error", () => {

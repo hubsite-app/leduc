@@ -78,8 +78,8 @@ export class MaterialShipmentCreateData {
   @Field(() => [MaterialShipmentShipmentData])
   public shipments!: MaterialShipmentShipmentData[];
 
-  @Field(() => MaterialShipmentVehicleObjectData, { nullable: false })
-  public vehicleObject!: MaterialShipmentVehicleObjectData;
+  @Field(() => MaterialShipmentVehicleObjectData, { nullable: true })
+  public vehicleObject?: MaterialShipmentVehicleObjectData;
 }
 
 @InputType()
@@ -87,8 +87,8 @@ export class MaterialShipmentCreateDataV1 {
   @Field(() => [MaterialShipmentShipmentDataV1])
   public shipments!: MaterialShipmentShipmentDataV1[];
 
-  @Field(() => MaterialShipmentVehicleObjectData, { nullable: false })
-  public vehicleObject!: MaterialShipmentVehicleObjectData;
+  @Field(() => MaterialShipmentVehicleObjectData, { nullable: true })
+  public vehicleObject?: MaterialShipmentVehicleObjectData;
 }
 
 const create = async (
