@@ -29,7 +29,7 @@ export class ProductionSchema {
   @prop({ required: true })
   public endTime!: Date;
 
-  @Field()
+  @Field({ nullable: true })
   @prop({ trim: true })
   public description?: string;
 

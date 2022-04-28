@@ -1,7 +1,6 @@
-import { Box, Flex, Heading } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 import React from "react";
 import { useSystem } from "../../../../contexts/System";
-import InfoTooltip from "../../../Common/Info";
 import Loading from "../../../Common/Loading";
 import SystemCompanyVehicleTypeDefaults from "../../../Common/System/CompanyVehicleTypeDefaults";
 import SystemLaborTypes from "../../../Common/System/LaborTypes";
@@ -25,10 +24,7 @@ const SystemSettings = () => {
     if (system) {
       return (
         <Box>
-          <Flex flexDir="row" justifyContent="start">
-            <Heading>System</Heading>
-            <InfoTooltip description="General system settings that allow updating defaults and list options around the app" />
-          </Flex>
+          <Heading>System</Heading>
           <SystemUnits system={system} />
           <SystemLaborTypes system={system} />
           <SystemMaterialShipmentVehicleTypeDefaults system={system} />
