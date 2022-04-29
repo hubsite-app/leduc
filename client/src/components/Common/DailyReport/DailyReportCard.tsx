@@ -1,6 +1,7 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Icon, Text, Tooltip } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import React from "react";
+import { FiBook, FiDollarSign } from "react-icons/fi";
 import { DailyReportCardSnippetFragment } from "../../../generated/graphql";
 import createLink from "../../../utils/createLink";
 import Card from "../Card";
@@ -12,19 +13,39 @@ interface IDailyReportCard {
 }
 
 const DailyReportCard = ({ dailyReport }: IDailyReportCard) => {
+  console.log(dailyReport.jobCostApproved, dailyReport.payrollComplete);
+
   return (
     <Card
       heading={
-        <Flex flexDir="row">
-          <TextLink
-            link={createLink.dailyReport(dailyReport._id)}
-            color="black"
-            fontWeight="bold"
-            fontSize="lg"
-          >
-            {dailyReport.jobsite.name} -{" "}
-            {dayjs(dailyReport.date).format("MMMM DD, YYYY")}
-          </TextLink>
+        <Flex flexDir="row" justifyContent="space-between">
+          <Box>
+            <TextLink
+              link={createLink.dailyReport(dailyReport._id)}
+              color="black"
+              fontWeight="bold"
+              fontSize="lg"
+            >
+              {dailyReport.jobsite.name} -{" "}
+              {dayjs(dailyReport.date).format("MMMM DD, YYYY")}
+            </TextLink>
+          </Box>
+          <Flex flexDir="row">
+            {dailyReport.jobCostApproved && (
+              <Tooltip label="Job costing approved">
+                <span>
+                  <Icon cursor="help" as={FiBook} />
+                </span>
+              </Tooltip>
+            )}
+            {dailyReport.payrollComplete && (
+              <Tooltip label="Payroll complete">
+                <span>
+                  <Icon cursor="help" as={FiDollarSign} />
+                </span>
+              </Tooltip>
+            )}
+          </Flex>
         </Flex>
       }
     >
