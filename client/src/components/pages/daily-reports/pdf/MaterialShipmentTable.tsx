@@ -1,6 +1,7 @@
 import { Text, View } from "@react-pdf/renderer";
 import dayjs from "dayjs";
 import { MaterialShipmentCardSnippetFragment } from "../../../../generated/graphql";
+import formatNumber from "../../../../utils/formatNumber";
 
 interface IMaterialShipmentTable {
   materialShipments: MaterialShipmentCardSnippetFragment[];
@@ -72,53 +73,78 @@ const MaterialShipmentTable = ({
         </View>
 
         <View>
-          {materialShipments.map((shipment) => (
-            <View key={shipment._id} style={{ marginVertical: "2px" }}>
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                <Text
-                  style={{
-                    fontSize: "7px",
-                    width: MaterialShipmentColumnWidth,
-                  }}
-                >
+          {materialShipments.map((shipment) => {
+            let supplierMaterial;
+            if (shipment.noJobsiteMaterial) {
+              supplierMaterial = (
+                <>
                   {shipment.supplier} {shipment.shipmentType}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: "7px",
-                    width: MaterialShipmentQuantityColumnWidth,
-                  }}
-                >
-                  {shipment.quantity} {shipment.unit}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: "7px",
-                    width: MaterialShipmentVehicleColumnWidth,
-                  }}
-                >
-                  {shipment.vehicleObject?.source} /{" "}
-                  {shipment.vehicleObject?.vehicleType} /{" "}
-                  {shipment.vehicleObject?.vehicleCode}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: "7px",
-                    width: MaterialShipmentHourColumnWidth,
-                  }}
-                >
-                  {shipment.startTime && shipment.endTime
-                    ? Math.abs(
-                        dayjs(shipment.startTime).diff(
-                          shipment.endTime,
-                          "minutes"
+                </>
+              );
+            } else {
+              supplierMaterial = (
+                <>
+                  {shipment.jobsiteMaterial?.supplier.name}{" "}
+                  {shipment.jobsiteMaterial?.material.name}
+                </>
+              );
+            }
+            return (
+              <View key={shipment._id} style={{ marginVertical: "2px" }}>
+                <View style={{ display: "flex", flexDirection: "row" }}>
+                  <Text
+                    style={{
+                      fontSize: "7px",
+                      width: MaterialShipmentColumnWidth,
+                    }}
+                  >
+                    {supplierMaterial}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: "7px",
+                      width: MaterialShipmentQuantityColumnWidth,
+                    }}
+                  >
+                    {shipment.quantity} {shipment.unit}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: "7px",
+                      width: MaterialShipmentVehicleColumnWidth,
+                    }}
+                  >
+                    {shipment.vehicleObject ? (
+                      <>
+                        {shipment.vehicleObject?.source} /{" "}
+                        {shipment.vehicleObject?.vehicleType} /{" "}
+                        {shipment.vehicleObject?.vehicleCode}
+                      </>
+                    ) : (
+                      "N/A"
+                    )}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: "7px",
+                      width: MaterialShipmentHourColumnWidth,
+                    }}
+                  >
+                    {shipment.startTime && shipment.endTime
+                      ? formatNumber(
+                          Math.abs(
+                            dayjs(shipment.startTime).diff(
+                              shipment.endTime,
+                              "minutes"
+                            )
+                          ) / 60
                         )
-                      ) / 60
-                    : "N/A"}
-                </Text>
+                      : "N/A"}
+                  </Text>
+                </View>
               </View>
-            </View>
-          ))}
+            );
+          })}
           <View
             style={{
               display: "flex",

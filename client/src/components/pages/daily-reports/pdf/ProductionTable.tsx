@@ -1,6 +1,7 @@
 import { Text, View } from "@react-pdf/renderer";
 import dayjs from "dayjs";
 import { ProductionCardSnippetFragment } from "../../../../generated/graphql";
+import formatNumber from "../../../../utils/formatNumber";
 
 interface IProductionTable {
   productions: ProductionCardSnippetFragment[];
@@ -86,7 +87,7 @@ const ProductionTable = ({ productions }: IProductionTable) => {
                     width: ProductionQuantityColumnWidth,
                   }}
                 >
-                  {production.quantity} {production.unit}
+                  {formatNumber(production.quantity)} {production.unit}
                 </Text>
                 <Text
                   style={{
@@ -107,12 +108,14 @@ const ProductionTable = ({ productions }: IProductionTable) => {
                 <Text
                   style={{ fontSize: "7px", width: ProductionHoursColumnWidth }}
                 >
-                  {Math.abs(
-                    dayjs(production.startTime).diff(
-                      production.endTime,
-                      "minutes"
-                    )
-                  ) / 60}
+                  {formatNumber(
+                    Math.abs(
+                      dayjs(production.startTime).diff(
+                        production.endTime,
+                        "minutes"
+                      )
+                    ) / 60
+                  )}
                 </Text>
               </View>
             </View>
