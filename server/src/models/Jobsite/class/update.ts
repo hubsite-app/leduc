@@ -4,7 +4,11 @@ import {
   JobsiteMaterialDocument,
   JobsiteMonthReport,
 } from "@models";
-import { ITruckingTypeRateData } from "@typescript/jobsite";
+import { IJobsiteUpdate, ITruckingTypeRateData } from "@typescript/jobsite";
+
+const document = async (jobsite: JobsiteDocument, data: IJobsiteUpdate) => {
+  jobsite.name = data.name;
+};
 
 const addMaterial = async (
   jobsite: JobsiteDocument,
@@ -75,6 +79,7 @@ const truckingRates = async (
 };
 
 export default {
+  document,
   addMaterial,
   addExpenseInvoice,
   addRevenueInvoice,

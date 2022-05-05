@@ -13,10 +13,12 @@ import {
   JobsiteYearReportClass,
 } from "@models";
 import { ListOptionData } from "@typescript/graphql";
+import { Id } from "@typescript/models";
 import {
   Arg,
   Authorized,
   FieldResolver,
+  ID,
   Mutation,
   Query,
   Resolver,
@@ -26,6 +28,7 @@ import { InvoiceData } from "../invoice/mutations";
 import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
 import mutations, {
   JobsiteCreateData,
+  JobsiteUpdateData,
   TruckingTypeRateData,
 } from "./mutations";
 
@@ -116,6 +119,16 @@ export default class JobsiteResolver {
   @Mutation(() => JobsiteClass)
   async jobsiteCreate(@Arg("data") data: JobsiteCreateData) {
     return mutations.create(data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => JobsiteClass)
+  async jobsiteUpdate(
+    @Arg("id", () => ID, { nullable: false }) id: Id,
+    @Arg("data", () => JobsiteUpdateData, { nullable: false })
+    data: JobsiteUpdateData
+  ) {
+    return mutations.update(id, data);
   }
 
   @Authorized(["ADMIN"])

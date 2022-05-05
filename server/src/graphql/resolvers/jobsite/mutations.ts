@@ -8,6 +8,7 @@ import {
   Material,
 } from "@models";
 import { TruckingRateTypes } from "@typescript/jobsite";
+import { Id } from "@typescript/models";
 import { Field, InputType } from "type-graphql";
 import { InvoiceData } from "../invoice/mutations";
 import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
@@ -25,6 +26,12 @@ export class JobsiteCreateData {
 }
 
 @InputType()
+export class JobsiteUpdateData {
+  @Field({ nullable: false })
+  public name!: string;
+}
+
+@InputType()
 export class TruckingRateData extends RatesData {
   @Field(() => TruckingRateTypes, { nullable: false })
   public type!: TruckingRateTypes;
@@ -38,6 +45,20 @@ export class TruckingTypeRateData extends DefaultRateData {
 
 const create = async (data: JobsiteCreateData): Promise<JobsiteDocument> => {
   const jobsite = await Jobsite.createDocument(data);
+
+  await jobsite.save();
+
+  return jobsite;
+};
+
+const update = async (
+  id: Id,
+  data: JobsiteUpdateData
+): Promise<JobsiteDocument> => {
+  const jobsite = await Jobsite.getById(id);
+  if (!jobsite) throw new Error("Unable to find jobsite with that Id");
+
+  await jobsite.updateDocument(data);
 
   await jobsite.save();
 
@@ -153,6 +174,7 @@ const generateDayReports = async (
 
 export default {
   create,
+  update,
   addMaterial,
   addExpenseInvoice,
   addRevenueInvoice,
