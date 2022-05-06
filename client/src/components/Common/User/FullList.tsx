@@ -10,7 +10,9 @@ const UserFullList = () => {
    * ----- Hook Initialization -----
    */
 
-  const { data, loading, fetchMore } = useUsersQuery();
+  const { data, loading, fetchMore, networkStatus } = useUsersQuery({
+    notifyOnNetworkStatusChange: true,
+  });
 
   const [finished, setFinished] = React.useState(false);
 
@@ -19,7 +21,7 @@ const UserFullList = () => {
    */
 
   const nextPage = React.useCallback(() => {
-    if (!finished && !loading) {
+    if (!finished && networkStatus === 7) {
       fetchMore({
         variables: {
           options: {
@@ -30,7 +32,7 @@ const UserFullList = () => {
         if (data.data.users.length === 0) setFinished(true);
       });
     }
-  }, [data?.users.length, fetchMore, finished, loading]);
+  }, [data?.users.length, fetchMore, finished, networkStatus]);
 
   /**
    * ----- Rendering -----
@@ -51,7 +53,14 @@ const UserFullList = () => {
     }
   }, [data?.users, loading]);
 
-  return <InfiniteScroll content={content} nextPage={nextPage} />;
+  return (
+    <InfiniteScroll
+      enabled={!!data?.users && data.users.length > 0}
+      loading={networkStatus !== 7}
+      content={content}
+      nextPage={nextPage}
+    />
+  );
 };
 
 export default UserFullList;

@@ -12,7 +12,9 @@ const Jobsites = () => {
    * ----- Hook Initialization -----
    */
 
-  const { data, loading, fetchMore } = useJobsitesQuery();
+  const { data, loading, fetchMore, networkStatus } = useJobsitesQuery({
+    notifyOnNetworkStatusChange: true,
+  });
 
   const [finished, setFinished] = React.useState(false);
 
@@ -21,7 +23,7 @@ const Jobsites = () => {
    */
 
   const nextPage = React.useCallback(() => {
-    if (!finished && !loading) {
+    if (!finished && networkStatus === 7) {
       fetchMore({
         variables: {
           options: {
@@ -32,7 +34,7 @@ const Jobsites = () => {
         if (data.data.jobsites.length === 0) setFinished(true);
       });
     }
-  }, [data?.jobsites.length, fetchMore, finished, loading]);
+  }, [data?.jobsites.length, fetchMore, finished, networkStatus]);
 
   /**
    * ----- Rendering -----
@@ -69,7 +71,12 @@ const Jobsites = () => {
 
   return (
     <Container>
-      <InfiniteScroll content={content} nextPage={nextPage} />
+      <InfiniteScroll
+        enabled={!!data?.jobsites && data.jobsites.length > 0}
+        loading={networkStatus !== 7}
+        content={content}
+        nextPage={nextPage}
+      />
     </Container>
   );
 };

@@ -16,7 +16,9 @@ const MaterialFullList = () => {
    * ----- Hook Initialization -----
    */
 
-  const { data, loading, fetchMore } = useMaterialsFullQuery();
+  const { data, loading, fetchMore, networkStatus } = useMaterialsFullQuery({
+    notifyOnNetworkStatusChange: true,
+  });
 
   const [remove, { loading: removeLoading }] = useMaterialRemoveMutation({
     refetchQueries: [MaterialsFullDocument],
@@ -29,7 +31,7 @@ const MaterialFullList = () => {
    */
 
   const nextPage = React.useCallback(() => {
-    if (!finished && !loading) {
+    if (!finished && networkStatus === 7) {
       fetchMore({
         variables: {
           options: {
@@ -40,7 +42,7 @@ const MaterialFullList = () => {
         if (data.data.materials.length === 0) setFinished(true);
       });
     }
-  }, [data?.materials.length, fetchMore, finished, loading]);
+  }, [data?.materials.length, fetchMore, finished, networkStatus]);
 
   /**
    * ----- Rendering -----
@@ -83,7 +85,14 @@ const MaterialFullList = () => {
     }
   }, [data?.materials, loading, remove, removeLoading]);
 
-  return <InfiniteScroll content={content} nextPage={nextPage} />;
+  return (
+    <InfiniteScroll
+      enabled={!!data?.materials && data.materials.length > 0}
+      loading={networkStatus !== 7}
+      content={content}
+      nextPage={nextPage}
+    />
+  );
 };
 
 export default MaterialFullList;

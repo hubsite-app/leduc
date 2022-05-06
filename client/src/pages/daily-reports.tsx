@@ -25,7 +25,10 @@ const DailyReports = () => {
     }
   }, [user]);
 
-  const [fetch, { data, loading, fetchMore }] = useDailyReportsLazyQuery();
+  const [fetch, { data, loading, fetchMore, networkStatus }] =
+    useDailyReportsLazyQuery({
+      notifyOnNetworkStatusChange: true,
+    });
 
   const [finished, setFinished] = React.useState(false);
 
@@ -34,7 +37,7 @@ const DailyReports = () => {
    */
 
   const nextPage = React.useCallback(() => {
-    if (!finished && !loading) {
+    if (!finished && networkStatus === 7) {
       fetchMore({
         variables: {
           options: {
@@ -46,13 +49,11 @@ const DailyReports = () => {
         if (data.data.dailyReports.length === 0) setFinished(true);
       });
     }
-  }, [crews, data?.dailyReports.length, fetchMore, finished, loading]);
+  }, [crews, data?.dailyReports.length, fetchMore, finished, networkStatus]);
 
   /**
    * ----- Use-effects and other logic -----
    */
-
-  console.log(crews);
 
   React.useEffect(() => {
     if (crews)
@@ -106,7 +107,12 @@ const DailyReports = () => {
 
   return (
     <Container>
-      <InfiniteScroll content={content} nextPage={nextPage} />
+      <InfiniteScroll
+        enabled={!!data?.dailyReports && data.dailyReports.length > 0}
+        loading={networkStatus !== 7}
+        content={content}
+        nextPage={() => nextPage()}
+      />
     </Container>
   );
 };
