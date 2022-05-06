@@ -25,13 +25,7 @@ const DailyReports = () => {
     }
   }, [user]);
 
-  const [fetch, { data, loading, fetchMore }] = useDailyReportsLazyQuery({
-    variables: {
-      options: {
-        crews,
-      },
-    },
-  });
+  const [fetch, { data, loading, fetchMore }] = useDailyReportsLazyQuery();
 
   const [finished, setFinished] = React.useState(false);
 
@@ -57,6 +51,8 @@ const DailyReports = () => {
   /**
    * ----- Use-effects and other logic -----
    */
+
+  console.log(crews);
 
   React.useEffect(() => {
     if (crews)
