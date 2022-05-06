@@ -18,9 +18,11 @@ const DailyReports = () => {
   } = useAuth();
 
   const crews = React.useMemo(() => {
-    if (user && user.role === UserRoles.User) {
-      return user.employee.crews.map((crew) => crew._id);
-    } else return [];
+    if (user) {
+      if (user.role === UserRoles.User) {
+        return user.employee.crews.map((crew) => crew._id);
+      } else return [];
+    }
   }, [user]);
 
   const [fetch, { data, loading, fetchMore }] = useDailyReportsLazyQuery({
