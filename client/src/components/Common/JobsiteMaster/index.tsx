@@ -23,6 +23,11 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
    * ----- Variables -----
    */
 
+  const isConcrete = React.useMemo(() => {
+    if (process.env.NEXT_PUBLIC_APP_NAME === "Concrete") return true;
+    else return false;
+  }, []);
+
   /**
    * ----- Rendering -----
    */
@@ -73,9 +78,9 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
             <Th>Total Expenses</Th>
             <Th>Net Income</Th>
             <Th>%</Th>
-            <Th>% minus Concrete</Th>
+            {!isConcrete ? <Th>% minus Concrete</Th> : null}
             <Th>Internal</Th>
-            <Th>Expernal</Th>
+            <Th>External</Th>
             {report.crewTypes.map(() => (
               <>
                 <Th>Wages</Th>

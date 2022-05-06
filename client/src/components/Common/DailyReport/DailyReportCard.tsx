@@ -13,8 +13,6 @@ interface IDailyReportCard {
 }
 
 const DailyReportCard = ({ dailyReport }: IDailyReportCard) => {
-  console.log(dailyReport.jobCostApproved, dailyReport.payrollComplete);
-
   return (
     <Card
       heading={

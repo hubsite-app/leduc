@@ -81,6 +81,7 @@ const SystemMaterialShipmentVehicleTypeUpdate = ({
         defaultRates={defaultRates}
         onChange={(rates) => setDefaultRates(rates)}
         isLoading={loading}
+        allowDeletion
       />
       <SubmitButton isLoading={loading} />
     </form>

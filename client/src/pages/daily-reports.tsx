@@ -6,7 +6,7 @@ import DailyReportCard from "../components/Common/DailyReport/DailyReportCard";
 import InfiniteScroll from "../components/Common/InfiniteScroll";
 import Loading from "../components/Common/Loading";
 import { useAuth } from "../contexts/Auth";
-import { useDailyReportsQuery } from "../generated/graphql";
+import { useDailyReportsLazyQuery, UserRoles } from "../generated/graphql";
 
 const DailyReports = () => {
   /**
@@ -18,12 +18,12 @@ const DailyReports = () => {
   } = useAuth();
 
   const crews = React.useMemo(() => {
-    if (user && user.admin === false) {
+    if (user && user.role === UserRoles.User) {
       return user.employee.crews.map((crew) => crew._id);
     } else return [];
   }, [user]);
 
-  const { data, loading, fetchMore } = useDailyReportsQuery({
+  const [fetch, { data, loading, fetchMore }] = useDailyReportsLazyQuery({
     variables: {
       options: {
         crews,
@@ -51,6 +51,22 @@ const DailyReports = () => {
       });
     }
   }, [crews, data?.dailyReports.length, fetchMore, finished, loading]);
+
+  /**
+   * ----- Use-effects and other logic -----
+   */
+
+  React.useEffect(() => {
+    if (crews)
+      fetch({
+        variables: {
+          options: {
+            crews,
+          },
+        },
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [crews]);
 
   /**
    * ----- Rendering -----
