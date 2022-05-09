@@ -43,8 +43,8 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
   const revenue = React.useMemo(() => {
     if (jobsiteYearReport) {
       return (
-        jobsiteYearReport.summary.externalExpenseInvoiceValue +
-        jobsiteYearReport.summary.internalExpenseInvoiceValue
+        jobsiteYearReport.summary.externalRevenueInvoiceValue +
+        jobsiteYearReport.summary.internalRevenueInvoiceValue
       );
     } else return 0;
   }, [jobsiteYearReport]);
@@ -99,7 +99,8 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
             link={createLink.jobsite(jobsiteYearReport.jobsite._id)}
             whiteSpace="nowrap"
           >
-            {jobsiteYearReport.jobsite.jobcode}
+            {jobsiteYearReport.jobsite.jobcode} -{" "}
+            {jobsiteYearReport.jobsite.name}
           </TextLink>
         ) : (
           <Loading />
