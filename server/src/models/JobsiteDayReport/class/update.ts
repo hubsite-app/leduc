@@ -18,6 +18,14 @@ const document = async (jobsiteDayReport: JobsiteDayReportDocument) => {
   return;
 };
 
+const requestUpdate = async (jobsiteDayReport: JobsiteDayReportDocument) => {
+  if (jobsiteDayReport.update.status !== UpdateStatus.Pending)
+    jobsiteDayReport.update.status = UpdateStatus.Requested;
+
+  return;
+};
+
 export default {
   document,
+  requestUpdate,
 };

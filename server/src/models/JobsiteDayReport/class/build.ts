@@ -3,7 +3,6 @@ import {
   JobsiteDayReportModel,
   JobsiteDocument,
 } from "@models";
-import { UpdateStatus } from "@typescript/models";
 import dayjs from "dayjs";
 
 const allForJobsite = async (
@@ -50,8 +49,7 @@ const forJobsiteDay = async (
     jobsiteDayReport = await JobsiteDayReport.createDocument(jobsite, day);
   }
 
-  if (jobsiteDayReport.update.status !== UpdateStatus.Pending)
-    jobsiteDayReport.update.status = UpdateStatus.Requested;
+  await jobsiteDayReport.requestUpdate();
 
   await jobsiteDayReport.save();
 

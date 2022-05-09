@@ -8,6 +8,7 @@ import { GetByIDOptions, IRatesData, ISearchOptions } from "@typescript/models";
 import { IEmployeeCreate, IEmployeeUpdate } from "@typescript/employee";
 import create from "./create";
 import update from "./update";
+import reports from "./reports";
 
 @ObjectType()
 export class EmployeeClass extends EmployeeSchema {
@@ -80,5 +81,13 @@ export class EmployeeClass extends EmployeeSchema {
 
   public async archive(this: EmployeeDocument) {
     return update.archive(this);
+  }
+
+  /**
+   * ----- Reports -----
+   */
+
+  public async requestReportUpdate(this: EmployeeDocument) {
+    return reports.requestUpdate(this);
   }
 }

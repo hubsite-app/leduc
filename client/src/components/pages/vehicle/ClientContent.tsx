@@ -2,6 +2,7 @@ import { Box, Heading, Text } from "@chakra-ui/react";
 import React from "react";
 import { useVehicleFullQuery } from "../../../generated/graphql";
 import createLink from "../../../utils/createLink";
+import formatNumber from "../../../utils/formatNumber";
 import Card from "../../Common/Card";
 import Loading from "../../Common/Loading";
 import Permission from "../../Common/Permission";
@@ -39,6 +40,12 @@ const VehicleClientContent = ({ id }: IVehicleClientContent) => {
                 Type:{" "}
               </Text>
               {vehicle.vehicleType}
+            </Text>
+            <Text>
+              <Text fontWeight="bold" as="span">
+                Current Rate:{" "}
+              </Text>
+              ${formatNumber(vehicle.currentRate)}
             </Text>
           </Card>
           <Permission>

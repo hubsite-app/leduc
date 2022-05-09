@@ -2,6 +2,7 @@ import {
   Arg,
   Authorized,
   FieldResolver,
+  Float,
   ID,
   Mutation,
   Query,
@@ -24,6 +25,11 @@ export default class VehicleResolver {
   @FieldResolver(() => [CrewClass])
   async crews(@Root() vehicle: VehicleDocument) {
     return vehicle.getCrews();
+  }
+
+  @FieldResolver(() => Float)
+  async currentRate(@Root() vehicle: VehicleDocument) {
+    return await vehicle.getRateForTime(new Date());
   }
 
   /**

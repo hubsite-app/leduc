@@ -1,8 +1,10 @@
 import {
+  EmployeeDocument,
   Jobsite,
   JobsiteDayReportDocument,
   JobsiteDayReportModel,
   JobsiteDocument,
+  VehicleDocument,
 } from "@models";
 import { Id, UpdateStatus } from "@typescript/models";
 import dayjs from "dayjs";
@@ -66,6 +68,28 @@ const byJobsiteAndDay = async (
   return report;
 };
 
+const byEmployee = async (
+  JobsiteDayReport: JobsiteDayReportModel,
+  employee: EmployeeDocument
+): Promise<JobsiteDayReportDocument[]> => {
+  const reports = await JobsiteDayReport.find({
+    "employees.employee": employee._id,
+  });
+
+  return reports;
+};
+
+const byVehicle = async (
+  JobsiteDayReport: JobsiteDayReportModel,
+  vehicle: VehicleDocument
+): Promise<JobsiteDayReportDocument[]> => {
+  const reports = await JobsiteDayReport.find({
+    "vehicles.vehicle": vehicle._id,
+  });
+
+  return reports;
+};
+
 const byUpdateRequested = async (
   JobsiteDayReport: JobsiteDayReportModel
 ): Promise<JobsiteDayReportDocument[]> => {
@@ -104,6 +128,8 @@ export default {
   byJobsiteAndYear,
   byJobsiteAndMonth,
   byJobsiteAndDay,
+  byEmployee,
+  byVehicle,
   byUpdateRequested,
   byUpdatePending,
   jobsite,

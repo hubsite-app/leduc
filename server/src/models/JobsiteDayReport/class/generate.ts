@@ -149,7 +149,7 @@ const employeeReports = async (
       const work = employeeObject.employeeWork[j];
 
       hours += Math.abs(
-        dayjs(work.startTime).diff(dayjs(work.endTime), "hours")
+        dayjs(work.startTime).diff(dayjs(work.endTime), "hours", true)
       );
     }
 
@@ -243,7 +243,7 @@ const vehicleReports = async (
     }
   }
 
-  // Create all EmployeeReports
+  // Create all Vehicle Reports
   const vehicleReports: VehicleReportClass[] = [];
   for (let i = 0; i < vehicleObjects.length; i++) {
     const vehicleObject = vehicleObjects[i];
@@ -598,8 +598,9 @@ const truckingReports = async (
         materialShipmentObjects[i].materialShipment.vehicleObject
           ?.truckingRateId &&
         uniqueTruckingObjects[j].truckingRateId.toString() ===
-          materialShipmentObjects[i].materialShipment.vehicleObject
-            ?.truckingRateId &&
+          materialShipmentObjects[
+            i
+          ].materialShipment.vehicleObject?.truckingRateId?.toString() &&
         uniqueTruckingObjects[j].crewType ===
           materialShipmentObjects[i].crewType
       )

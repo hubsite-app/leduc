@@ -1,6 +1,12 @@
 import { Types } from "mongoose";
 
-import { Crew, CrewDocument, VehicleDocument, VehicleModel } from "@models";
+import {
+  Crew,
+  CrewDocument,
+  VehicleDocument,
+  VehicleModel,
+  System,
+} from "@models";
 import { GetByIDOptions, ISearchOptions } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 import ElasticsearchClient from "@elasticsearch/client";
@@ -105,7 +111,20 @@ const rateForTime = async (
   vehicle: VehicleDocument,
   date: Date
 ): Promise<number> => {
-  return getRateForTime(vehicle.rates, date);
+  if (vehicle.rates && vehicle.rates.length > 0) {
+    return getRateForTime(vehicle.rates, date);
+  } else {
+    const system = await System.getSystem();
+    const systemDefault = system.companyVehicleTypeDefaults.find(
+      (item) => item.title === vehicle.vehicleType
+    );
+
+    if (systemDefault) {
+      return getRateForTime(systemDefault.rates, date);
+    } else {
+      return 0;
+    }
+  }
 };
 
 export default {

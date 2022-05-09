@@ -1273,6 +1273,7 @@ export type VehicleClass = {
   _id: Scalars['ID'];
   archivedAt: Scalars['DateTime'];
   crews: Array<CrewClass>;
+  currentRate: Scalars['Float'];
   name: Scalars['String'];
   rates: Array<RateClass>;
   rental: Scalars['Boolean'];
@@ -1455,7 +1456,7 @@ export type VehicleWorkCardSnippetFragment = { __typename?: 'VehicleWorkClass', 
 
 export type VehicleCardSnippetFragment = { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> };
 
-export type VehicleFullSnippetFragment = { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> };
+export type VehicleFullSnippetFragment = { __typename?: 'VehicleClass', currentRate: number, _id: string, name: string, vehicleCode: string, vehicleType: string, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> };
 
 export type VehicleSsrSnippetFragment = { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string };
 
@@ -1879,7 +1880,7 @@ export type VehicleUpdateMutationVariables = Exact<{
 }>;
 
 
-export type VehicleUpdateMutation = { __typename?: 'Mutation', vehicleUpdate: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type VehicleUpdateMutation = { __typename?: 'Mutation', vehicleUpdate: { __typename?: 'VehicleClass', currentRate: number, _id: string, name: string, vehicleCode: string, vehicleType: string, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type VehicleUpdateRatesMutationVariables = Exact<{
   id: Scalars['String'];
@@ -2204,7 +2205,7 @@ export type VehicleFullQueryVariables = Exact<{
 }>;
 
 
-export type VehicleFullQuery = { __typename?: 'Query', vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type VehicleFullQuery = { __typename?: 'Query', vehicle: { __typename?: 'VehicleClass', currentRate: number, _id: string, name: string, vehicleCode: string, vehicleType: string, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type VehicleSsrQueryVariables = Exact<{
   id: Scalars['String'];
@@ -3015,6 +3016,7 @@ ${CrewCardSnippetFragmentDoc}`;
 export const VehicleFullSnippetFragmentDoc = gql`
     fragment VehicleFullSnippet on VehicleClass {
   ...VehicleCardSnippet
+  currentRate
   crews {
     ...CrewCardSnippet
   }

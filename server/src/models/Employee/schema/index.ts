@@ -3,12 +3,18 @@ import { ES_updateEmployee } from "@elasticsearch/helpers/employee";
 import { CrewClass, EmployeeDocument, UserClass } from "@models";
 import { post, prop, Ref } from "@typegoose/typegoose";
 import { RateClass } from "@typescript/models";
+import errorHandler from "@utils/errorHandler";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
 @post<EmployeeDocument>("save", async (employee) => {
-  await ES_updateEmployee(employee);
+  try {
+    employee.requestReportUpdate();
+    ES_updateEmployee(employee);
+  } catch (e) {
+    errorHandler("Employee post save error", e);
+  }
 })
 export class EmployeeSchema {
   @Field(() => ID, { nullable: false })

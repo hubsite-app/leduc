@@ -2,12 +2,15 @@ import {
   JobsiteYearMasterReportDocument,
   JobsiteYearReport,
   JobsiteYearMasterReportItemClass,
+  JobsiteDocument,
 } from "@models";
 import { CrewTypes } from "@typescript/crew";
 import {
   CrewTypeOnSiteSummaryClass,
   OnSiteSummaryReportClass,
 } from "@typescript/jobsiteReports";
+import { Id } from "@typescript/models";
+import errorHandler from "@utils/errorHandler";
 
 const full = async (
   jobsiteYearMasterReport: JobsiteYearMasterReportDocument
@@ -19,135 +22,167 @@ const full = async (
   const allCrewTypes: CrewTypes[] = [];
 
   const reports: JobsiteYearMasterReportItemClass[] = [];
+  const jobsiteList: { jobsite: JobsiteDocument; yearReportId: Id }[] = [];
   for (let i = 0; i < jobsiteYearReports.length; i++) {
     const jobsiteYearReport = jobsiteYearReports[i];
 
-    const dayReports = await jobsiteYearReport.getDayReports();
+    let jobsite: JobsiteDocument | undefined = undefined;
+    try {
+      jobsite = await jobsiteYearReport.getJobsite();
+    } catch (e) {
+      errorHandler("Unable to find Jobsite Year Report jobsite", e);
+    }
 
-    const crewTypeSummaries: CrewTypeOnSiteSummaryClass[] = [];
-    const crewTypeIndices: { [crewType in CrewTypes]?: number } = {};
+    if (jobsite) {
+      jobsiteList.push({ jobsite, yearReportId: jobsiteYearReport._id });
 
-    const crewTypes = jobsiteYearReport.crewTypes;
+      const dayReports = await jobsiteYearReport.getDayReports();
 
-    // Initialize crew type summaries
-    for (let i = 0; i < crewTypes.length; i++) {
-      crewTypeSummaries.push({
-        crewType: crewTypes[i],
+      const crewTypeSummaries: CrewTypeOnSiteSummaryClass[] = [];
+      const crewTypeIndices: { [crewType in CrewTypes]?: number } = {};
+
+      const crewTypes = jobsiteYearReport.crewTypes;
+
+      // Initialize crew type summaries
+      for (let i = 0; i < crewTypes.length; i++) {
+        crewTypeSummaries.push({
+          crewType: crewTypes[i],
+          employeeCost: 0,
+          employeeHours: 0,
+          materialCost: 0,
+          materialQuantity: 0,
+          truckingCost: 0,
+          truckingHours: 0,
+          truckingQuantity: 0,
+          vehicleCost: 0,
+          vehicleHours: 0,
+          nonCostedMaterialQuantity: 0,
+        });
+
+        crewTypeIndices[crewTypes[i]] = crewTypeSummaries.length - 1;
+
+        // Populate full crew types array
+        if (!allCrewTypes.includes(crewTypes[i]))
+          allCrewTypes.push(crewTypes[i]);
+      }
+
+      const summary: OnSiteSummaryReportClass = {
+        crewTypeSummaries,
         employeeCost: 0,
         employeeHours: 0,
         materialCost: 0,
         materialQuantity: 0,
+        nonCostedMaterialQuantity: 0,
         truckingCost: 0,
         truckingHours: 0,
         truckingQuantity: 0,
         vehicleCost: 0,
         vehicleHours: 0,
-        nonCostedMaterialQuantity: 0,
-      });
+      };
 
-      crewTypeIndices[crewTypes[i]] = crewTypeSummaries.length - 1;
+      // Populate summary
+      for (let i = 0; i < dayReports.length; i++) {
+        const dayReport = dayReports[i];
 
-      // Populate full crew types array
-      if (!allCrewTypes.includes(crewTypes[i])) allCrewTypes.push(crewTypes[i]);
-    }
+        summary.employeeCost += dayReport.summary.employeeCost;
+        summary.employeeHours += dayReport.summary.employeeHours;
 
-    const summary: OnSiteSummaryReportClass = {
-      crewTypeSummaries,
-      employeeCost: 0,
-      employeeHours: 0,
-      materialCost: 0,
-      materialQuantity: 0,
-      nonCostedMaterialQuantity: 0,
-      truckingCost: 0,
-      truckingHours: 0,
-      truckingQuantity: 0,
-      vehicleCost: 0,
-      vehicleHours: 0,
-    };
+        summary.materialCost += dayReport.summary.materialCost;
+        summary.materialQuantity += dayReport.summary.materialQuantity;
 
-    // Populate summary
-    for (let i = 0; i < dayReports.length; i++) {
-      const dayReport = dayReports[i];
+        summary.vehicleCost += dayReport.summary.vehicleCost;
+        summary.vehicleHours += dayReport.summary.vehicleHours;
 
-      summary.employeeCost += dayReport.summary.employeeCost;
-      summary.employeeHours += dayReport.summary.employeeHours;
+        summary.truckingCost += dayReport.summary.truckingCost;
+        summary.truckingHours += dayReport.summary.truckingCost;
+        summary.truckingQuantity += dayReport.summary.truckingQuantity;
 
-      summary.materialCost += dayReport.summary.materialCost;
-      summary.materialQuantity += dayReport.summary.materialQuantity;
+        summary.nonCostedMaterialQuantity +=
+          dayReport.summary.nonCostedMaterialQuantity;
 
-      summary.vehicleCost += dayReport.summary.vehicleCost;
-      summary.vehicleHours += dayReport.summary.vehicleHours;
+        // Populate crew types summaries
+        for (let j = 0; j < dayReport.summary.crewTypeSummaries.length; j++) {
+          const dayReportCrewTypeSummary =
+            dayReport.summary.crewTypeSummaries[j];
 
-      summary.truckingCost += dayReport.summary.truckingCost;
-      summary.truckingHours += dayReport.summary.truckingCost;
-      summary.truckingQuantity += dayReport.summary.truckingQuantity;
+          if (
+            crewTypeIndices[dayReportCrewTypeSummary.crewType] !== undefined
+          ) {
+            summary.crewTypeSummaries[
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              crewTypeIndices[dayReportCrewTypeSummary.crewType]!
+            ].employeeCost += dayReportCrewTypeSummary.employeeCost;
+            summary.crewTypeSummaries[
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              crewTypeIndices[dayReportCrewTypeSummary.crewType]!
+            ].employeeHours += dayReportCrewTypeSummary.employeeHours;
 
-      summary.nonCostedMaterialQuantity +=
-        dayReport.summary.nonCostedMaterialQuantity;
+            summary.crewTypeSummaries[
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              crewTypeIndices[dayReportCrewTypeSummary.crewType]!
+            ].materialCost += dayReportCrewTypeSummary.materialCost;
+            summary.crewTypeSummaries[
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              crewTypeIndices[dayReportCrewTypeSummary.crewType]!
+            ].materialQuantity += dayReportCrewTypeSummary.materialQuantity;
 
-      // Populate crew types summaries
-      for (let j = 0; j < dayReport.summary.crewTypeSummaries.length; j++) {
-        const dayReportCrewTypeSummary = dayReport.summary.crewTypeSummaries[j];
+            summary.crewTypeSummaries[
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              crewTypeIndices[dayReportCrewTypeSummary.crewType]!
+            ].vehicleCost += dayReportCrewTypeSummary.vehicleCost;
+            summary.crewTypeSummaries[
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              crewTypeIndices[dayReportCrewTypeSummary.crewType]!
+            ].vehicleHours += dayReportCrewTypeSummary.vehicleHours;
 
-        if (crewTypeIndices[dayReportCrewTypeSummary.crewType] !== undefined) {
-          summary.crewTypeSummaries[
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            crewTypeIndices[dayReportCrewTypeSummary.crewType]!
-          ].employeeCost += dayReportCrewTypeSummary.employeeCost;
-          summary.crewTypeSummaries[
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            crewTypeIndices[dayReportCrewTypeSummary.crewType]!
-          ].employeeHours += dayReportCrewTypeSummary.employeeHours;
+            summary.crewTypeSummaries[
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              crewTypeIndices[dayReportCrewTypeSummary.crewType]!
+            ].truckingCost += dayReportCrewTypeSummary.truckingCost;
+            summary.crewTypeSummaries[
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              crewTypeIndices[dayReportCrewTypeSummary.crewType]!
+            ].truckingHours += dayReportCrewTypeSummary.truckingHours;
+            summary.crewTypeSummaries[
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              crewTypeIndices[dayReportCrewTypeSummary.crewType]!
+            ].truckingQuantity += dayReportCrewTypeSummary.truckingQuantity;
 
-          summary.crewTypeSummaries[
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            crewTypeIndices[dayReportCrewTypeSummary.crewType]!
-          ].materialCost += dayReportCrewTypeSummary.materialCost;
-          summary.crewTypeSummaries[
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            crewTypeIndices[dayReportCrewTypeSummary.crewType]!
-          ].materialQuantity += dayReportCrewTypeSummary.materialQuantity;
-
-          summary.crewTypeSummaries[
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            crewTypeIndices[dayReportCrewTypeSummary.crewType]!
-          ].vehicleCost += dayReportCrewTypeSummary.vehicleCost;
-          summary.crewTypeSummaries[
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            crewTypeIndices[dayReportCrewTypeSummary.crewType]!
-          ].vehicleHours += dayReportCrewTypeSummary.vehicleHours;
-
-          summary.crewTypeSummaries[
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            crewTypeIndices[dayReportCrewTypeSummary.crewType]!
-          ].truckingCost += dayReportCrewTypeSummary.truckingCost;
-          summary.crewTypeSummaries[
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            crewTypeIndices[dayReportCrewTypeSummary.crewType]!
-          ].truckingHours += dayReportCrewTypeSummary.truckingHours;
-          summary.crewTypeSummaries[
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            crewTypeIndices[dayReportCrewTypeSummary.crewType]!
-          ].truckingQuantity += dayReportCrewTypeSummary.truckingQuantity;
-
-          summary.crewTypeSummaries[
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            crewTypeIndices[dayReportCrewTypeSummary.crewType]!
-          ].nonCostedMaterialQuantity +=
-            dayReportCrewTypeSummary.nonCostedMaterialQuantity;
+            summary.crewTypeSummaries[
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              crewTypeIndices[dayReportCrewTypeSummary.crewType]!
+            ].nonCostedMaterialQuantity +=
+              dayReportCrewTypeSummary.nonCostedMaterialQuantity;
+          }
         }
       }
+
+      const report: JobsiteYearMasterReportItemClass = {
+        report: jobsiteYearReport._id,
+        summary,
+      };
+
+      reports.push(report);
     }
-
-    const report: JobsiteYearMasterReportItemClass = {
-      report: jobsiteYearReport._id,
-      summary,
-    };
-
-    reports.push(report);
   }
 
-  jobsiteYearMasterReport.reports = reports;
+  // Sort reports by jobsite number
+  jobsiteList.sort(
+    (a, b) => b.jobsite.jobcode?.localeCompare(a.jobsite.jobcode || "") || 0
+  );
+
+  const sortedReports: JobsiteYearMasterReportItemClass[] = [];
+  for (let i = 0; i < jobsiteList.length; i++) {
+    const yearReport = reports.find(
+      (report) =>
+        report.report?.toString() === jobsiteList[i].yearReportId?.toString()
+    );
+    if (yearReport) {
+      sortedReports.push(yearReport);
+    }
+  }
+
+  jobsiteYearMasterReport.reports = sortedReports;
 
   jobsiteYearMasterReport.crewTypes = allCrewTypes;
 

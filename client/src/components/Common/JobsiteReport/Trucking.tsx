@@ -195,7 +195,13 @@ const JobsiteReportTruckingReports = ({
               <Th isNumeric>${formatNumber(reports.totalCost)}</Th>
               {reports.reports.map((report) => (
                 <Th isNumeric key={report?._id}>
-                  {report?.quantity || ""} {`(${report?.hours})` || ""}
+                  {report ? (
+                    <>
+                      {report.quantity} {`(${report.hours})`}
+                    </>
+                  ) : (
+                    ""
+                  )}
                 </Th>
               ))}
             </Tr>
