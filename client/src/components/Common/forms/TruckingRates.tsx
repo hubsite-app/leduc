@@ -137,40 +137,44 @@ const TruckingRates = ({
           border="1px solid"
           borderColor="gray.400"
         >
-          <SimpleGrid columns={[1, 1, 3]} spacing={2} w="95%">
-            <TextField
-              value={rate.date}
-              isDisabled={isLoading}
-              type="date"
-              label="Date"
-              onChange={(e) => setDate(e.target.value, index)}
-              errorMessage={errors && errors[index]?.date?.message}
-            />
-            <Number
-              value={rate.rate}
-              isDisabled={isLoading}
-              label="Rate"
-              inputLeftAddon="$"
-              onChange={(_, number) => setRate(number, index)}
-              errorMessage={errors && errors[index]?.rate?.message}
-            />
-            <TruckingRateType
-              value={rate.type}
-              isDisabled={isLoading}
-              label="Type"
-              onChange={(e) =>
-                setType(e.target.value as TruckingRateTypes, index)
-              }
-              errorMessage={errors && errors[index]?.type?.message}
-            />
-          </SimpleGrid>
-          <IconButton
-            m="auto"
-            aria-label="remove"
-            icon={<FiTrash />}
-            backgroundColor="transparent"
-            onClick={() => removeTruckingRate(index)}
-          />
+          <Flex flexDir="column">
+            <SimpleGrid columns={[1, 1, 3]} spacing={2} w="95%">
+              <TextField
+                value={rate.date}
+                isDisabled={isLoading}
+                type="date"
+                label="Date"
+                onChange={(e) => setDate(e.target.value, index)}
+                errorMessage={errors && errors[index]?.date?.message}
+              />
+              <Number
+                value={rate.rate}
+                isDisabled={isLoading}
+                label="Rate"
+                inputLeftAddon="$"
+                onChange={(_, number) => setRate(number, index)}
+                errorMessage={errors && errors[index]?.rate?.message}
+              />
+              <TruckingRateType
+                value={rate.type}
+                isDisabled={isLoading}
+                label="Type"
+                onChange={(e) =>
+                  setType(e.target.value as TruckingRateTypes, index)
+                }
+                errorMessage={errors && errors[index]?.type?.message}
+              />
+            </SimpleGrid>
+            <Flex flexDir="row" justifyContent="end">
+              <IconButton
+                size="sm"
+                aria-label="remove"
+                icon={<FiTrash />}
+                backgroundColor="transparent"
+                onClick={() => removeTruckingRate(index)}
+              />
+            </Flex>
+          </Flex>
         </FormContainer>
       ))}
       <Flex justifyContent="end">
