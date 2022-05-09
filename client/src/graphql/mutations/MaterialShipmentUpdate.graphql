@@ -1,6 +1,6 @@
 mutation MaterialShipmentUpdate(
   $id: String!
-  $data: MaterialShipmentShipmentData!
+  $data: MaterialShipmentUpdateData!
 ) {
   materialShipmentUpdate(id: $id, data: $data) {
     ...MaterialShipmentCardSnippet

@@ -11,6 +11,7 @@ import * as yup from "yup";
 import {
   JobsiteMaterialCardSnippetFragment,
   MaterialShipmentShipmentData,
+  MaterialShipmentUpdateData,
 } from "../generated/graphql";
 
 import TextField, { ITextField } from "../components/Common/forms/TextField";
@@ -21,6 +22,7 @@ import Unit, { IUnit } from "../components/Common/forms/Unit";
 import Number, { INumber } from "../components/Common/forms/Number";
 import CompanySearch from "../components/Search/CompanySearch";
 import { isEmpty } from "lodash";
+import ContactOffice from "../components/Common/ContactOffice";
 
 const MaterialShipmentUpdate = yup
   .object()
@@ -54,6 +56,13 @@ const MaterialShipmentUpdate = yup
     quantity: yup.number().required(),
     startTime: yup.string().optional(),
     endTime: yup.string().optional(),
+    vehicleObject: yup.object().shape({
+      source: yup.string(),
+      vehicleCode: yup.string(),
+      vehicleType: yup.string(),
+      truckingRateId: yup.string(),
+      deliveredRateId: yup.string(),
+    }),
   })
   .required();
 
@@ -65,14 +74,9 @@ export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
 
   const { control, handleSubmit, watch, setValue } = form;
 
-  const jobsiteMaterialId = watch("jobsiteMaterialId");
-
   const noJobsiteMaterial = watch("noJobsiteMaterial");
 
-  // React.useEffect(() => {
-  //   if (isEmpty(jobsiteMaterialId)) setValue("noJobsiteMaterial", true);
-  //   else setValue("noJobsiteMaterial", false);
-  // }, [jobsiteMaterialId, setValue]);
+  const jobsiteMaterialId = watch("jobsiteMaterialId");
 
   const FormComponents = {
     Form: ({
@@ -80,7 +84,7 @@ export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
       submitHandler,
     }: {
       children: React.ReactNode;
-      submitHandler: SubmitHandler<MaterialShipmentShipmentData>;
+      submitHandler: SubmitHandler<MaterialShipmentUpdateData>;
     }) => <form onSubmit={handleSubmit(submitHandler)}>{children}</form>,
     JobsiteMaterial: ({
       isLoading,
@@ -247,11 +251,108 @@ export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
+    VehicleSource: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="vehicleObject.source"
+            render={({ field, fieldState }) => (
+              <CompanySearch
+                {...props}
+                {...field}
+                defaultValue={field.value}
+                errorMessage={fieldState.error?.message}
+                label="Vehicle Source"
+                isDisabled={isLoading}
+                companySelected={(company) => {
+                  setValue("vehicleObject.source", company.name);
+                }}
+                helperText={
+                  <>
+                    if not available contact <ContactOffice />
+                  </>
+                }
+              />
+            )}
+          />
+        ),
+        [isLoading, props]
+      ),
+    VehicleType: ({
+      isLoading,
+      isDelivered,
+      ...props
+    }: IFormProps<ISelect> & { isDelivered: boolean }) =>
+      React.useMemo(() => {
+        let name = "vehicleObject.truckingRateId";
+        if (isDelivered) {
+          name = "vehicleObject.deliveredRateId";
+        }
+
+        return (
+          <Controller
+            control={control}
+            name={name}
+            render={({ field, fieldState }) => (
+              <Select
+                {...props}
+                {...field}
+                onChange={(e) => {
+                  console.log(isDelivered);
+                  setValue(
+                    "vehicleObject.vehicleType",
+                    e.target.options[e.target.selectedIndex].text
+                  );
+                  if (isDelivered) {
+                    setValue("vehicleObject.deliveredRateId", e.target.value);
+                  } else {
+                    setValue("vehicleObject.truckingRateId", e.target.value);
+                  }
+                }}
+                placeholder="Select vehicle type"
+                errorMessage={fieldState.error?.message}
+                label="Vehicle Type"
+                isDisabled={isLoading}
+                helperText={
+                  <>
+                    if not available contact <ContactOffice />
+                  </>
+                }
+              />
+            )}
+          />
+        );
+      }, [isDelivered, isLoading, props]),
+    VehicleCode: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="vehicleObject.vehicleCode"
+            render={({ field, fieldState }) => (
+              <TextField
+                {...props}
+                {...field}
+                label="Vehicle Code"
+                isDisabled={isLoading}
+                errorMessage={fieldState.error?.message}
+                onChange={(e) =>
+                  setValue("vehicleObject.vehicleCode", e.target.value)
+                }
+                helperText="&nbsp;"
+              />
+            )}
+          />
+        ),
+        [isLoading, props]
+      ),
   };
 
   return {
     FormComponents,
     noJobsiteMaterial,
+    jobsiteMaterialId,
     ...form,
   };
 };

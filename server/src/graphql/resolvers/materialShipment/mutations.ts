@@ -91,6 +91,12 @@ export class MaterialShipmentCreateDataV1 {
   public vehicleObject?: MaterialShipmentVehicleObjectData;
 }
 
+@InputType()
+export class MaterialShipmentUpdateData extends MaterialShipmentShipmentData {
+  @Field(() => MaterialShipmentVehicleObjectData, { nullable: true })
+  public vehicleObject?: MaterialShipmentVehicleObjectData;
+}
+
 const create = async (
   dailyReportId: string,
   data: MaterialShipmentCreateData[]
@@ -135,7 +141,7 @@ const create = async (
 
 const update = async (
   id: string,
-  data: MaterialShipmentShipmentData
+  data: MaterialShipmentUpdateData
 ): Promise<MaterialShipmentDocument> => {
   const materialShipment = await MaterialShipment.getById(id, {
     throwError: true,

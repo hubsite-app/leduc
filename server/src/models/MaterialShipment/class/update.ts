@@ -20,6 +20,8 @@ const document = async (
 
   materialShipment.endTime = data.endTime;
 
+  materialShipment.vehicleObject = data.vehicleObject;
+
   const dailyReport = await materialShipment.getDailyReport();
   if (!dailyReport)
     throw new Error(
