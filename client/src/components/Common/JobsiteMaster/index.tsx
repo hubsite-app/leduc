@@ -1,18 +1,17 @@
+import React from "react";
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Box,
   Table,
   Tbody,
+  Tfoot,
   Th,
   Thead,
+  Tooltip,
   Tr,
 } from "@chakra-ui/react";
-import React from "react";
 import { JobsiteYearMasterReportFullSnippetFragment } from "../../../generated/graphql";
 import JobsiteMasterRow from "./Row";
+import formatNumber from "../../../utils/formatNumber";
 
 interface IJobsiteMaster {
   report: JobsiteYearMasterReportFullSnippetFragment;
@@ -22,6 +21,32 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
   /**
    * ----- Variables -----
    */
+
+  const isConcrete = React.useMemo(() => {
+    if (process.env.NEXT_PUBLIC_APP_NAME === "Concrete") return true;
+    else return false;
+  }, []);
+
+  const onSiteExpenses = React.useMemo(() => {
+    let expenses = 0;
+    for (let i = 0; i < report.reports.length; i++) {
+      const { summary } = report.reports[i];
+
+      expenses +=
+        summary.employeeCost +
+        summary.vehicleCost +
+        summary.materialCost +
+        summary.truckingCost;
+    }
+
+    return expenses;
+  }, [report]);
+
+  /**
+   * @todo add summary (report.reports[0].summary)
+   */
+
+  console.log(report);
 
   /**
    * ----- Rendering -----
@@ -35,15 +60,7 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
       borderRadius={6}
       m={2}
     >
-      <Alert status="info" w="100%">
-        <AlertIcon />
-        <AlertTitle>WIP</AlertTitle>
-        <AlertDescription>
-          Currently working on locking the left column
-        </AlertDescription>
-      </Alert>
       <Table>
-        <Thead></Thead>
         <Thead>
           <Tr>
             <Th></Th>
@@ -66,16 +83,22 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
             ))}
           </Tr>
           <Tr>
-            <Th>Jobsite</Th>
+            <Th position="sticky">Jobsite</Th>
             <Th>Revenue</Th>
-            <Th>Expenses</Th>
-            <Th>Overhead</Th>
+            <Th>
+              <Tooltip label="Employees, equipment, materials and trucking">
+                Expenses
+              </Tooltip>
+            </Th>
+            <Th>
+              <Tooltip label="10% of Expenses">Overhead</Tooltip>
+            </Th>
             <Th>Total Expenses</Th>
             <Th>Net Income</Th>
             <Th>%</Th>
-            <Th>% minus Concrete</Th>
+            {!isConcrete ? <Th>% minus Concrete</Th> : null}
             <Th>Internal</Th>
-            <Th>Expernal</Th>
+            <Th>External</Th>
             {report.crewTypes.map(() => (
               <>
                 <Th>Wages</Th>
@@ -95,6 +118,17 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
             />
           ))}
         </Tbody>
+        <Tfoot>
+          <Tr>
+            <Th>Totals</Th>
+            <Th>NEED</Th>
+            <Th isNumeric>${formatNumber(onSiteExpenses)}</Th>
+            <Th isNumeric>${formatNumber(onSiteExpenses * 0.1)}</Th>
+            <Th>NEED</Th>
+            <Th>NEED</Th>
+            <Th>NEED</Th>
+          </Tr>
+        </Tfoot>
       </Table>
     </Box>
   );
