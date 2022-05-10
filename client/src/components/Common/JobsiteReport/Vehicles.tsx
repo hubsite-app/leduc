@@ -184,11 +184,11 @@ const JobsiteReportVehicleReports = ({
                   {reports.vehicle.name}
                 </TextLink>
               </Th>
-              <Th isNumeric>{reports.totalHours}</Th>
+              <Th isNumeric>{formatNumber(reports.totalHours)}</Th>
               <Th isNumeric>${formatNumber(reports.totalCost)}</Th>
               {reports.reports.map((report) => (
                 <Th isNumeric key={report?._id}>
-                  {report?.hours || ""}
+                  {report?.hours ? formatNumber(report.hours) : ""}
                 </Th>
               ))}
             </Tr>
@@ -197,15 +197,19 @@ const JobsiteReportVehicleReports = ({
         <Tfoot>
           <Tr>
             <Th>Totals</Th>
-            <Th isNumeric>{totals.hours}</Th>
+            <Th isNumeric>{formatNumber(totals.hours)}</Th>
             <Th isNumeric>${formatNumber(totals.cost)}</Th>
-            {relevantReports.map((report) => (
-              <Th isNumeric key={report._id}>
-                {report.summary.crewTypeSummaries.find(
-                  (summary) => summary.crewType === crewType
-                )?.vehicleHours || 0}
-              </Th>
-            ))}
+            {relevantReports.map((report) => {
+              const summary = report.summary.crewTypeSummaries.find(
+                (summary) => summary.crewType === crewType
+              );
+
+              return (
+                <Th isNumeric key={report._id}>
+                  {summary ? formatNumber(summary.vehicleHours) : 0}
+                </Th>
+              );
+            })}
           </Tr>
         </Tfoot>
       </Table>

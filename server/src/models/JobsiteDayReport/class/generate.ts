@@ -636,7 +636,7 @@ const truckingReports = async (
 
       if (shipment.startTime && shipment.endTime)
         hours += Math.abs(
-          dayjs(shipment.startTime).diff(dayjs(shipment.endTime), "hours")
+          dayjs(shipment.startTime).diff(dayjs(shipment.endTime), "hours", true)
         );
     }
 

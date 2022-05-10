@@ -40,15 +40,7 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
       borderRadius={6}
       m={2}
     >
-      <Alert status="info" w="100%">
-        <AlertIcon />
-        <AlertTitle>WIP</AlertTitle>
-        <AlertDescription>
-          Currently working on locking the left column
-        </AlertDescription>
-      </Alert>
       <Table>
-        <Thead></Thead>
         <Thead>
           <Tr>
             <Th></Th>
@@ -71,7 +63,7 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
             ))}
           </Tr>
           <Tr>
-            <Th>Jobsite</Th>
+            <Th position="sticky">Jobsite</Th>
             <Th>Revenue</Th>
             <Th>Expenses</Th>
             <Th>Overhead</Th>

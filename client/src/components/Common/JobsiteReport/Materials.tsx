@@ -187,42 +187,44 @@ const JobsiteReportMaterialReports = ({
           </Tr>
         </Thead>
         <Tbody>
-          {materialReports.map((reports, index) => (
-            <Tr key={index}>
-              <Th>
-                {reports.jobsiteMaterial.material.name}
-                {reports.jobsiteMaterial.deliveredRates.find(
-                  (rate) => rate._id === reports.deliveredRateId
-                )
-                  ? `: ${
-                      reports.jobsiteMaterial.deliveredRates.find(
-                        (rate) => rate._id === reports.deliveredRateId
-                      )?.title
-                    }`
-                  : ""}
-              </Th>
-              <Th isNumeric>{reports.totalQuantity}</Th>
-              <Th isNumeric>${formatNumber(reports.totalCost)}</Th>
-              {reports.reports.map((report) => (
-                <Th isNumeric key={report?._id}>
-                  {report?.quantity || ""}
+          {materialReports.map((reports, index) => {
+            const deliveredRate = reports.jobsiteMaterial.deliveredRates.find(
+              (rate) => rate._id === reports.deliveredRateId
+            );
+
+            return (
+              <Tr key={index}>
+                <Th>
+                  {reports.jobsiteMaterial.material.name}
+                  {deliveredRate ? `: ${deliveredRate.title}` : ""}
                 </Th>
-              ))}
-            </Tr>
-          ))}
+                <Th isNumeric>{formatNumber(reports.totalQuantity)}</Th>
+                <Th isNumeric>${formatNumber(reports.totalCost)}</Th>
+                {reports.reports.map((report) => (
+                  <Th isNumeric key={report?._id}>
+                    {report?.quantity ? formatNumber(report.quantity) : ""}
+                  </Th>
+                ))}
+              </Tr>
+            );
+          })}
         </Tbody>
         <Tfoot>
           <Tr>
             <Th>Totals</Th>
-            <Th isNumeric>{totals.quantity}</Th>
+            <Th isNumeric>{formatNumber(totals.quantity)}</Th>
             <Th isNumeric>${formatNumber(totals.cost)}</Th>
-            {relevantReports.map((report) => (
-              <Th isNumeric key={report._id}>
-                {report.summary.crewTypeSummaries.find(
-                  (summary) => summary.crewType === crewType
-                )?.materialQuantity || 0}
-              </Th>
-            ))}
+            {relevantReports.map((report) => {
+              const summary = report.summary.crewTypeSummaries.find(
+                (summary) => summary.crewType === crewType
+              );
+
+              return (
+                <Th isNumeric key={report._id}>
+                  {summary ? formatNumber(summary.materialQuantity) : 0}
+                </Th>
+              );
+            })}
           </Tr>
         </Tfoot>
       </Table>

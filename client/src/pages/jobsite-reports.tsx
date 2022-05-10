@@ -39,7 +39,7 @@ const JobsiteYearMasterReports: PageJobsiteYearMasterReportsComp = ({
               fontWeight="bold"
               link={createLink.jobsiteYearMasterReport(report._id)}
             >
-              {formatDate(report.startOfYear, "YYYY", true)}
+              {formatDate(report.startOfYear, "YYYY", true)} Master Report
             </TextLink>
           </Card>
         ))}
