@@ -1,0 +1,5 @@
+mutation VehicleArchive($id: ID!) {
+  vehicleArchive(id: $id) {
+    _id
+  }
+}

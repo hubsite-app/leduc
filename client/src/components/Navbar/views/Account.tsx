@@ -41,7 +41,7 @@ const NavbarAccount = () => {
             <MenuGroup>
               <Permission minRole={UserRoles.ProjectManager}>
                 <MenuItem onClick={() => router.push("/jobsite-reports")}>
-                  Jobsite Reports
+                  Master Costing
                 </MenuItem>
               </Permission>
               <MenuItem onClick={() => router.push("/daily-reports")}>

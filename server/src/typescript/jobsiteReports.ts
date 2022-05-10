@@ -120,8 +120,8 @@ export class OnSiteSummaryReportClass extends SummaryBaseReport {
   public crewTypeSummaries!: CrewTypeOnSiteSummaryClass[];
 }
 
-export interface OnSiteSummaryReportDocument
-  extends DocumentType<OnSiteSummaryReportClass> {}
+export type OnSiteSummaryReportDocument =
+  DocumentType<OnSiteSummaryReportClass>;
 
 @ObjectType()
 export class CrewTypeOnSiteSummaryClass extends SummaryBaseReport {

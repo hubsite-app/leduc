@@ -8,35 +8,28 @@ import _ids from "@testing/_ids";
 import jestLogin from "@testing/jestLogin";
 import { FileCreateData } from "@graphql/resolvers/file/mutations";
 import path from "path";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { Server } from "http";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-let mongoServer: any, documents: SeededDatabase, app: any;
-function setupDatabase() {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+let mongoServer: MongoMemoryServer, documents: SeededDatabase, app: Server;
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
+  return;
+};
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   mongoServer = await prepareDatabase();
 
   app = await createApp();
 
   await setupDatabase();
-
-  done();
 });
 
-afterAll(async (done) => {
+afterAll(async () => {
   await disconnectAndStopServer(mongoServer);
-  done();
 });
 
 describe("DailyReport Resolver", () => {
@@ -162,7 +155,7 @@ describe("DailyReport Resolver", () => {
 
           const data: FileCreateData = {
             description: "A Description",
-            // @ts-expect-error
+            // @ts-expect-error - must be null to attach field
             file: null,
           };
 
@@ -212,7 +205,7 @@ describe("DailyReport Resolver", () => {
 
           const data: FileCreateData = {
             description: "A Description 2",
-            // @ts-expect-error
+            // @ts-expect-error - must be null to attach field
             file: null,
           };
 

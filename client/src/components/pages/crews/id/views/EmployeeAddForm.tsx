@@ -7,8 +7,10 @@ import {
   EmployeeCreateData,
   useCrewAddEmployeeMutation,
   useEmployeeCreateMutation,
+  UserRoles,
 } from "../../../../../generated/graphql";
 import SubmitButton from "../../../../Common/forms/SubmitButton";
+import Permission from "../../../../Common/Permission";
 import EmployeeSearch from "../../../../Search/EmployeeSearch";
 
 interface IEmployeeAddForm {
@@ -94,19 +96,21 @@ const EmployeeAddForm = ({ crew, closeForm }: IEmployeeAddForm) => {
           });
         }}
       />
-      <Text color="gray.500" textAlign="center" my={2}>
-        or
-      </Text>
-      <Box>
-        <Heading size="sm" ml={1}>
-          Add a new Employee
-        </Heading>
-        <FormComponents.Form submitHandler={createSubmitHandler}>
-          <FormComponents.Name isLoading={loading} />
-          <FormComponents.JobTitle isLoading={loading} />
-          <SubmitButton isLoading={loading} />
-        </FormComponents.Form>
-      </Box>
+      <Permission minRole={UserRoles.ProjectManager}>
+        <Text color="gray.500" textAlign="center" my={2}>
+          or
+        </Text>
+        <Box>
+          <Heading size="sm" ml={1}>
+            Add a new Employee
+          </Heading>
+          <FormComponents.Form submitHandler={createSubmitHandler}>
+            <FormComponents.Name isLoading={loading} />
+            <FormComponents.JobTitle isLoading={loading} />
+            <SubmitButton isLoading={loading} />
+          </FormComponents.Form>
+        </Box>
+      </Permission>
     </Box>
   );
 };

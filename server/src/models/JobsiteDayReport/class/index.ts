@@ -1,8 +1,10 @@
 import {
   DailyReportDocument,
+  EmployeeDocument,
   JobsiteDayReportDocument,
   JobsiteDayReportModel,
   JobsiteDocument,
+  VehicleDocument,
 } from "@models";
 import { Id } from "@typescript/models";
 import { ObjectType } from "type-graphql";
@@ -48,6 +50,20 @@ export class JobsiteDayReportClass extends JobsiteDayReportSchema {
     day: Date
   ) {
     return get.byJobsiteAndDay(this, jobsiteId, day);
+  }
+
+  public static async getByEmployee(
+    this: JobsiteDayReportModel,
+    employee: EmployeeDocument
+  ) {
+    return get.byEmployee(this, employee);
+  }
+
+  public static async getByVehicle(
+    this: JobsiteDayReportModel,
+    vehicle: VehicleDocument
+  ) {
+    return get.byVehicle(this, vehicle);
   }
 
   public static async getByUpdateRequested(this: JobsiteDayReportModel) {
@@ -99,6 +115,10 @@ export class JobsiteDayReportClass extends JobsiteDayReportSchema {
 
   public async updateAndSaveDocument(this: JobsiteDayReportDocument) {
     return update.document(this);
+  }
+
+  public async requestUpdate(this: JobsiteDayReportDocument) {
+    return update.requestUpdate(this);
   }
 
   /**

@@ -3,35 +3,29 @@ import { IJobsiteReportBuild } from "@typescript/jobsiteReports";
 import { UpdateStatus } from "@typescript/models";
 import dayjs from "dayjs";
 
-const requestBuild = (
+const requestBuild = async (
   JobsiteYearReport: JobsiteYearReportModel,
   data: IJobsiteReportBuild
 ) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      // Try to find existing
-      let jobsiteYearReport = await JobsiteYearReport.getByJobsiteAndDate(
-        data.jobsiteId,
-        data.date
-      );
+  // Try to find existing
+  let jobsiteYearReport = await JobsiteYearReport.getByJobsiteAndDate(
+    data.jobsiteId,
+    data.date
+  );
 
-      if (!jobsiteYearReport) {
-        jobsiteYearReport = new JobsiteYearReport({
-          jobsite: data.jobsiteId,
-          startOfYear: dayjs(data.date).startOf("year").toDate(),
-        });
-      }
+  if (!jobsiteYearReport) {
+    jobsiteYearReport = new JobsiteYearReport({
+      jobsite: data.jobsiteId,
+      startOfYear: dayjs(data.date).startOf("year").toDate(),
+    });
+  }
 
-      if (jobsiteYearReport.update.status !== UpdateStatus.Pending)
-        jobsiteYearReport.update.status = UpdateStatus.Requested;
+  if (jobsiteYearReport.update.status !== UpdateStatus.Pending)
+    jobsiteYearReport.update.status = UpdateStatus.Requested;
 
-      await jobsiteYearReport.save();
+  await jobsiteYearReport.save();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 export default {

@@ -6,45 +6,42 @@ import {
 import { CrewTypes } from "@typescript/crew";
 import { UpdateStatus } from "@typescript/models";
 
-const document = (jobsiteYearReport: JobsiteYearReportDocument) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const dayReports = await JobsiteDayReport.getByJobsiteAndYear(
-        jobsiteYearReport.jobsite!,
-        jobsiteYearReport.startOfYear
-      );
+const document = async (jobsiteYearReport: JobsiteYearReportDocument) => {
+  if (!jobsiteYearReport.jobsite)
+    throw new Error("This year report does not have a jobsite");
 
-      jobsiteYearReport.dayReports = dayReports.map((report) => report._id);
+  const dayReports = await JobsiteDayReport.getByJobsiteAndYear(
+    jobsiteYearReport.jobsite,
+    jobsiteYearReport.startOfYear
+  );
 
-      const crewTypes: CrewTypes[] = [];
-      for (let i = 0; i < dayReports.length; i++) {
-        const dayReport = dayReports[i];
+  jobsiteYearReport.dayReports = dayReports.map((report) => report._id);
 
-        for (let j = 0; j < dayReport.crewTypes.length; j++) {
-          if (!crewTypes.includes(dayReport.crewTypes[j]))
-            crewTypes.push(dayReport.crewTypes[j]);
-        }
-      }
+  const crewTypes: CrewTypes[] = [];
+  for (let i = 0; i < dayReports.length; i++) {
+    const dayReport = dayReports[i];
 
-      jobsiteYearReport.crewTypes = crewTypes;
-
-      await jobsiteYearReport.generateExpenseInvoiceReports();
-      await jobsiteYearReport.generateRevenueInvoiceReports();
-
-      await jobsiteYearReport.generateSummary();
-
-      jobsiteYearReport.update.status = UpdateStatus.Updated;
-      jobsiteYearReport.update.lastUpdatedAt = new Date();
-
-      await jobsiteYearReport.save();
-
-      await JobsiteYearMasterReport.requestBuild(jobsiteYearReport.startOfYear);
-
-      resolve();
-    } catch (e) {
-      reject(e);
+    for (let j = 0; j < dayReport.crewTypes.length; j++) {
+      if (!crewTypes.includes(dayReport.crewTypes[j]))
+        crewTypes.push(dayReport.crewTypes[j]);
     }
-  });
+  }
+
+  jobsiteYearReport.crewTypes = crewTypes;
+
+  await jobsiteYearReport.generateExpenseInvoiceReports();
+  await jobsiteYearReport.generateRevenueInvoiceReports();
+
+  await jobsiteYearReport.generateSummary();
+
+  jobsiteYearReport.update.status = UpdateStatus.Updated;
+  jobsiteYearReport.update.lastUpdatedAt = new Date();
+
+  await jobsiteYearReport.save();
+
+  await JobsiteYearMasterReport.requestBuild(jobsiteYearReport.startOfYear);
+
+  return;
 };
 
 export default {

@@ -1,5 +1,4 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { logger } from "@logger";
 import {
   DailyReportClass,
   VehicleClass,
@@ -7,6 +6,7 @@ import {
   MaterialShipmentDocument,
 } from "@models";
 import { post, prop, Ref } from "@typegoose/typegoose";
+import errorHandler from "@utils/errorHandler";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import { VehicleObjectClass } from "./subDocuments";
@@ -15,15 +15,15 @@ import { VehicleObjectClass } from "./subDocuments";
 @post<MaterialShipmentDocument>("save", async (materialShipment) => {
   try {
     await materialShipment.requestReportUpdate();
-  } catch (e: any) {
-    logger.error(`Jobsite Material post save error: ${e.message}`);
+  } catch (e) {
+    errorHandler("Jobsite Material post save error", e);
   }
 })
 @post<MaterialShipmentDocument>("remove", async (materialShipment) => {
   try {
     await materialShipment.requestReportUpdate();
-  } catch (e: any) {
-    logger.error(`Jobsite Material post remove error: ${e.message}`);
+  } catch (e) {
+    errorHandler("Jobsite Material post remove error", e);
   }
 })
 export class MaterialShipmentSchema {

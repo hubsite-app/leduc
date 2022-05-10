@@ -17,110 +17,81 @@ import dayjs from "dayjs";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   JobsiteMonthReport: JobsiteMonthReportModel,
   id: Id,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<JobsiteMonthReportDocument | null>(
-    async (resolve, reject) => {
-      try {
-        options = populateOptions(options, byIdDefaultOptions);
+): Promise<JobsiteMonthReportDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-        const jobsiteMonthReport = await JobsiteMonthReport.findById(id);
+  const jobsiteMonthReport = await JobsiteMonthReport.findById(id);
 
-        if (!jobsiteMonthReport && options.throwError) {
-          throw new Error(
-            "JobsiteMonthReport.getById: unable to find jobsiteMonthReport"
-          );
-        }
+  if (!jobsiteMonthReport && options.throwError) {
+    throw new Error(
+      "JobsiteMonthReport.getById: unable to find jobsiteMonthReport"
+    );
+  }
 
-        resolve(jobsiteMonthReport);
-      } catch (e) {
-        reject(e);
-      }
-    }
-  );
+  return jobsiteMonthReport;
 };
 
-const byJobsiteAndDate = (
+const byJobsiteAndDate = async (
   JobsiteMonthReport: JobsiteMonthReportModel,
   jobsiteId: Id,
   date: Date
-) => {
-  return new Promise<JobsiteMonthReportDocument | null>(
-    async (resolve, reject) => {
-      try {
-        const jobsiteMonthlyReport = await JobsiteMonthReport.findOne({
-          jobsite: jobsiteId,
-          startOfMonth: dayjs(date).startOf("month").toDate(),
-        });
+): Promise<JobsiteMonthReportDocument | null> => {
+  const jobsiteMonthlyReport = await JobsiteMonthReport.findOne({
+    jobsite: jobsiteId,
+    startOfMonth: dayjs(date).startOf("month").toDate(),
+  });
 
-        resolve(jobsiteMonthlyReport);
-      } catch (e) {
-        reject(e);
-      }
-    }
-  );
+  return jobsiteMonthlyReport;
 };
 
-const byUpdateRequested = (JobsiteMonthReport: JobsiteMonthReportModel) => {
-  return new Promise<JobsiteMonthReportDocument[]>(async (resolve, reject) => {
-    try {
-      const reports = await JobsiteMonthReport.find({
-        "update.status": UpdateStatus.Requested,
-      });
-
-      resolve(reports);
-    } catch (e) {
-      reject(e);
-    }
+const byUpdateRequested = async (
+  JobsiteMonthReport: JobsiteMonthReportModel
+): Promise<JobsiteMonthReportDocument[]> => {
+  const reports = await JobsiteMonthReport.find({
+    "update.status": UpdateStatus.Requested,
   });
+
+  return reports;
 };
 
-const byUpdatePending = (JobsiteMonthReport: JobsiteMonthReportModel) => {
-  return new Promise<JobsiteMonthReportDocument[]>(async (resolve, reject) => {
-    try {
-      const reports = await JobsiteMonthReport.find({
-        "update.status": UpdateStatus.Pending,
-      });
-
-      resolve(reports);
-    } catch (e) {
-      reject(e);
-    }
+const byUpdatePending = async (
+  JobsiteMonthReport: JobsiteMonthReportModel
+): Promise<JobsiteMonthReportDocument[]> => {
+  const reports = await JobsiteMonthReport.find({
+    "update.status": UpdateStatus.Pending,
   });
+
+  return reports;
 };
 
 /**
  * ----- Methods -----
  */
 
-const dayReports = (jobsiteMonthReport: JobsiteMonthReportDocument) => {
-  return new Promise<JobsiteDayReportDocument[]>(async (resolve, reject) => {
-    try {
-      const reports = await JobsiteDayReport.find({
-        _id: { $in: jobsiteMonthReport.dayReports },
-      });
-
-      resolve(reports);
-    } catch (e) {
-      reject(e);
-    }
+const dayReports = async (
+  jobsiteMonthReport: JobsiteMonthReportDocument
+): Promise<JobsiteDayReportDocument[]> => {
+  const reports = await JobsiteDayReport.find({
+    _id: { $in: jobsiteMonthReport.dayReports },
   });
+
+  return reports;
 };
 
-const jobsite = (jobsiteMonthReport: JobsiteMonthReportDocument) => {
-  return new Promise<JobsiteDocument>(async (resolve, reject) => {
-    try {
-      const jobsite = await Jobsite.getById(jobsiteMonthReport.jobsite!);
-      if (!jobsite) throw new Error("Could not find month report jobsite");
+const jobsite = async (
+  jobsiteMonthReport: JobsiteMonthReportDocument
+): Promise<JobsiteDocument> => {
+  if (!jobsiteMonthReport.jobsite)
+    throw new Error("Jobsite month report does not have a jobsite");
 
-      resolve(jobsite);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  const jobsite = await Jobsite.getById(jobsiteMonthReport.jobsite);
+  if (!jobsite) throw new Error("Could not find month report jobsite");
+
+  return jobsite;
 };
 
 export default {

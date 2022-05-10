@@ -39,6 +39,10 @@ export class CrewSchema {
   @prop({ required: true, default: SchemaVersions.Crew })
   public schemaVersion!: number;
 
+  @Field(() => Date)
+  @prop({ required: false })
+  public archivedAt!: Date;
+
   /**
    * @deprecated jobsite holds the list of crews
    */

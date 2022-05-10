@@ -1,7 +1,7 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { logger } from "@logger";
 import { DailyReportClass, EmployeeClass, EmployeeWorkDocument } from "@models";
 import { post, prop, Ref } from "@typegoose/typegoose";
+import errorHandler from "@utils/errorHandler";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
@@ -9,15 +9,15 @@ import { Field, ID, ObjectType } from "type-graphql";
 @post<EmployeeWorkDocument>("save", async (employeeWork) => {
   try {
     await employeeWork.requestReportUpdate();
-  } catch (e: any) {
-    logger.error(`Employee work post save error: ${e.message}`);
+  } catch (e) {
+    errorHandler("Employee work post save error", e);
   }
 })
 @post<EmployeeWorkDocument>("remove", async (employeeWork) => {
   try {
     await employeeWork.requestReportUpdate();
-  } catch (e: any) {
-    logger.error(`Employee work post remove error: ${e.message}`);
+  } catch (e) {
+    errorHandler("Employee work post remove error", e);
   }
 })
 export class EmployeeWorkSchema {

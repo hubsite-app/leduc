@@ -34,6 +34,7 @@ import ElasticsearchClient from "@elasticsearch/client";
 import { IDailyReportSearchObject } from "@typescript/dailyReport";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 import dayjs from "dayjs";
+import { IHit } from "@typescript/elasticsearch";
 
 /**
  * ----- Static Methods -----
@@ -42,309 +43,245 @@ import dayjs from "dayjs";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   DailyReport: DailyReportModel,
   id: Types.ObjectId | string,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<DailyReportDocument | null>(async (resolve, reject) => {
-    try {
-      options = populateOptions(options, byIdDefaultOptions);
+): Promise<DailyReportDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-      const dailyReport = await DailyReport.findById(id);
+  const dailyReport = await DailyReport.findById(id);
 
-      if (!dailyReport && options.throwError) {
-        throw new Error("DailyReport.getById: unable to find daily report");
-      }
+  if (!dailyReport && options.throwError) {
+    throw new Error("DailyReport.getById: unable to find daily report");
+  }
 
-      resolve(dailyReport);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return dailyReport;
 };
 
-const search = (
+const search = async (
   DailyReport: DailyReportModel,
   searchString: string,
   options?: ISearchOptions
-) => {
-  return new Promise<IDailyReportSearchObject[]>(async (resolve, reject) => {
-    try {
-      const res = await ElasticsearchClient.search({
-        index: ElasticSearchIndices.DailyReport,
-        body: {
-          query: {
-            multi_match: {
-              query: searchString.toLowerCase(),
-              type: "cross_fields",
-              fields: [
-                "jobsiteName",
-                "jobsiteCode",
-                "crewName^2",
-                // "date",
-              ],
-            },
-          },
+): Promise<IDailyReportSearchObject[]> => {
+  const res = await ElasticsearchClient.search({
+    index: ElasticSearchIndices.DailyReport,
+    body: {
+      query: {
+        multi_match: {
+          query: searchString.toLowerCase(),
+          type: "cross_fields",
+          fields: [
+            "jobsiteName",
+            "jobsiteCode",
+            "crewName^2",
+            // "date",
+          ],
         },
-        size: options?.limit,
-      });
-
-      let dailyReportObjects: { id: string; score: number }[] =
-        res.body.hits.hits.map((item: any) => {
-          return {
-            id: item._id,
-            score: item._score,
-          };
-        });
-
-      // Filter out blacklisted ids
-      if (options?.blacklistedIds) {
-        dailyReportObjects = dailyReportObjects.filter(
-          (object) => !options.blacklistedIds?.includes(object.id)
-        );
-      }
-
-      const dailyReports: IDailyReportSearchObject[] = [];
-      for (let i = 0; i < dailyReportObjects.length; i++) {
-        const dailyReport = await DailyReport.getById(dailyReportObjects[i].id);
-        if (dailyReport)
-          dailyReports.push({
-            dailyReport,
-            score: dailyReportObjects[i].score,
-          });
-      }
-
-      resolve(dailyReports);
-    } catch (e) {
-      reject(e);
-    }
+      },
+    },
+    size: options?.limit,
   });
+
+  let dailyReportObjects: { id: string; score: number }[] =
+    res.body.hits.hits.map((item: IHit) => {
+      return {
+        id: item._id,
+        score: item._score,
+      };
+    });
+
+  // Filter out blacklisted ids
+  if (options?.blacklistedIds) {
+    dailyReportObjects = dailyReportObjects.filter(
+      (object) => !options.blacklistedIds?.includes(object.id)
+    );
+  }
+
+  const dailyReports: IDailyReportSearchObject[] = [];
+  for (let i = 0; i < dailyReportObjects.length; i++) {
+    const dailyReport = await DailyReport.getById(dailyReportObjects[i].id);
+    if (dailyReport)
+      dailyReports.push({
+        dailyReport,
+        score: dailyReportObjects[i].score,
+      });
+  }
+
+  return dailyReports;
 };
 
 const listDefaultOptions: IListOptions<DailyReportDocument> = {
   pageLimit: 25,
   offset: 0,
 };
-const list = (
+const list = async (
   DailyReport: DailyReportModel,
   options?: IListOptions<DailyReportDocument>
-) => {
-  return new Promise<DailyReportDocument[]>(async (resolve, reject) => {
-    try {
-      options = populateOptions(options, listDefaultOptions);
+): Promise<DailyReportDocument[]> => {
+  options = populateOptions(options, listDefaultOptions);
 
-      const dailyReports = await DailyReport.find(
-        options?.query || {},
-        undefined,
-        {
-          limit: options?.pageLimit,
-          skip: options?.offset,
-          sort: {
-            date: -1,
-          },
-        }
-      );
-
-      resolve(dailyReports);
-    } catch (e) {
-      reject(e);
+  const dailyReports = await DailyReport.find(
+    {
+      archived: false,
+      ...options?.query,
+    },
+    undefined,
+    {
+      limit: options?.pageLimit,
+      skip: options?.offset,
+      sort: {
+        date: -1,
+      },
     }
-  });
+  );
+
+  return dailyReports;
 };
 
-const existingReport = (
+const existingReport = async (
   DailyReport: DailyReportModel,
   jobsiteId: Id,
   crewId: Id,
   date: Date
-) => {
-  return new Promise<DailyReportDocument | null>(async (resolve, reject) => {
-    try {
-      const dailyReport = await DailyReport.findOne({
-        crew: crewId,
-        jobsite: jobsiteId,
-        date: {
-          $gte: dayjs(date).startOf("day").toDate(),
-          $lt: dayjs(date).endOf("day").toDate(),
-        },
-      });
-
-      resolve(dailyReport);
-    } catch (e) {
-      reject(e);
-    }
+): Promise<DailyReportDocument | null> => {
+  const dailyReport = await DailyReport.findOne({
+    crew: crewId,
+    jobsite: jobsiteId,
+    archived: false,
+    date: {
+      $gte: dayjs(date).startOf("day").toDate(),
+      $lt: dayjs(date).endOf("day").toDate(),
+    },
   });
+
+  return dailyReport;
 };
 
-const byJobsiteDayReport = (
+const byJobsiteDayReport = async (
   DailyReport: DailyReportModel,
   jobsiteDayReport: JobsiteDayReportDocument
-) => {
-  return new Promise<DailyReportDocument[]>(async (resolve, reject) => {
-    try {
-      if (!jobsiteDayReport.jobsite || !jobsiteDayReport.date)
-        throw new Error("jobsiteDayReport does not have the correct fields");
+): Promise<DailyReportDocument[]> => {
+  if (!jobsiteDayReport.jobsite || !jobsiteDayReport.date)
+    throw new Error("jobsiteDayReport does not have the correct fields");
 
-      const startOfDay = dayjs(jobsiteDayReport.date).startOf("day").toDate();
-      const endOfDay = dayjs(jobsiteDayReport.date).endOf("day").toDate();
+  const startOfDay = dayjs(jobsiteDayReport.date).startOf("day").toDate();
+  const endOfDay = dayjs(jobsiteDayReport.date).endOf("day").toDate();
 
-      const dailyReports = await DailyReport.find({
-        date: {
-          $gte: startOfDay,
-          $lt: endOfDay,
-        },
-        jobsite: jobsiteDayReport.jobsite,
-        approved: true,
-      });
-
-      resolve(dailyReports);
-    } catch (e) {
-      reject(e);
-    }
+  const dailyReports = await DailyReport.find({
+    date: {
+      $gte: startOfDay,
+      $lt: endOfDay,
+    },
+    jobsite: jobsiteDayReport.jobsite,
+    approved: true,
+    archived: false,
   });
+
+  return dailyReports;
 };
 
 /**
  * ----- Methods -----
  */
 
-const jobsite = (dailyReport: DailyReportDocument) => {
-  return new Promise<JobsiteDocument>(async (resolve, reject) => {
-    try {
-      if (!dailyReport.jobsite)
-        throw new Error(
-          "dailyReport.getJobsite: report does not contain a jobsite"
-        );
+const jobsite = async (
+  dailyReport: DailyReportDocument
+): Promise<JobsiteDocument> => {
+  if (!dailyReport.jobsite)
+    throw new Error(
+      "dailyReport.getJobsite: report does not contain a jobsite"
+    );
 
-      const jobsite = await Jobsite.getById(dailyReport.jobsite);
+  const jobsite = await Jobsite.getById(dailyReport.jobsite);
 
-      if (!jobsite)
-        throw new Error(
-          "dailyReport.getJobsite: unable to find linked jobsite"
-        );
+  if (!jobsite)
+    throw new Error("dailyReport.getJobsite: unable to find linked jobsite");
 
-      resolve(jobsite);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return jobsite;
 };
 
-const crew = (dailyReport: DailyReportDocument) => {
-  return new Promise<CrewDocument>(async (resolve, reject) => {
-    try {
-      if (!dailyReport.crew)
-        throw new Error("dailyReport.getCrew: report does not contain a crew");
+const crew = async (
+  dailyReport: DailyReportDocument
+): Promise<CrewDocument> => {
+  if (!dailyReport.crew)
+    throw new Error("dailyReport.getCrew: report does not contain a crew");
 
-      const crew = await Crew.getById(dailyReport.crew);
+  const crew = await Crew.getById(dailyReport.crew);
 
-      if (!crew)
-        throw new Error("dailyReport.getCrew: unable to find linked crew");
+  if (!crew) throw new Error("dailyReport.getCrew: unable to find linked crew");
 
-      resolve(crew);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return crew;
 };
 
-const employeeWork = (dailyReport: DailyReportDocument) => {
-  return new Promise<EmployeeWorkDocument[]>(async (resolve, reject) => {
-    try {
-      const employeeWork = await EmployeeWork.find({
-        _id: { $in: dailyReport.employeeWork },
-      });
-
-      resolve(employeeWork);
-    } catch (e) {
-      reject(e);
-    }
+const employeeWork = async (
+  dailyReport: DailyReportDocument
+): Promise<EmployeeWorkDocument[]> => {
+  const employeeWork = await EmployeeWork.find({
+    _id: { $in: dailyReport.employeeWork },
   });
+
+  return employeeWork;
 };
 
-const vehicleWork = (dailyReport: DailyReportDocument) => {
-  return new Promise<VehicleWorkDocument[]>(async (resolve, reject) => {
-    try {
-      const vehicleWork = await VehicleWork.find({
-        _id: { $in: dailyReport.vehicleWork },
-      });
-
-      resolve(vehicleWork);
-    } catch (e) {
-      reject(e);
-    }
+const vehicleWork = async (
+  dailyReport: DailyReportDocument
+): Promise<VehicleWorkDocument[]> => {
+  const vehicleWork = await VehicleWork.find({
+    _id: { $in: dailyReport.vehicleWork },
   });
+
+  return vehicleWork;
 };
 
-const production = (dailyReport: DailyReportDocument) => {
-  return new Promise<ProductionDocument[]>(async (resolve, reject) => {
-    try {
-      const production = await Production.find({
-        _id: { $in: dailyReport.production },
-      });
-
-      resolve(production);
-    } catch (e) {
-      reject(e);
-    }
+const production = async (
+  dailyReport: DailyReportDocument
+): Promise<ProductionDocument[]> => {
+  const production = await Production.find({
+    _id: { $in: dailyReport.production },
   });
+
+  return production;
 };
 
-const materialShipments = (dailyReport: DailyReportDocument) => {
-  return new Promise<MaterialShipmentDocument[]>(async (resolve, reject) => {
-    try {
-      const materialShipments = await MaterialShipment.find({
-        _id: { $in: dailyReport.materialShipment },
-      });
-
-      resolve(materialShipments);
-    } catch (e) {
-      reject(e);
-    }
+const materialShipments = async (
+  dailyReport: DailyReportDocument
+): Promise<MaterialShipmentDocument[]> => {
+  const materialShipments = await MaterialShipment.find({
+    _id: { $in: dailyReport.materialShipment },
   });
+
+  return materialShipments;
 };
 
-const reportNote = (dailyReport: DailyReportDocument) => {
-  return new Promise<ReportNoteDocument | null>(async (resolve, reject) => {
-    try {
-      if (dailyReport.reportNote) {
-        const reportNote = await ReportNote.getById(dailyReport.reportNote);
+const reportNote = async (
+  dailyReport: DailyReportDocument
+): Promise<ReportNoteDocument | null> => {
+  if (dailyReport.reportNote) {
+    const reportNote = await ReportNote.getById(dailyReport.reportNote);
 
-        resolve(reportNote);
-      } else resolve(null);
-    } catch (e) {
-      reject(e);
-    }
-  });
+    return reportNote;
+  } else return null;
 };
 
-const temporaryEmployees = (dailyReport: DailyReportDocument) => {
-  return new Promise<EmployeeDocument[]>(async (resolve, reject) => {
-    try {
-      const employees = await Employee.find({
-        _id: { $in: dailyReport.temporaryEmployees },
-      });
-
-      resolve(employees);
-    } catch (e) {
-      reject(e);
-    }
+const temporaryEmployees = async (
+  dailyReport: DailyReportDocument
+): Promise<EmployeeDocument[]> => {
+  const employees = await Employee.find({
+    _id: { $in: dailyReport.temporaryEmployees },
   });
+
+  return employees;
 };
 
-const temporaryVehicles = (dailyReport: DailyReportDocument) => {
-  return new Promise<VehicleDocument[]>(async (resolve, reject) => {
-    try {
-      const vehicles = await Vehicle.find({
-        _id: { $in: dailyReport.temporaryVehicles },
-      });
-
-      resolve(vehicles);
-    } catch (e) {
-      reject(e);
-    }
+const temporaryVehicles = async (
+  dailyReport: DailyReportDocument
+): Promise<VehicleDocument[]> => {
+  const vehicles = await Vehicle.find({
+    _id: { $in: dailyReport.temporaryVehicles },
   });
+
+  return vehicles;
 };
 
 export default {

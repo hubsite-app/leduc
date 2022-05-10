@@ -4,7 +4,10 @@ import Select, { ISelect } from "./Select";
 
 export interface IEmployeeWorkSelect extends Omit<ISelect, "options"> {}
 
-const EmployeeWorkSelect = ({ ...props }: IEmployeeWorkSelect) => {
+const EmployeeWorkSelect = ({
+  placeholder = "Select work",
+  ...props
+}: IEmployeeWorkSelect) => {
   /**
    * ------ Hook Initialization -----
    */
@@ -18,25 +21,23 @@ const EmployeeWorkSelect = ({ ...props }: IEmployeeWorkSelect) => {
    */
 
   const options: ISelect["options"] = React.useMemo(() => {
-    const workTypes = process.env.NEXT_PUBLIC_WORK_TYPE;
-    let work: string[] = [];
-    if (workTypes) work = process.env.NEXT_PUBLIC_WORK_TYPE!.split(",");
-
+    if (!system) return [];
     const options: ISelect["options"] = [];
-    for (let i = 0; i < work.length; i++) {
+
+    for (let i = 0; i < system.laborTypes.length; i++) {
       options.push({
-        title: work[i],
-        value: work[i],
+        title: system.laborTypes[i],
+        value: system.laborTypes[i],
       });
     }
     return options;
-  }, []);
+  }, [system]);
 
   /**
    * ----- Rendering -----
    */
 
-  return <Select options={options} {...props} />;
+  return <Select placeholder={placeholder} options={options} {...props} />;
 };
 
 export default EmployeeWorkSelect;

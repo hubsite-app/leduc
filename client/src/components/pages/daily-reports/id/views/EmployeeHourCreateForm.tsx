@@ -26,6 +26,7 @@ import dayjs from "dayjs";
 import isEmpty from "../../../../../utils/isEmpty";
 import EmployeeSearch from "../../../../Search/EmployeeSearch";
 import EmployeeWorkSelect from "../../../../Common/forms/EmployeeWorkSelect";
+import { useSystem } from "../../../../../contexts/System";
 
 type JobErrors = { jobTitle?: string; startTime?: string; endTime?: string };
 
@@ -43,15 +44,19 @@ const EmployeeHourCreateForm = ({
   dailyReport,
   closeForm,
 }: IEmployeeHourCreateForm) => {
+  const {
+    state: { system },
+  } = useSystem();
+
   const initialJob = React.useMemo(() => {
     const date = convertHourToDate(dayjs().format("HH:mm"), dailyReport.date);
 
     return {
-      jobTitle: "",
+      jobTitle: system?.laborTypes[0] || "",
       startTime: date,
       endTime: date,
     };
-  }, [dailyReport.date]);
+  }, [dailyReport.date, system?.laborTypes]);
 
   /**
    * ----- Hook Initialization -----

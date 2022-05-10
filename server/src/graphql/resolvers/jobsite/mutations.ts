@@ -8,6 +8,7 @@ import {
   Material,
 } from "@models";
 import { TruckingRateTypes } from "@typescript/jobsite";
+import { Id } from "@typescript/models";
 import { Field, InputType } from "type-graphql";
 import { InvoiceData } from "../invoice/mutations";
 import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
@@ -25,6 +26,12 @@ export class JobsiteCreateData {
 }
 
 @InputType()
+export class JobsiteUpdateData {
+  @Field({ nullable: false })
+  public name!: string;
+}
+
+@InputType()
 export class TruckingRateData extends RatesData {
   @Field(() => TruckingRateTypes, { nullable: false })
   public type!: TruckingRateTypes;
@@ -36,136 +43,138 @@ export class TruckingTypeRateData extends DefaultRateData {
   public rates!: TruckingRateData[];
 }
 
-const create = (data: JobsiteCreateData) => {
-  return new Promise<JobsiteDocument>(async (resolve, reject) => {
-    try {
-      const jobsite = await Jobsite.createDocument(data);
+const create = async (data: JobsiteCreateData): Promise<JobsiteDocument> => {
+  const jobsite = await Jobsite.createDocument(data);
 
-      await jobsite.save();
+  await jobsite.save();
 
-      resolve(jobsite);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return jobsite;
 };
 
-const addMaterial = (jobsiteId: string, data: JobsiteMaterialCreateData) => {
-  return new Promise<JobsiteDocument>(async (resolve, reject) => {
-    try {
-      const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;
+const update = async (
+  id: Id,
+  data: JobsiteUpdateData
+): Promise<JobsiteDocument> => {
+  const jobsite = await Jobsite.getById(id);
+  if (!jobsite) throw new Error("Unable to find jobsite with that Id");
 
-      const material = (await Material.getById(data.materialId, {
-        throwError: true,
-      }))!;
-      const supplier = (await Company.getById(data.supplierId, {
-        throwError: true,
-      }))!;
+  await jobsite.updateDocument(data);
 
-      const jobsiteMaterial = await JobsiteMaterial.createDocument({
-        ...data,
-        jobsite,
-        material,
-        supplier,
-      });
+  await jobsite.save();
 
-      await jobsiteMaterial.save();
-
-      await jobsite.save();
-
-      resolve(jobsite);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return jobsite;
 };
 
-const addExpenseInvoice = (jobsiteId: string, data: InvoiceData) => {
-  return new Promise<JobsiteDocument>(async (resolve, reject) => {
-    try {
-      const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;
+const addMaterial = async (
+  jobsiteId: string,
+  data: JobsiteMaterialCreateData
+): Promise<JobsiteDocument> => {
+  const jobsite = await Jobsite.getById(jobsiteId, { throwError: true });
+  if (!jobsite) throw new Error("Unable to find jobsite");
 
-      const company = (await Company.getById(data.companyId, {
-        throwError: true,
-      }))!;
-
-      const invoice = await Invoice.createDocument({
-        ...data,
-        company,
-      });
-
-      await jobsite.addExpenseInvoice(invoice);
-
-      await invoice.save();
-
-      await jobsite.save();
-
-      resolve(jobsite);
-    } catch (e) {
-      reject(e);
-    }
+  const material = await Material.getById(data.materialId, {
+    throwError: true,
   });
+  if (!material) throw new Error("Unable to find material");
+  const supplier = await Company.getById(data.supplierId, {
+    throwError: true,
+  });
+  if (!supplier) throw new Error("Unable to find supplier");
+
+  const jobsiteMaterial = await JobsiteMaterial.createDocument({
+    ...data,
+    jobsite,
+    material,
+    supplier,
+  });
+
+  await jobsiteMaterial.save();
+
+  await jobsite.save();
+
+  return jobsite;
 };
 
-const addRevenueInvoice = (jobsiteId: string, data: InvoiceData) => {
-  return new Promise<JobsiteDocument>(async (resolve, reject) => {
-    try {
-      const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;
+const addExpenseInvoice = async (
+  jobsiteId: string,
+  data: InvoiceData
+): Promise<JobsiteDocument> => {
+  const jobsite = await Jobsite.getById(jobsiteId, { throwError: true });
+  if (!jobsite) throw new Error("Unable to find jobsite");
 
-      const company = (await Company.getById(data.companyId, {
-        throwError: true,
-      }))!;
-
-      const invoice = await Invoice.createDocument({
-        ...data,
-        company,
-      });
-
-      await jobsite.addRevenueInvoice(invoice);
-
-      await invoice.save();
-
-      await jobsite.save();
-
-      resolve(jobsite);
-    } catch (e) {
-      reject(e);
-    }
+  const company = await Company.getById(data.companyId, {
+    throwError: true,
   });
+  if (!company) throw new Error("Unable to find company");
+
+  const invoice = await Invoice.createDocument({
+    ...data,
+    company,
+  });
+
+  await jobsite.addExpenseInvoice(invoice);
+
+  await invoice.save();
+
+  await jobsite.save();
+
+  return jobsite;
 };
 
-const setTruckingRates = (jobsiteId: string, data: TruckingTypeRateData[]) => {
-  return new Promise<JobsiteDocument>(async (resolve, reject) => {
-    try {
-      const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;
+const addRevenueInvoice = async (
+  jobsiteId: string,
+  data: InvoiceData
+): Promise<JobsiteDocument> => {
+  const jobsite = await Jobsite.getById(jobsiteId, { throwError: true });
+  if (!jobsite) throw new Error("Unable to find jobsite");
 
-      await jobsite.setTruckingRates(data);
-
-      await jobsite.save();
-
-      resolve(jobsite);
-    } catch (e) {
-      reject(e);
-    }
+  const company = await Company.getById(data.companyId, {
+    throwError: true,
   });
+  if (!company) throw new Error("Unable to find company");
+
+  const invoice = await Invoice.createDocument({
+    ...data,
+    company,
+  });
+
+  await jobsite.addRevenueInvoice(invoice);
+
+  await invoice.save();
+
+  await jobsite.save();
+
+  return jobsite;
 };
 
-const generateDayReports = (jobsiteId: string) => {
-  return new Promise<JobsiteDocument>(async (resolve, reject) => {
-    try {
-      const jobsite = (await Jobsite.getById(jobsiteId, { throwError: true }))!;
+const setTruckingRates = async (
+  jobsiteId: string,
+  data: TruckingTypeRateData[]
+): Promise<JobsiteDocument> => {
+  const jobsite = await Jobsite.getById(jobsiteId, { throwError: true });
+  if (!jobsite) throw new Error("Unable to find jobsite");
 
-      await jobsite.requestGenerateDayReports();
+  await jobsite.setTruckingRates(data);
 
-      resolve(jobsite);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  await jobsite.save();
+
+  return jobsite;
+};
+
+const generateDayReports = async (
+  jobsiteId: string
+): Promise<JobsiteDocument> => {
+  const jobsite = await Jobsite.getById(jobsiteId, { throwError: true });
+  if (!jobsite) throw new Error("Unable to find jobsite");
+
+  await jobsite.requestGenerateDayReports();
+
+  return jobsite;
 };
 
 export default {
   create,
+  update,
   addMaterial,
   addExpenseInvoice,
   addRevenueInvoice,

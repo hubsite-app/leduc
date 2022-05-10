@@ -91,7 +91,7 @@ export default function MyApolloProvider({
         },
       },
     }),
-    connectToDevTools: process.env.NODE_ENV === "development",
+    connectToDevTools: true,
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

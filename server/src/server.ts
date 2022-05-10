@@ -3,7 +3,7 @@ import path from "path";
 import * as dotenv from "dotenv";
 
 // Setup environment variables
-let production = process.env.NODE_ENV === "production";
+const production = process.env.NODE_ENV === "production";
 if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
   dotenv.config({ path: path.join(__dirname, "..", ".env.development") });
 }
@@ -11,15 +11,16 @@ if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
 import mongoose from "mongoose";
 import createApp from "./app";
 import updateDocuments from "@utils/updateDocuments";
-import saveAll, { SkipSave } from "@testing/saveAll";
 import { Company, System } from "@models";
 import elasticsearch from "./elasticsearch";
 import workers from "@workers";
 
+// import saveAll, { SkipSave } from "@testing/saveAll";
+
 const main = async () => {
   try {
-    if (process.env.NODE_ENV !== "test") {
-      await mongoose.connect(process.env.MONGO_URI!, {
+    if (process.env.NODE_ENV !== "test" && process.env.MONGO_URI) {
+      await mongoose.connect(process.env.MONGO_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
@@ -32,7 +33,7 @@ const main = async () => {
 
     await elasticsearch();
 
-    let port = process.env.PORT || 8080;
+    const port = process.env.PORT || 8080;
 
     const app = await createApp();
 
@@ -42,7 +43,7 @@ const main = async () => {
       if (production) {
         // await saveAll();
       } else {
-        // await saveAll();
+        // await saveAll([SkipSave.DailyReport]);
       }
 
       await System.validateSystem();
@@ -52,7 +53,7 @@ const main = async () => {
     }
 
     workers();
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
   }
 };

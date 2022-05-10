@@ -14,74 +14,52 @@ import populateOptions from "@utils/populateOptions";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   MaterialShipment: MaterialShipmentModel,
   id: Id,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<MaterialShipmentDocument | null>(
-    async (resolve, reject) => {
-      try {
-        options = populateOptions(options, byIdDefaultOptions);
+): Promise<MaterialShipmentDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-        const materialShipment = await MaterialShipment.findById(id);
+  const materialShipment = await MaterialShipment.findById(id);
 
-        if (!materialShipment && options.throwError) {
-          throw new Error(
-            "MaterialShipment.getById: unable to find material shipment"
-          );
-        }
+  if (!materialShipment && options.throwError) {
+    throw new Error(
+      "MaterialShipment.getById: unable to find material shipment"
+    );
+  }
 
-        resolve(materialShipment);
-      } catch (e) {
-        reject(e);
-      }
-    }
-  );
+  return materialShipment;
 };
 
-const vehicle = (materialShipment: MaterialShipmentDocument) => {
-  return new Promise<VehicleDocument | null>(async (resolve, reject) => {
-    try {
-      const vehicle = await Vehicle.getById(materialShipment.vehicle || "");
+const vehicle = async (
+  materialShipment: MaterialShipmentDocument
+): Promise<VehicleDocument | null> => {
+  const vehicle = await Vehicle.getById(materialShipment.vehicle || "");
 
-      resolve(vehicle);
-    } catch (e) {
-      reject(e);
-    }
+  return vehicle;
+};
+
+const dailyReport = async (
+  materialShipment: MaterialShipmentDocument
+): Promise<DailyReportDocument | null> => {
+  const dailyReport = await DailyReport.findOne({
+    materialShipment: materialShipment._id,
   });
+
+  return dailyReport;
 };
 
-const dailyReport = (materialShipment: MaterialShipmentDocument) => {
-  return new Promise<DailyReportDocument | null>(async (resolve, reject) => {
-    try {
-      const dailyReport = await DailyReport.findOne({
-        materialShipment: materialShipment._id,
-      });
+const jobsiteMaterial = async (
+  materialShipment: MaterialShipmentDocument
+): Promise<JobsiteMaterialDocument | null> => {
+  if (materialShipment.jobsiteMaterial) {
+    const jobsiteMaterial = await JobsiteMaterial.getById(
+      materialShipment.jobsiteMaterial?.toString() || ""
+    );
 
-      resolve(dailyReport);
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
-
-const jobsiteMaterial = (materialShipment: MaterialShipmentDocument) => {
-  return new Promise<JobsiteMaterialDocument | null>(
-    async (resolve, reject) => {
-      try {
-        if (materialShipment.jobsiteMaterial) {
-          const jobsiteMaterial = await JobsiteMaterial.getById(
-            materialShipment.jobsiteMaterial?.toString() || ""
-          );
-
-          resolve(jobsiteMaterial);
-        } else resolve(null);
-      } catch (e) {
-        reject(e);
-      }
-    }
-  );
+    return jobsiteMaterial;
+  } else return null;
 };
 
 export default {

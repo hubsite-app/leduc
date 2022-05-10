@@ -15,11 +15,13 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
+import { useRouter } from "next/router";
 import React from "react";
-import { FiEdit } from "react-icons/fi";
+import { FiArchive, FiEdit } from "react-icons/fi";
 import { useAuth } from "../../../../contexts/Auth";
 import { useDailyReportUpdateForm } from "../../../../forms/dailyReport";
 import {
+  useDailyReportArchiveMutation,
   useDailyReportFullQuery,
   useDailyReportJobCostApprovalUpdateMutation,
   useDailyReportPayrollCompleteUpdateMutation,
@@ -54,6 +56,8 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
     state: { user },
   } = useAuth();
 
+  const router = useRouter();
+
   const { data } = useDailyReportFullQuery({
     variables: {
       id,
@@ -73,6 +77,9 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
 
   const [updatePayrollComplete, { loading: payrollLoading }] =
     useDailyReportPayrollCompleteUpdateMutation();
+
+  const [archive, { loading: archiveLoading }] =
+    useDailyReportArchiveMutation();
 
   const { FormComponents } = useDailyReportUpdateForm();
 
@@ -236,14 +243,33 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                 minRole={UserRoles.ProjectManager}
                 otherCriteria={editPermission}
               >
-                <Box>
+                <Flex flexDir="column">
                   <IconButton
                     backgroundColor="transparent"
                     icon={<FiEdit />}
                     aria-label="edit"
                     onClick={onEditModalOpen}
                   />
-                </Box>
+                  <Permission>
+                    <IconButton
+                      backgroundColor="transparent"
+                      icon={<FiArchive />}
+                      aria-label="archive"
+                      isLoading={archiveLoading}
+                      onClick={() => {
+                        if (window.confirm("Are you sure?")) {
+                          archive({
+                            variables: {
+                              id: data.dailyReport._id,
+                            },
+                          }).then(() => {
+                            router.push("/");
+                          });
+                        }
+                      }}
+                    />
+                  </Permission>
+                </Flex>
               </Permission>
             </Flex>
           </Card>
@@ -329,6 +355,8 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
   }, [
     FormComponents,
     approvalLoading,
+    archive,
+    archiveLoading,
     canUpdateJobsite,
     data?.dailyReport,
     editModalOpen,
@@ -338,6 +366,7 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
     onEditModalClose,
     onEditModalOpen,
     payrollLoading,
+    router,
     toast,
     update,
     updateApproval,

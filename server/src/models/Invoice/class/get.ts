@@ -15,44 +15,36 @@ import populateOptions from "@utils/populateOptions";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   Invoice: InvoiceModel,
   id: Types.ObjectId | string,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<InvoiceDocument | null>(async (resolve, reject) => {
-    try {
-      options = populateOptions(options, byIdDefaultOptions);
+): Promise<InvoiceDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-      const invoice = await Invoice.findById(id);
+  const invoice = await Invoice.findById(id);
 
-      if (!invoice && options.throwError) {
-        throw new Error("Invoice.getById: unable to find invoice");
-      }
+  if (!invoice && options.throwError) {
+    throw new Error("Invoice.getById: unable to find invoice");
+  }
 
-      resolve(invoice);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return invoice;
 };
 
 /**
  * ----- Methods -----
  */
 
-const company = (invoice: InvoiceDocument) => {
-  return new Promise<CompanyDocument>(async (resolve, reject) => {
-    try {
-      const company = (await Company.getById(invoice.company!.toString(), {
-        throwError: true,
-      }))!;
+const company = async (invoice: InvoiceDocument): Promise<CompanyDocument> => {
+  if (!invoice.company) throw new Error("Invoice does not have a company");
 
-      resolve(company);
-    } catch (e) {
-      reject(e);
-    }
+  const company = await Company.getById(invoice.company.toString(), {
+    throwError: true,
   });
+
+  if (!company) throw new Error("Could not find invoice company");
+
+  return company;
 };
 
 export default {

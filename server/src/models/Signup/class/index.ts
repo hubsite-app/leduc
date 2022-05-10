@@ -1,6 +1,5 @@
 import { SignupDocument, SignupModel } from "@models";
 import { GetByIDOptions, Id } from "@typescript/models";
-import { IReportNoteCreate } from "@typescript/reportNote";
 import { ObjectType } from "type-graphql";
 import { SignupSchema } from "../schema";
 import create from "./create";

@@ -3,10 +3,17 @@ import useMounted from "../../hooks/useMounted";
 
 interface IInfiniteScroll {
   content: JSX.Element;
+  enabled: boolean;
+  loading: boolean;
   nextPage: () => void;
 }
 
-const InfiniteScroll = ({ content, nextPage }: IInfiniteScroll) => {
+const InfiniteScroll = ({
+  content,
+  enabled,
+  loading,
+  nextPage,
+}: IInfiniteScroll) => {
   /**
    * ----- Hook Initialization -----
    */
@@ -22,13 +29,15 @@ const InfiniteScroll = ({ content, nextPage }: IInfiniteScroll) => {
       if (hasMounted) {
         if (
           document.body.getBoundingClientRect().bottom - 1 <=
-          window.innerHeight
+            window.innerHeight &&
+          enabled &&
+          !loading
         ) {
           callback();
         }
       }
     },
-    [hasMounted]
+    [enabled, hasMounted, loading]
   );
 
   /**
@@ -38,10 +47,16 @@ const InfiniteScroll = ({ content, nextPage }: IInfiniteScroll) => {
   // handle loading on scroll
   React.useEffect(() => {
     if (hasMounted) {
-      detectBottom(nextPage);
-      window.onscroll = () => detectBottom(nextPage);
+      const handler = () => detectBottom(nextPage);
+
+      window.removeEventListener("scroll", handler);
+
+      window.addEventListener("scroll", handler);
+      return () => {
+        window.removeEventListener("scroll", handler);
+      };
     }
-  });
+  }, [detectBottom, hasMounted, nextPage]);
 
   /**
    * ----- Rendering -----

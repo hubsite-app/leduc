@@ -9,6 +9,10 @@ export interface IJobsiteCreate {
   description?: string;
 }
 
+export interface IJobsiteUpdate {
+  name: string;
+}
+
 export interface IJobsiteSearchObject {
   score: number;
   jobsite: JobsiteDocument;

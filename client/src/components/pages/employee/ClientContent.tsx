@@ -1,8 +1,17 @@
 import React from "react";
 
-import { Box, Button, Heading, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  IconButton,
+  Text,
+  Tooltip,
+} from "@chakra-ui/react";
 import {
   EmployeeFullDocument,
+  useEmployeeArchiveMutation,
   useEmployeeFullQuery,
   useSignupCreateMutation,
 } from "../../../generated/graphql";
@@ -14,6 +23,8 @@ import EmployeeRates from "./views/Rates";
 import createLink from "../../../utils/createLink";
 import Permission from "../../Common/Permission";
 import UserUpdateRole from "../../Forms/User/Role";
+import { FiArchive } from "react-icons/fi";
+import { useRouter } from "next/router";
 
 interface IEmployeeClientContent {
   id: string;
@@ -24,6 +35,8 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
    * ----- Hook Initialization -----
    */
 
+  const router = useRouter();
+
   const { data } = useEmployeeFullQuery({
     variables: {
       id,
@@ -33,6 +46,8 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
   const [createSignup, { loading: signupLoading }] = useSignupCreateMutation({
     refetchQueries: [EmployeeFullDocument],
   });
+
+  const [archive, { loading: archiveLoading }] = useEmployeeArchiveMutation();
 
   /**
    * ----- Rendering -----
@@ -90,7 +105,30 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
       return (
         <Box>
           <Card>
-            <Heading size="md">User Info</Heading>
+            <Flex flexDir="row" justifyContent="space-between">
+              <Heading size="md">User Info</Heading>
+              <Permission>
+                <Tooltip label="Archive">
+                  <IconButton
+                    icon={<FiArchive />}
+                    aria-label="archive"
+                    backgroundColor="transparent"
+                    isLoading={archiveLoading}
+                    onClick={() => {
+                      if (window.confirm("Are you sure?")) {
+                        archive({
+                          variables: {
+                            id: employee._id,
+                          },
+                        }).then(() => {
+                          router.back();
+                        });
+                      }
+                    }}
+                  />
+                </Tooltip>
+              </Permission>
+            </Flex>
             {userContent}
           </Card>
           <Permission>
@@ -116,7 +154,14 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
         </Box>
       );
     } else return <Loading />;
-  }, [createSignup, data?.employee, signupLoading]);
+  }, [
+    archive,
+    archiveLoading,
+    createSignup,
+    data?.employee,
+    router,
+    signupLoading,
+  ]);
 };
 
 export default EmployeeClientContent;

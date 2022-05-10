@@ -1,9 +1,9 @@
 const validateMongooseArrayLength = (
-  message: string = "must have at least one",
-  min: number = 1
+  message = "must have at least one",
+  min = 1
 ) => {
   return {
-    validator: (val: any) => val.length >= min,
+    validator: (val: unknown[]) => val.length >= min,
     message,
   };
 };

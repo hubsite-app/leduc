@@ -2,21 +2,14 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 
 import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 import { disconnectAndStopServer, prepareDatabase } from "@testing/jestDB";
-import { Employee, Vehicle } from "@models";
-import { IEmployeeCreate } from "@typescript/employee";
+import { Vehicle } from "@models";
 import { IVehicleCreate } from "@typescript/vehicle";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
-const setupDatabase = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 beforeAll(async () => {
@@ -63,8 +56,8 @@ describe("Vehicle Class", () => {
 
           try {
             await Vehicle.createDocument(data);
-          } catch (e: any) {
-            expect(e.message).toBe(
+          } catch (e) {
+            expect((e as Error).message).toBe(
               "Vehicle.createDocument: a vehicle already exists with this code"
             );
           }

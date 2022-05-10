@@ -8,6 +8,7 @@ import get from "./get";
 import { IVehicleCreate, IVehicleUpdate } from "@typescript/vehicle";
 import create from "./create";
 import update from "./update";
+import reports from "./reports";
 
 @ObjectType()
 export class VehicleClass extends VehicleSchema {
@@ -61,5 +62,17 @@ export class VehicleClass extends VehicleSchema {
 
   public async updateRates(this: VehicleDocument, data: IRatesData[]) {
     return update.rates(this, data);
+  }
+
+  public async archive(this: VehicleDocument) {
+    return update.archive(this);
+  }
+
+  /**
+   * ----- Reports -----
+   */
+
+  public async requestReportUpdate(this: VehicleDocument) {
+    return reports.requestUpdate(this);
   }
 }

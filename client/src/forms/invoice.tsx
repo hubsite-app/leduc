@@ -110,8 +110,7 @@ export const useInvoiceForm = (options?: UseFormProps) => {
                 errorMessage={fieldState.error?.message}
                 label="Cost"
                 isDisabled={isLoading}
-                format={(val) => `$${val}`}
-                parse={(val) => val.replace(/[$]/, "")}
+                inputLeftAddon="$"
               />
             )}
           />

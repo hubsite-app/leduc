@@ -30,63 +30,74 @@ export class VehicleUpdateData {
   public vehicleType!: string;
 }
 
-const create = (data: VehicleCreateData, crewId?: Id) => {
-  return new Promise<VehicleDocument>(async (resolve, reject) => {
-    try {
-      const vehicle = await Vehicle.createDocument(data);
+const create = async (
+  data: VehicleCreateData,
+  crewId?: Id
+): Promise<VehicleDocument> => {
+  const vehicle = await Vehicle.createDocument(data);
 
-      let crew: CrewDocument | undefined;
-      if (crewId) {
-        crew = (await Crew.getById(crewId, { throwError: true }))!;
+  let crew: CrewDocument | null = null;
+  if (crewId) {
+    crew = await Crew.getById(crewId, { throwError: true });
 
-        await crew.addVehicle(vehicle._id);
-      }
+    if (!crew) throw new Error("Unable to find crew");
 
-      await vehicle.save();
+    await crew.addVehicle(vehicle._id);
+  }
 
-      if (crew) await crew.save();
+  await vehicle.save();
 
-      resolve(vehicle);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  if (crew) await crew.save();
+
+  return vehicle;
 };
 
-const update = (id: Id, data: VehicleUpdateData) => {
-  return new Promise<VehicleDocument>(async (resolve, reject) => {
-    try {
-      const vehicle = (await Vehicle.getById(id, { throwError: true }))!;
+const update = async (
+  id: Id,
+  data: VehicleUpdateData
+): Promise<VehicleDocument> => {
+  const vehicle = await Vehicle.getById(id, { throwError: true });
+  if (!vehicle) throw new Error("Unable to find vehicle");
 
-      await vehicle.updateDocument(data);
+  await vehicle.updateDocument(data);
 
-      await vehicle.save();
+  await vehicle.save();
 
-      resolve(vehicle);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return vehicle;
 };
 
-const updateRates = (id: string, data: RatesData[]) => {
-  return new Promise<VehicleDocument>(async (resolve, reject) => {
-    try {
-      const vehicle = (await Vehicle.getById(id, { throwError: true }))!;
+const updateRates = async (
+  id: string,
+  data: RatesData[]
+): Promise<VehicleDocument> => {
+  const vehicle = await Vehicle.getById(id, { throwError: true });
+  if (!vehicle) throw new Error("Unable to find vehicle");
 
-      await vehicle.updateRates(data);
+  await vehicle.updateRates(data);
 
-      await vehicle.save();
+  await vehicle.save();
 
-      resolve(vehicle);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return vehicle;
+};
+
+const archive = async (id: Id) => {
+  const vehicle = await Vehicle.getById(id);
+  if (!vehicle) throw new Error("Unable to find vehicle");
+
+  const { crews } = await vehicle.archive();
+
+  await vehicle.save();
+
+  for (let i = 0; i < crews.length; i++) {
+    crews[i].save();
+  }
+
+  return vehicle;
 };
 
 export default {
   create,
   update,
   updateRates,
+  archive,
 };

@@ -1,18 +1,15 @@
 import { CrewDocument, CrewModel } from "@models";
 import { ICrewCreate } from "@typescript/crew";
 
-const document = (Crew: CrewModel, data: ICrewCreate) => {
-  return new Promise<CrewDocument>(async (resolve, reject) => {
-    try {
-      const crew = new Crew({
-        ...data,
-      });
-
-      resolve(crew);
-    } catch (e) {
-      reject(e);
-    }
+const document = async (
+  Crew: CrewModel,
+  data: ICrewCreate
+): Promise<CrewDocument> => {
+  const crew = new Crew({
+    ...data,
   });
+
+  return crew;
 };
 
 export default {

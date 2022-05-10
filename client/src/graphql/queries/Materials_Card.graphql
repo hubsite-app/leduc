@@ -1,4 +1,4 @@
-query Materials($options: ListOptionData) {
+query MaterialsCard($options: ListOptionData) {
   materials(options: $options) {
     ...MaterialCardSnippet
   }

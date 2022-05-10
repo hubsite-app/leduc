@@ -1,5 +1,6 @@
 fragment VehicleFullSnippet on VehicleClass {
   ...VehicleCardSnippet
+  currentRate
   crews {
     ...CrewCardSnippet
   }

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { toast, useToast } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import { useMaterialCreateForm } from "../../../forms/material";
 import {
   MaterialCreateData,

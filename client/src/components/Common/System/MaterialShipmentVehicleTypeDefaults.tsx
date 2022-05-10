@@ -5,6 +5,7 @@ import { SystemSnippetFragment } from "../../../generated/graphql";
 import SystemMaterialShipmentVehicleTypeUpdate from "../../Forms/System/SystemMaterialShipmentVehicleTypeUpdate";
 import Card from "../Card";
 import DefaultRatesTable from "../DefaultRatesTable";
+import InfoTooltip from "../Info";
 import Permission from "../Permission";
 
 interface ISystemMaterialShipmentVehicleTypeDefaults {
@@ -29,16 +30,24 @@ const SystemMaterialShipmentVehicleTypeDefaults = ({
   return (
     <Card>
       <Flex flexDir="row" justifyContent="space-between">
-        <Heading
-          my="auto"
-          ml={2}
-          size="md"
-          w="100%"
-          cursor="pointer"
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          Material Shipment Trucking Rates
-        </Heading>
+        <Flex flexDir="row">
+          <Heading
+            my="auto"
+            ml={2}
+            size="md"
+            w="100%"
+            cursor="pointer"
+            onClick={() => setCollapsed(!collapsed)}
+          >
+            Material Shipment Trucking Rates
+          </Heading>
+          <InfoTooltip
+            m="auto"
+            mx={1}
+            description="The default values for Jobsite trucking rates"
+          />
+        </Flex>
+
         <Permission>
           <IconButton
             aria-label="edit"

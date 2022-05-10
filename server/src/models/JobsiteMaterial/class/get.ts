@@ -20,112 +20,99 @@ import populateOptions from "@utils/populateOptions";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   JobsiteMaterial: JobsiteMaterialModel,
   id: Id,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<JobsiteMaterialDocument | null>(
-    async (resolve, reject) => {
-      try {
-        options = populateOptions(options, byIdDefaultOptions);
+): Promise<JobsiteMaterialDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-        const jobsiteMaterial = await JobsiteMaterial.findById(id);
+  const jobsiteMaterial = await JobsiteMaterial.findById(id);
 
-        if (!jobsiteMaterial && options.throwError) {
-          throw new Error(
-            "JobsiteMaterial.getById: unable to find jobsiteMaterial"
-          );
-        }
+  if (!jobsiteMaterial && options.throwError) {
+    throw new Error("JobsiteMaterial.getById: unable to find jobsiteMaterial");
+  }
 
-        resolve(jobsiteMaterial);
-      } catch (e) {
-        reject(e);
-      }
-    }
-  );
+  return jobsiteMaterial;
+};
+
+const byMaterial = async (
+  JobsiteMaterial: JobsiteMaterialModel,
+  materialId: Id
+): Promise<JobsiteMaterialDocument[]> => {
+  return await JobsiteMaterial.find({
+    material: materialId,
+  });
 };
 
 /**
  * ----- Methods -----
  */
 
-const material = (jobsiteMaterial: JobsiteMaterialDocument) => {
-  return new Promise<MaterialDocument>(async (resolve, reject) => {
-    try {
-      const material = (await Material.getById(
-        jobsiteMaterial.material!.toString(),
-        { throwError: true }
-      ))!;
+const material = async (
+  jobsiteMaterial: JobsiteMaterialDocument
+): Promise<MaterialDocument> => {
+  const material = await Material.getById(
+    jobsiteMaterial.material?.toString() || "",
+    { throwError: true }
+  );
 
-      resolve(material);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  if (!material) throw new Error("Could not find jobsite materials material");
+
+  return material;
 };
 
-const supplier = (jobsiteMaterial: JobsiteMaterialDocument) => {
-  return new Promise<CompanyDocument>(async (resolve, reject) => {
-    try {
-      const company = (await Company.getById(
-        jobsiteMaterial.supplier!.toString(),
-        { throwError: true }
-      ))!;
-
-      resolve(company);
-    } catch (e) {
-      reject(e);
+const supplier = async (
+  jobsiteMaterial: JobsiteMaterialDocument
+): Promise<CompanyDocument> => {
+  const company = await Company.getById(
+    jobsiteMaterial.supplier?.toString() || "",
+    {
+      throwError: true,
     }
-  });
+  );
+
+  if (!company) throw new Error("Could not find jobsite materials supplier");
+
+  return company;
 };
 
-const jobsite = (jobsiteMaterial: JobsiteMaterialDocument) => {
-  return new Promise<JobsiteDocument>(async (resolve, reject) => {
-    try {
-      const jobsite = await Jobsite.findOne({ materials: jobsiteMaterial._id });
+const jobsite = async (
+  jobsiteMaterial: JobsiteMaterialDocument
+): Promise<JobsiteDocument> => {
+  const jobsite = await Jobsite.findOne({ materials: jobsiteMaterial._id });
 
-      if (!jobsite) throw new Error("This material does not have a jobsite");
+  if (!jobsite) throw new Error("This material does not have a jobsite");
 
-      resolve(jobsite);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return jobsite;
 };
 
-const completedQuantity = (jobsiteMaterial: JobsiteMaterialDocument) => {
-  return new Promise<number>(async (resolve, reject) => {
-    try {
-      const materialShipments = await MaterialShipment.find({
-        jobsiteMaterial: jobsiteMaterial._id,
-        noJobsiteMaterial: false,
-      });
-
-      let quantity = 0;
-      for (let i = 0; i < materialShipments.length; i++) {
-        quantity += materialShipments[i].quantity;
-      }
-
-      resolve(quantity);
-    } catch (e) {
-      reject(e);
-    }
+const completedQuantity = async (
+  jobsiteMaterial: JobsiteMaterialDocument
+): Promise<number> => {
+  const materialShipments = await MaterialShipment.find({
+    jobsiteMaterial: jobsiteMaterial._id,
+    noJobsiteMaterial: false,
   });
+
+  let quantity = 0;
+  for (let i = 0; i < materialShipments.length; i++) {
+    quantity += materialShipments[i].quantity;
+  }
+
+  return quantity;
 };
 
-const rateForTime = (jobsiteMaterial: JobsiteMaterialDocument, date: Date) => {
-  return new Promise<number>(async (resolve, reject) => {
-    try {
-      resolve(getRateForTime(jobsiteMaterial.rates, date));
-    } catch (e) {
-      reject(e);
-    }
-  });
+const rateForTime = async (
+  jobsiteMaterial: JobsiteMaterialDocument,
+  date: Date
+): Promise<number> => {
+  return getRateForTime(jobsiteMaterial.rates, date);
 };
 
 export default {
   byId,
+  byMaterial,
   material,
   supplier,
   jobsite,

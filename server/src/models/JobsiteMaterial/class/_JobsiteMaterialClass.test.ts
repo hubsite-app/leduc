@@ -6,16 +6,10 @@ import { JobsiteMaterial } from "@models";
 import { IJobsiteMaterialCreate } from "@typescript/jobsiteMaterial";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
-const setupDatabase = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 beforeAll(async () => {
@@ -130,8 +124,8 @@ describe("Jobsite Material Class", () => {
 
           try {
             await JobsiteMaterial.createDocument(data);
-          } catch (e: any) {
-            expect(e.message).toBe("Must provide rates");
+          } catch (e) {
+            expect((e as Error).message).toBe("Must provide rates");
           }
         });
 
@@ -151,8 +145,8 @@ describe("Jobsite Material Class", () => {
 
           try {
             await JobsiteMaterial.createDocument(data);
-          } catch (e: any) {
-            expect(e.message).toBe("Must provide delivered rates");
+          } catch (e) {
+            expect((e as Error).message).toBe("Must provide delivered rates");
           }
         });
       });

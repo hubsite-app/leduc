@@ -8,7 +8,6 @@ import {
   SignupClass,
   UserClass,
 } from "@models";
-import pubsub from "@pubsub";
 import { Id } from "@typescript/models";
 import {
   Arg,
@@ -16,9 +15,6 @@ import {
   FieldResolver,
   ID,
   Mutation,
-  Publisher,
-  PubSub,
-  PubSubEngine,
   Query,
   Resolver,
   Root,
@@ -95,5 +91,11 @@ export default class EmployeeResolver {
     @Arg("data", () => [RatesData]) data: RatesData[]
   ) {
     return mutations.updateRates(id, data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => EmployeeClass)
+  async employeeArchive(@Arg("id", () => ID) id: Id) {
+    return mutations.archive(id);
   }
 }

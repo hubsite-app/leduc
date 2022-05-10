@@ -17,7 +17,6 @@ export class MaterialSchema {
   @prop({
     required: true,
     trim: true,
-    immutable: true,
     unique: true,
   })
   public name!: string;

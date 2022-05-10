@@ -16,6 +16,6 @@ export default class JobsiteYearMasterReportItemResolver {
   async report(
     @Root() jobsiteYearMasterReportItem: JobsiteYearMasterReportItemDocument
   ) {
-    return JobsiteYearReport.getById(jobsiteYearMasterReportItem.report!);
+    return JobsiteYearReport.getById(jobsiteYearMasterReportItem.report || "");
   }
 }

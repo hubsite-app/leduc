@@ -1,40 +1,36 @@
-import { logger } from "@logger";
 import { JobsiteDayReport } from "@models";
 import { UpdateStatus } from "@typescript/models";
+import errorHandler from "@utils/errorHandler";
 
-const JobsiteDayReportUpdateHelper = () => {
-  return new Promise<void>(async (resolve, reject) => {
+const JobsiteDayReportUpdateHelper = async () => {
+  const jobsiteDayReports = await JobsiteDayReport.getByUpdateRequested();
+
+  // Set all to pending
+  for (let i = 0; i < jobsiteDayReports.length; i++) {
     try {
-      const jobsiteDayReports = await JobsiteDayReport.getByUpdateRequested();
-
-      // Set all to pending
-      for (let i = 0; i < jobsiteDayReports.length; i++) {
-        try {
-          jobsiteDayReports[i].update.status = UpdateStatus.Pending;
-          await jobsiteDayReports[i].save();
-        } catch (e: any) {
-          logger.error(
-            `Jobsite day report ${jobsiteDayReports[i]._id} worker error: ${e.message}`
-          );
-        }
-      }
-
-      // Update
-      for (let i = 0; i < jobsiteDayReports.length; i++) {
-        try {
-          await jobsiteDayReports[i].updateAndSaveDocument();
-        } catch (e: any) {
-          logger.error(
-            `Jobsite day report ${jobsiteDayReports[i]._id} pending worker error: ${e.message}`
-          );
-        }
-      }
-
-      resolve();
+      jobsiteDayReports[i].update.status = UpdateStatus.Pending;
+      await jobsiteDayReports[i].save();
     } catch (e) {
-      reject(e);
+      errorHandler(
+        `Jobsite day report ${jobsiteDayReports[i]._id} worker error`,
+        e
+      );
     }
-  });
+  }
+
+  // Update
+  for (let i = 0; i < jobsiteDayReports.length; i++) {
+    try {
+      await jobsiteDayReports[i].updateAndSaveDocument();
+    } catch (e) {
+      errorHandler(
+        `Jobsite day report ${jobsiteDayReports[i]._id} worker error`,
+        e
+      );
+    }
+  }
+
+  return;
 };
 
 export default JobsiteDayReportUpdateHelper;

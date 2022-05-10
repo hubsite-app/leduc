@@ -30,6 +30,7 @@ import populateOptions from "@utils/populateOptions";
 import { IJobsiteSearchObject } from "@typescript/jobsite";
 import ElasticsearchClient from "@elasticsearch/client";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
+import { IHit } from "@typescript/elasticsearch";
 
 /**
  * ----- Static Methods -----
@@ -38,257 +39,200 @@ import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   Jobsite: JobsiteModel,
   id: Types.ObjectId | string,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<JobsiteDocument | null>(async (resolve, reject) => {
-    try {
-      options = populateOptions(options, byIdDefaultOptions);
+): Promise<JobsiteDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-      const jobsite = await Jobsite.findById(id);
+  const jobsite = await Jobsite.findById(id);
 
-      if (!jobsite && options.throwError) {
-        throw new Error("Jobsite.getById: unable to find jobsite");
-      }
+  if (!jobsite && options.throwError) {
+    throw new Error("Jobsite.getById: unable to find jobsite");
+  }
 
-      resolve(jobsite);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return jobsite;
 };
 
-const search = (
+const search = async (
   Jobsite: JobsiteModel,
   searchString: string,
   options?: ISearchOptions
-) => {
-  return new Promise<IJobsiteSearchObject[]>(async (resolve, reject) => {
-    try {
-      const res = await ElasticsearchClient.search({
-        index: ElasticSearchIndices.Jobsite,
-        body: {
-          query: {
-            multi_match: {
-              query: searchString.toLowerCase(),
-              fuzziness: "AUTO",
-              fields: ["name", "jobcode"],
-            },
-          },
+): Promise<IJobsiteSearchObject[]> => {
+  const res = await ElasticsearchClient.search({
+    index: ElasticSearchIndices.Jobsite,
+    body: {
+      query: {
+        multi_match: {
+          query: searchString.toLowerCase(),
+          fuzziness: "AUTO",
+          fields: ["name", "jobcode"],
         },
-        size: options?.limit,
-      });
-
-      let jobsiteObjects: { id: string; score: number }[] =
-        res.body.hits.hits.map((item: any) => {
-          return {
-            id: item._id,
-            score: item._score,
-          };
-        });
-
-      // Filter out blacklisted ids
-      if (options?.blacklistedIds) {
-        jobsiteObjects = jobsiteObjects.filter(
-          (object) => !options.blacklistedIds?.includes(object.id)
-        );
-      }
-
-      const jobsites: IJobsiteSearchObject[] = [];
-      for (let i = 0; i < jobsiteObjects.length; i++) {
-        const jobsite = await Jobsite.getById(jobsiteObjects[i].id);
-        if (jobsite)
-          jobsites.push({
-            jobsite,
-            score: jobsiteObjects[i].score,
-          });
-      }
-
-      resolve(jobsites);
-    } catch (e) {
-      reject(e);
-    }
+      },
+    },
+    size: options?.limit,
   });
+
+  let jobsiteObjects: { id: string; score: number }[] = res.body.hits.hits.map(
+    (item: IHit) => {
+      return {
+        id: item._id,
+        score: item._score,
+      };
+    }
+  );
+
+  // Filter out blacklisted ids
+  if (options?.blacklistedIds) {
+    jobsiteObjects = jobsiteObjects.filter(
+      (object) => !options.blacklistedIds?.includes(object.id)
+    );
+  }
+
+  const jobsites: IJobsiteSearchObject[] = [];
+  for (let i = 0; i < jobsiteObjects.length; i++) {
+    const jobsite = await Jobsite.getById(jobsiteObjects[i].id);
+    if (jobsite)
+      jobsites.push({
+        jobsite,
+        score: jobsiteObjects[i].score,
+      });
+  }
+
+  return jobsites;
 };
 
 const listDefaultOptions: IListOptions<JobsiteDocument> = {
   pageLimit: 25,
   offset: 0,
 };
-const list = (
+const list = async (
   Jobsite: JobsiteModel,
   options?: IListOptions<JobsiteDocument>
-) => {
-  return new Promise<JobsiteDocument[]>(async (resolve, reject) => {
-    try {
-      options = populateOptions(options, listDefaultOptions);
+): Promise<JobsiteDocument[]> => {
+  options = populateOptions(options, listDefaultOptions);
 
-      const jobsite = await Jobsite.find(options?.query || {}, undefined, {
-        limit: options?.pageLimit,
-        skip: options?.offset,
-        sort: {
-          date: -1,
-        },
-      }).sort({ jobcode: "desc" });
+  const jobsite = await Jobsite.find(options?.query || {}, undefined, {
+    limit: options?.pageLimit,
+    skip: options?.offset,
+    sort: {
+      date: -1,
+    },
+  }).sort({ jobcode: "desc" });
 
-      resolve(jobsite);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return jobsite;
 };
 
-const byCrew = (Jobsite: JobsiteModel, crew: CrewDocument) => {
-  return new Promise<JobsiteDocument[]>(async (resolve, reject) => {
-    try {
-      const jobsites = await Jobsite.find({ crews: crew._id });
+const byCrew = async (
+  Jobsite: JobsiteModel,
+  crew: CrewDocument
+): Promise<JobsiteDocument[]> => {
+  const jobsites = await Jobsite.find({ crews: crew._id });
 
-      resolve(jobsites);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return jobsites;
 };
 
 /**
  * ----- Methods -----
  */
 
-const crews = (jobsite: JobsiteDocument) => {
-  return new Promise<CrewDocument[]>(async (resolve, reject) => {
-    try {
-      const crews = await Crew.find({ _id: { $in: jobsite.crews } });
+const crews = async (jobsite: JobsiteDocument): Promise<CrewDocument[]> => {
+  const crews = await Crew.find({ _id: { $in: jobsite.crews } });
 
-      resolve(crews);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return crews;
 };
 
-const dailyReports = (jobsite: JobsiteDocument) => {
-  return new Promise<DailyReportDocument[]>(async (resolve, reject) => {
-    try {
-      const dailyReports = await DailyReport.find({
-        jobsite: jobsite._id,
-      }).sort({ date: -1 });
+const dailyReports = async (
+  jobsite: JobsiteDocument
+): Promise<DailyReportDocument[]> => {
+  const dailyReports = await DailyReport.find({
+    jobsite: jobsite._id,
+    archived: false,
+  }).sort({ date: -1 });
 
-      resolve(dailyReports);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return dailyReports;
 };
 
-const materials = (jobsite: JobsiteDocument) => {
-  return new Promise<JobsiteMaterialDocument[]>(async (resolve, reject) => {
-    try {
-      const jobsiteMaterials = await JobsiteMaterial.find({
-        _id: { $in: jobsite.materials },
-      });
-
-      resolve(jobsiteMaterials);
-    } catch (e) {
-      reject(e);
-    }
+const materials = async (
+  jobsite: JobsiteDocument
+): Promise<JobsiteMaterialDocument[]> => {
+  const jobsiteMaterials = await JobsiteMaterial.find({
+    _id: { $in: jobsite.materials },
   });
+
+  return jobsiteMaterials;
 };
 
-const expenseInvoices = (jobsite: JobsiteDocument) => {
-  return new Promise<InvoiceDocument[]>(async (resolve, reject) => {
-    try {
-      const invoices = await Invoice.find({
-        _id: { $in: jobsite.expenseInvoices },
-      });
-
-      resolve(invoices);
-    } catch (e) {
-      reject(e);
-    }
+const expenseInvoices = async (
+  jobsite: JobsiteDocument
+): Promise<InvoiceDocument[]> => {
+  const invoices = await Invoice.find({
+    _id: { $in: jobsite.expenseInvoices },
   });
+
+  return invoices;
 };
 
-const revenueInvoices = (jobsite: JobsiteDocument) => {
-  return new Promise<InvoiceDocument[]>(async (resolve, reject) => {
-    try {
-      const invoices = await Invoice.find({
-        _id: { $in: jobsite.revenueInvoices },
-      });
-
-      resolve(invoices);
-    } catch (e) {
-      reject(e);
-    }
+const revenueInvoices = async (
+  jobsite: JobsiteDocument
+): Promise<InvoiceDocument[]> => {
+  const invoices = await Invoice.find({
+    _id: { $in: jobsite.revenueInvoices },
   });
+
+  return invoices;
 };
 
-const nonCostedMaterialShipments = (jobsite: JobsiteDocument) => {
-  return new Promise<MaterialShipmentDocument[]>(async (resolve, reject) => {
-    try {
-      const dailyReports = await jobsite.getDailyReports();
+const nonCostedMaterialShipments = async (
+  jobsite: JobsiteDocument
+): Promise<MaterialShipmentDocument[]> => {
+  const dailyReports = await jobsite.getDailyReports();
 
-      const materialShipmentIds: Id[] = [];
-      for (let i = 0; i < dailyReports.length; i++) {
-        materialShipmentIds.push.apply(
-          materialShipmentIds,
-          dailyReports[i].materialShipment.map((id) => id!.toString())
-        );
-      }
+  let materialShipmentIds: Id[] = [];
+  for (let i = 0; i < dailyReports.length; i++) {
+    materialShipmentIds = [
+      ...materialShipmentIds,
+      ...dailyReports[i].materialShipment.map((id) => id?.toString() || ""),
+    ];
+  }
 
-      const materialShipments = await MaterialShipment.find({
-        _id: { $in: materialShipmentIds },
-        noJobsiteMaterial: true,
-      });
-
-      resolve(materialShipments);
-    } catch (e) {
-      reject(e);
-    }
+  const materialShipments = await MaterialShipment.find({
+    _id: { $in: materialShipmentIds },
+    noJobsiteMaterial: true,
   });
+
+  return materialShipments;
 };
 
-const dayReports = (jobsite: JobsiteDocument) => {
-  return new Promise<JobsiteDayReportDocument[]>(async (resolve, reject) => {
-    try {
-      const jobsiteDayReports = await JobsiteDayReport.find({
-        jobsite: jobsite._id,
-      });
-
-      resolve(jobsiteDayReports);
-    } catch (e) {
-      reject(e);
-    }
+const dayReports = async (
+  jobsite: JobsiteDocument
+): Promise<JobsiteDayReportDocument[]> => {
+  const jobsiteDayReports = await JobsiteDayReport.find({
+    jobsite: jobsite._id,
   });
+
+  return jobsiteDayReports;
 };
 
-const monthReports = (jobsite: JobsiteDocument) => {
-  return new Promise<JobsiteMonthReportDocument[]>(async (resolve, reject) => {
-    try {
-      const jobsiteMonthReports = await JobsiteMonthReport.find({
-        jobsite: jobsite._id,
-      });
-
-      resolve(jobsiteMonthReports);
-    } catch (e) {
-      reject(e);
-    }
+const monthReports = async (
+  jobsite: JobsiteDocument
+): Promise<JobsiteMonthReportDocument[]> => {
+  const jobsiteMonthReports = await JobsiteMonthReport.find({
+    jobsite: jobsite._id,
   });
+
+  return jobsiteMonthReports;
 };
 
-const yearReports = (jobsite: JobsiteDocument) => {
-  return new Promise<JobsiteYearReportDocument[]>(async (resolve, reject) => {
-    try {
-      const jobsiteYearReports = await JobsiteYearReport.find({
-        jobsite: jobsite._id,
-      });
-
-      resolve(jobsiteYearReports);
-    } catch (e) {
-      reject(e);
-    }
+const yearReports = async (
+  jobsite: JobsiteDocument
+): Promise<JobsiteYearReportDocument[]> => {
+  const jobsiteYearReports = await JobsiteYearReport.find({
+    jobsite: jobsite._id,
   });
+
+  return jobsiteYearReports;
 };
 
 export default {

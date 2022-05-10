@@ -4,45 +4,33 @@ import { prepareDatabase, disconnectAndStopServer } from "@testing/jestDB";
 import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 
 import createApp from "../../app";
-import _ids from "@testing/_ids";
 import jestLogin from "@testing/jestLogin";
-import { JobsiteMaterialCreateData } from "@graphql/resolvers/jobsiteMaterial/mutations";
-import { Invoice, Jobsite, JobsiteMaterial, System } from "@models";
-import { InvoiceData } from "@graphql/resolvers/invoice/mutations";
-import { JobsiteCreateData } from "@graphql/resolvers/jobsite/mutations";
 import {
   MaterialShipmentCreateData,
   MaterialShipmentShipmentData,
 } from "@graphql/resolvers/materialShipment/mutations";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { Server } from "http";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-let mongoServer: any, documents: SeededDatabase, app: any;
-function setupDatabase() {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+let mongoServer: MongoMemoryServer, documents: SeededDatabase, app: Server;
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
+  return;
+};
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   mongoServer = await prepareDatabase();
 
   app = await createApp();
 
   await setupDatabase();
-
-  done();
 });
 
-afterAll(async (done) => {
+afterAll(async () => {
   await disconnectAndStopServer(mongoServer);
-  done();
 });
 
 describe("Material Shipment Resolver", () => {
@@ -68,7 +56,7 @@ describe("Material Shipment Resolver", () => {
       `;
 
       describe("success", () => {
-        test("should successfully create both types of material shipments", async () => {
+        test("should successfully create both types of material shipments and once without vehicle object", async () => {
           const token = await jestLogin(
             app,
             documents.users.base_foreman_1_user.email
@@ -95,10 +83,28 @@ describe("Material Shipment Resolver", () => {
               vehicleObject: {
                 source: "Bow Mark",
                 truckingRateId:
-                  documents.jobsites.jobsite_2.truckingRates[0]._id!.toString(),
+                  documents.jobsites.jobsite_2.truckingRates[0]._id?.toString(),
                 vehicleCode: "B-12",
                 vehicleType: "Tandem",
               },
+            },
+            {
+              shipments: [
+                {
+                  noJobsiteMaterial: false,
+                  quantity: 100,
+                  jobsiteMaterialId:
+                    documents.jobsiteMaterials.jobsite_2_material_1._id.toString(),
+                },
+                {
+                  noJobsiteMaterial: true,
+                  jobsiteMaterialId: "",
+                  quantity: 50,
+                  shipmentType: "Shipment Type",
+                  supplier: "Burnco",
+                  unit: "tonnes",
+                },
+              ],
             },
           ];
 
@@ -115,13 +121,27 @@ describe("Material Shipment Resolver", () => {
 
           expect(res.status).toBe(200);
 
-          expect(res.body.data.materialShipmentCreate.length).toBe(2);
+          expect(res.body.data.materialShipmentCreate.length).toBe(4);
+
           expect(
             res.body.data.materialShipmentCreate[0].noJobsiteMaterial
           ).toBeFalsy();
           expect(
             res.body.data.materialShipmentCreate[1].noJobsiteMaterial
           ).toBeTruthy();
+
+          expect(
+            res.body.data.materialShipmentCreate[2].noJobsiteMaterial
+          ).toBeFalsy();
+          expect(
+            res.body.data.materialShipmentCreate[2].vehicleObject
+          ).toBeUndefined();
+          expect(
+            res.body.data.materialShipmentCreate[3].noJobsiteMaterial
+          ).toBeTruthy();
+          expect(
+            res.body.data.materialShipmentCreate[3].vehicleObject
+          ).toBeUndefined();
         });
       });
     });

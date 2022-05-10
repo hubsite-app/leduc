@@ -1,31 +1,25 @@
 import { JobsiteMaterialDocument } from "@models";
 import { IJobsiteMaterialUpdate } from "@typescript/jobsiteMaterial";
 
-const document = (
+const document = async (
   jobsiteMaterial: JobsiteMaterialDocument,
   data: IJobsiteMaterialUpdate
 ) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      jobsiteMaterial.supplier = data.supplier._id;
+  jobsiteMaterial.supplier = data.supplier._id;
 
-      jobsiteMaterial.quantity = data.quantity;
+  jobsiteMaterial.quantity = data.quantity;
 
-      jobsiteMaterial.unit = data.unit;
+  jobsiteMaterial.unit = data.unit;
 
-      jobsiteMaterial.rates = data.rates;
+  jobsiteMaterial.rates = data.rates;
 
-      jobsiteMaterial.delivered = data.delivered;
+  jobsiteMaterial.delivered = data.delivered;
 
-      jobsiteMaterial.deliveredRates = data.deliveredRates;
+  jobsiteMaterial.deliveredRates = data.deliveredRates;
 
-      await jobsiteMaterial.validateDocument();
+  await jobsiteMaterial.validateDocument();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 export default {

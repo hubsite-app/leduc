@@ -13,7 +13,7 @@ export class VehicleWorkJobData {
 @InputType()
 export class VehicleWorkCreateData {
   @Field(() => [String], { nullable: false })
-  public vehicles!: String[];
+  public vehicles!: string[];
 
   @Field(() => [VehicleWorkJobData], { nullable: false })
   public jobs!: VehicleWorkJobData[];
@@ -28,74 +28,65 @@ export class VehicleWorkUpdateData {
   public hours!: number;
 }
 
-const create = (dailyReportId: string, data: VehicleWorkCreateData[]) => {
-  return new Promise<VehicleWorkDocument[]>(async (resolve, reject) => {
-    try {
-      const dailyReport = (await DailyReport.getById(dailyReportId, {
-        throwError: true,
-      }))!;
-
-      const vehicleWorks: VehicleWorkDocument[] = [];
-
-      for (let i = 0; i < data.length; i++) {
-        const currentData = data[i];
-
-        for (let j = 0; j < currentData.jobs.length; j++) {
-          vehicleWorks.push.apply(
-            vehicleWorks,
-            await VehicleWork.createPerVehicle(
-              { ...currentData.jobs[j], dailyReport },
-              currentData.vehicles
-            )
-          );
-        }
-      }
-
-      for (let i = 0; i < vehicleWorks.length; i++) {
-        await vehicleWorks[i].save();
-      }
-
-      await dailyReport.save();
-
-      resolve(vehicleWorks);
-    } catch (e) {
-      reject(e);
-    }
+const create = async (
+  dailyReportId: string,
+  data: VehicleWorkCreateData[]
+): Promise<VehicleWorkDocument[]> => {
+  const dailyReport = await DailyReport.getById(dailyReportId, {
+    throwError: true,
   });
+  if (!dailyReport) throw new Error("Unable to find daily report");
+
+  let vehicleWorks: VehicleWorkDocument[] = [];
+
+  for (let i = 0; i < data.length; i++) {
+    const currentData = data[i];
+
+    for (let j = 0; j < currentData.jobs.length; j++) {
+      vehicleWorks = [
+        ...vehicleWorks,
+        ...(await VehicleWork.createPerVehicle(
+          { ...currentData.jobs[j], dailyReport },
+          currentData.vehicles
+        )),
+      ];
+    }
+  }
+
+  for (let i = 0; i < vehicleWorks.length; i++) {
+    await vehicleWorks[i].save();
+  }
+
+  await dailyReport.save();
+
+  return vehicleWorks;
 };
 
-const update = (id: string, data: VehicleWorkUpdateData) => {
-  return new Promise<VehicleWorkDocument>(async (resolve, reject) => {
-    try {
-      const vehicleWork = (await VehicleWork.getById(id, {
-        throwError: true,
-      }))!;
-
-      await vehicleWork.updateDocument(data);
-
-      await vehicleWork.save();
-
-      resolve(vehicleWork);
-    } catch (e) {
-      reject(e);
-    }
+const update = async (
+  id: string,
+  data: VehicleWorkUpdateData
+): Promise<VehicleWorkDocument> => {
+  const vehicleWork = await VehicleWork.getById(id, {
+    throwError: true,
   });
+  if (!vehicleWork) throw new Error("Unable to find vehicle work");
+
+  await vehicleWork.updateDocument(data);
+
+  await vehicleWork.save();
+
+  return vehicleWork;
 };
 
-const remove = (id: string) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const vehicleWork = (await VehicleWork.getById(id, {
-        throwError: true,
-      }))!;
-
-      await vehicleWork.fullDelete();
-
-      resolve(vehicleWork._id.toString());
-    } catch (e) {
-      reject(e);
-    }
+const remove = async (id: string): Promise<string> => {
+  const vehicleWork = await VehicleWork.getById(id, {
+    throwError: true,
   });
+  if (!vehicleWork) throw new Error("Unable to find vehicle work");
+
+  await vehicleWork.fullDelete();
+
+  return vehicleWork._id.toString();
 };
 
 export default {

@@ -9,17 +9,18 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { FiEdit } from "react-icons/fi";
+import { FiArchive, FiEdit } from "react-icons/fi";
 import ClientOnly from "../../components/Common/ClientOnly";
 import Container from "../../components/Common/Container";
 import Permission from "../../components/Common/Permission";
 import CrewUpdateForm from "../../components/Forms/Crew/Update";
 import CrewClientContent from "../../components/pages/crews/id/ClientContent";
-import { UserRoles } from "../../generated/graphql";
+import { useCrewArchiveMutation, UserRoles } from "../../generated/graphql";
 import { PageCrewSsrComp, ssrCrewSsr } from "../../generated/page";
 
 const Crew: PageCrewSsrComp = ({ data }) => {
@@ -33,6 +34,8 @@ const Crew: PageCrewSsrComp = ({ data }) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const [archive, { loading: archiveLoading }] = useCrewArchiveMutation();
+
   /**
    * ----- Rendering -----
    */
@@ -45,12 +48,33 @@ const Crew: PageCrewSsrComp = ({ data }) => {
           <Heading size="md">{crew.type} Crew</Heading>
         </Box>
         <Permission minRole={UserRoles.Admin}>
-          <IconButton
-            aria-label="edit"
-            backgroundColor="transparent"
-            icon={<FiEdit />}
-            onClick={() => onOpen()}
-          />
+          <Flex flexDir="row">
+            <Tooltip label="Archive">
+              <IconButton
+                aria-label="archive"
+                backgroundColor="transparent"
+                icon={<FiArchive />}
+                isLoading={archiveLoading}
+                onClick={() => {
+                  if (window.confirm("Are you sure?")) {
+                    archive({
+                      variables: {
+                        id: crew._id,
+                      },
+                    }).then(() => {
+                      router.back();
+                    });
+                  }
+                }}
+              />
+            </Tooltip>
+            <IconButton
+              aria-label="edit"
+              backgroundColor="transparent"
+              icon={<FiEdit />}
+              onClick={() => onOpen()}
+            />
+          </Flex>
         </Permission>
       </Flex>
       <ClientOnly>

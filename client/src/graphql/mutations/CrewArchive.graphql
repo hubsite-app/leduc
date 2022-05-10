@@ -1,0 +1,5 @@
+mutation CrewArchive($id: ID!) {
+  crewArchive(id: $id) {
+    _id
+  }
+}

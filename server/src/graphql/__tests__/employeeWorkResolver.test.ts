@@ -8,35 +8,28 @@ import _ids from "@testing/_ids";
 import { EmployeeWorkCreateData } from "@graphql/resolvers/employeeWork/mutations";
 import jestLogin from "@testing/jestLogin";
 import { DailyReport, EmployeeWork } from "@models";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { Server } from "http";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-let mongoServer: any, documents: SeededDatabase, app: any;
-function setupDatabase() {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+let mongoServer: MongoMemoryServer, documents: SeededDatabase, app: Server;
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
+  return;
+};
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   mongoServer = await prepareDatabase();
 
   app = await createApp();
 
   await setupDatabase();
-
-  done();
 });
 
-afterAll(async (done) => {
+afterAll(async () => {
   await disconnectAndStopServer(mongoServer);
-  done();
 });
 
 describe("Employee Work Resolver", () => {
@@ -125,7 +118,7 @@ describe("Employee Work Resolver", () => {
           const dailyReport = await DailyReport.getById(
             documents.dailyReports.jobsite_1_base_1_1._id
           );
-          expect(dailyReport?.employeeWork.includes(work!._id));
+          expect(dailyReport?.employeeWork.includes(work?._id));
         });
       });
 

@@ -1,16 +1,18 @@
 import { DailyReportDocument, JobsiteMaterialDocument } from "@models";
 import { Id } from "./models";
 
+interface IMaterialShipmentVehicleObject {
+  source: string;
+  vehicleType: string;
+  vehicleCode: string;
+  truckingRateId?: string;
+  deliveredRateId?: Id;
+}
+
 interface IMaterialShipmentCreateBase {
   startTime?: Date;
   endTime?: Date;
-  vehicleObject: {
-    source: string;
-    vehicleType: string;
-    vehicleCode: string;
-    truckingRateId?: string;
-    deliveredRateId?: Id;
-  };
+  vehicleObject?: IMaterialShipmentVehicleObject;
   dailyReport: DailyReportDocument;
 }
 
@@ -33,4 +35,5 @@ export interface IMaterialShipmentUpdate
   quantity: number;
   startTime?: Date;
   endTime?: Date;
+  vehicleObject?: IMaterialShipmentVehicleObject;
 }

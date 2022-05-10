@@ -6,7 +6,7 @@ import DailyReportCard from "../components/Common/DailyReport/DailyReportCard";
 import InfiniteScroll from "../components/Common/InfiniteScroll";
 import Loading from "../components/Common/Loading";
 import { useAuth } from "../contexts/Auth";
-import { useDailyReportsQuery } from "../generated/graphql";
+import { useDailyReportsLazyQuery, UserRoles } from "../generated/graphql";
 
 const DailyReports = () => {
   /**
@@ -18,18 +18,17 @@ const DailyReports = () => {
   } = useAuth();
 
   const crews = React.useMemo(() => {
-    if (user && user.admin === false) {
-      return user.employee.crews.map((crew) => crew._id);
-    } else return [];
+    if (user) {
+      if (user.role === UserRoles.User) {
+        return user.employee.crews.map((crew) => crew._id);
+      } else return [];
+    }
   }, [user]);
 
-  const { data, loading, fetchMore } = useDailyReportsQuery({
-    variables: {
-      options: {
-        crews,
-      },
-    },
-  });
+  const [fetch, { data, loading, fetchMore, networkStatus }] =
+    useDailyReportsLazyQuery({
+      notifyOnNetworkStatusChange: true,
+    });
 
   const [finished, setFinished] = React.useState(false);
 
@@ -38,7 +37,7 @@ const DailyReports = () => {
    */
 
   const nextPage = React.useCallback(() => {
-    if (!finished && !loading) {
+    if (!finished && networkStatus === 7) {
       fetchMore({
         variables: {
           options: {
@@ -50,7 +49,23 @@ const DailyReports = () => {
         if (data.data.dailyReports.length === 0) setFinished(true);
       });
     }
-  }, [crews, data?.dailyReports.length, fetchMore, finished, loading]);
+  }, [crews, data?.dailyReports.length, fetchMore, finished, networkStatus]);
+
+  /**
+   * ----- Use-effects and other logic -----
+   */
+
+  React.useEffect(() => {
+    if (crews)
+      fetch({
+        variables: {
+          options: {
+            crews,
+          },
+        },
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [crews]);
 
   /**
    * ----- Rendering -----
@@ -92,7 +107,12 @@ const DailyReports = () => {
 
   return (
     <Container>
-      <InfiniteScroll content={content} nextPage={nextPage} />
+      <InfiniteScroll
+        enabled={!!data?.dailyReports && data.dailyReports.length > 0}
+        loading={networkStatus !== 7}
+        content={content}
+        nextPage={() => nextPage()}
+      />
     </Container>
   );
 };

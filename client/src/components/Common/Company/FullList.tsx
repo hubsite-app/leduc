@@ -11,7 +11,9 @@ const CompanyFullList = () => {
    * ----- Hook Initialization -----
    */
 
-  const { data, loading, fetchMore } = useCompaniesQuery();
+  const { data, loading, fetchMore, networkStatus } = useCompaniesQuery({
+    notifyOnNetworkStatusChange: true,
+  });
 
   const [finished, setFinished] = React.useState(false);
 
@@ -20,7 +22,7 @@ const CompanyFullList = () => {
    */
 
   const nextPage = React.useCallback(() => {
-    if (!finished && !loading) {
+    if (!finished && networkStatus === 7) {
       fetchMore({
         variables: {
           options: {
@@ -31,7 +33,7 @@ const CompanyFullList = () => {
         if (data.data.companies.length === 0) setFinished(true);
       });
     }
-  }, [data?.companies.length, fetchMore, finished, loading]);
+  }, [data?.companies.length, fetchMore, finished, networkStatus]);
 
   /**
    * ----- Rendering -----
@@ -54,7 +56,14 @@ const CompanyFullList = () => {
     }
   }, [data?.companies, loading]);
 
-  return <InfiniteScroll content={content} nextPage={nextPage} />;
+  return (
+    <InfiniteScroll
+      enabled={!!data?.companies && data.companies.length > 0}
+      loading={networkStatus !== 7}
+      content={content}
+      nextPage={nextPage}
+    />
+  );
 };
 
 export default CompanyFullList;

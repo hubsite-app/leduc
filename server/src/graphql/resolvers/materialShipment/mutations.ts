@@ -78,8 +78,8 @@ export class MaterialShipmentCreateData {
   @Field(() => [MaterialShipmentShipmentData])
   public shipments!: MaterialShipmentShipmentData[];
 
-  @Field(() => MaterialShipmentVehicleObjectData, { nullable: false })
-  public vehicleObject!: MaterialShipmentVehicleObjectData;
+  @Field(() => MaterialShipmentVehicleObjectData, { nullable: true })
+  public vehicleObject?: MaterialShipmentVehicleObjectData;
 }
 
 @InputType()
@@ -87,96 +87,93 @@ export class MaterialShipmentCreateDataV1 {
   @Field(() => [MaterialShipmentShipmentDataV1])
   public shipments!: MaterialShipmentShipmentDataV1[];
 
-  @Field(() => MaterialShipmentVehicleObjectData, { nullable: false })
-  public vehicleObject!: MaterialShipmentVehicleObjectData;
+  @Field(() => MaterialShipmentVehicleObjectData, { nullable: true })
+  public vehicleObject?: MaterialShipmentVehicleObjectData;
 }
 
-const create = (dailyReportId: string, data: MaterialShipmentCreateData[]) => {
-  return new Promise<MaterialShipmentDocument[]>(async (resolve, reject) => {
-    try {
-      const dailyReport = (await DailyReport.getById(dailyReportId, {
-        throwError: true,
-      }))!;
+@InputType()
+export class MaterialShipmentUpdateData extends MaterialShipmentShipmentData {
+  @Field(() => MaterialShipmentVehicleObjectData, { nullable: true })
+  public vehicleObject?: MaterialShipmentVehicleObjectData;
+}
 
-      const materialShipments: MaterialShipmentDocument[] = [];
-
-      for (let i = 0; i < data.length; i++) {
-        const currentData = data[i];
-
-        for (let j = 0; j < currentData.shipments.length; j++) {
-          let jobsiteMaterial: JobsiteMaterialDocument | null = null;
-          if (currentData.shipments[j].noJobsiteMaterial === false) {
-            jobsiteMaterial = await JobsiteMaterial.getById(
-              currentData.shipments[j].jobsiteMaterialId!
-            );
-          }
-
-          materialShipments.push(
-            await MaterialShipment.createDocument({
-              vehicleObject: currentData.vehicleObject,
-              ...currentData.shipments[j],
-              dailyReport,
-              jobsiteMaterial: jobsiteMaterial || undefined,
-            })
-          );
-        }
-      }
-
-      for (let i = 0; i < materialShipments.length; i++) {
-        await materialShipments[i].save();
-      }
-
-      await dailyReport.save();
-
-      resolve(materialShipments);
-    } catch (e) {
-      reject(e);
-    }
+const create = async (
+  dailyReportId: string,
+  data: MaterialShipmentCreateData[]
+): Promise<MaterialShipmentDocument[]> => {
+  const dailyReport = await DailyReport.getById(dailyReportId, {
+    throwError: true,
   });
-};
+  if (!dailyReport) throw new Error("Unable to find daily report");
 
-const update = (id: string, data: MaterialShipmentShipmentData) => {
-  return new Promise<MaterialShipmentDocument>(async (resolve, reject) => {
-    try {
-      const materialShipment = (await MaterialShipment.getById(id, {
-        throwError: true,
-      }))!;
+  const materialShipments: MaterialShipmentDocument[] = [];
 
+  for (let i = 0; i < data.length; i++) {
+    const currentData = data[i];
+
+    for (let j = 0; j < currentData.shipments.length; j++) {
       let jobsiteMaterial: JobsiteMaterialDocument | null = null;
-      if (data.noJobsiteMaterial === false) {
+      if (currentData.shipments[j].noJobsiteMaterial === false) {
         jobsiteMaterial = await JobsiteMaterial.getById(
-          data.jobsiteMaterialId!
+          currentData.shipments[j].jobsiteMaterialId || ""
         );
       }
 
-      await materialShipment.updateDocument({
-        ...data,
-        jobsiteMaterial: jobsiteMaterial || undefined,
-      });
-
-      await materialShipment.save();
-
-      resolve(materialShipment);
-    } catch (e) {
-      reject(e);
+      materialShipments.push(
+        await MaterialShipment.createDocument({
+          vehicleObject: currentData.vehicleObject,
+          ...currentData.shipments[j],
+          dailyReport,
+          jobsiteMaterial: jobsiteMaterial || undefined,
+        })
+      );
     }
-  });
+  }
+
+  for (let i = 0; i < materialShipments.length; i++) {
+    await materialShipments[i].save();
+  }
+
+  await dailyReport.save();
+
+  return materialShipments;
 };
 
-const remove = (id: string) => {
-  return new Promise<string>(async (resolve, reject) => {
-    try {
-      const materialShipment = (await MaterialShipment.getById(id, {
-        throwError: true,
-      }))!;
-
-      await materialShipment.fullDelete();
-
-      resolve(materialShipment._id.toString());
-    } catch (e) {
-      reject(e);
-    }
+const update = async (
+  id: string,
+  data: MaterialShipmentUpdateData
+): Promise<MaterialShipmentDocument> => {
+  const materialShipment = await MaterialShipment.getById(id, {
+    throwError: true,
   });
+  if (!materialShipment) throw new Error("Unable to find material shipment");
+
+  let jobsiteMaterial: JobsiteMaterialDocument | null = null;
+  if (data.noJobsiteMaterial === false) {
+    jobsiteMaterial = await JobsiteMaterial.getById(
+      data.jobsiteMaterialId || ""
+    );
+  }
+
+  await materialShipment.updateDocument({
+    ...data,
+    jobsiteMaterial: jobsiteMaterial || undefined,
+  });
+
+  await materialShipment.save();
+
+  return materialShipment;
+};
+
+const remove = async (id: string): Promise<string> => {
+  const materialShipment = await MaterialShipment.getById(id, {
+    throwError: true,
+  });
+  if (!materialShipment) throw new Error("Unable to find material shipment");
+
+  await materialShipment.fullDelete();
+
+  return materialShipment._id.toString();
 };
 
 export default {

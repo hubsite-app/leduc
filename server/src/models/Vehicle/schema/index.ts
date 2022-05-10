@@ -3,12 +3,18 @@ import { ES_updateVehicle } from "@elasticsearch/helpers/vehicle";
 import { CrewClass, VehicleDocument } from "@models";
 import { post, prop, Ref } from "@typegoose/typegoose";
 import { RateClass } from "@typescript/models";
+import errorHandler from "@utils/errorHandler";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
 @post<VehicleDocument>("save", async (vehicle) => {
-  await ES_updateVehicle(vehicle);
+  try {
+    vehicle.requestReportUpdate();
+    ES_updateVehicle(vehicle);
+  } catch (e) {
+    errorHandler("Vehicle post save error", e);
+  }
 })
 export class VehicleSchema {
   @Field(() => ID, { nullable: false })
@@ -41,6 +47,10 @@ export class VehicleSchema {
   @Field()
   @prop({ required: true, default: SchemaVersions.Vehicle })
   public schemaVersion!: number;
+
+  @Field(() => Date)
+  @prop({ required: false })
+  public archivedAt!: Date;
 
   /**
    * @deprecated don't need bidirection link, crew already holds vehicle link

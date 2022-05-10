@@ -6,16 +6,10 @@ import { Company } from "@models";
 import { ICompanyCreate } from "@typescript/company";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
-const setupDatabase = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 beforeAll(async () => {
@@ -54,8 +48,8 @@ describe("Company Class", () => {
 
         try {
           await Company.createDocument(data);
-        } catch (e: any) {
-          expect(e.message).toBe("This company already exists");
+        } catch (e) {
+          expect((e as Error).message).toBe("This company already exists");
         }
       });
     });

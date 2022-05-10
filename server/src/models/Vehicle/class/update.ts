@@ -1,37 +1,40 @@
-import { VehicleDocument } from "@models";
+import { VehicleDocument, CrewDocument } from "@models";
 import { IRatesData } from "@typescript/models";
 import { IVehicleUpdate } from "@typescript/vehicle";
 import validateRates from "@validation/validateRates";
 
-const document = (vehicle: VehicleDocument, data: IVehicleUpdate) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      vehicle.name = data.name;
+const document = async (vehicle: VehicleDocument, data: IVehicleUpdate) => {
+  vehicle.name = data.name;
 
-      vehicle.vehicleType = data.vehicleType;
+  vehicle.vehicleType = data.vehicleType;
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
-const rates = (vehicle: VehicleDocument, data: IRatesData[]) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      await validateRates(data);
+const rates = async (vehicle: VehicleDocument, data: IRatesData[]) => {
+  await validateRates(data);
 
-      vehicle.rates = data;
+  vehicle.rates = data;
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
+};
+
+const archive = async (
+  vehicle: VehicleDocument
+): Promise<{ crews: CrewDocument[] }> => {
+  vehicle.archivedAt = new Date();
+
+  const crews = await vehicle.getCrews();
+
+  for (let i = 0; i < crews.length; i++) {
+    await crews[i].removeVehicle(vehicle._id);
+  }
+
+  return { crews };
 };
 
 export default {
   document,
   rates,
+  archive,
 };

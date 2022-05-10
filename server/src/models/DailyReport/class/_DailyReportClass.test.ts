@@ -7,16 +7,10 @@ import dayjs from "dayjs";
 import { IDailyReportCreate } from "@typescript/dailyReport";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
-const setupDatabase = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 beforeAll(async () => {
@@ -43,8 +37,8 @@ describe("Daily Report Class", () => {
           const dailyReport = await DailyReport.createDocument(data);
 
           expect(dailyReport.date).toBe(data.date);
-          expect(dailyReport.crew!.toString()).toBe(data.crew._id.toString());
-          expect(dailyReport.jobsite!.toString()).toBe(
+          expect(dailyReport.crew?.toString()).toBe(data.crew._id.toString());
+          expect(dailyReport.jobsite?.toString()).toBe(
             data.jobsite._id.toString()
           );
         });
@@ -62,8 +56,8 @@ describe("Daily Report Class", () => {
 
           try {
             await DailyReport.createDocument(data);
-          } catch (e: any) {
-            expect(e.message).toMatch("a report already exists");
+          } catch (e) {
+            expect((e as Error).message).toMatch("a report already exists");
           }
         });
       });
@@ -80,19 +74,19 @@ describe("Daily Report Class", () => {
 
           const { employeeWork } = await dailyReport.updateDocument({
             date: newDate,
-            jobsiteId: dailyReport.jobsite!,
+            jobsiteId: dailyReport.jobsite || "",
           });
 
           expect(dailyReport.date).toEqual(newDate);
 
           // ensure it was different before
-          const employeeWorkBefore = (await EmployeeWork.getById(
+          const employeeWorkBefore = await EmployeeWork.getById(
             employeeWork[0]._id
-          ))!;
+          );
           expect(
-            dayjs(employeeWorkBefore.startTime).diff(newDate, "days")
+            dayjs(employeeWorkBefore?.startTime).diff(newDate, "days")
           ).toBe(-6);
-          expect(dayjs(employeeWorkBefore.endTime).diff(newDate, "days")).toBe(
+          expect(dayjs(employeeWorkBefore?.endTime).diff(newDate, "days")).toBe(
             -6
           );
 
@@ -139,8 +133,8 @@ describe("Daily Report Class", () => {
             await dailyReport.addTemporaryEmployee(
               documents.employees.base_foreman_1
             );
-          } catch (e: any) {
-            expect(e.message).toMatch(
+          } catch (e) {
+            expect((e as Error).message).toMatch(
               "this employee already belongs to the crew"
             );
           }
@@ -182,8 +176,8 @@ describe("Daily Report Class", () => {
             await dailyReport.addTemporaryVehicle(
               documents.vehicles.personnel_truck_1
             );
-          } catch (e: any) {
-            expect(e.message).toMatch(
+          } catch (e) {
+            expect((e as Error).message).toMatch(
               "this vehicle already belongs to the crew"
             );
           }

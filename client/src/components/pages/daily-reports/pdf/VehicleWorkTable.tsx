@@ -1,5 +1,6 @@
 import { Text, View } from "@react-pdf/renderer";
 import { VehicleWorkCardSnippetFragment } from "../../../../generated/graphql";
+import formatNumber from "../../../../utils/formatNumber";
 import parseDataForPDF from "../../../../utils/parseDataForPDF";
 
 interface IVehicleWorkTable {
@@ -77,7 +78,7 @@ const VehicleWorkTable = ({ vehicleWorks }: IVehicleWorkTable) => {
                         {job.jobTitle}
                       </Text>
                       <Text style={{ fontSize: "7px", width: "21.4%" }}>
-                        {job.hours}
+                        {formatNumber(job.hours)}
                       </Text>
                     </View>
                   ))}
@@ -95,7 +96,7 @@ const VehicleWorkTable = ({ vehicleWorks }: IVehicleWorkTable) => {
                 <Text
                   style={{ fontSize: "7px", width: VehicleHourColumnWidth }}
                 >
-                  {work.totalHours}
+                  {formatNumber(work.totalHours)}
                 </Text>
               </View>
             </View>

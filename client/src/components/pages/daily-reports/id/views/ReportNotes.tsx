@@ -42,7 +42,7 @@ const ReportNotes = ({ dailyReport, editPermission }: IReportNotes) => {
 
   const toast = useToast();
 
-  const [collapsed, setCollapsed] = React.useState(true);
+  const [collapsed, setCollapsed] = React.useState(false);
 
   const [editNotes, setEditNotes] = React.useState(false);
 

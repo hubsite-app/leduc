@@ -7,53 +7,47 @@ import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 
 export * from "./settings";
 
-export const ES_ensureMaterialMapping = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const exists = (
-        await ElasticsearchClient.indices.exists({
-          index: ElasticSearchIndices.Material,
-        })
-      ).body;
+export const ES_ensureMaterialMapping = async () => {
+  const exists = (
+    await ElasticsearchClient.indices.exists({
+      index: ElasticSearchIndices.Material,
+    })
+  ).body;
 
-      if (exists === false) {
-        // If no index exists, create with mapping
+  if (exists === false) {
+    // If no index exists, create with mapping
 
-        logger.info("Creating material ES index");
-        await ElasticsearchClient.indices.create({
-          index: ElasticSearchIndices.Material,
-          body: {
-            mappings: MaterialMapping,
-          },
-        });
-      } else {
-        // If exists, ensure mapping matches
+    logger.info("Creating material ES index");
+    await ElasticsearchClient.indices.create({
+      index: ElasticSearchIndices.Material,
+      body: {
+        mappings: MaterialMapping,
+      },
+    });
+  } else {
+    // If exists, ensure mapping matches
 
-        const currentMapping = (
-          await ElasticsearchClient.indices.getMapping({
-            index: ElasticSearchIndices.Material,
-          })
-        ).body[ElasticSearchIndices.Material].mappings;
+    const currentMapping = (
+      await ElasticsearchClient.indices.getMapping({
+        index: ElasticSearchIndices.Material,
+      })
+    ).body[ElasticSearchIndices.Material].mappings;
 
-        if (
-          !_.isEqual(
-            JSON.parse(JSON.stringify(currentMapping)),
-            JSON.parse(JSON.stringify(MaterialMapping))
-          )
-        ) {
-          // Mappings do not match, update ES map
+    if (
+      !_.isEqual(
+        JSON.parse(JSON.stringify(currentMapping)),
+        JSON.parse(JSON.stringify(MaterialMapping))
+      )
+    ) {
+      // Mappings do not match, update ES map
 
-          logger.info("Updating material ES index mapping");
-          await ElasticsearchClient.indices.putMapping({
-            index: ElasticSearchIndices.Material,
-            body: MaterialMapping,
-          });
-        }
-      }
-
-      resolve();
-    } catch (e) {
-      reject(e);
+      logger.info("Updating material ES index mapping");
+      await ElasticsearchClient.indices.putMapping({
+        index: ElasticSearchIndices.Material,
+        body: MaterialMapping,
+      });
     }
-  });
+  }
+
+  return;
 };

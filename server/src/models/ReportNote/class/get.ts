@@ -14,44 +14,34 @@ import populateOptions from "@utils/populateOptions";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   ReportNote: ReportNoteModel,
   id: Id,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<ReportNoteDocument | null>(async (resolve, reject) => {
-    try {
-      options = populateOptions(options, byIdDefaultOptions);
+): Promise<ReportNoteDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-      const reportNote = await ReportNote.findById(id);
+  const reportNote = await ReportNote.findById(id);
 
-      if (!reportNote && options.throwError) {
-        throw new Error("ReportNote.getById: unable to find report note");
-      }
+  if (!reportNote && options.throwError) {
+    throw new Error("ReportNote.getById: unable to find report note");
+  }
 
-      resolve(reportNote);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return reportNote;
 };
 
 /**
  * ----- Methods -----
  */
 
-const files = (reportNote: ReportNoteDocument) => {
-  return new Promise<FileDocument[]>(async (resolve, reject) => {
-    try {
-      const files = await File.find({
-        _id: { $in: reportNote.files },
-      });
-
-      resolve(files);
-    } catch (e) {
-      reject(e);
-    }
+const files = async (
+  reportNote: ReportNoteDocument
+): Promise<FileDocument[]> => {
+  const files = await File.find({
+    _id: { $in: reportNote.files },
   });
+
+  return files;
 };
 
 export default {

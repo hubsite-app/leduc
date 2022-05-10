@@ -1,11 +1,30 @@
 import { SearchOptions } from "@graphql/types/query";
-import { Material, MaterialClass } from "@models";
+import { Material, MaterialClass, MaterialDocument } from "@models";
 import { ListOptionData } from "@typescript/graphql";
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
-import mutations, { MaterialCreateData } from "./mutations";
+import { Id } from "@typescript/models";
+import {
+  Arg,
+  Authorized,
+  FieldResolver,
+  ID,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from "type-graphql";
+import mutations, { MaterialCreateData, MaterialUpdateData } from "./mutations";
 
 @Resolver(() => MaterialClass)
 export default class MaterialResolver {
+  /**
+   * ----- Field Resolvers -----
+   */
+
+  @FieldResolver(() => Boolean)
+  async canRemove(@Root() material: MaterialDocument) {
+    return material.canRemove();
+  }
+
   /**
    * ----- Queries -----
    */
@@ -38,8 +57,24 @@ export default class MaterialResolver {
    * ----- Mutations -----
    */
 
+  @Authorized(["ADMIN"])
   @Mutation(() => MaterialClass)
   async materialCreate(@Arg("data") data: MaterialCreateData) {
     return mutations.create(data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => MaterialClass)
+  async materialUpdate(
+    @Arg("id", () => ID, { nullable: false }) id: Id,
+    @Arg("data", { nullable: false }) data: MaterialUpdateData
+  ) {
+    return mutations.update(id, data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => Boolean)
+  async materialRemove(@Arg("id", () => ID) id: Id) {
+    return mutations.remove(id);
   }
 }

@@ -6,11 +6,13 @@ import {
   CrewFullDocument,
   CrewFullSnippetFragment,
   useCrewAddVehicleMutation,
+  UserRoles,
   useVehicleCreateMutation,
   VehicleCreateData,
 } from "../../../../../generated/graphql";
 import VehicleSearch from "../../../../Search/VehicleSearch";
 import SubmitButton from "../../../../Common/forms/SubmitButton";
+import Permission from "../../../../Common/Permission";
 
 interface IVehicleAddForm {
   crew: CrewFullSnippetFragment;
@@ -95,20 +97,22 @@ const VehicleAddForm = ({ crew, closeForm }: IVehicleAddForm) => {
           });
         }}
       />
-      <Text color="gray.500" textAlign="center" my={2}>
-        or
-      </Text>
-      <Box>
-        <Heading size="sm" ml={1}>
-          Add a new Vehicle
-        </Heading>
-        <FormComponents.Form submitHandler={createSubmitHandler}>
-          <FormComponents.Name isLoading={loading} />
-          <FormComponents.VehicleCode isLoading={loading} />
-          <FormComponents.VehicleType isLoading={loading} />
-          <SubmitButton isLoading={loading} />
-        </FormComponents.Form>
-      </Box>
+      <Permission minRole={UserRoles.ProjectManager}>
+        <Text color="gray.500" textAlign="center" my={2}>
+          or
+        </Text>
+        <Box>
+          <Heading size="sm" ml={1}>
+            Add a new Vehicle
+          </Heading>
+          <FormComponents.Form submitHandler={createSubmitHandler}>
+            <FormComponents.Name isLoading={loading} />
+            <FormComponents.VehicleCode isLoading={loading} />
+            <FormComponents.VehicleType isLoading={loading} />
+            <SubmitButton isLoading={loading} />
+          </FormComponents.Form>
+        </Box>
+      </Permission>
     </Box>
   );
 };

@@ -1,4 +1,5 @@
 import { Material, MaterialDocument } from "@models";
+import { Id } from "@typescript/models";
 import { Field, InputType } from "type-graphql";
 
 @InputType()
@@ -7,20 +8,45 @@ export class MaterialCreateData {
   public name!: string;
 }
 
-const create = (data: MaterialCreateData) => {
-  return new Promise<MaterialDocument>(async (resolve, reject) => {
-    try {
-      const material = await Material.createDocument(data);
+@InputType()
+export class MaterialUpdateData {
+  @Field({ nullable: false })
+  public name!: string;
+}
 
-      await material.save();
+const create = async (data: MaterialCreateData): Promise<MaterialDocument> => {
+  const material = await Material.createDocument(data);
 
-      resolve(material);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  await material.save();
+
+  return material;
+};
+
+const update = async (
+  id: Id,
+  data: MaterialUpdateData
+): Promise<MaterialDocument> => {
+  const material = await Material.getById(id);
+  if (!material) throw new Error("Unable to find Material");
+
+  await material.updateDocument(data);
+
+  await material.save();
+
+  return material;
+};
+
+const remove = async (id: Id) => {
+  const material = await Material.getById(id);
+  if (!material) throw new Error("Unable to find material");
+
+  await material.removeIfPossible();
+
+  return true;
 };
 
 export default {
   create,
+  update,
+  remove,
 };

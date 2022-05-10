@@ -32,7 +32,7 @@ export default class UserResolver {
   @Authorized()
   @Query(() => UserClass)
   async currentUser(@Ctx() context: IContext) {
-    return context.user!;
+    return context.user;
   }
 
   @Query(() => UserClass, { nullable: true })

@@ -30,6 +30,11 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
    * ----- Variables -----
    */
 
+  const isConcrete = React.useMemo(() => {
+    if (process.env.NEXT_PUBLIC_APP_NAME === "Concrete") return true;
+    else return false;
+  }, []);
+
   const jobsiteYearReport = React.useMemo(() => {
     if (data?.jobsiteYearReport && !loading) return data?.jobsiteYearReport;
     else return undefined;
@@ -38,8 +43,8 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
   const revenue = React.useMemo(() => {
     if (jobsiteYearReport) {
       return (
-        jobsiteYearReport.summary.externalExpenseInvoiceValue +
-        jobsiteYearReport.summary.internalExpenseInvoiceValue
+        jobsiteYearReport.summary.externalRevenueInvoiceValue +
+        jobsiteYearReport.summary.internalRevenueInvoiceValue
       );
     } else return 0;
   }, [jobsiteYearReport]);
@@ -94,7 +99,8 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
             link={createLink.jobsite(jobsiteYearReport.jobsite._id)}
             whiteSpace="nowrap"
           >
-            {jobsiteYearReport.jobsite.jobcode}
+            {jobsiteYearReport.jobsite.jobcode} -{" "}
+            {jobsiteYearReport.jobsite.name}
           </TextLink>
         ) : (
           <Loading />
@@ -110,9 +116,11 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
       <Th color={margin < 0 ? "red.500" : undefined}>
         %{formatNumber(margin)}
       </Th>
-      <Th color={marginMinusConcrete < 0 ? "red.500" : undefined}>
-        %{formatNumber(marginMinusConcrete)}
-      </Th>
+      {!isConcrete ? (
+        <Th color={marginMinusConcrete < 0 ? "red.500" : undefined}>
+          %{formatNumber(marginMinusConcrete)}
+        </Th>
+      ) : null}
       <Th>
         $
         {formatNumber(

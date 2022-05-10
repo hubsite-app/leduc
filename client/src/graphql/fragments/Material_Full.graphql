@@ -1,3 +1,4 @@
 fragment MaterialFullSnippet on MaterialClass {
   ...MaterialCardSnippet
+  canRemove
 }

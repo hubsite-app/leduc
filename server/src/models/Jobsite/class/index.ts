@@ -15,7 +15,11 @@ import {
   IListOptions,
   ISearchOptions,
 } from "@typescript/models";
-import { IJobsiteCreate, ITruckingTypeRateData } from "@typescript/jobsite";
+import {
+  IJobsiteCreate,
+  IJobsiteUpdate,
+  ITruckingTypeRateData,
+} from "@typescript/jobsite";
 import create from "./create";
 import update from "./update";
 import interact from "./interact";
@@ -100,6 +104,10 @@ export class JobsiteClass extends JobsiteSchema {
   /**
    * ----- Update -----
    */
+
+  public async updateDocument(this: JobsiteDocument, data: IJobsiteUpdate) {
+    return update.document(this, data);
+  }
 
   public async addMaterial(
     this: JobsiteDocument,

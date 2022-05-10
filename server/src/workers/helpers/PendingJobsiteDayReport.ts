@@ -1,27 +1,22 @@
-import { logger } from "@logger";
 import { JobsiteDayReport } from "@models";
+import errorHandler from "@utils/errorHandler";
 
-const pendingJobsiteDayReportUpdateHelper = () => {
-  return new Promise<void>(async (resolve, reject) => {
+const pendingJobsiteDayReportUpdateHelper = async () => {
+  const jobsiteDayReports = await JobsiteDayReport.getByUpdatePending();
+
+  // Update
+  for (let i = 0; i < jobsiteDayReports.length; i++) {
     try {
-      const jobsiteDayReports = await JobsiteDayReport.getByUpdatePending();
-
-      // Update
-      for (let i = 0; i < jobsiteDayReports.length; i++) {
-        try {
-          await jobsiteDayReports[i].updateAndSaveDocument();
-        } catch (e: any) {
-          logger.error(
-            `Jobsite day report ${jobsiteDayReports[i]._id} worker error: ${e.message}`
-          );
-        }
-      }
-
-      resolve();
+      await jobsiteDayReports[i].updateAndSaveDocument();
     } catch (e) {
-      reject(e);
+      errorHandler(
+        `Jobsite day report ${jobsiteDayReports[i]._id} worker error`,
+        e
+      );
     }
-  });
+  }
+
+  return;
 };
 
 export default pendingJobsiteDayReportUpdateHelper;

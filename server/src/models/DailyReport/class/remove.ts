@@ -6,88 +6,64 @@ import {
   VehicleWorkDocument,
 } from "@models";
 
-const employeeWork = (
+const employeeWork = async (
   dailyReport: DailyReportDocument,
   employeeWork: EmployeeWorkDocument
 ) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const workIndex = dailyReport.employeeWork.findIndex(
-        (id) => id === employeeWork._id
-      );
+  const workIndex = dailyReport.employeeWork.findIndex(
+    (id) => id === employeeWork._id
+  );
 
-      if (workIndex !== -1) {
-        dailyReport.employeeWork.splice(workIndex, 1);
-      }
+  if (workIndex !== -1) {
+    dailyReport.employeeWork.splice(workIndex, 1);
+  }
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
-const vehicleWork = (
+const vehicleWork = async (
   dailyReport: DailyReportDocument,
   vehicleWork: VehicleWorkDocument
 ) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const workIndex = dailyReport.vehicleWork.findIndex(
-        (id) => id === vehicleWork._id
-      );
+  const workIndex = dailyReport.vehicleWork.findIndex(
+    (id) => id === vehicleWork._id
+  );
 
-      if (workIndex !== -1) {
-        dailyReport.vehicleWork.splice(workIndex, 1);
-      }
+  if (workIndex !== -1) {
+    dailyReport.vehicleWork.splice(workIndex, 1);
+  }
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
-const production = (
+const production = async (
   dailyReport: DailyReportDocument,
   production: ProductionDocument
 ) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const productionIndex = dailyReport.production.findIndex(
-        (id) => id === production._id
-      );
+  const productionIndex = dailyReport.production.findIndex(
+    (id) => id === production._id
+  );
 
-      if (productionIndex !== -1) {
-        dailyReport.production.splice(productionIndex, 1);
-      }
+  if (productionIndex !== -1) {
+    dailyReport.production.splice(productionIndex, 1);
+  }
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
-const materialShipment = (
+const materialShipment = async (
   dailyReport: DailyReportDocument,
   materialShipment: MaterialShipmentDocument
 ) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      const materialShipmentIndex = dailyReport.materialShipment.findIndex(
-        (id) => id === materialShipment._id
-      );
+  const materialShipmentIndex = dailyReport.materialShipment.findIndex(
+    (id) => id === materialShipment._id
+  );
 
-      if (materialShipmentIndex !== -1) {
-        dailyReport.materialShipment.splice(materialShipmentIndex, 1);
-      }
+  if (materialShipmentIndex !== -1) {
+    dailyReport.materialShipment.splice(materialShipmentIndex, 1);
+  }
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 export default {

@@ -17,124 +17,92 @@ import dayjs from "dayjs";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   JobsiteYearReport: JobsiteYearReportModel,
   id: Id,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<JobsiteYearReportDocument | null>(
-    async (resolve, reject) => {
-      try {
-        options = populateOptions(options, byIdDefaultOptions);
+): Promise<JobsiteYearReportDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-        const jobsiteYearReport = await JobsiteYearReport.findById(id);
+  const jobsiteYearReport = await JobsiteYearReport.findById(id);
 
-        if (!jobsiteYearReport && options.throwError) {
-          throw new Error(
-            "JobsiteYearReport.getById: unable to find jobsiteYearReport"
-          );
-        }
+  if (!jobsiteYearReport && options.throwError) {
+    throw new Error(
+      "JobsiteYearReport.getById: unable to find jobsiteYearReport"
+    );
+  }
 
-        resolve(jobsiteYearReport);
-      } catch (e) {
-        reject(e);
-      }
-    }
-  );
+  return jobsiteYearReport;
 };
 
-const byJobsiteAndDate = (
+const byJobsiteAndDate = async (
   JobsiteYearReport: JobsiteYearReportModel,
   jobsiteId: Id,
   date: Date
-) => {
-  return new Promise<JobsiteYearReportDocument | null>(
-    async (resolve, reject) => {
-      try {
-        const jobsiteYearlyReport = await JobsiteYearReport.findOne({
-          jobsite: jobsiteId,
-          startOfYear: dayjs(date).startOf("year").toDate(),
-        });
+): Promise<JobsiteYearReportDocument | null> => {
+  const jobsiteYearlyReport = await JobsiteYearReport.findOne({
+    jobsite: jobsiteId,
+    startOfYear: dayjs(date).startOf("year").toDate(),
+  });
 
-        resolve(jobsiteYearlyReport);
-      } catch (e) {
-        reject(e);
-      }
-    }
-  );
+  return jobsiteYearlyReport;
 };
 
-const byDate = (JobsiteYearReport: JobsiteYearReportModel, date: Date) => {
-  return new Promise<JobsiteYearReportDocument[]>(async (resolve, reject) => {
-    try {
-      const jobsiteYearlyReports = await JobsiteYearReport.find({
-        startOfYear: dayjs(date).startOf("year").toDate(),
-      });
-
-      resolve(jobsiteYearlyReports);
-    } catch (e) {
-      reject(e);
-    }
+const byDate = async (
+  JobsiteYearReport: JobsiteYearReportModel,
+  date: Date
+): Promise<JobsiteYearReportDocument[]> => {
+  const jobsiteYearlyReports = await JobsiteYearReport.find({
+    startOfYear: dayjs(date).startOf("year").toDate(),
   });
+
+  return jobsiteYearlyReports;
 };
 
-const byUpdateRequested = (JobsiteYearReport: JobsiteYearReportModel) => {
-  return new Promise<JobsiteYearReportDocument[]>(async (resolve, reject) => {
-    try {
-      const reports = await JobsiteYearReport.find({
-        "update.status": UpdateStatus.Requested,
-      });
-
-      resolve(reports);
-    } catch (e) {
-      reject(e);
-    }
+const byUpdateRequested = async (
+  JobsiteYearReport: JobsiteYearReportModel
+): Promise<JobsiteYearReportDocument[]> => {
+  const reports = await JobsiteYearReport.find({
+    "update.status": UpdateStatus.Requested,
   });
+
+  return reports;
 };
 
-const byUpdatePending = (JobsiteYearReport: JobsiteYearReportModel) => {
-  return new Promise<JobsiteYearReportDocument[]>(async (resolve, reject) => {
-    try {
-      const reports = await JobsiteYearReport.find({
-        "update.status": UpdateStatus.Pending,
-      });
-
-      resolve(reports);
-    } catch (e) {
-      reject(e);
-    }
+const byUpdatePending = async (
+  JobsiteYearReport: JobsiteYearReportModel
+): Promise<JobsiteYearReportDocument[]> => {
+  const reports = await JobsiteYearReport.find({
+    "update.status": UpdateStatus.Pending,
   });
+
+  return reports;
 };
 
 /**
  * ----- Methods -----
  */
 
-const dayReports = (jobsiteYearReport: JobsiteYearReportDocument) => {
-  return new Promise<JobsiteDayReportDocument[]>(async (resolve, reject) => {
-    try {
-      const reports = await JobsiteDayReport.find({
-        _id: { $in: jobsiteYearReport.dayReports },
-      });
-
-      resolve(reports);
-    } catch (e) {
-      reject(e);
-    }
+const dayReports = async (
+  jobsiteYearReport: JobsiteYearReportDocument
+): Promise<JobsiteDayReportDocument[]> => {
+  const reports = await JobsiteDayReport.find({
+    _id: { $in: jobsiteYearReport.dayReports },
   });
+
+  return reports;
 };
 
-const jobsite = (jobsiteYearReport: JobsiteYearReportDocument) => {
-  return new Promise<JobsiteDocument>(async (resolve, reject) => {
-    try {
-      const jobsite = await Jobsite.getById(jobsiteYearReport.jobsite!);
-      if (!jobsite) throw new Error("Could not find month report jobsite");
+const jobsite = async (
+  jobsiteYearReport: JobsiteYearReportDocument
+): Promise<JobsiteDocument> => {
+  if (!jobsiteYearReport.jobsite)
+    throw new Error("this report does not have a jobsite");
 
-      resolve(jobsite);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  const jobsite = await Jobsite.getById(jobsiteYearReport.jobsite);
+  if (!jobsite) throw new Error("Could not find month report jobsite");
+
+  return jobsite;
 };
 
 export default {

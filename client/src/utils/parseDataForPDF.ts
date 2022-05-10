@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import {
   EmployeeWorkCardSnippetFragment,
+  MaterialShipmentCardSnippetFragment,
   VehicleWorkCardSnippetFragment,
 } from "../generated/graphql";
 
@@ -89,7 +90,7 @@ const vehicleWork = (
       totalHours += work.hours;
 
       return {
-        jobTitle: work.jobTitle,
+        jobTitle: work.jobTitle || "",
         hours: work.hours,
       };
     });
@@ -107,9 +108,88 @@ const vehicleWork = (
   return parsedVehicleWork;
 };
 
+export interface IParsedMaterials {
+  materialShipments: MaterialShipmentCardSnippetFragment[];
+  totalHours: number;
+  totalQuantity: number;
+}
+
+const materialShipments = (
+  materialShipments: MaterialShipmentCardSnippetFragment[]
+) => {
+  const parsedMaterialShipments: IParsedMaterials[] = [];
+
+  const allMaterials = Array.from(
+    new Set(
+      materialShipments.map((shipment) => {
+        if (shipment.noJobsiteMaterial) {
+          return JSON.stringify({
+            material: shipment.shipmentType,
+            supplier: shipment.supplier,
+          });
+        } else {
+          return JSON.stringify({
+            material: shipment.jobsiteMaterial?.material.name,
+            supplier: shipment.jobsiteMaterial?.supplier.name,
+          });
+        }
+      })
+    )
+  );
+
+  console.log(allMaterials);
+
+  for (let i = 0; i < allMaterials.length; i++) {
+    const material = JSON.parse(allMaterials[i]);
+
+    const materialsShipments = materialShipments.filter((shipment) => {
+      if (shipment.noJobsiteMaterial) {
+        if (
+          shipment.shipmentType === material.material &&
+          shipment.supplier === material.supplier
+        )
+          return true;
+        return false;
+      } else {
+        if (
+          shipment.jobsiteMaterial?.material.name === material.material &&
+          shipment.jobsiteMaterial?.supplier.name === material.supplier
+        )
+          return true;
+        return false;
+      }
+    });
+
+    let totalHours = 0,
+      totalQuantity = 0;
+    for (let i = 0; i < materialsShipments.length; i++) {
+      totalQuantity += materialsShipments[i].quantity;
+      totalHours +=
+        materialsShipments[i].startTime && materialsShipments[i].endTime
+          ? Math.abs(
+              dayjs(materialsShipments[i].startTime).diff(
+                dayjs(materialsShipments[i].endTime),
+                "hours",
+                true
+              )
+            )
+          : 0;
+    }
+
+    parsedMaterialShipments.push({
+      materialShipments: materialsShipments,
+      totalHours,
+      totalQuantity,
+    });
+  }
+
+  return parsedMaterialShipments;
+};
+
 const parseDataForPDF = {
   employeeWork,
   vehicleWork,
+  materialShipments,
 };
 
 export default parseDataForPDF;

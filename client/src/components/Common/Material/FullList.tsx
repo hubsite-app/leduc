@@ -1,17 +1,25 @@
-import { Flex, Heading } from "@chakra-ui/react";
+import { Flex, Heading, IconButton, Tooltip } from "@chakra-ui/react";
 import React from "react";
+import { FiTrash } from "react-icons/fi";
 
-import { useMaterialsQuery } from "../../../generated/graphql";
+import {
+  MaterialsFullDocument,
+  useMaterialRemoveMutation,
+  useMaterialsFullQuery,
+} from "../../../generated/graphql";
 import Card from "../Card";
 import InfiniteScroll from "../InfiniteScroll";
 import Loading from "../Loading";
+import MaterialCard from "./Card";
 
 const MaterialFullList = () => {
   /**
    * ----- Hook Initialization -----
    */
 
-  const { data, loading, fetchMore } = useMaterialsQuery();
+  const { data, loading, fetchMore, networkStatus } = useMaterialsFullQuery({
+    notifyOnNetworkStatusChange: true,
+  });
 
   const [finished, setFinished] = React.useState(false);
 
@@ -20,7 +28,7 @@ const MaterialFullList = () => {
    */
 
   const nextPage = React.useCallback(() => {
-    if (!finished && !loading) {
+    if (!finished && networkStatus === 7) {
       fetchMore({
         variables: {
           options: {
@@ -31,7 +39,7 @@ const MaterialFullList = () => {
         if (data.data.materials.length === 0) setFinished(true);
       });
     }
-  }, [data?.materials.length, fetchMore, finished, loading]);
+  }, [data?.materials.length, fetchMore, finished, networkStatus]);
 
   /**
    * ----- Rendering -----
@@ -42,9 +50,7 @@ const MaterialFullList = () => {
       return (
         <Flex flexDir="column" alignContent="center">
           {data.materials.map((material) => (
-            <Card key={material._id}>
-              <Heading size="md">{material.name}</Heading>
-            </Card>
+            <MaterialCard material={material} key={material._id} />
           ))}
           {loading && <Loading />}
         </Flex>
@@ -54,7 +60,14 @@ const MaterialFullList = () => {
     }
   }, [data?.materials, loading]);
 
-  return <InfiniteScroll content={content} nextPage={nextPage} />;
+  return (
+    <InfiniteScroll
+      enabled={!!data?.materials && data.materials.length > 0}
+      loading={networkStatus !== 7}
+      content={content}
+      nextPage={nextPage}
+    />
+  );
 };
 
 export default MaterialFullList;

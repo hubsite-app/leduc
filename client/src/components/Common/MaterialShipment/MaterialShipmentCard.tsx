@@ -19,6 +19,9 @@ import MaterialShipmentUpdate from "../../Forms/MaterialShipment/MaterialShipmen
 import Warning from "../Warning";
 import Permission from "../Permission";
 import FormContainer from "../FormContainer";
+import dayjs from "dayjs";
+import hourString from "../../../utils/hourString";
+import formatNumber from "../../../utils/formatNumber";
 
 interface IMaterialShipmentCard extends BoxProps {
   materialShipment: MaterialShipmentCardSnippetFragment;
@@ -50,6 +53,22 @@ const MaterialShipmentCard = ({
    */
 
   const content = React.useMemo(() => {
+    let hours;
+    if (materialShipment.startTime && materialShipment.endTime) {
+      const hourNumber = Math.abs(
+        dayjs(materialShipment.endTime).diff(
+          dayjs(materialShipment.startTime),
+          "hours",
+          true
+        )
+      );
+      hours = (
+        <>
+          ({formatNumber(hourNumber)} {hourString(hourNumber)})
+        </>
+      );
+    }
+
     if (
       materialShipment.schemaVersion === 1 ||
       materialShipment.noJobsiteMaterial
@@ -60,7 +79,7 @@ const MaterialShipmentCard = ({
             {materialShipment.supplier} {materialShipment.shipmentType}
           </Text>
           {" - "}
-          {materialShipment.quantity} {materialShipment.unit}
+          {materialShipment.quantity} {materialShipment.unit} {hours}
         </Text>
       );
     } else {
@@ -71,7 +90,8 @@ const MaterialShipmentCard = ({
             {materialShipment.jobsiteMaterial?.material.name}
           </Text>
           {" - "}
-          {materialShipment.quantity} {materialShipment.jobsiteMaterial?.unit}
+          {materialShipment.quantity} {materialShipment.jobsiteMaterial?.unit}{" "}
+          {hours}
         </Text>
       );
     }

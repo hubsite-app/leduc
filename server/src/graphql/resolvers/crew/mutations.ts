@@ -18,98 +18,91 @@ export class CrewUpdateData {
   public name!: string;
 }
 
-const create = (data: CrewCreateData) => {
-  return new Promise<CrewDocument>(async (resolve, reject) => {
-    try {
-      const crew = await Crew.createDocument(data);
+const create = async (data: CrewCreateData): Promise<CrewDocument> => {
+  const crew = await Crew.createDocument(data);
 
-      await crew.save();
+  await crew.save();
 
-      resolve(crew);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return crew;
 };
 
-const update = (id: Id, data: CrewUpdateData) => {
-  return new Promise<CrewDocument>(async (resolve, reject) => {
-    try {
-      const crew = (await Crew.getById(id, { throwError: true }))!;
+const update = async (id: Id, data: CrewUpdateData): Promise<CrewDocument> => {
+  const crew = await Crew.getById(id, { throwError: true });
+  if (!crew) throw new Error("Unable to find crew");
 
-      await crew.updateDocument(data);
+  await crew.updateDocument(data);
 
-      await crew.save();
+  await crew.save();
 
-      resolve(crew);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return crew;
 };
 
-const addEmployee = (crewId: Id, employeeId: Id) => {
-  return new Promise<CrewDocument>(async (resolve, reject) => {
-    try {
-      const crew = (await Crew.getById(crewId, { throwError: true }))!;
+const addEmployee = async (
+  crewId: Id,
+  employeeId: Id
+): Promise<CrewDocument> => {
+  const crew = await Crew.getById(crewId, { throwError: true });
 
-      await crew.addEmployee(employeeId);
+  if (!crew) throw new Error("Unable to find crew");
 
-      await crew.save();
+  await crew.addEmployee(employeeId);
 
-      resolve(crew);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  await crew.save();
+
+  return crew;
 };
 
-const addVehicle = (crewId: Id, vehicleId: Id) => {
-  return new Promise<CrewDocument>(async (resolve, reject) => {
-    try {
-      const crew = (await Crew.getById(crewId, { throwError: true }))!;
+const addVehicle = async (crewId: Id, vehicleId: Id): Promise<CrewDocument> => {
+  const crew = await Crew.getById(crewId, { throwError: true });
 
-      await crew.addVehicle(vehicleId);
+  if (!crew) throw new Error("Unable to find crew");
 
-      await crew.save();
+  await crew.addVehicle(vehicleId);
 
-      resolve(crew);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  await crew.save();
+
+  return crew;
 };
 
-const removeEmployee = (crewId: Id, employeeId: Id) => {
-  return new Promise<CrewDocument>(async (resolve, reject) => {
-    try {
-      const crew = (await Crew.getById(crewId, { throwError: true }))!;
+const removeEmployee = async (
+  crewId: Id,
+  employeeId: Id
+): Promise<CrewDocument> => {
+  const crew = await Crew.getById(crewId, { throwError: true });
 
-      await crew.removeEmployee(employeeId);
+  if (!crew) throw new Error("Unable to find crew");
 
-      await crew.save();
+  await crew.removeEmployee(employeeId);
 
-      resolve(crew);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  await crew.save();
+
+  return crew;
 };
 
-const removeVehicle = (crewId: Id, vehicleId: Id) => {
-  return new Promise<CrewDocument>(async (resolve, reject) => {
-    try {
-      const crew = (await Crew.getById(crewId, { throwError: true }))!;
+const removeVehicle = async (
+  crewId: Id,
+  vehicleId: Id
+): Promise<CrewDocument> => {
+  const crew = await Crew.getById(crewId, { throwError: true });
 
-      await crew.removeVehicle(vehicleId);
+  if (!crew) throw new Error("Unable to find crew");
 
-      await crew.save();
+  await crew.removeVehicle(vehicleId);
 
-      resolve(crew);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  await crew.save();
+
+  return crew;
+};
+
+const archive = async (id: Id) => {
+  const crew = await Crew.getById(id);
+  if (!crew) throw new Error("Unable to find crew");
+
+  await crew.archive();
+
+  await crew.save();
+
+  return crew;
 };
 
 export default {
@@ -119,4 +112,5 @@ export default {
   addVehicle,
   removeEmployee,
   removeVehicle,
+  archive,
 };

@@ -4,40 +4,31 @@ import { prepareDatabase, disconnectAndStopServer } from "@testing/jestDB";
 import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 
 import createApp from "../../app";
-import _ids from "@testing/_ids";
 import jestLogin from "@testing/jestLogin";
-import { JobsiteMaterialCreateData } from "@graphql/resolvers/jobsiteMaterial/mutations";
-import { Invoice, Jobsite, JobsiteMaterial } from "@models";
+import { Invoice } from "@models";
 import { InvoiceData } from "@graphql/resolvers/invoice/mutations";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { Server } from "http";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-let mongoServer: any, documents: SeededDatabase, app: any;
-function setupDatabase() {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+let mongoServer: MongoMemoryServer, documents: SeededDatabase, app: Server;
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
+  return;
+};
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   mongoServer = await prepareDatabase();
 
   app = await createApp();
 
   await setupDatabase();
-
-  done();
 });
 
-afterAll(async (done) => {
+afterAll(async () => {
   await disconnectAndStopServer(mongoServer);
-  done();
 });
 
 describe("Invoice Resolver", () => {
@@ -91,17 +82,17 @@ describe("Invoice Resolver", () => {
             documents.invoices.jobsite_3_invoice_1._id.toString()
           );
 
-          const invoice = (await Invoice.getById(
+          const invoice = await Invoice.getById(
             documents.invoices.jobsite_3_invoice_1._id
-          ))!;
+          );
 
           expect(invoice).toBeDefined();
 
-          expect(invoice.company!.toString()).toBe(data.companyId);
-          expect(invoice.cost).toBe(data.cost);
-          expect(invoice.internal).toBe(data.internal);
-          expect(invoice.invoiceNumber).toBe(data.invoiceNumber);
-          expect(invoice.description).toBe(data.description);
+          expect(invoice?.company?.toString()).toBe(data.companyId);
+          expect(invoice?.cost).toBe(data.cost);
+          expect(invoice?.internal).toBe(data.internal);
+          expect(invoice?.invoiceNumber).toBe(data.invoiceNumber);
+          expect(invoice?.description).toBe(data.description);
         });
       });
     });

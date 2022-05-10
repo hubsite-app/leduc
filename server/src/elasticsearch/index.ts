@@ -6,28 +6,22 @@ import { ES_ensureJobsiteIndex } from "./helpers/jobsite";
 import { ES_ensureMaterialIndex } from "./helpers/material";
 import { ES_ensureVehicleIndex } from "./helpers/vehicle";
 
-const elasticsearch = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      await ES_ensureCompanyIndex();
+const elasticsearch = async () => {
+  await ES_ensureCompanyIndex();
 
-      await ES_ensureEmployeeIndex();
+  await ES_ensureEmployeeIndex();
 
-      await ES_ensureVehicleIndex();
+  await ES_ensureVehicleIndex();
 
-      await ES_ensureJobsiteIndex();
+  await ES_ensureJobsiteIndex();
 
-      await ES_ensureDailyReportIndex();
+  await ES_ensureDailyReportIndex();
 
-      await ES_ensureCrewIndex();
+  await ES_ensureCrewIndex();
 
-      await ES_ensureMaterialIndex();
+  await ES_ensureMaterialIndex();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 export default elasticsearch;

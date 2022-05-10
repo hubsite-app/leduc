@@ -112,32 +112,36 @@ const Rates = ({ rates = [], onChange, isLoading, errors, label }: IRates) => {
           border="1px solid"
           borderColor="gray.400"
         >
-          <SimpleGrid columns={[1, 1, 2]} spacing={2} w="95%">
-            <TextField
-              value={rate.date}
-              isDisabled={isLoading}
-              type="date"
-              label="Date"
-              onChange={(e) => setDate(e.target.value, index)}
-              errorMessage={errors && errors[index]?.date?.message}
-            />
-            <Number
-              value={rate.rate}
-              isDisabled={isLoading}
-              label="Rate"
-              format={(val) => `$${val}`}
-              parse={(val) => val.replace(/[$]/, "")}
-              onChange={(_, number) => setRate(number, index)}
-              errorMessage={errors && errors[index]?.rate?.message}
-            />
-          </SimpleGrid>
-          <IconButton
-            m="auto"
-            aria-label="remove"
-            icon={<FiTrash />}
-            backgroundColor="transparent"
-            onClick={() => removeRate(index)}
-          />
+          <Flex flexDir="column">
+            <SimpleGrid columns={[1, 1, 2]} spacing={2} w="100%">
+              <TextField
+                value={rate.date}
+                isDisabled={isLoading}
+                type="date"
+                label="Date"
+                onChange={(e) => setDate(e.target.value, index)}
+                errorMessage={errors && errors[index]?.date?.message}
+              />
+              <Number
+                value={rate.rate}
+                isDisabled={isLoading}
+                label="Rate"
+                precision={2}
+                inputLeftAddon="$"
+                onChange={(_, num) => setRate(num, index)}
+                errorMessage={errors && errors[index]?.rate?.message}
+              />
+            </SimpleGrid>
+            <Flex flexDir="row" justifyContent="end">
+              <IconButton
+                size="sm"
+                aria-label="remove"
+                icon={<FiTrash />}
+                backgroundColor="transparent"
+                onClick={() => removeRate(index)}
+              />
+            </Flex>
+          </Flex>
         </FormContainer>
       ))}
       <Flex justifyContent="end">

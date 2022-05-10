@@ -1,17 +1,11 @@
 import { Signup, SignupDocument } from "@models";
 
-const create = (employeeId: string) => {
-  return new Promise<SignupDocument>(async (resolve, reject) => {
-    try {
-      const signup = await Signup.createDocument(employeeId);
+const create = async (employeeId: string): Promise<SignupDocument> => {
+  const signup = await Signup.createDocument(employeeId);
 
-      await signup.save();
+  await signup.save();
 
-      resolve(signup);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return signup;
 };
 
 export default {

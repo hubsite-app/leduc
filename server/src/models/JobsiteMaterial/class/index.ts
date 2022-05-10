@@ -26,6 +26,13 @@ export class JobsiteMaterialClass extends JobsiteMaterialSchema {
     return get.byId(this, id, options);
   }
 
+  public static async getByMaterial(
+    this: JobsiteMaterialModel,
+    materialId: Id
+  ) {
+    return get.byMaterial(this, materialId);
+  }
+
   public async getMaterial(this: JobsiteMaterialDocument) {
     return get.material(this);
   }

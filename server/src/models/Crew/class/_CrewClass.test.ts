@@ -2,19 +2,12 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 
 import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 import { disconnectAndStopServer, prepareDatabase } from "@testing/jestDB";
-import { Crew } from "@models";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
-const setupDatabase = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 beforeAll(async () => {

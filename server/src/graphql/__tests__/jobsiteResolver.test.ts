@@ -11,35 +11,28 @@ import { Invoice, Jobsite, JobsiteMaterial, System } from "@models";
 import { InvoiceData } from "@graphql/resolvers/invoice/mutations";
 import { JobsiteCreateData } from "@graphql/resolvers/jobsite/mutations";
 import { TruckingRateTypes } from "@typescript/jobsite";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { Server } from "http";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-let mongoServer: any, documents: SeededDatabase, app: any;
-function setupDatabase() {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+let mongoServer: MongoMemoryServer, documents: SeededDatabase, app: Server;
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
+  return;
+};
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   mongoServer = await prepareDatabase();
 
   app = await createApp();
 
   await setupDatabase();
-
-  done();
 });
 
-afterAll(async (done) => {
+afterAll(async () => {
   await disconnectAndStopServer(mongoServer);
-  done();
 });
 
 describe("Jobsite Resolver", () => {
@@ -132,24 +125,24 @@ describe("Jobsite Resolver", () => {
 
           expect(res.body.data.jobsiteCreate._id).toBeDefined();
 
-          const jobsite = (await Jobsite.getById(
+          const jobsite = await Jobsite.getById(
             res.body.data.jobsiteCreate._id,
             { throwError: true }
-          ))!;
+          );
 
           const system = await System.getSystem();
 
-          expect(jobsite.truckingRates.length).toBe(
+          expect(jobsite?.truckingRates.length).toBe(
             system.materialShipmentVehicleTypeDefaults.length
           );
 
-          expect(jobsite.truckingRates[0].title).toBe(
+          expect(jobsite?.truckingRates[0].title).toBe(
             system.materialShipmentVehicleTypeDefaults[0].title
           );
-          expect(jobsite.truckingRates[0].rates.length).toBe(
+          expect(jobsite?.truckingRates[0].rates.length).toBe(
             system.materialShipmentVehicleTypeDefaults[0].rates.length
           );
-          expect(jobsite.truckingRates[0].rates[0].type).toBe(
+          expect(jobsite?.truckingRates[0].rates[0].type).toBe(
             TruckingRateTypes.Hour
           );
         });
@@ -223,10 +216,10 @@ describe("Jobsite Resolver", () => {
           expect(jobsite?.materials.length).toBe(2);
 
           const jobsiteMaterial = await JobsiteMaterial.getById(
-            jobsite!.materials[1]!.toString()
+            jobsite?.materials[1]?.toString() || ""
           );
 
-          expect(jobsiteMaterial!.supplier!.toString()).toBe(data.supplierId);
+          expect(jobsiteMaterial?.supplier?.toString()).toBe(data.supplierId);
         });
       });
     });
@@ -287,10 +280,10 @@ describe("Jobsite Resolver", () => {
           expect(jobsite?.expenseInvoices.length).toBe(1);
 
           const invoice = await Invoice.getById(
-            jobsite!.expenseInvoices[0]!.toString()
+            jobsite?.expenseInvoices[0]?.toString() || ""
           );
 
-          expect(invoice!.company!.toString()).toBe(data.companyId);
+          expect(invoice?.company?.toString()).toBe(data.companyId);
         });
       });
     });

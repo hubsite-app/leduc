@@ -42,8 +42,7 @@ export class EmployeeReportClass {
   public crewType!: CrewTypes;
 }
 
-export interface EmployeeReportDocument
-  extends DocumentType<EmployeeReportClass> {}
+export type EmployeeReportDocument = DocumentType<EmployeeReportClass>;
 
 @ObjectType()
 export class VehicleReportClass {
@@ -75,8 +74,7 @@ export class VehicleReportClass {
   public crewType!: CrewTypes;
 }
 
-export interface VehicleReportDocument
-  extends DocumentType<VehicleReportClass> {}
+export type VehicleReportDocument = DocumentType<VehicleReportClass>;
 
 @ObjectType()
 export class MaterialReportClass {
@@ -112,8 +110,7 @@ export class MaterialReportClass {
   public crewType!: CrewTypes;
 }
 
-export interface MaterialReportDocument
-  extends DocumentType<MaterialReportClass> {}
+export type MaterialReportDocument = DocumentType<MaterialReportClass>;
 
 @ObjectType()
 export class NonCostedMaterialReportClass {
@@ -145,8 +142,8 @@ export class NonCostedMaterialReportClass {
   public crewType!: CrewTypes;
 }
 
-export interface NonCostedMaterialReportDocument
-  extends DocumentType<NonCostedMaterialReportClass> {}
+export type NonCostedMaterialReportDocument =
+  DocumentType<NonCostedMaterialReportClass>;
 
 @ObjectType()
 export class TruckingReportClass {
@@ -189,5 +186,4 @@ export class TruckingReportClass {
   public crewType!: CrewTypes;
 }
 
-export interface TruckingReportDocument
-  extends DocumentType<TruckingReportClass> {}
+export type TruckingReportDocument = DocumentType<TruckingReportClass>;

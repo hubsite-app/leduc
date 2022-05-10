@@ -126,4 +126,10 @@ export default class CrewResolver {
   ) {
     return mutations.removeVehicle(id, vehicleId);
   }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => CrewClass)
+  async crewArchive(@Arg("id", () => ID) id: Id) {
+    return mutations.archive(id);
+  }
 }

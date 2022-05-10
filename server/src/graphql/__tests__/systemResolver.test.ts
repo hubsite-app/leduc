@@ -4,46 +4,30 @@ import { prepareDatabase, disconnectAndStopServer } from "@testing/jestDB";
 import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 
 import createApp from "../../app";
-import _ids from "@testing/_ids";
 import jestLogin from "@testing/jestLogin";
-import { JobsiteMaterialCreateData } from "@graphql/resolvers/jobsiteMaterial/mutations";
-import { Invoice, Jobsite, JobsiteMaterial, System } from "@models";
-import { InvoiceData } from "@graphql/resolvers/invoice/mutations";
-import { JobsiteCreateData } from "@graphql/resolvers/jobsite/mutations";
-import {
-  MaterialShipmentCreateData,
-  MaterialShipmentShipmentData,
-} from "@graphql/resolvers/materialShipment/mutations";
 import { DefaultRateData } from "@graphql/types/mutation";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { Server } from "http";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-let mongoServer: any, documents: SeededDatabase, app: any;
-function setupDatabase() {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+let mongoServer: MongoMemoryServer, documents: SeededDatabase, app: Server;
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
+  return;
+};
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   mongoServer = await prepareDatabase();
 
   app = await createApp();
 
   await setupDatabase();
-
-  done();
 });
 
-afterAll(async (done) => {
+afterAll(async () => {
   await disconnectAndStopServer(mongoServer);
-  done();
 });
 
 describe("System Resolver", () => {
@@ -99,12 +83,12 @@ describe("System Resolver", () => {
 
           const system = res.body.data.systemUpdateCompanyVehicleTypeDefaults;
 
-          expect(system!.companyVehicleTypeDefaults.length).toBe(data.length);
+          expect(system?.companyVehicleTypeDefaults.length).toBe(data.length);
 
-          expect(system!.companyVehicleTypeDefaults[0].title).toBe(
+          expect(system?.companyVehicleTypeDefaults[0].title).toBe(
             data[0].title
           );
-          expect(system!.companyVehicleTypeDefaults[0].rates.length).toBe(
+          expect(system?.companyVehicleTypeDefaults[0].rates.length).toBe(
             data[0].rates.length
           );
         });
@@ -163,15 +147,15 @@ describe("System Resolver", () => {
           const system =
             res.body.data.systemUpdateMaterialShipmentVehicleTypeDefaults;
 
-          expect(system!.materialShipmentVehicleTypeDefaults.length).toBe(
+          expect(system?.materialShipmentVehicleTypeDefaults.length).toBe(
             data.length
           );
 
-          expect(system!.materialShipmentVehicleTypeDefaults[0].title).toBe(
+          expect(system?.materialShipmentVehicleTypeDefaults[0].title).toBe(
             data[0].title
           );
           expect(
-            system!.materialShipmentVehicleTypeDefaults[0].rates.length
+            system?.materialShipmentVehicleTypeDefaults[0].rates.length
           ).toBe(data[0].rates.length);
         });
       });

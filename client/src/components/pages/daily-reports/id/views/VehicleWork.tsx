@@ -21,7 +21,7 @@ const VehicleWork = ({ dailyReport, editPermission }: IVehicleWork) => {
     <Card h="fit-content">
       <Flex flexDir="row" justifyContent="space-between">
         <Heading my="auto" ml={2} size="md" w="100%">
-          Vehicle Hours ({dailyReport.vehicleWork.length || 0})
+          Equipment Hours ({dailyReport.vehicleWork.length || 0})
         </Heading>
         <Permission otherCriteria={editPermission}>
           <IconButton
@@ -42,7 +42,11 @@ const VehicleWork = ({ dailyReport, editPermission }: IVehicleWork) => {
         {dailyReport.vehicleWork.length > 0 ? (
           <ShowMore
             list={dailyReport.vehicleWork.map((work) => (
-              <VehicleWorkCard vehicleWork={work} key={work._id} />
+              <VehicleWorkCard
+                vehicleWork={work}
+                key={work._id}
+                editPermission={editPermission}
+              />
             ))}
           />
         ) : (

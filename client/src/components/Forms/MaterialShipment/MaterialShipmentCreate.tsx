@@ -37,18 +37,6 @@ const MaterialShipmentCreate = ({
     };
   }, [dailyReport.jobsite.materials]);
 
-  const initialVehicleObject: MaterialShipmentVehicleObjectData =
-    React.useMemo(() => {
-      return {
-        source: "",
-        vehicleType:
-          dailyReport.jobsite.truckingRates[0]?.title ||
-          MaterialShipmentVehicleTypes[0],
-        vehicleCode: "",
-        truckingRateId: dailyReport.jobsite.truckingRates[0]?._id || "",
-      };
-    }, [dailyReport.jobsite.truckingRates]);
-
   /**
    * ----- Hook Initialization -----
    */
@@ -57,7 +45,7 @@ const MaterialShipmentCreate = ({
 
   const [formData, setFormData] = React.useState<MaterialShipmentCreateData[]>([
     {
-      vehicleObject: initialVehicleObject,
+      vehicleObject: undefined,
       shipments: [initialShipment],
     },
   ]);
@@ -85,12 +73,12 @@ const MaterialShipmentCreate = ({
     );
 
     formDataCopy.push({
-      vehicleObject: initialVehicleObject,
+      vehicleObject: undefined,
       shipments: [initialShipment],
     });
 
     setFormData(formDataCopy);
-  }, [formData, initialShipment, initialVehicleObject]);
+  }, [formData, initialShipment]);
 
   const removeData = React.useCallback(
     (dataIndex: number) => {
@@ -164,25 +152,27 @@ const MaterialShipmentCreate = ({
         }
       }
 
-      if (isEmpty(formData[i].vehicleObject.source)) {
-        vehicleObject.source = "please provide a vehicle source";
-        valid = false;
-      }
+      if (formData[i].vehicleObject) {
+        if (isEmpty(formData[i].vehicleObject!.source)) {
+          vehicleObject.source = "please provide a vehicle source";
+          valid = false;
+        }
 
-      if (isEmpty(formData[i].vehicleObject.vehicleCode)) {
-        vehicleObject.vehicleCode = "please provide a vehicle code";
-        valid = false;
-      }
+        if (isEmpty(formData[i].vehicleObject!.vehicleCode)) {
+          vehicleObject.vehicleCode = "please provide a vehicle code";
+          valid = false;
+        }
 
-      if (isEmpty(formData[i].vehicleObject.vehicleType)) {
-        vehicleObject.vehicleType = "please provide a vehicle type";
-        valid = false;
-      }
+        if (isEmpty(formData[i].vehicleObject!.vehicleType)) {
+          vehicleObject.vehicleType = "please provide a vehicle type";
+          valid = false;
+        }
 
-      if (isEmpty(formData[i].vehicleObject.truckingRateId)) {
-        vehicleObject.vehicleType =
-          "something went wrong, please contact support";
-        valid = false;
+        if (isEmpty(formData[i].vehicleObject!.truckingRateId)) {
+          vehicleObject.vehicleType =
+            "something went wrong, please contact support";
+          valid = false;
+        }
       }
 
       formErrors[i] = {

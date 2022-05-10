@@ -1,0 +1,5 @@
+mutation DailyReportArchive($id: ID!) {
+  dailyReportArchive(id: $id) {
+    _id
+  }
+}

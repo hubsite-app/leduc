@@ -17,6 +17,7 @@ import populateOptions from "@utils/populateOptions";
 import { ICrewSearchObject } from "@typescript/crew";
 import ElasticsearchClient from "@elasticsearch/client";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
+import { IHit } from "@typescript/elasticsearch";
 
 /**
  * ----- Static Methods -----
@@ -25,160 +26,120 @@ import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 const byIdDefaultOptions: GetByIDOptions = {
   throwError: false,
 };
-const byId = (
+const byId = async (
   Crew: CrewModel,
   id: Types.ObjectId | string,
   options: GetByIDOptions = byIdDefaultOptions
-) => {
-  return new Promise<CrewDocument | null>(async (resolve, reject) => {
-    try {
-      options = populateOptions(options, byIdDefaultOptions);
+): Promise<CrewDocument | null> => {
+  options = populateOptions(options, byIdDefaultOptions);
 
-      const crew = await Crew.findById(id);
+  const crew = await Crew.findById(id);
 
-      if (!crew && options.throwError) {
-        throw new Error("Crew.getById: unable to find crew");
-      }
+  if (!crew && options.throwError) {
+    throw new Error("Crew.getById: unable to find crew");
+  }
 
-      resolve(crew);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return crew;
 };
 
-const search = (
+const search = async (
   Crew: CrewModel,
   searchString: string,
   options?: ISearchOptions
-) => {
-  return new Promise<ICrewSearchObject[]>(async (resolve, reject) => {
-    try {
-      const res = await ElasticsearchClient.search({
-        index: ElasticSearchIndices.Crew,
-        body: {
-          query: {
-            multi_match: {
-              query: searchString.toLowerCase(),
-              fuzziness: "AUTO",
-              fields: ["name^2"],
-            },
-          },
+): Promise<ICrewSearchObject[]> => {
+  const res = await ElasticsearchClient.search({
+    index: ElasticSearchIndices.Crew,
+    body: {
+      query: {
+        multi_match: {
+          query: searchString.toLowerCase(),
+          fuzziness: "AUTO",
+          fields: ["name^2"],
         },
-        size: options?.limit,
+      },
+    },
+    size: options?.limit,
+  });
+
+  let crewObjects: { id: string; score: number }[] = res.body.hits.hits.map(
+    (item: IHit) => {
+      return {
+        id: item._id,
+        score: item._score,
+      };
+    }
+  );
+
+  // Filter out blacklisted ids
+  if (options?.blacklistedIds) {
+    crewObjects = crewObjects.filter(
+      (object) => !options.blacklistedIds?.includes(object.id)
+    );
+  }
+
+  const crews: ICrewSearchObject[] = [];
+  for (let i = 0; i < crewObjects.length; i++) {
+    const crew = await Crew.getById(crewObjects[i].id);
+    if (crew)
+      crews.push({
+        crew,
+        score: crewObjects[i].score,
       });
+  }
 
-      let crewObjects: { id: string; score: number }[] = res.body.hits.hits.map(
-        (item: any) => {
-          return {
-            id: item._id,
-            score: item._score,
-          };
-        }
-      );
-
-      // Filter out blacklisted ids
-      if (options?.blacklistedIds) {
-        crewObjects = crewObjects.filter(
-          (object) => !options.blacklistedIds?.includes(object.id)
-        );
-      }
-
-      const crews: ICrewSearchObject[] = [];
-      for (let i = 0; i < crewObjects.length; i++) {
-        const crew = await Crew.getById(crewObjects[i].id);
-        if (crew)
-          crews.push({
-            crew,
-            score: crewObjects[i].score,
-          });
-      }
-
-      resolve(crews);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return crews;
 };
 
-const list = (Crew: CrewModel) => {
-  return new Promise<CrewDocument[]>(async (resolve, reject) => {
-    try {
-      const crews = await Crew.find({});
+const list = async (Crew: CrewModel): Promise<CrewDocument[]> => {
+  const crews = await Crew.find({});
 
-      resolve(crews);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return crews;
 };
 
-const byVehicle = (Crew: CrewModel, vehicle: VehicleDocument) => {
-  return new Promise<CrewDocument[]>(async (resolve, reject) => {
-    try {
-      const crews = await Crew.find({ vehicles: vehicle._id });
+const byVehicle = async (
+  Crew: CrewModel,
+  vehicle: VehicleDocument
+): Promise<CrewDocument[]> => {
+  const crews = await Crew.find({ vehicles: vehicle._id });
 
-      resolve(crews);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return crews;
 };
 
 /**
  * ----- Methods -----
  */
 
-const employees = (crew: CrewDocument) => {
-  return new Promise<EmployeeDocument[]>(async (resolve, reject) => {
-    try {
-      const employees: EmployeeDocument[] = await Employee.find({
-        _id: { $in: crew.employees },
-      });
-
-      resolve(employees);
-    } catch (e) {
-      reject(e);
-    }
+const employees = async (crew: CrewDocument): Promise<EmployeeDocument[]> => {
+  const employees: EmployeeDocument[] = await Employee.find({
+    _id: { $in: crew.employees },
   });
+
+  return employees;
 };
 
-const vehicles = (crew: CrewDocument) => {
-  return new Promise<VehicleDocument[]>(async (resolve, reject) => {
-    try {
-      const vehicles = await Vehicle.find({ _id: { $in: crew.vehicles } });
+const vehicles = async (crew: CrewDocument): Promise<VehicleDocument[]> => {
+  const vehicles = await Vehicle.find({ _id: { $in: crew.vehicles } });
 
-      resolve(vehicles);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return vehicles;
 };
 
-const jobsites = (crew: CrewDocument) => {
-  return new Promise<JobsiteDocument[]>(async (resolve, reject) => {
-    try {
-      const jobsites = await Jobsite.getByCrew(crew);
+const jobsites = async (crew: CrewDocument): Promise<JobsiteDocument[]> => {
+  const jobsites = await Jobsite.getByCrew(crew);
 
-      resolve(jobsites);
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return jobsites;
 };
 
-const dailyReports = (crew: CrewDocument) => {
-  return new Promise<DailyReportDocument[]>(async (resolve, reject) => {
-    try {
-      const dailyReports = await DailyReport.find({ crew: crew._id }).sort({
-        date: -1,
-      });
-
-      resolve(dailyReports);
-    } catch (e) {
-      reject(e);
-    }
+const dailyReports = async (
+  crew: CrewDocument
+): Promise<DailyReportDocument[]> => {
+  const dailyReports = await DailyReport.find({
+    crew: crew._id,
+    archived: false,
+  }).sort({
+    date: -1,
   });
+
+  return dailyReports;
 };
 
 export default {

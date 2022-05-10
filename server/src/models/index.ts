@@ -33,9 +33,9 @@ import {
 
 import { CompanyClass } from "./Company/class";
 
-export interface CompanyDocument extends DocumentType<CompanyClass> {}
+export type CompanyDocument = DocumentType<CompanyClass>;
 
-export interface CompanyModel extends ReturnModelType<typeof CompanyClass> {}
+export type CompanyModel = ReturnModelType<typeof CompanyClass>;
 
 export const Company = getModelForClass(CompanyClass, {
   schemaOptions: { collection: "companies" },
@@ -47,9 +47,9 @@ export const Company = getModelForClass(CompanyClass, {
 
 import { CrewClass } from "./Crew/class";
 
-export interface CrewDocument extends DocumentType<CrewClass> {}
+export type CrewDocument = DocumentType<CrewClass>;
 
-export interface CrewModel extends ReturnModelType<typeof CrewClass> {}
+export type CrewModel = ReturnModelType<typeof CrewClass>;
 
 export const Crew = getModelForClass(CrewClass, {
   schemaOptions: { collection: "crews" },
@@ -61,9 +61,9 @@ export const Crew = getModelForClass(CrewClass, {
 
 import { EmployeeClass } from "./Employee/class";
 
-export interface EmployeeDocument extends DocumentType<EmployeeClass> {}
+export type EmployeeDocument = DocumentType<EmployeeClass>;
 
-export interface EmployeeModel extends ReturnModelType<typeof EmployeeClass> {}
+export type EmployeeModel = ReturnModelType<typeof EmployeeClass>;
 
 export const Employee = getModelForClass(EmployeeClass, {
   schemaOptions: { collection: "employees" },
@@ -75,10 +75,9 @@ export const Employee = getModelForClass(EmployeeClass, {
 
 import { DailyReportClass } from "./DailyReport/class";
 
-export interface DailyReportDocument extends DocumentType<DailyReportClass> {}
+export type DailyReportDocument = DocumentType<DailyReportClass>;
 
-export interface DailyReportModel
-  extends ReturnModelType<typeof DailyReportClass> {}
+export type DailyReportModel = ReturnModelType<typeof DailyReportClass>;
 
 export const DailyReport = getModelForClass(DailyReportClass, {
   schemaOptions: { collection: "dailyreports" },
@@ -90,10 +89,9 @@ export const DailyReport = getModelForClass(DailyReportClass, {
 
 import { EmployeeWorkClass } from "./EmployeeWork/class";
 
-export interface EmployeeWorkDocument extends DocumentType<EmployeeWorkClass> {}
+export type EmployeeWorkDocument = DocumentType<EmployeeWorkClass>;
 
-export interface EmployeeWorkModel
-  extends ReturnModelType<typeof EmployeeWorkClass> {}
+export type EmployeeWorkModel = ReturnModelType<typeof EmployeeWorkClass>;
 
 export const EmployeeWork = getModelForClass(EmployeeWorkClass, {
   schemaOptions: { collection: "employeeworks" },
@@ -105,9 +103,9 @@ export const EmployeeWork = getModelForClass(EmployeeWorkClass, {
 
 import { FileClass } from "./File/class";
 
-export interface FileDocument extends DocumentType<FileClass> {}
+export type FileDocument = DocumentType<FileClass>;
 
-export interface FileModel extends ReturnModelType<typeof FileClass> {}
+export type FileModel = ReturnModelType<typeof FileClass>;
 
 export const File = getModelForClass(FileClass, {
   schemaOptions: { collection: "files" },
@@ -119,9 +117,9 @@ export const File = getModelForClass(FileClass, {
 
 import { InvoiceClass } from "./Invoice/class";
 
-export interface InvoiceDocument extends DocumentType<InvoiceClass> {}
+export type InvoiceDocument = DocumentType<InvoiceClass>;
 
-export interface InvoiceModel extends ReturnModelType<typeof InvoiceClass> {}
+export type InvoiceModel = ReturnModelType<typeof InvoiceClass>;
 
 export const Invoice = getModelForClass(InvoiceClass, {
   schemaOptions: { collection: "invoices" },
@@ -133,9 +131,9 @@ export const Invoice = getModelForClass(InvoiceClass, {
 
 import { JobsiteClass } from "./Jobsite/class";
 
-export interface JobsiteDocument extends DocumentType<JobsiteClass> {}
+export type JobsiteDocument = DocumentType<JobsiteClass>;
 
-export interface JobsiteModel extends ReturnModelType<typeof JobsiteClass> {}
+export type JobsiteModel = ReturnModelType<typeof JobsiteClass>;
 
 export const Jobsite = getModelForClass(JobsiteClass, {
   schemaOptions: { collection: "jobsites" },
@@ -147,11 +145,11 @@ export const Jobsite = getModelForClass(JobsiteClass, {
 
 import { JobsiteDayReportClass } from "./JobsiteDayReport/class";
 
-export interface JobsiteDayReportDocument
-  extends DocumentType<JobsiteDayReportClass> {}
+export type JobsiteDayReportDocument = DocumentType<JobsiteDayReportClass>;
 
-export interface JobsiteDayReportModel
-  extends ReturnModelType<typeof JobsiteDayReportClass> {}
+export type JobsiteDayReportModel = ReturnModelType<
+  typeof JobsiteDayReportClass
+>;
 
 export const JobsiteDayReport = getModelForClass(JobsiteDayReportClass, {
   schemaOptions: { collection: "jobsiteDayReports" },
@@ -163,11 +161,9 @@ export const JobsiteDayReport = getModelForClass(JobsiteDayReportClass, {
 
 import { JobsiteMaterialClass } from "./JobsiteMaterial/class";
 
-export interface JobsiteMaterialDocument
-  extends DocumentType<JobsiteMaterialClass> {}
+export type JobsiteMaterialDocument = DocumentType<JobsiteMaterialClass>;
 
-export interface JobsiteMaterialModel
-  extends ReturnModelType<typeof JobsiteMaterialClass> {}
+export type JobsiteMaterialModel = ReturnModelType<typeof JobsiteMaterialClass>;
 
 export const JobsiteMaterial = getModelForClass(JobsiteMaterialClass, {
   schemaOptions: { collection: "jobsiteMaterials" },
@@ -179,11 +175,11 @@ export const JobsiteMaterial = getModelForClass(JobsiteMaterialClass, {
 
 import { JobsiteMonthReportClass } from "./JobsiteMonthReport/class";
 
-export interface JobsiteMonthReportDocument
-  extends DocumentType<JobsiteMonthReportClass> {}
+export type JobsiteMonthReportDocument = DocumentType<JobsiteMonthReportClass>;
 
-export interface JobsiteMonthReportModel
-  extends ReturnModelType<typeof JobsiteMonthReportClass> {}
+export type JobsiteMonthReportModel = ReturnModelType<
+  typeof JobsiteMonthReportClass
+>;
 
 export const JobsiteMonthReport = getModelForClass(JobsiteMonthReportClass, {
   schemaOptions: { collection: "jobsiteMonthReports" },
@@ -195,11 +191,12 @@ export const JobsiteMonthReport = getModelForClass(JobsiteMonthReportClass, {
 
 import { JobsiteYearMasterReportClass } from "./JobsiteYearMasterReport/class";
 
-export interface JobsiteYearMasterReportDocument
-  extends DocumentType<JobsiteYearMasterReportClass> {}
+export type JobsiteYearMasterReportDocument =
+  DocumentType<JobsiteYearMasterReportClass>;
 
-export interface JobsiteYearMasterReportModel
-  extends ReturnModelType<typeof JobsiteYearMasterReportClass> {}
+export type JobsiteYearMasterReportModel = ReturnModelType<
+  typeof JobsiteYearMasterReportClass
+>;
 
 export const JobsiteYearMasterReport = getModelForClass(
   JobsiteYearMasterReportClass,
@@ -214,11 +211,11 @@ export const JobsiteYearMasterReport = getModelForClass(
 
 import { JobsiteYearReportClass } from "./JobsiteYearReport/class";
 
-export interface JobsiteYearReportDocument
-  extends DocumentType<JobsiteYearReportClass> {}
+export type JobsiteYearReportDocument = DocumentType<JobsiteYearReportClass>;
 
-export interface JobsiteYearReportModel
-  extends ReturnModelType<typeof JobsiteYearReportClass> {}
+export type JobsiteYearReportModel = ReturnModelType<
+  typeof JobsiteYearReportClass
+>;
 
 export const JobsiteYearReport = getModelForClass(JobsiteYearReportClass, {
   schemaOptions: { collection: "jobsiteYearReports" },
@@ -230,9 +227,9 @@ export const JobsiteYearReport = getModelForClass(JobsiteYearReportClass, {
 
 import { MaterialClass } from "./Material/class";
 
-export interface MaterialDocument extends DocumentType<MaterialClass> {}
+export type MaterialDocument = DocumentType<MaterialClass>;
 
-export interface MaterialModel extends ReturnModelType<typeof MaterialClass> {}
+export type MaterialModel = ReturnModelType<typeof MaterialClass>;
 
 export const Material = getModelForClass(MaterialClass, {
   schemaOptions: { collection: "materials" },
@@ -244,11 +241,11 @@ export const Material = getModelForClass(MaterialClass, {
 
 import { MaterialShipmentClass } from "./MaterialShipment/class";
 
-export interface MaterialShipmentDocument
-  extends DocumentType<MaterialShipmentClass> {}
+export type MaterialShipmentDocument = DocumentType<MaterialShipmentClass>;
 
-export interface MaterialShipmentModel
-  extends ReturnModelType<typeof MaterialShipmentClass> {}
+export type MaterialShipmentModel = ReturnModelType<
+  typeof MaterialShipmentClass
+>;
 
 export const MaterialShipment = getModelForClass(MaterialShipmentClass, {
   schemaOptions: { collection: "materialshipments" },
@@ -260,10 +257,9 @@ export const MaterialShipment = getModelForClass(MaterialShipmentClass, {
 
 import { ProductionClass } from "./Production/class";
 
-export interface ProductionDocument extends DocumentType<ProductionClass> {}
+export type ProductionDocument = DocumentType<ProductionClass>;
 
-export interface ProductionModel
-  extends ReturnModelType<typeof ProductionClass> {}
+export type ProductionModel = ReturnModelType<typeof ProductionClass>;
 
 export const Production = getModelForClass(ProductionClass, {
   schemaOptions: { collection: "productions" },
@@ -275,10 +271,9 @@ export const Production = getModelForClass(ProductionClass, {
 
 import { ReportNoteClass } from "./ReportNote/class";
 
-export interface ReportNoteDocument extends DocumentType<ReportNoteClass> {}
+export type ReportNoteDocument = DocumentType<ReportNoteClass>;
 
-export interface ReportNoteModel
-  extends ReturnModelType<typeof ReportNoteClass> {}
+export type ReportNoteModel = ReturnModelType<typeof ReportNoteClass>;
 
 export const ReportNote = getModelForClass(ReportNoteClass, {
   schemaOptions: { collection: "reportnotes" },
@@ -290,9 +285,9 @@ export const ReportNote = getModelForClass(ReportNoteClass, {
 
 import { SignupClass } from "./Signup/class";
 
-export interface SignupDocument extends DocumentType<SignupClass> {}
+export type SignupDocument = DocumentType<SignupClass>;
 
-export interface SignupModel extends ReturnModelType<typeof SignupClass> {}
+export type SignupModel = ReturnModelType<typeof SignupClass>;
 
 export const Signup = getModelForClass(SignupClass, {
   schemaOptions: { collection: "signups" },
@@ -304,9 +299,9 @@ export const Signup = getModelForClass(SignupClass, {
 
 import { SystemClass } from "./System/class";
 
-export interface SystemDocument extends DocumentType<SystemClass> {}
+export type SystemDocument = DocumentType<SystemClass>;
 
-export interface SystemModel extends ReturnModelType<typeof SystemClass> {}
+export type SystemModel = ReturnModelType<typeof SystemClass>;
 
 export const System = getModelForClass(SystemClass, {
   schemaOptions: { collection: "systems" },
@@ -318,9 +313,9 @@ export const System = getModelForClass(SystemClass, {
 
 import { UserClass } from "./User/class";
 
-export interface UserDocument extends DocumentType<UserClass> {}
+export type UserDocument = DocumentType<UserClass>;
 
-export interface UserModel extends ReturnModelType<typeof UserClass> {}
+export type UserModel = ReturnModelType<typeof UserClass>;
 
 export const User = getModelForClass(UserClass, {
   schemaOptions: { collection: "users" },
@@ -332,9 +327,9 @@ export const User = getModelForClass(UserClass, {
 
 import { VehicleClass } from "./Vehicle/class";
 
-export interface VehicleDocument extends DocumentType<VehicleClass> {}
+export type VehicleDocument = DocumentType<VehicleClass>;
 
-export interface VehicleModel extends ReturnModelType<typeof VehicleClass> {}
+export type VehicleModel = ReturnModelType<typeof VehicleClass>;
 
 export const Vehicle = getModelForClass(VehicleClass, {
   schemaOptions: { collection: "vehicles" },
@@ -346,10 +341,9 @@ export const Vehicle = getModelForClass(VehicleClass, {
 
 import { VehicleWorkClass } from "./VehicleWork/class";
 
-export interface VehicleWorkDocument extends DocumentType<VehicleWorkClass> {}
+export type VehicleWorkDocument = DocumentType<VehicleWorkClass>;
 
-export interface VehicleWorkModel
-  extends ReturnModelType<typeof VehicleWorkClass> {}
+export type VehicleWorkModel = ReturnModelType<typeof VehicleWorkClass>;
 
 export const VehicleWork = getModelForClass(VehicleWorkClass, {
   schemaOptions: { collection: "vehicleworks" },

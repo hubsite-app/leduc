@@ -1,8 +1,9 @@
-import { Box, Flex, Heading } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 import React from "react";
 import { useSystem } from "../../../../contexts/System";
 import Loading from "../../../Common/Loading";
 import SystemCompanyVehicleTypeDefaults from "../../../Common/System/CompanyVehicleTypeDefaults";
+import SystemLaborTypes from "../../../Common/System/LaborTypes";
 import SystemMaterialShipmentVehicleTypeDefaults from "../../../Common/System/MaterialShipmentVehicleTypeDefaults";
 import SystemUnits from "../../../Common/System/Units";
 
@@ -23,10 +24,9 @@ const SystemSettings = () => {
     if (system) {
       return (
         <Box>
-          <Flex flexDir="row" justifyContent="space-between">
-            <Heading size="md">System</Heading>
-          </Flex>
+          <Heading>System</Heading>
           <SystemUnits system={system} />
+          <SystemLaborTypes system={system} />
           <SystemMaterialShipmentVehicleTypeDefaults system={system} />
           <SystemCompanyVehicleTypeDefaults system={system} />
         </Box>

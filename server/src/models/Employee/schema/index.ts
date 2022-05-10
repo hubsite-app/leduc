@@ -3,12 +3,18 @@ import { ES_updateEmployee } from "@elasticsearch/helpers/employee";
 import { CrewClass, EmployeeDocument, UserClass } from "@models";
 import { post, prop, Ref } from "@typegoose/typegoose";
 import { RateClass } from "@typescript/models";
+import errorHandler from "@utils/errorHandler";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
 @post<EmployeeDocument>("save", async (employee) => {
-  await ES_updateEmployee(employee);
+  try {
+    employee.requestReportUpdate();
+    ES_updateEmployee(employee);
+  } catch (e) {
+    errorHandler("Employee post save error", e);
+  }
 })
 export class EmployeeSchema {
   @Field(() => ID, { nullable: false })
@@ -36,6 +42,10 @@ export class EmployeeSchema {
   @Field(() => UserClass)
   @prop({ ref: () => UserClass })
   public user?: Ref<UserClass>;
+
+  @Field(() => Date)
+  @prop({ required: false })
+  public archivedAt!: Date;
 
   /**
    * @deprecated crews hold the link to an employee

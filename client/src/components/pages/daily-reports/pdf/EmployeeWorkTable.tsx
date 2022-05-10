@@ -2,6 +2,7 @@ import { Text, View } from "@react-pdf/renderer";
 import dayjs from "dayjs";
 import React from "react";
 import { EmployeeWorkCardSnippetFragment } from "../../../../generated/graphql";
+import formatNumber from "../../../../utils/formatNumber";
 import parseDataForPDF from "../../../../utils/parseDataForPDF";
 
 interface IEmployeeWorkTable {
@@ -103,7 +104,7 @@ const EmployeeWorkTable = ({ employeeWorks }: IEmployeeWorkTable) => {
                         {dayjs(job.endTime).format("hh:mm a")}
                       </Text>
                       <Text style={{ fontSize: "7px", width: "21.4%" }}>
-                        {job.hours}
+                        {formatNumber(job.hours)}
                       </Text>
                     </View>
                   ))}
@@ -119,7 +120,7 @@ const EmployeeWorkTable = ({ employeeWorks }: IEmployeeWorkTable) => {
               >
                 <Text style={{ fontSize: "7px" }}>Total</Text>
                 <Text style={{ fontSize: "7px", width: EmployeeHoursWidth }}>
-                  {work.totalHours}
+                  {formatNumber(work.totalHours)}
                 </Text>
               </View>
             </View>

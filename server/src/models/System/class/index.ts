@@ -33,6 +33,10 @@ export class SystemClass extends SystemSchema {
     return update.unitDefaults(this, units);
   }
 
+  public async updateLaborTypes(this: SystemDocument, types: string[]) {
+    return update.laborTypes(this, types);
+  }
+
   public async updateCompanyVehicleTypeDefaults(
     this: SystemDocument,
     data: IDefaultRateData[]

@@ -6,16 +6,10 @@ import { Material } from "@models";
 import { IMaterialCreate } from "@typescript/material";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
-const setupDatabase = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 beforeAll(async () => {
@@ -54,8 +48,8 @@ describe("Material Class", () => {
 
         try {
           await Material.createDocument(data);
-        } catch (e: any) {
-          expect(e.message).toBe("This material already exists");
+        } catch (e) {
+          expect((e as Error).message).toBe("This material already exists");
         }
       });
     });

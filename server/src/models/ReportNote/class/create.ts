@@ -1,20 +1,17 @@
 import { ReportNoteDocument, ReportNoteModel } from "@models";
 import { IReportNoteCreate } from "@typescript/reportNote";
 
-const document = (ReportNote: ReportNoteModel, data: IReportNoteCreate) => {
-  return new Promise<ReportNoteDocument>(async (resolve, reject) => {
-    try {
-      const reportNote = new ReportNote({
-        note: data.note,
-      });
-
-      await data.dailyReport.setReportNote(reportNote);
-
-      resolve(reportNote);
-    } catch (e) {
-      reject(e);
-    }
+const document = async (
+  ReportNote: ReportNoteModel,
+  data: IReportNoteCreate
+): Promise<ReportNoteDocument> => {
+  const reportNote = new ReportNote({
+    note: data.note,
   });
+
+  await data.dailyReport.setReportNote(reportNote);
+
+  return reportNote;
 };
 
 export default {

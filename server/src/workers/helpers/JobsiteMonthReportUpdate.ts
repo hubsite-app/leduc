@@ -1,41 +1,36 @@
-import { logger } from "@logger";
 import { JobsiteMonthReport } from "@models";
 import { UpdateStatus } from "@typescript/models";
+import errorHandler from "@utils/errorHandler";
 
-const JobsiteMonthReportUpdateHelper = () => {
-  return new Promise<void>(async (resolve, reject) => {
+const JobsiteMonthReportUpdateHelper = async () => {
+  const jobsiteMonthReports = await JobsiteMonthReport.getByUpdateRequested();
+
+  // Set all to pending
+  for (let i = 0; i < jobsiteMonthReports.length; i++) {
     try {
-      const jobsiteMonthReports =
-        await JobsiteMonthReport.getByUpdateRequested();
-
-      // Set all to pending
-      for (let i = 0; i < jobsiteMonthReports.length; i++) {
-        try {
-          jobsiteMonthReports[i].update.status = UpdateStatus.Pending;
-          await jobsiteMonthReports[i].save();
-        } catch (e: any) {
-          logger.error(
-            `Jobsite month report ${jobsiteMonthReports[i]._id} worker error: ${e.message}`
-          );
-        }
-      }
-
-      // Update
-      for (let i = 0; i < jobsiteMonthReports.length; i++) {
-        try {
-          await jobsiteMonthReports[i].updateAndSaveDocument();
-        } catch (e: any) {
-          logger.error(
-            `Jobsite month report ${jobsiteMonthReports[i]._id} worker error: ${e.message}`
-          );
-        }
-      }
-
-      resolve();
+      jobsiteMonthReports[i].update.status = UpdateStatus.Pending;
+      await jobsiteMonthReports[i].save();
     } catch (e) {
-      reject(e);
+      errorHandler(
+        `Jobsite month report ${jobsiteMonthReports[i]._id} worker error`,
+        e
+      );
     }
-  });
+  }
+
+  // Update
+  for (let i = 0; i < jobsiteMonthReports.length; i++) {
+    try {
+      await jobsiteMonthReports[i].updateAndSaveDocument();
+    } catch (e) {
+      errorHandler(
+        `Jobsite month report ${jobsiteMonthReports[i]._id} worker error`,
+        e
+      );
+    }
+  }
+
+  return;
 };
 
 export default JobsiteMonthReportUpdateHelper;

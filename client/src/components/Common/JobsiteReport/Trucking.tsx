@@ -190,12 +190,20 @@ const JobsiteReportTruckingReports = ({
             <Tr key={reports.truckingType}>
               <Th>{reports.truckingType}</Th>
               <Th isNumeric>
-                {reports.totalQuantity} ({reports.totalHours})
+                {formatNumber(reports.totalQuantity)} (
+                {formatNumber(reports.totalHours)})
               </Th>
               <Th isNumeric>${formatNumber(reports.totalCost)}</Th>
               {reports.reports.map((report) => (
                 <Th isNumeric key={report?._id}>
-                  {report?.quantity || ""} {`(${report?.hours})` || ""}
+                  {report ? (
+                    <>
+                      {formatNumber(report.quantity)}{" "}
+                      {`(${formatNumber(report.hours || 0)})`}
+                    </>
+                  ) : (
+                    ""
+                  )}
                 </Th>
               ))}
             </Tr>
@@ -205,21 +213,27 @@ const JobsiteReportTruckingReports = ({
           <Tr>
             <Th>Totals</Th>
             <Th isNumeric>
-              {totals.quantity} ({totals.hours})
+              {formatNumber(totals.quantity)} ({formatNumber(totals.hours)})
             </Th>
             <Th isNumeric>${formatNumber(totals.cost)}</Th>
-            {relevantReports.map((report) => (
-              <Th isNumeric key={report._id}>
-                {report.summary.crewTypeSummaries.find(
-                  (summary) => summary.crewType === crewType
-                )?.truckingQuantity || 0}{" "}
-                (
-                {report.summary.crewTypeSummaries.find(
-                  (summary) => summary.crewType === crewType
-                )?.truckingHours || 0}
-                )
-              </Th>
-            ))}
+            {relevantReports.map((report) => {
+              const summary = report.summary.crewTypeSummaries.find(
+                (summary) => summary.crewType === crewType
+              );
+
+              return (
+                <Th isNumeric key={report._id}>
+                  {summary ? (
+                    <>
+                      {formatNumber(summary.truckingQuantity)} (
+                      {formatNumber(summary.truckingHours)})
+                    </>
+                  ) : (
+                    ""
+                  )}
+                </Th>
+              );
+            })}
           </Tr>
         </Tfoot>
       </Table>

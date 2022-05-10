@@ -1,0 +1,5 @@
+mutation JobsiteUpdate($id: ID!, $data: JobsiteUpdateData!) {
+  jobsiteUpdate(id: $id, data: $data) {
+    ...JobsiteCardSnippet
+  }
+}

@@ -5,16 +5,10 @@ import { disconnectAndStopServer, prepareDatabase } from "@testing/jestDB";
 import { UserRoles } from "@typescript/user";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
-const setupDatabase = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      documents = await seedDatabase();
+const setupDatabase = async () => {
+  documents = await seedDatabase();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
 beforeAll(async () => {
@@ -52,8 +46,8 @@ describe("User Class", () => {
             await user.updateRole(15);
 
             await user.save();
-          } catch (e: any) {
-            expect(e.message).toMatch(
+          } catch (e) {
+            expect((e as Error).message).toMatch(
               "`15` is not a valid enum value for path `role`"
             );
           }

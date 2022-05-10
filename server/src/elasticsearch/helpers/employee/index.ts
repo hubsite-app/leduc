@@ -5,56 +5,54 @@ import { ES_ensureEmployeeSettings } from "./settings";
 import { ES_ensureEmployeeMapping } from "./mapping";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 
-export const ES_ensureEmployeeIndex = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      await ES_ensureEmployeeSettings();
-      await ES_ensureEmployeeMapping();
+export const ES_ensureEmployeeIndex = async () => {
+  await ES_ensureEmployeeSettings();
+  await ES_ensureEmployeeMapping();
 
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
+  return;
 };
 
-export const ES_updateEmployee = (employee: EmployeeDocument) => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      if (process.env.NODE_ENV !== "test") {
-        logger.debug(`Updating employee ${employee._id} in ES`);
-        await ElasticsearchClient.update({
-          index: ElasticSearchIndices.Employee,
-          id: employee._id.toString(),
-          body: {
-            doc: {
-              name: employee.name,
-              jobTitle: employee.jobTitle,
-            },
-            doc_as_upsert: true,
+export const ES_updateEmployee = async (employee: EmployeeDocument) => {
+  if (process.env.NODE_ENV !== "test") {
+    logger.debug(`Updating employee ${employee._id} in ES`);
+
+    if (!employee.archivedAt) {
+      await ElasticsearchClient.update({
+        index: ElasticSearchIndices.Employee,
+        id: employee._id.toString(),
+        body: {
+          doc: {
+            name: employee.name,
+            jobTitle: employee.jobTitle,
           },
-        });
-      }
-
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
-
-export const ES_clearEmployee = () => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      logger.debug(`Clearing employee index in ES`);
-
-      await ElasticsearchClient.indices.delete({
+          doc_as_upsert: true,
+        },
+      });
+    } else {
+      const existing = await ElasticsearchClient.get({
+        id: employee._id.toString(),
         index: ElasticSearchIndices.Employee,
       });
 
-      resolve();
-    } catch (e) {
-      reject(e);
+      // Remove if necessary
+      if (existing) {
+        await ElasticsearchClient.delete({
+          id: employee._id.toString(),
+          index: ElasticSearchIndices.Employee,
+        });
+      }
     }
+  }
+
+  return;
+};
+
+export const ES_clearEmployee = async () => {
+  logger.debug("Clearing employee index in ES");
+
+  await ElasticsearchClient.indices.delete({
+    index: ElasticSearchIndices.Employee,
   });
+
+  return;
 };
