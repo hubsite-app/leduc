@@ -462,6 +462,10 @@ export type MaterialShipmentVehicleObjectData = {
   vehicleType: Scalars['String'];
 };
 
+export type MaterialUpdateData = {
+  name: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   companyCreate: CompanyClass;
@@ -503,6 +507,7 @@ export type Mutation = {
   materialShipmentCreate: Array<MaterialShipmentClass>;
   materialShipmentDelete: Scalars['String'];
   materialShipmentUpdate: MaterialShipmentClass;
+  materialUpdate: MaterialClass;
   productionCreate: ProductionClass;
   productionDelete: Scalars['String'];
   productionUpdate: ProductionClass;
@@ -746,6 +751,12 @@ export type MutationMaterialShipmentDeleteArgs = {
 export type MutationMaterialShipmentUpdateArgs = {
   data: MaterialShipmentUpdateData;
   id: Scalars['String'];
+};
+
+
+export type MutationMaterialUpdateArgs = {
+  data: MaterialUpdateData;
+  id: Scalars['ID'];
 };
 
 
@@ -1766,6 +1777,14 @@ export type MaterialShipmentUpdateMutationVariables = Exact<{
 
 
 export type MaterialShipmentUpdateMutation = { __typename?: 'Mutation', materialShipmentUpdate: { __typename?: 'MaterialShipmentClass', _id: string, shipmentType?: string | null, supplier?: string | null, quantity: number, unit?: string | null, startTime?: any | null, endTime?: any | null, noJobsiteMaterial?: boolean | null, schemaVersion: number, jobsiteMaterial?: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, delivered: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'RateClass', _id?: string | null, date: any, rate: number }>, deliveredRates: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> } | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null, truckingRateId?: string | null, deliveredRateId?: string | null } | null } };
+
+export type MaterialUpdateMutationVariables = Exact<{
+  id: Scalars['ID'];
+  data: MaterialUpdateData;
+}>;
+
+
+export type MaterialUpdateMutation = { __typename?: 'Mutation', materialUpdate: { __typename?: 'MaterialClass', canRemove: boolean, _id: string, name: string } };
 
 export type ProductionCreateMutationVariables = Exact<{
   dailyReportId: Scalars['String'];
@@ -4330,6 +4349,40 @@ export function useMaterialShipmentUpdateMutation(baseOptions?: Apollo.MutationH
 export type MaterialShipmentUpdateMutationHookResult = ReturnType<typeof useMaterialShipmentUpdateMutation>;
 export type MaterialShipmentUpdateMutationResult = Apollo.MutationResult<MaterialShipmentUpdateMutation>;
 export type MaterialShipmentUpdateMutationOptions = Apollo.BaseMutationOptions<MaterialShipmentUpdateMutation, MaterialShipmentUpdateMutationVariables>;
+export const MaterialUpdateDocument = gql`
+    mutation MaterialUpdate($id: ID!, $data: MaterialUpdateData!) {
+  materialUpdate(id: $id, data: $data) {
+    ...MaterialFullSnippet
+  }
+}
+    ${MaterialFullSnippetFragmentDoc}`;
+export type MaterialUpdateMutationFn = Apollo.MutationFunction<MaterialUpdateMutation, MaterialUpdateMutationVariables>;
+
+/**
+ * __useMaterialUpdateMutation__
+ *
+ * To run a mutation, you first call `useMaterialUpdateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMaterialUpdateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [materialUpdateMutation, { data, loading, error }] = useMaterialUpdateMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useMaterialUpdateMutation(baseOptions?: Apollo.MutationHookOptions<MaterialUpdateMutation, MaterialUpdateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MaterialUpdateMutation, MaterialUpdateMutationVariables>(MaterialUpdateDocument, options);
+      }
+export type MaterialUpdateMutationHookResult = ReturnType<typeof useMaterialUpdateMutation>;
+export type MaterialUpdateMutationResult = Apollo.MutationResult<MaterialUpdateMutation>;
+export type MaterialUpdateMutationOptions = Apollo.BaseMutationOptions<MaterialUpdateMutation, MaterialUpdateMutationVariables>;
 export const ProductionCreateDocument = gql`
     mutation ProductionCreate($dailyReportId: String!, $data: ProductionCreateData!) {
   productionCreate(dailyReportId: $dailyReportId, data: $data) {

@@ -1,0 +1,5 @@
+mutation MaterialUpdate($id: ID!, $data: MaterialUpdateData!) {
+  materialUpdate(id: $id, data: $data) {
+    ...MaterialFullSnippet
+  }
+}

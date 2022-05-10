@@ -1,40 +1,45 @@
 import React from "react";
 
 import { useToast } from "@chakra-ui/react";
-import { useMaterialCreateForm } from "../../../forms/material";
+import { useMaterialUpdateForm } from "../../../forms/material";
 import {
-  MaterialCreateData,
+  MaterialUpdateData,
   MaterialFullSnippetFragment,
-  useMaterialCreateMutation,
+  useMaterialUpdateMutation,
 } from "../../../generated/graphql";
 import SubmitButton from "../../Common/forms/SubmitButton";
 
-interface IMaterialCreateForm {
+interface IMaterialUpdateForm {
+  material: MaterialFullSnippetFragment;
   onSuccess?: (material: MaterialFullSnippetFragment) => void;
 }
 
-const MaterialCreateForm = ({ onSuccess }: IMaterialCreateForm) => {
+const MaterialUpdateForm = ({ material, onSuccess }: IMaterialUpdateForm) => {
   /**
    * ----- Hook Initialization -----
    */
 
   const toast = useToast();
 
-  const { FormComponents } = useMaterialCreateForm();
+  const { FormComponents } = useMaterialUpdateForm({
+    defaultValues: {
+      name: material.name,
+    },
+  });
 
-  const [create, { loading }] = useMaterialCreateMutation();
+  const [create, { loading }] = useMaterialUpdateMutation();
 
   /**
    * ----- Functions -----
    */
 
   const submitHandler = React.useCallback(
-    async (data: MaterialCreateData) => {
+    async (data: MaterialUpdateData) => {
       try {
-        const res = await create({ variables: { data } });
+        const res = await create({ variables: { id: material._id, data } });
 
-        if (res.data?.materialCreate) {
-          if (onSuccess) onSuccess(res.data.materialCreate);
+        if (res.data?.materialUpdate) {
+          if (onSuccess) onSuccess(res.data.materialUpdate);
         } else {
           toast({
             status: "error",
@@ -52,7 +57,7 @@ const MaterialCreateForm = ({ onSuccess }: IMaterialCreateForm) => {
         });
       }
     },
-    [create, onSuccess, toast]
+    [create, material._id, onSuccess, toast]
   );
 
   /**
@@ -62,9 +67,10 @@ const MaterialCreateForm = ({ onSuccess }: IMaterialCreateForm) => {
   return (
     <FormComponents.Form submitHandler={submitHandler}>
       <FormComponents.Name isLoading={loading} />
+      <FormComponents.Acceptance />
       <SubmitButton isLoading={loading} />
     </FormComponents.Form>
   );
 };
 
-export default MaterialCreateForm;
+export default MaterialUpdateForm;

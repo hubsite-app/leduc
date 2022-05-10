@@ -12,7 +12,7 @@ import {
   Resolver,
   Root,
 } from "type-graphql";
-import mutations, { MaterialCreateData } from "./mutations";
+import mutations, { MaterialCreateData, MaterialUpdateData } from "./mutations";
 
 @Resolver(() => MaterialClass)
 export default class MaterialResolver {
@@ -57,9 +57,19 @@ export default class MaterialResolver {
    * ----- Mutations -----
    */
 
+  @Authorized(["ADMIN"])
   @Mutation(() => MaterialClass)
   async materialCreate(@Arg("data") data: MaterialCreateData) {
     return mutations.create(data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => MaterialClass)
+  async materialUpdate(
+    @Arg("id", () => ID, { nullable: false }) id: Id,
+    @Arg("data", { nullable: false }) data: MaterialUpdateData
+  ) {
+    return mutations.update(id, data);
   }
 
   @Authorized(["ADMIN"])

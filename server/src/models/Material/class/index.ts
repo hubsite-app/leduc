@@ -8,9 +8,10 @@ import {
   ISearchOptions,
 } from "@typescript/models";
 import get from "./get";
-import { IMaterialCreate } from "@typescript/material";
+import { IMaterialCreate, IMaterialUpdate } from "@typescript/material";
 import create from "./create";
 import remove from "./remove";
+import update from "./update";
 
 @ObjectType()
 export class MaterialClass extends MaterialSchema {
@@ -54,6 +55,14 @@ export class MaterialClass extends MaterialSchema {
     data: IMaterialCreate
   ) {
     return create.document(this, data);
+  }
+
+  /**
+   * ----- Update -----
+   */
+
+  public async updateDocument(this: MaterialDocument, data: IMaterialUpdate) {
+    return update.document(this, data);
   }
 
   /**

@@ -10,6 +10,7 @@ import {
 import Card from "../Card";
 import InfiniteScroll from "../InfiniteScroll";
 import Loading from "../Loading";
+import MaterialCard from "./Card";
 
 const MaterialFullList = () => {
   /**
@@ -18,10 +19,6 @@ const MaterialFullList = () => {
 
   const { data, loading, fetchMore, networkStatus } = useMaterialsFullQuery({
     notifyOnNetworkStatusChange: true,
-  });
-
-  const [remove, { loading: removeLoading }] = useMaterialRemoveMutation({
-    refetchQueries: [MaterialsFullDocument],
   });
 
   const [finished, setFinished] = React.useState(false);
@@ -53,29 +50,7 @@ const MaterialFullList = () => {
       return (
         <Flex flexDir="column" alignContent="center">
           {data.materials.map((material) => (
-            <Card key={material._id}>
-              <Flex flexDir="row" justifyContent="space-between">
-                <Heading size="md">{material.name}</Heading>
-                {material.canRemove && (
-                  <Tooltip label="This material can be removed as it is not referenced by an existing Jobsite Material. It is still recommended that these are not deleted.">
-                    <IconButton
-                      aria-label="delete"
-                      icon={<FiTrash />}
-                      backgroundColor="transparent"
-                      isLoading={removeLoading}
-                      onClick={() => {
-                        if (window.confirm("Are you sure?"))
-                          remove({
-                            variables: {
-                              id: material._id,
-                            },
-                          });
-                      }}
-                    />
-                  </Tooltip>
-                )}
-              </Flex>
-            </Card>
+            <MaterialCard material={material} key={material._id} />
           ))}
           {loading && <Loading />}
         </Flex>
@@ -83,7 +58,7 @@ const MaterialFullList = () => {
     } else {
       return <Loading />;
     }
-  }, [data?.materials, loading, remove, removeLoading]);
+  }, [data?.materials, loading]);
 
   return (
     <InfiniteScroll

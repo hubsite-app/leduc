@@ -8,8 +8,28 @@ export class MaterialCreateData {
   public name!: string;
 }
 
+@InputType()
+export class MaterialUpdateData {
+  @Field({ nullable: false })
+  public name!: string;
+}
+
 const create = async (data: MaterialCreateData): Promise<MaterialDocument> => {
   const material = await Material.createDocument(data);
+
+  await material.save();
+
+  return material;
+};
+
+const update = async (
+  id: Id,
+  data: MaterialUpdateData
+): Promise<MaterialDocument> => {
+  const material = await Material.getById(id);
+  if (!material) throw new Error("Unable to find Material");
+
+  await material.updateDocument(data);
 
   await material.save();
 
@@ -27,5 +47,6 @@ const remove = async (id: Id) => {
 
 export default {
   create,
+  update,
   remove,
 };
