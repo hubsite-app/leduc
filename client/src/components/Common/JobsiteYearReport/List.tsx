@@ -13,19 +13,6 @@ const JobsiteYearlyReportList = ({
   jobsiteYearReports,
 }: IJobsiteYearlyReportList) => {
   /**
-   * ----- Variables -----
-   */
-
-  const sortedReports = React.useMemo(() => {
-    return jobsiteYearReports
-      .slice()
-      .sort(
-        (a, b) =>
-          new Date(b.startOfYear).getTime() - new Date(a.startOfYear).getTime()
-      );
-  }, [jobsiteYearReports]);
-
-  /**
    * ----- Rendering -----
    */
 

@@ -19,6 +19,11 @@ export default class JobsiteYearMasterReportResolver {
     return JobsiteYearMasterReport.getById(id);
   }
 
+  @Query(() => JobsiteYearMasterReportClass)
+  async jobsiteYearMasterReportCurrent() {
+    return JobsiteYearMasterReport.getByDate(new Date());
+  }
+
   /**
    * ----- Subscriptions -----
    */

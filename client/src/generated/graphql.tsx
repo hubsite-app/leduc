@@ -953,6 +953,7 @@ export type Query = {
   jobsites: Array<JobsiteClass>;
   jobsiteSearch: Array<JobsiteClass>;
   jobsiteYearMasterReport?: Maybe<JobsiteYearMasterReportClass>;
+  jobsiteYearMasterReportCurrent: JobsiteYearMasterReportClass;
   jobsiteYearMasterReports: Array<JobsiteYearMasterReportClass>;
   jobsiteYearReport?: Maybe<JobsiteYearReportClass>;
   material: MaterialClass;
@@ -2093,6 +2094,11 @@ export type JobsiteSearchQueryVariables = Exact<{
 
 
 export type JobsiteSearchQuery = { __typename?: 'Query', jobsiteSearch: Array<{ __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null }> };
+
+export type JobsiteYearMasterReportCurrentQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type JobsiteYearMasterReportCurrentQuery = { __typename?: 'Query', jobsiteYearMasterReportCurrent: { __typename?: 'JobsiteYearMasterReportClass', _id: string, startOfYear: any, update: { __typename?: 'UpdateClass', status: UpdateStatus, lastUpdatedAt?: any | null } } };
 
 export type JobsiteYearMasterReportCardQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -5822,6 +5828,40 @@ export function useJobsiteSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type JobsiteSearchQueryHookResult = ReturnType<typeof useJobsiteSearchQuery>;
 export type JobsiteSearchLazyQueryHookResult = ReturnType<typeof useJobsiteSearchLazyQuery>;
 export type JobsiteSearchQueryResult = Apollo.QueryResult<JobsiteSearchQuery, JobsiteSearchQueryVariables>;
+export const JobsiteYearMasterReportCurrentDocument = gql`
+    query JobsiteYearMasterReportCurrent {
+  jobsiteYearMasterReportCurrent {
+    ...JobsiteYearMasterReportCardSnippet
+  }
+}
+    ${JobsiteYearMasterReportCardSnippetFragmentDoc}`;
+
+/**
+ * __useJobsiteYearMasterReportCurrentQuery__
+ *
+ * To run a query within a React component, call `useJobsiteYearMasterReportCurrentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJobsiteYearMasterReportCurrentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJobsiteYearMasterReportCurrentQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useJobsiteYearMasterReportCurrentQuery(baseOptions?: Apollo.QueryHookOptions<JobsiteYearMasterReportCurrentQuery, JobsiteYearMasterReportCurrentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<JobsiteYearMasterReportCurrentQuery, JobsiteYearMasterReportCurrentQueryVariables>(JobsiteYearMasterReportCurrentDocument, options);
+      }
+export function useJobsiteYearMasterReportCurrentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<JobsiteYearMasterReportCurrentQuery, JobsiteYearMasterReportCurrentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<JobsiteYearMasterReportCurrentQuery, JobsiteYearMasterReportCurrentQueryVariables>(JobsiteYearMasterReportCurrentDocument, options);
+        }
+export type JobsiteYearMasterReportCurrentQueryHookResult = ReturnType<typeof useJobsiteYearMasterReportCurrentQuery>;
+export type JobsiteYearMasterReportCurrentLazyQueryHookResult = ReturnType<typeof useJobsiteYearMasterReportCurrentLazyQuery>;
+export type JobsiteYearMasterReportCurrentQueryResult = Apollo.QueryResult<JobsiteYearMasterReportCurrentQuery, JobsiteYearMasterReportCurrentQueryVariables>;
 export const JobsiteYearMasterReportCardDocument = gql`
     query JobsiteYearMasterReportCard($id: ID!) {
   jobsiteYearMasterReport(id: $id) {

@@ -3,10 +3,12 @@ import React from "react";
 import {
   JobsiteYearMasterReportSubDocument,
   useJobsiteYearMasterReportFullQuery,
+  UserRoles,
 } from "../../../generated/graphql";
 import formatDate from "../../../utils/formatDate";
 import JobsiteMaster from "../../Common/JobsiteMaster";
 import Loading from "../../Common/Loading";
+import Permission from "../../Common/Permission";
 
 interface IJobsiteYearMasterReportClientContent {
   id: string;
@@ -60,7 +62,9 @@ const JobsiteYearMasterReportClientContent = ({
                 )
               : "Never"}
           </Heading>
-          <JobsiteMaster report={jobsiteYearMasterReport} />
+          <Permission minRole={UserRoles.ProjectManager} showError>
+            <JobsiteMaster report={jobsiteYearMasterReport} />
+          </Permission>
         </Box>
       );
     } else return <Loading />;

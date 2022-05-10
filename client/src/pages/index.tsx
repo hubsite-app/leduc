@@ -3,6 +3,7 @@ import React from "react";
 import Container from "../components/Common/Container";
 import Loading from "../components/Common/Loading";
 import { useAuth } from "../contexts/Auth";
+import { UserHomeViewSettings } from "../generated/graphql";
 
 const Home = () => {
   /**
@@ -22,8 +23,12 @@ const Home = () => {
   React.useEffect(() => {
     if (user) {
       switch (user.settings.homeView) {
-        case "DailyReports": {
+        case UserHomeViewSettings.DailyReports: {
           router.push("/daily-reports");
+          break;
+        }
+        case UserHomeViewSettings.GeneralReports: {
+          router.push("/current-master");
           break;
         }
         default: {

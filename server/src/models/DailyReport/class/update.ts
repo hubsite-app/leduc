@@ -59,14 +59,12 @@ const jobsite = async (
   const materialShipments = await dailyReport.getMaterialShipments();
   for (let i = 0; i < materialShipments.length; i++) {
     if (
-      materialShipments[i].noJobsiteMaterial === false ||
-      materialShipments[i].jobsiteMaterial
+      materialShipments[i].noJobsiteMaterial === true ||
+      !materialShipments[i].jobsiteMaterial
     ) {
-      throw new Error("cannot update the jobsite of this report");
+      dailyReport.jobsite = jobsite._id;
     }
   }
-
-  dailyReport.jobsite = jobsite._id;
 
   return;
 };
