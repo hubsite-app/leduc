@@ -3,6 +3,7 @@ import { JobsiteYearMasterReportDocument } from "@models";
 import pubsub from "@pubsub";
 import { post, prop } from "@typegoose/typegoose";
 import { CrewTypes } from "@typescript/crew";
+import { RangeSummaryReportClass } from "@typescript/jobsiteReports";
 import { UpdateClass } from "@typescript/models";
 import { PubSubTopics } from "@typescript/pubSub";
 import { Types } from "mongoose";
@@ -38,6 +39,10 @@ export class JobsiteYearMasterReportSchema {
     type: () => JobsiteYearMasterReportItemClass,
   })
   public reports!: JobsiteYearMasterReportItemClass[];
+
+  @Field(() => RangeSummaryReportClass)
+  @prop({ type: () => RangeSummaryReportClass, default: {} })
+  public summary!: RangeSummaryReportClass;
 
   @Field(() => [CrewTypes], { nullable: false })
   @prop({ type: [String], enum: CrewTypes, required: true, default: [] })

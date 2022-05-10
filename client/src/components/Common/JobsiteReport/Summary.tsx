@@ -13,6 +13,7 @@ import {
 } from "../../../generated/graphql";
 import Card from "../Card";
 import formatNumber from "../../../utils/formatNumber";
+import ReportSummaryCard from "../ReportSummary";
 
 interface IJobsiteReportSummary {
   report:
@@ -69,43 +70,15 @@ const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
    */
 
   return (
-    <Card heading={<Heading size="md">Summary</Heading>}>
-      <SimpleGrid spacing={2} columns={[4]}>
-        <Stat>
-          <StatLabel>Total Revenue</StatLabel>
-          <StatNumber>
-            $
-            {formatNumber(
-              report.summary.externalRevenueInvoiceValue +
-                report.summary.internalRevenueInvoiceValue
-            )}
-          </StatNumber>
-          <StatHelpText>
-            ${formatNumber(report.summary.externalRevenueInvoiceValue)} external
-          </StatHelpText>
-          <StatHelpText>
-            ${formatNumber(report.summary.internalRevenueInvoiceValue)} internal
-          </StatHelpText>
-        </Stat>
-        <Stat>
-          <StatLabel>Internal Expenses</StatLabel>
-          <StatNumber>${formatNumber(internalExpenses)}</StatNumber>
-        </Stat>
-
-        <Stat>
-          <StatLabel>Total Expenses</StatLabel>
-          <StatNumber>${formatNumber(totalExpenses)}</StatNumber>
-        </Stat>
-
-        <Stat>
-          <StatLabel>Net Income</StatLabel>
-          <StatNumber color={netIncome < 0 ? "red.500" : undefined}>
-            {netIncome < 0 && "("}${formatNumber(Math.abs(netIncome))}
-            {netIncome < 0 && ")"}
-          </StatNumber>
-        </Stat>
-      </SimpleGrid>
-    </Card>
+    <ReportSummaryCard
+      revenue={{
+        internal: report.summary.internalRevenueInvoiceValue,
+        external: report.summary.externalRevenueInvoiceValue,
+      }}
+      internalExpenses={internalExpenses}
+      netIncome={netIncome}
+      totalExpenses={totalExpenses}
+    />
   );
 };
 

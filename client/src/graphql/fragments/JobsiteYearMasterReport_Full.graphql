@@ -4,4 +4,10 @@ fragment JobsiteYearMasterReportFullSnippet on JobsiteYearMasterReportClass {
     ...JobsiteYearMasterReportItemSnippet
   }
   crewTypes
+  summary {
+    externalExpenseInvoiceValue
+    internalExpenseInvoiceValue
+    externalRevenueInvoiceValue
+    internalRevenueInvoiceValue
+  }
 }

@@ -8,6 +8,7 @@ import { CrewTypes } from "@typescript/crew";
 import {
   CrewTypeOnSiteSummaryClass,
   OnSiteSummaryReportClass,
+  RangeSummaryReportClass,
 } from "@typescript/jobsiteReports";
 import { Id } from "@typescript/models";
 import errorHandler from "@utils/errorHandler";
@@ -18,6 +19,13 @@ const full = async (
   const jobsiteYearReports = await JobsiteYearReport.getByDate(
     jobsiteYearMasterReport.startOfYear
   );
+
+  const fullSummary: RangeSummaryReportClass = {
+    externalExpenseInvoiceValue: 0,
+    externalRevenueInvoiceValue: 0,
+    internalExpenseInvoiceValue: 0,
+    internalRevenueInvoiceValue: 0,
+  };
 
   const allCrewTypes: CrewTypes[] = [];
 
@@ -35,6 +43,19 @@ const full = async (
 
     if (jobsite) {
       jobsiteList.push({ jobsite, yearReportId: jobsiteYearReport._id });
+
+      // Handle full summary
+
+      fullSummary.externalExpenseInvoiceValue +=
+        jobsiteYearReport.summary.externalExpenseInvoiceValue;
+      fullSummary.externalRevenueInvoiceValue +=
+        jobsiteYearReport.summary.externalRevenueInvoiceValue;
+      fullSummary.internalExpenseInvoiceValue +=
+        jobsiteYearReport.summary.internalExpenseInvoiceValue;
+      fullSummary.internalRevenueInvoiceValue +=
+        jobsiteYearReport.summary.externalExpenseInvoiceValue;
+
+      // Handle rest
 
       const dayReports = await jobsiteYearReport.getDayReports();
 
@@ -181,6 +202,8 @@ const full = async (
       sortedReports.push(yearReport);
     }
   }
+
+  jobsiteYearMasterReport.summary = fullSummary;
 
   jobsiteYearMasterReport.reports = sortedReports;
 

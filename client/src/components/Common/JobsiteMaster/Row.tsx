@@ -106,28 +106,28 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
           <Loading />
         )}
       </Th>
-      <Th>${formatNumber(revenue)}</Th>
-      <Th>${formatNumber(onSiteExpenses)}</Th>
-      <Th>${formatNumber(onSiteExpenses * 0.1)}</Th>
-      <Th>${formatNumber(totalExpenses)}</Th>
-      <Th color={netIncome < 0 ? "red.500" : undefined}>
+      <Th isNumeric>${formatNumber(revenue)}</Th>
+      <Th isNumeric>${formatNumber(onSiteExpenses)}</Th>
+      <Th isNumeric>${formatNumber(onSiteExpenses * 0.1)}</Th>
+      <Th isNumeric>${formatNumber(totalExpenses)}</Th>
+      <Th isNumeric color={netIncome < 0 ? "red.500" : undefined}>
         ${formatNumber(netIncome)}
       </Th>
-      <Th color={margin < 0 ? "red.500" : undefined}>
+      <Th isNumeric color={margin < 0 ? "red.500" : undefined}>
         %{formatNumber(margin)}
       </Th>
       {!isConcrete ? (
-        <Th color={marginMinusConcrete < 0 ? "red.500" : undefined}>
+        <Th isNumeric color={marginMinusConcrete < 0 ? "red.500" : undefined}>
           %{formatNumber(marginMinusConcrete)}
         </Th>
       ) : null}
-      <Th>
+      <Th isNumeric>
         $
         {formatNumber(
           jobsiteYearReport?.summary.internalExpenseInvoiceValue || 0
         )}
       </Th>
-      <Th>
+      <Th isNumeric>
         $
         {formatNumber(
           jobsiteYearReport?.summary.externalExpenseInvoiceValue || 0
@@ -135,7 +135,7 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
       </Th>
       {crewTypes.map((crew) => (
         <>
-          <Th>
+          <Th isNumeric>
             $
             {formatNumber(
               reportItem.summary.crewTypeSummaries.find(
@@ -143,7 +143,7 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
               )?.employeeCost || 0
             )}
           </Th>
-          <Th>
+          <Th isNumeric>
             $
             {formatNumber(
               reportItem.summary.crewTypeSummaries.find(
@@ -151,7 +151,7 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
               )?.vehicleCost || 0
             )}
           </Th>
-          <Th>
+          <Th isNumeric>
             $
             {formatNumber(
               reportItem.summary.crewTypeSummaries.find(
@@ -159,7 +159,7 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
               )?.materialCost || 0
             )}
           </Th>
-          <Th>
+          <Th isNumeric>
             $
             {formatNumber(
               reportItem.summary.crewTypeSummaries.find(
