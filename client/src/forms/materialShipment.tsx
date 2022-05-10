@@ -54,14 +54,14 @@ const MaterialShipmentUpdate = yup
         then: yup.string().required("must provide unit"),
       }),
     quantity: yup.number().required(),
-    startTime: yup.string().optional(),
-    endTime: yup.string().optional(),
+    startTime: yup.string().optional().nullable(),
+    endTime: yup.string().optional().nullable(),
     vehicleObject: yup.object().shape({
       source: yup.string(),
       vehicleCode: yup.string(),
       vehicleType: yup.string(),
-      truckingRateId: yup.string(),
-      deliveredRateId: yup.string(),
+      truckingRateId: yup.string().nullable(),
+      deliveredRateId: yup.string().nullable(),
     }),
   })
   .required();
