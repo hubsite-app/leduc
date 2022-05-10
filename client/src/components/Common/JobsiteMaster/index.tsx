@@ -117,15 +117,17 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
 
   return (
     <Box>
-      <ReportSummaryCard
-        revenue={{
-          internal: report.summary.internalRevenueInvoiceValue,
-          external: report.summary.externalRevenueInvoiceValue,
-        }}
-        internalExpenses={onSiteExpenses}
-        totalExpenses={totalExpenses}
-        netIncome={netIncome}
-      />
+      <Box p={2}>
+        <ReportSummaryCard
+          revenue={{
+            internal: report.summary.internalRevenueInvoiceValue,
+            external: report.summary.externalRevenueInvoiceValue,
+          }}
+          internalExpenses={onSiteExpenses}
+          totalExpenses={totalExpenses}
+          netIncome={netIncome}
+        />
+      </Box>
       <Box
         w="100%"
         overflowX="scroll"
