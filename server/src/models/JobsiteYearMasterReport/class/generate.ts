@@ -53,7 +53,7 @@ const full = async (
       fullSummary.internalExpenseInvoiceValue +=
         jobsiteYearReport.summary.internalExpenseInvoiceValue;
       fullSummary.internalRevenueInvoiceValue +=
-        jobsiteYearReport.summary.externalExpenseInvoiceValue;
+        jobsiteYearReport.summary.internalRevenueInvoiceValue;
 
       // Handle rest
 
