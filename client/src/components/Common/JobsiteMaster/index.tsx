@@ -1,16 +1,5 @@
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-  Box,
-  Table,
-  Tbody,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
 import React from "react";
+import { Box, Table, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
 import { JobsiteYearMasterReportFullSnippetFragment } from "../../../generated/graphql";
 import JobsiteMasterRow from "./Row";
 
@@ -27,6 +16,10 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
     if (process.env.NEXT_PUBLIC_APP_NAME === "Concrete") return true;
     else return false;
   }, []);
+
+  /**
+   * @todo add summary (report.reports[0].summary)
+   */
 
   /**
    * ----- Rendering -----
