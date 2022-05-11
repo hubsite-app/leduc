@@ -1,6 +1,7 @@
 fragment JobsiteDayReportFullSnippet on JobsiteDayReportClass {
   _id
   date
+  crewTypes
   employees {
     ...JobsiteDayReportEmployeeSnippet
   }

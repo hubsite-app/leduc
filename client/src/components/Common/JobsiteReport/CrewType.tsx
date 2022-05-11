@@ -1,4 +1,4 @@
-import { Button, Center, Heading } from "@chakra-ui/react";
+import { Box, Button, Center, Heading } from "@chakra-ui/react";
 import React from "react";
 import { FiChevronUp } from "react-icons/fi";
 import {
@@ -7,6 +7,7 @@ import {
   JobsiteYearReportFullSnippetFragment,
 } from "../../../generated/graphql";
 import Card from "../../Common/Card";
+import JobsiteReportCrewOnJobSummary from "./CrewOnJobSummary";
 import JobsiteMonthEmployeeReports from "./Employees";
 import JobsiteMonthMaterialReports from "./Materials";
 import JobsiteMonthNonCostedMaterialReports from "./NonCostedMaterials";
@@ -35,16 +36,26 @@ const JobsiteReportCrewType = ({
    */
 
   return (
-    <Card key={crewType}>
-      <Heading
-        size="md"
-        m={2}
-        w="100%"
-        cursor="pointer"
-        onClick={() => setCollapsed(!collapsed)}
-      >
-        {crewType} Crew
-      </Heading>
+    <Card
+      key={crewType}
+      heading={
+        <Heading
+          size="md"
+          m={2}
+          w="100%"
+          cursor="pointer"
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          {crewType} Crew Costs
+        </Heading>
+      }
+    >
+      <Box m={2}>
+        <JobsiteReportCrewOnJobSummary
+          dayReports={report.dayReports}
+          crewType={crewType}
+        />
+      </Box>
       {!collapsed && (
         <>
           <JobsiteMonthEmployeeReports

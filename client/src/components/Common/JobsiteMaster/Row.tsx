@@ -96,7 +96,7 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
       <Th>
         {jobsiteYearReport ? (
           <TextLink
-            link={createLink.jobsite(jobsiteYearReport.jobsite._id)}
+            link={createLink.jobsiteYearReport(jobsiteYearReport._id)}
             whiteSpace="nowrap"
           >
             {jobsiteYearReport.jobsite.jobcode} -{" "}

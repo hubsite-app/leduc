@@ -17,6 +17,7 @@ import {
   JobsiteMonthReportFullSnippetFragment,
   JobsiteYearReportFullSnippetFragment,
 } from "../../../generated/graphql";
+import JobsiteReportInvoiceSummary from "./InvoiceSummary";
 
 interface IJobsiteReportExpenseInvoices {
   report:
@@ -38,16 +39,22 @@ const JobsiteReportExpenseInvoices = ({
    */
 
   return (
-    <Card>
-      <Heading
-        size="md"
-        m={2}
-        w="100%"
-        cursor="pointer"
-        onClick={() => setCollapsed(!collapsed)}
-      >
-        Expense Invoices ({report.expenseInvoices.length})
-      </Heading>
+    <Card
+      heading={
+        <Heading
+          size="md"
+          m={2}
+          w="100%"
+          cursor="pointer"
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          Expense Invoices ({report.expenseInvoices.length})
+        </Heading>
+      }
+    >
+      <Box m={2}>
+        <JobsiteReportInvoiceSummary invoices={report.expenseInvoices} />
+      </Box>
       {!collapsed && (
         <Box
           w="100%"

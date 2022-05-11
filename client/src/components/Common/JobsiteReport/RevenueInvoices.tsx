@@ -16,6 +16,7 @@ import {
 } from "../../../generated/graphql";
 import formatNumber from "../../../utils/formatNumber";
 import Card from "../../Common/Card";
+import JobsiteReportInvoiceSummary from "./InvoiceSummary";
 
 interface IJobsiteReportRevenueInvoices {
   report:
@@ -37,16 +38,22 @@ const JobsiteReportRevenueInvoices = ({
    */
 
   return (
-    <Card>
-      <Heading
-        size="md"
-        m={2}
-        w="100%"
-        cursor="pointer"
-        onClick={() => setCollapsed(!collapsed)}
-      >
-        Revenue Invoices ({report.revenueInvoices.length})
-      </Heading>
+    <Card
+      heading={
+        <Heading
+          size="md"
+          m={2}
+          w="100%"
+          cursor="pointer"
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          Revenue Invoices ({report.revenueInvoices.length})
+        </Heading>
+      }
+    >
+      <Box m={2}>
+        <JobsiteReportInvoiceSummary invoices={report.revenueInvoices} />
+      </Box>
       {!collapsed && (
         <Box
           w="100%"

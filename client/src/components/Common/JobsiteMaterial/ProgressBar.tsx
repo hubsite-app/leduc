@@ -1,6 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { JobsiteMaterialCardSnippetFragment } from "../../../generated/graphql";
+import formatNumber from "../../../utils/formatNumber";
 
 interface IJobsiteMaterialProgressBar {
   jobsiteMaterial: JobsiteMaterialCardSnippetFragment;
@@ -18,12 +19,12 @@ const JobsiteMaterialProgressBar = ({
       <Box w={["60%", "70%", "70%", "70%", "80%", "85%"]} m="auto">
         <ProgressBar
           bgColor={color}
-          completed={`${jobsiteMaterial.completedQuantity}`}
+          completed={`${formatNumber(jobsiteMaterial.completedQuantity)}`}
           maxCompleted={jobsiteMaterial.quantity}
         />
       </Box>
       <Text my="auto" fontWeight="bold">
-        {jobsiteMaterial.quantity} {jobsiteMaterial.unit}
+        {formatNumber(jobsiteMaterial.quantity)} {jobsiteMaterial.unit}
       </Text>
     </Flex>
   );

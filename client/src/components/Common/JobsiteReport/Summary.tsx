@@ -1,18 +1,8 @@
 import React from "react";
 import {
-  Heading,
-  SimpleGrid,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
-} from "@chakra-ui/react";
-import {
   JobsiteMonthReportFullSnippetFragment,
   JobsiteYearReportFullSnippetFragment,
 } from "../../../generated/graphql";
-import Card from "../Card";
-import formatNumber from "../../../utils/formatNumber";
 import ReportSummaryCard from "../ReportSummary";
 
 interface IJobsiteReportSummary {
@@ -75,6 +65,7 @@ const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
         internal: report.summary.internalRevenueInvoiceValue,
         external: report.summary.externalRevenueInvoiceValue,
       }}
+      showRevenueBreakdown={false}
       internalExpenses={internalExpenses}
       netIncome={netIncome}
       totalExpenses={totalExpenses}
