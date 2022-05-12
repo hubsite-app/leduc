@@ -7,7 +7,7 @@ import {
 } from "../../../generated/graphql";
 import convertHourToDate from "../../../utils/convertHourToDate";
 import isEmpty from "../../../utils/isEmpty";
-import Number from "../../Common/forms/Number";
+import NumberForm from "../../Common/forms/Number";
 import Select, { ISelect } from "../../Common/forms/Select";
 import TextField from "../../Common/forms/TextField";
 import Unit from "../../Common/forms/Unit";
@@ -193,7 +193,7 @@ const MaterialShipmentShipmentForm = ({
             }}
           />
           <SimpleGrid spacing={2} columns={[1, 1, 2]}>
-            <Number
+            <NumberForm
               step={10}
               stepper
               label="Quantity"
@@ -239,7 +239,7 @@ const MaterialShipmentShipmentForm = ({
               updateJobsiteMaterial(e.target.value);
             }}
           />
-          <Number
+          <NumberForm
             step={10}
             stepper
             label="Quantity"

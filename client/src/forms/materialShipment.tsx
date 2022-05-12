@@ -19,7 +19,7 @@ import { IFormProps } from "../typescript/forms";
 import MaterialSearch from "../components/Search/MaterialSearch";
 import Select, { ISelect } from "../components/Common/forms/Select";
 import Unit, { IUnit } from "../components/Common/forms/Unit";
-import Number, { INumber } from "../components/Common/forms/Number";
+import NumberForm, { INumber } from "../components/Common/forms/Number";
 import CompanySearch from "../components/Search/CompanySearch";
 import { isEmpty } from "lodash";
 import ContactOffice from "../components/Common/ContactOffice";
@@ -220,7 +220,7 @@ export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
             control={control}
             name="quantity"
             render={({ field, fieldState }) => (
-              <Number
+              <NumberForm
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}

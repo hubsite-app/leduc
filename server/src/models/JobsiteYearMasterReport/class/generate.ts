@@ -189,7 +189,7 @@ const full = async (
 
   // Sort reports by jobsite number
   jobsiteList.sort(
-    (a, b) => b.jobsite.jobcode?.localeCompare(a.jobsite.jobcode || "") || 0
+    (a, b) => a.jobsite.jobcode?.localeCompare(b.jobsite.jobcode || "") || 0
   );
 
   const sortedReports: JobsiteYearMasterReportItemClass[] = [];

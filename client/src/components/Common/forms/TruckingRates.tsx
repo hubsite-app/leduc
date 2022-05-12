@@ -14,7 +14,7 @@ import {
 } from "../../../generated/graphql";
 import TruckingRateType from "../../Forms/Jobsite/TruckingRateType";
 import FormContainer from "../FormContainer";
-import Number from "./Number";
+import NumberForm from "./Number";
 import TextField from "./TextField";
 
 interface TruckingRateError {
@@ -147,7 +147,7 @@ const TruckingRates = ({
                 onChange={(e) => setDate(e.target.value, index)}
                 errorMessage={errors && errors[index]?.date?.message}
               />
-              <Number
+              <NumberForm
                 value={rate.rate}
                 isDisabled={isLoading}
                 label="Rate"

@@ -12,7 +12,7 @@ import { InvoiceData } from "../generated/graphql";
 import { IFormProps } from "../typescript/forms";
 import TextField, { ITextField } from "../components/Common/forms/TextField";
 import CompanySearch from "../components/Search/CompanySearch";
-import Number, { INumber } from "../components/Common/forms/Number";
+import NumberForm, { INumber } from "../components/Common/forms/Number";
 import TextArea, { ITextArea } from "../components/Common/forms/TextArea";
 import Checkbox, { ICheckbox } from "../components/Common/forms/Checkbox";
 
@@ -104,9 +104,10 @@ export const useInvoiceForm = (options?: UseFormProps) => {
             control={control}
             name="cost"
             render={({ field, fieldState }) => (
-              <Number
+              <NumberForm
                 {...props}
                 {...field}
+                min={Number.MIN_SAFE_INTEGER}
                 errorMessage={fieldState.error?.message}
                 label="Cost"
                 isDisabled={isLoading}

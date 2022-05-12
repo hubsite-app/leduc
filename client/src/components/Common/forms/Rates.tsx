@@ -10,7 +10,7 @@ import React from "react";
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { RateSnippetFragment } from "../../../generated/graphql";
 import FormContainer from "../FormContainer";
-import Number from "./Number";
+import NumberForm from "./Number";
 import TextField from "./TextField";
 
 export interface IRateError {
@@ -122,7 +122,7 @@ const Rates = ({ rates = [], onChange, isLoading, errors, label }: IRates) => {
                 onChange={(e) => setDate(e.target.value, index)}
                 errorMessage={errors && errors[index]?.date?.message}
               />
-              <Number
+              <NumberForm
                 value={rate.rate}
                 isDisabled={isLoading}
                 label="Rate"

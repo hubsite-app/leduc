@@ -34,7 +34,7 @@ export interface INumber extends NumberInputProps {
   inputRightElementProps?: InputElementProps;
 }
 
-const Number = ({
+const NumberForm = ({
   stepper = true,
   allowMouseWheel = true,
   min = 0,
@@ -64,14 +64,6 @@ const Number = ({
       );
     } else return null;
   }, [stepper]);
-
-  const finalValue = React.useMemo(() => {
-    let val = value;
-    if (props.precision && val !== undefined) {
-      val = parseFloat(`${val}`).toFixed(props.precision);
-    }
-    return format ? format(val) : val;
-  }, [format, props.precision, value]);
 
   return (
     <FormControl isInvalid={!!errorMessage} margin="auto">
@@ -119,4 +111,4 @@ const Number = ({
   );
 };
 
-export default Number;
+export default NumberForm;

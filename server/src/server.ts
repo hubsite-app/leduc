@@ -39,7 +39,7 @@ const main = async () => {
 
     app.listen(port, () => console.log(`Server running on port: ${port}`));
 
-    if (process.env.NODE !== "test") {
+    if (process.env.NODE_ENV !== "test") {
       if (production) {
         // await saveAll();
       } else {
@@ -50,9 +50,9 @@ const main = async () => {
       await Company.validateCompanies();
 
       await updateDocuments();
-    }
 
-    workers();
+      workers();
+    }
   } catch (error: unknown) {
     console.error(error);
   }

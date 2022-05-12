@@ -7,4 +7,4 @@ export default setInterval(async () => {
   } catch (e: unknown) {
     logger.error(`JobsiteMonthReport Worker Error: ${(e as Error).message}`);
   }
-}, 5 * 60 * 1000);
+}, 2 * 60 * 1000);

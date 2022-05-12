@@ -16,6 +16,15 @@ interface IJobsiteReportOnJobSummary {
   statSize?: StatProps["size"];
 }
 
+const handlePercent = (value: number, total: number) => {
+  const percent = (value / total) * 100;
+  if (isNaN(percent)) {
+    return formatNumber(0);
+  } else {
+    return formatNumber(percent);
+  }
+};
+
 const JobsiteReportOnJobSummary = ({
   dayReports,
   allDayReports = [],
@@ -109,36 +118,57 @@ const JobsiteReportOnJobSummary = ({
     return trucking;
   }, [dayReports]);
 
+  const total = React.useMemo(() => {
+    return wages + equipment + materials.cost + trucking;
+  }, [equipment, materials.cost, trucking, wages]);
+
+  const fullTotal = React.useMemo(() => {
+    if (allDayReports.length === 0) return null;
+
+    return (
+      (totalWages || 0) +
+      (totalEquipment || 0) +
+      (totalMaterials || 0) +
+      (totalTrucking || 0)
+    );
+  }, [
+    allDayReports.length,
+    totalEquipment,
+    totalMaterials,
+    totalTrucking,
+    totalWages,
+  ]);
+
   /**
    * ----- Rendering -----
    */
 
   return (
-    <SimpleGrid spacing={2} columns={[4]}>
+    <SimpleGrid spacing={2} columns={[5]}>
       <Stat size={statSize} display="flex" justifyContent="center">
         <StatLabel>Wages</StatLabel>
         <StatNumber>${formatNumber(wages)}</StatNumber>
-        {totalWages ? (
+        {totalWages !== null ? (
           <StatHelpText fontSize={statSize}>
-            {formatNumber((wages / totalWages) * 100)}%
+            {handlePercent(wages, totalWages)}%
           </StatHelpText>
         ) : null}
       </Stat>
       <Stat size={statSize} display="flex" justifyContent="center">
         <StatLabel>Equipment</StatLabel>
         <StatNumber>${formatNumber(equipment)}</StatNumber>
-        {totalEquipment ? (
+        {totalEquipment !== null ? (
           <StatHelpText fontSize={statSize}>
-            {formatNumber((equipment / totalEquipment) * 100)}%
+            {handlePercent(equipment, totalEquipment)}%
           </StatHelpText>
         ) : null}
       </Stat>
       <Stat size={statSize} display="flex" justifyContent="center">
         <StatLabel>Material</StatLabel>
         <StatNumber>${formatNumber(materials.cost)}</StatNumber>
-        {totalMaterials ? (
+        {totalMaterials !== null ? (
           <StatHelpText mb={0} fontSize={statSize}>
-            {formatNumber((materials.cost / totalMaterials) * 100)}%
+            {handlePercent(materials.cost, totalMaterials)}%
           </StatHelpText>
         ) : null}
         <StatHelpText fontSize={statSize}>
@@ -148,9 +178,19 @@ const JobsiteReportOnJobSummary = ({
       <Stat size={statSize} display="flex" justifyContent="center">
         <StatLabel>Trucking</StatLabel>
         <StatNumber>${formatNumber(trucking)}</StatNumber>
-        {totalTrucking ? (
+        {totalTrucking !== null ? (
           <StatHelpText fontSize={statSize}>
-            {formatNumber((trucking / totalTrucking) * 100)}%
+            {handlePercent(trucking, totalTrucking)}%
+          </StatHelpText>
+        ) : null}
+      </Stat>
+
+      <Stat size={statSize} display="flex" justifyContent="center">
+        <StatLabel>Total</StatLabel>
+        <StatNumber>${formatNumber(total)}</StatNumber>
+        {fullTotal !== null ? (
+          <StatHelpText fontSize={statSize}>
+            {handlePercent(total, fullTotal)}%
           </StatHelpText>
         ) : null}
       </Stat>

@@ -54,7 +54,7 @@ const HomeViewBox = ({
       backgroundColor="gray.200"
       borderRadius={4}
       p={2}
-      w="15%"
+      w={["45%", "15%"]}
       cursor="pointer"
       _hover={{ borderColor: "gray.500" }}
       onClick={() => {

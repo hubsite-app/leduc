@@ -17,7 +17,7 @@ import {
   JobsiteMaterialCreateData,
   JobsiteMaterialUpdateData,
 } from "../generated/graphql";
-import Number, { INumber } from "../components/Common/forms/Number";
+import NumberForm, { INumber } from "../components/Common/forms/Number";
 import Units, { IUnit } from "../components/Common/forms/Unit";
 import Rates, { IRates } from "../components/Common/forms/Rates";
 import { DefaultRatesSchema, RatesSchema } from "./yupSchema";
@@ -140,7 +140,7 @@ export const useJobsiteMaterialCreateForm = (options?: UseFormProps) => {
             control={control}
             name="quantity"
             render={({ field, fieldState }) => (
-              <Number
+              <NumberForm
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}
@@ -307,7 +307,7 @@ export const useJobsiteMaterialUpdateForm = (options?: UseFormProps) => {
             control={control}
             name="quantity"
             render={({ field, fieldState }) => (
-              <Number
+              <NumberForm
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}
