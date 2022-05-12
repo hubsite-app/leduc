@@ -4,6 +4,7 @@ import _ids from "@testing/_ids";
 export interface SeededMaterials {
   material_1: MaterialDocument;
   material_2: MaterialDocument;
+  material_3: MaterialDocument;
 }
 
 const createMaterials = async (): Promise<SeededMaterials> => {
@@ -17,9 +18,15 @@ const createMaterials = async (): Promise<SeededMaterials> => {
     name: "Second Material",
   });
 
+  const material_3 = new Material({
+    _id: _ids.materials.material_3._id,
+    name: "Another material",
+  });
+
   const materials = {
     material_1,
     material_2,
+    material_3,
   };
 
   for (let i = 0; i < Object.values(materials).length; i++) {

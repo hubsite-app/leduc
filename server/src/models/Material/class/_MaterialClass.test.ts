@@ -23,6 +23,18 @@ afterAll(async () => {
 });
 
 describe("Material Class", () => {
+  describe("GET", () => {
+    describe("getList", () => {
+      describe("success", () => {
+        test("should successfully get full list in alphabetical order", async () => {
+          const materials = await Material.getList();
+
+          expect(materials[0].name).toBe(documents.materials.material_3.name);
+        });
+      });
+    });
+  });
+
   describe("CREATE", () => {
     describe("success", () => {
       test("should successfully create a new unique material", async () => {
