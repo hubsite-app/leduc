@@ -107,7 +107,7 @@ const list = async (
     limit: options?.pageLimit,
     skip: options?.offset,
     sort: {
-      date: -1,
+      name: -1,
     },
   });
 
