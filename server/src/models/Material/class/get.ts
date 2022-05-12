@@ -94,7 +94,7 @@ const search = async (
 };
 
 const listDefaultOptions: IListOptions<MaterialDocument> = {
-  pageLimit: 25,
+  pageLimit: 9999,
   offset: 0,
 };
 const list = async (
