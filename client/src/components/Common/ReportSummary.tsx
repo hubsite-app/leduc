@@ -1,5 +1,6 @@
 import {
   BoxProps,
+  Flex,
   Heading,
   SimpleGrid,
   Stat,
@@ -7,8 +8,10 @@ import {
   StatLabel,
   StatNumber,
 } from "@chakra-ui/react";
+import { ReportIssueSnippetFragment } from "../../generated/graphql";
 import formatNumber from "../../utils/formatNumber";
 import Card from "./Card";
+import JobsiteReportIssues from "./JobsiteReport/Issues";
 
 interface IReportSummaryCard extends BoxProps {
   revenue: {
@@ -19,6 +22,7 @@ interface IReportSummaryCard extends BoxProps {
   totalExpenses: number;
   netIncome: number;
   showRevenueBreakdown?: boolean;
+  issues?: ReportIssueSnippetFragment[];
 }
 
 const ReportSummaryCard = ({
@@ -26,11 +30,20 @@ const ReportSummaryCard = ({
   netIncome,
   revenue,
   totalExpenses,
+  issues,
   showRevenueBreakdown = true,
   ...props
 }: IReportSummaryCard) => {
   return (
-    <Card heading={<Heading size="md">Summary</Heading>} {...props}>
+    <Card
+      heading={
+        <Flex flexDir="row" justifyContent="space-between">
+          <Heading size="md">Summary</Heading>
+          {issues && <JobsiteReportIssues issues={issues} />}
+        </Flex>
+      }
+      {...props}
+    >
       <SimpleGrid spacing={2} columns={[4]}>
         <Stat display="flex" justifyContent="center">
           <StatLabel>Total Revenue</StatLabel>

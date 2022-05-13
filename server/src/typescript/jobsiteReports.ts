@@ -1,10 +1,18 @@
-import { JobsiteClass, JobsiteDayReportClass } from "@models";
-import { DocumentType, prop, Ref } from "@typegoose/typegoose";
+import {
+  EmployeeClass,
+  JobsiteClass,
+  JobsiteDayReportClass,
+  VehicleClass,
+} from "@models";
+import { DocumentType, modelOptions, prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
-import { Field, Float, ID, ObjectType } from "type-graphql";
+import { Field, Float, ID, ObjectType, registerEnumType } from "type-graphql";
 import { CrewTypes } from "./crew";
 import { InvoiceReportClass } from "./invoice";
 import { Id, UpdateClass } from "./models";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import ReportIssueFullResolver from "@graphql/resolvers/reportIssueFull";
 
 export interface IJobsiteReportBuild {
   jobsiteId: Id;
@@ -62,10 +70,31 @@ export class JobsiteReportBaseClass {
   @prop({ type: [String], enum: CrewTypes, required: true, default: [] })
   public crewTypes!: CrewTypes[];
 
+  @Field(() => [ReportIssueFullClass])
+  @prop({
+    type: () => ReportIssueBaseClass,
+    discriminators: () => [
+      {
+        type: ReportIssueEmployeeRateZeroClass,
+        value: ReportIssueTypes.EmployeeRateZero,
+      },
+      {
+        type: ReportIssueVehicleRateZeroClass,
+        value: ReportIssueTypes.VehicleRateZero,
+      },
+    ],
+    default: [],
+  })
+  public issues!: ReportIssueBaseClass[];
+
   @Field(() => UpdateClass, { nullable: false })
   @prop({ type: () => UpdateClass, required: true, default: {} })
   public update!: UpdateClass;
 }
+
+/**
+ * ----- Summary -----
+ */
 
 @ObjectType()
 class SummaryBaseReport {
@@ -133,6 +162,10 @@ export class CrewTypeOnSiteSummaryClass extends SummaryBaseReport {
   public crewType!: CrewTypes;
 }
 
+/**
+ * ----- Master Report -----
+ */
+
 @ObjectType()
 export class JobsiteMasterReportItemClass {
   @Field(() => ID, { nullable: false })
@@ -142,3 +175,70 @@ export class JobsiteMasterReportItemClass {
   @prop({ required: true, default: {}, type: () => OnSiteSummaryReportClass })
   public summary!: OnSiteSummaryReportClass;
 }
+
+/**
+ * ----- Issues -----
+ */
+
+export enum ReportIssueTypes {
+  EmployeeRateZero = "EMPLOYEE_RATE_ZERO",
+  VehicleRateZero = "VEHICLE_RATE_ZERO",
+}
+
+registerEnumType(ReportIssueTypes, {
+  name: "ReportIssueTypes",
+});
+
+@ObjectType()
+@modelOptions({
+  schemaOptions: {
+    discriminatorKey: "type",
+  },
+})
+export class ReportIssueBaseClass {
+  @Field(() => ID, { nullable: false })
+  public _id?: Types.ObjectId;
+
+  @Field(() => ReportIssueTypes, { nullable: false })
+  @prop({ enum: ReportIssueTypes, required: true })
+  public type!: ReportIssueTypes;
+}
+
+@ObjectType()
+export class ReportIssueEmployeeRateZeroClass extends ReportIssueBaseClass {
+  @prop({ ref: () => EmployeeClass, required: true })
+  public employee!: Ref<EmployeeClass>;
+}
+
+export type ReportIssueEmployeeRateZeroDocument =
+  DocumentType<ReportIssueEmployeeRateZeroClass>;
+
+@ObjectType()
+export class ReportIssueVehicleRateZeroClass extends ReportIssueBaseClass {
+  @prop({ ref: () => VehicleClass, required: true })
+  public vehicle!: Ref<VehicleClass>;
+}
+
+/**
+ * @desc Only used for GraphQL to recognized the discriminated sub-document
+ * @see Resolver {@link ReportIssueFullResolver}
+ */
+
+@ObjectType()
+export class ReportIssueFullClass extends ReportIssueBaseClass {
+  @Field(() => EmployeeClass, { nullable: true })
+  public employee!: Ref<EmployeeClass>;
+
+  @Field(() => VehicleClass, { nullable: true })
+  public vehicle!: Ref<VehicleClass>;
+}
+
+export type ReportIssueFullDocument = DocumentType<ReportIssueFullClass>;
+
+export type IssuesGenerationArray =
+  | ({
+      type: ReportIssueTypes.EmployeeRateZero;
+    } & ReportIssueEmployeeRateZeroClass)
+  | ({
+      type: ReportIssueTypes.VehicleRateZero;
+    } & ReportIssueVehicleRateZeroClass);

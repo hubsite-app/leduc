@@ -1,4 +1,4 @@
-import { Th, Tr } from "@chakra-ui/react";
+import { Box, Flex, Th, Tr } from "@chakra-ui/react";
 import React from "react";
 import {
   CrewTypes,
@@ -7,6 +7,7 @@ import {
 } from "../../../generated/graphql";
 import createLink from "../../../utils/createLink";
 import formatNumber from "../../../utils/formatNumber";
+import JobsiteReportIssues from "../JobsiteReport/Issues";
 import Loading from "../Loading";
 import TextLink from "../TextLink";
 
@@ -95,13 +96,20 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
     <Tr filter={loading ? "blur(2px)" : undefined}>
       <Th>
         {jobsiteYearReport ? (
-          <TextLink
-            link={createLink.jobsiteYearReport(jobsiteYearReport._id)}
-            whiteSpace="nowrap"
-          >
-            {jobsiteYearReport.jobsite.jobcode} -{" "}
-            {jobsiteYearReport.jobsite.name}
-          </TextLink>
+          <Flex flexDir="row">
+            <TextLink
+              link={createLink.jobsiteYearReport(jobsiteYearReport._id)}
+              whiteSpace="nowrap"
+            >
+              {jobsiteYearReport.jobsite.jobcode} -{" "}
+              {jobsiteYearReport.jobsite.name}
+            </TextLink>
+            {jobsiteYearReport.issues && (
+              <Box ml={1}>
+                <JobsiteReportIssues issues={jobsiteYearReport.issues} />
+              </Box>
+            )}
+          </Flex>
         ) : (
           <Loading />
         )}

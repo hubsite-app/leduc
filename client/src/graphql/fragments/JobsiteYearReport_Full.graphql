@@ -16,4 +16,7 @@ fragment JobsiteYearReportFullSnippet on JobsiteYearReportClass {
     externalRevenueInvoiceValue
     internalRevenueInvoiceValue
   }
+  issues {
+    ...ReportIssueSnippet
+  }
 }

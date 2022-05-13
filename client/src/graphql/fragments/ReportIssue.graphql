@@ -1,0 +1,10 @@
+fragment ReportIssueSnippet on ReportIssueFullClass {
+  _id
+  type
+  employee {
+    ...EmployeeCardSnippet
+  }
+  vehicle {
+    ...VehicleCardSnippet
+  }
+}

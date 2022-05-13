@@ -83,4 +83,8 @@ export class JobsiteMonthReportClass extends JobsiteMonthReportSchema {
   public async generateSummary(this: JobsiteMonthReportDocument) {
     return generate.summary(this);
   }
+
+  public async generateIssues(this: JobsiteMonthReportDocument) {
+    return generate.issues(this);
+  }
 }

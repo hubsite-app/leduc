@@ -31,10 +31,11 @@ import JobsiteYearReportResolver from "@graphql/resolvers/jobsiteYearReport";
 import MaterialResolver from "@graphql/resolvers/material";
 import MaterialReportResolver from "@graphql/resolvers/materialReport";
 import MaterialShipmentResolver from "@graphql/resolvers/materialShipment";
-import RangeSummaryReportResolver from "@graphql/resolvers/rangeSummaryReport";
 import NonCostedMaterialReportResolver from "@graphql/resolvers/nonCostedMaterialReport";
 import OnSiteSummaryReportResolver from "@graphql/resolvers/onSiteSummaryReport";
 import ProductionResolver from "@graphql/resolvers/production";
+import RangeSummaryReportResolver from "@graphql/resolvers/rangeSummaryReport";
+import ReportIssueFullResolver from "@graphql/resolvers/reportIssueFull";
 import ReportNoteResolver from "@graphql/resolvers/reportNote";
 import SignupResolver from "@graphql/resolvers/signup";
 import SystemResolver from "@graphql/resolvers/system";
@@ -83,6 +84,7 @@ const createApp = async () => {
       OnSiteSummaryReportResolver,
       ProductionResolver,
       RangeSummaryReportResolver,
+      ReportIssueFullResolver,
       ReportNoteResolver,
       SearchResolver,
       SignupResolver,
@@ -149,7 +151,7 @@ const createApp = async () => {
                   message: context.errors[0].message || "Apollo request error",
                   meta: {
                     variables: context.request.variables,
-                    errors: context.errors,
+                    // errors: JSON.stringify(context.errors),
                     operationName: context.operationName,
                   },
                 });

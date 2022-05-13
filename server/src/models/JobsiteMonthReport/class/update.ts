@@ -34,6 +34,8 @@ const document = async (jobsiteMonthReport: JobsiteMonthReportDocument) => {
 
   await jobsiteMonthReport.generateSummary();
 
+  await jobsiteMonthReport.generateIssues();
+
   jobsiteMonthReport.update.status = UpdateStatus.Updated;
   jobsiteMonthReport.update.lastUpdatedAt = new Date();
 

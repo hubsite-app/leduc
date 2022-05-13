@@ -16,6 +16,8 @@ const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
    * ----- Variables -----
    */
 
+  console.log(report.issues);
+
   const internalExpenses = React.useMemo(() => {
     let expenses = 0;
 
@@ -69,6 +71,7 @@ const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
       internalExpenses={internalExpenses}
       netIncome={netIncome}
       totalExpenses={totalExpenses}
+      issues={report.issues}
     />
   );
 };
