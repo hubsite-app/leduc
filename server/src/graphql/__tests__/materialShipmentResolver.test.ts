@@ -7,7 +7,7 @@ import createApp from "../../app";
 import jestLogin from "@testing/jestLogin";
 import {
   MaterialShipmentCreateData,
-  MaterialShipmentShipmentData,
+  MaterialShipmentUpdateData,
 } from "@graphql/resolvers/materialShipment/mutations";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { Server } from "http";
@@ -148,7 +148,7 @@ describe("Material Shipment Resolver", () => {
 
     describe("materialShipmentUpdate", () => {
       const materialShipmentUpdate = `
-        mutation MaterialShipmentUpdate($id: String!, $data: MaterialShipmentShipmentData!) {
+        mutation MaterialShipmentUpdate($id: String!, $data: MaterialShipmentUpdateData!) {
           materialShipmentUpdate(id: $id, data: $data) {
             _id
             noJobsiteMaterial
@@ -163,11 +163,19 @@ describe("Material Shipment Resolver", () => {
             documents.users.base_foreman_1_user.email
           );
 
-          const data: MaterialShipmentShipmentData = {
+          const data: MaterialShipmentUpdateData = {
             noJobsiteMaterial: false,
             jobsiteMaterialId:
               documents.jobsiteMaterials.jobsite_2_material_1._id.toString(),
             quantity: 35,
+            vehicleObject: {
+              source: "Source",
+              vehicleCode: "B-12",
+              vehicleType: "Tandem",
+              truckingRateId:
+                documents.jobsites.jobsite_2.truckingRates[0]._id?.toString() ||
+                "",
+            },
           };
 
           const res = await request(app)
@@ -197,13 +205,21 @@ describe("Material Shipment Resolver", () => {
             documents.users.base_foreman_1_user.email
           );
 
-          const data: MaterialShipmentShipmentData = {
+          const data: MaterialShipmentUpdateData = {
             noJobsiteMaterial: true,
             jobsiteMaterialId: "",
             shipmentType: "Type",
             supplier: "Burnco",
             unit: "unit",
             quantity: 35,
+            vehicleObject: {
+              source: "Source",
+              vehicleCode: "B-12",
+              vehicleType: "Tandem",
+              truckingRateId:
+                documents.jobsites.jobsite_2.truckingRates[0]._id?.toString() ||
+                "",
+            },
           };
 
           const res = await request(app)

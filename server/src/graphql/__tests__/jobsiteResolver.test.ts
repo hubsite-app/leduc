@@ -174,7 +174,7 @@ describe("Jobsite Resolver", () => {
       `;
 
       describe("success", () => {
-        test("should successfully create a jobsite material", async () => {
+        test("should successfully create a jobsite material w/o delievered", async () => {
           const token = await jestLogin(app, documents.users.admin_user.email);
 
           const data: JobsiteMaterialCreateData = {
@@ -185,6 +185,7 @@ describe("Jobsite Resolver", () => {
               {
                 date: new Date(),
                 rate: 125,
+                estimated: true,
               },
             ],
             unit: "tonnes",
@@ -220,6 +221,70 @@ describe("Jobsite Resolver", () => {
           );
 
           expect(jobsiteMaterial?.supplier?.toString()).toBe(data.supplierId);
+
+          expect(jobsiteMaterial?.rates[0].estimated).toBeTruthy();
+
+          await setupDatabase();
+        });
+
+        test("should successfully create a jobsite material w/o delievered", async () => {
+          const token = await jestLogin(app, documents.users.admin_user.email);
+
+          const data: JobsiteMaterialCreateData = {
+            materialId: documents.materials.material_1._id.toString(),
+            supplierId: documents.companies.company_1._id.toString(),
+            quantity: 1000,
+            rates: [],
+            unit: "tonnes",
+            delivered: true,
+            deliveredRates: [
+              {
+                title: "Tandem",
+                rates: [
+                  {
+                    date: new Date(),
+                    rate: 125,
+                    estimated: true,
+                  },
+                ],
+              },
+            ],
+          };
+
+          const res = await request(app)
+            .post("/graphql")
+            .send({
+              query: jobsiteAddMaterial,
+              variables: {
+                jobsiteId: documents.jobsites.jobsite_2._id,
+                data,
+              },
+            })
+            .set("Authorization", token);
+
+          expect(res.status).toBe(200);
+
+          expect(res.body.data.jobsiteAddMaterial._id).toBe(
+            documents.jobsites.jobsite_2._id.toString()
+          );
+
+          const jobsite = await Jobsite.getById(
+            documents.jobsites.jobsite_2._id
+          );
+
+          expect(jobsite?.materials.length).toBe(2);
+
+          const jobsiteMaterial = await JobsiteMaterial.getById(
+            jobsite?.materials[1]?.toString() || ""
+          );
+
+          expect(jobsiteMaterial?.supplier?.toString()).toBe(data.supplierId);
+
+          expect(
+            jobsiteMaterial?.deliveredRates[0].rates[0].estimated
+          ).toBeTruthy();
+
+          await setupDatabase();
         });
       });
     });
