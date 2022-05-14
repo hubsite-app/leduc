@@ -3,8 +3,11 @@ import { post, prop, Ref } from "@typegoose/typegoose";
 import { MaterialClass, CompanyClass, JobsiteMaterialDocument } from "@models";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
-import { DefaultRateClass, RateClass } from "@typescript/models";
 import errorHandler from "@utils/errorHandler";
+import {
+  JobsiteMaterialDeliveredRateClass,
+  JobsiteMaterialRateClass,
+} from "@typescript/jobsiteMaterial";
 
 @ObjectType()
 @post<JobsiteMaterialDocument>("save", async (jobsiteMaterial) => {
@@ -41,21 +44,25 @@ export class JobsiteMaterialSchema {
   @prop({ required: true })
   public unit!: string;
 
-  @Field(() => [RateClass], { nullable: false })
+  @Field(() => [JobsiteMaterialRateClass], { nullable: false })
   @prop({
-    type: () => [RateClass],
+    type: () => [JobsiteMaterialRateClass],
     required: true,
     default: [],
   })
-  public rates!: RateClass[];
+  public rates!: JobsiteMaterialRateClass[];
 
   @Field({ nullable: false })
   @prop({ required: true, default: false })
   public delivered!: boolean;
 
-  @Field(() => [DefaultRateClass], { nullable: false })
-  @prop({ type: () => [DefaultRateClass], required: true, default: [] })
-  public deliveredRates!: DefaultRateClass[];
+  @Field(() => [JobsiteMaterialDeliveredRateClass], { nullable: false })
+  @prop({
+    type: () => [JobsiteMaterialDeliveredRateClass],
+    required: true,
+    default: [],
+  })
+  public deliveredRates!: JobsiteMaterialDeliveredRateClass[];
 
   @Field({ nullable: false })
   @prop({ required: true, default: Date.now })

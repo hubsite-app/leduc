@@ -101,6 +101,10 @@ export class MaterialReportClass {
   @prop({ required: true })
   public rate!: number;
 
+  @Field({ nullable: false })
+  @prop({ required: true, default: false })
+  public estimated!: boolean;
+
   @Field(() => Float, { nullable: false })
   @prop({ required: true })
   public quantity!: number;

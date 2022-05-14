@@ -107,7 +107,7 @@ const MaterialSearch = ({
       const option = fullOptions.find((option) => option.value === props.value);
 
       if (option) {
-        setSearchString(option.value);
+        setSearchString(option.label);
         materialSelected({
           _id: option.value,
           name: option.label,

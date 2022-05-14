@@ -7,4 +7,11 @@ fragment ReportIssueSnippet on ReportIssueFullClass {
   vehicle {
     ...VehicleCardSnippet
   }
+  jobsiteMaterial {
+    ...JobsiteMaterialCardSnippet
+    jobsite {
+      _id
+    }
+  }
+  amount
 }

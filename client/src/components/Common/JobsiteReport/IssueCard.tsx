@@ -22,12 +22,10 @@ const JobsiteReportIssueCard = ({ issue }: IJobsiteReportIssueCard) => {
         if (issue.employee)
           return (
             <Link href={createLink.employee(issue.employee._id)} passHref>
-              <Text>
-                <Text as="span" fontWeight="bold">
-                  {issue.employee.name}
-                </Text>{" "}
-                does not have a set rate
-              </Text>
+              <Box>
+                <Text fontWeight="bolder">{issue.employee.name}</Text>
+                <Text>does not have a set rate</Text>
+              </Box>
             </Link>
           );
         else return null;
@@ -36,12 +34,66 @@ const JobsiteReportIssueCard = ({ issue }: IJobsiteReportIssueCard) => {
         if (issue.vehicle)
           return (
             <Link href={createLink.vehicle(issue.vehicle?._id)} passHref>
-              <Text>
-                <Text as="span" fontWeight="bold">
+              <Box>
+                <Text fontWeight="bolder">
                   {issue.vehicle.name} - {issue.vehicle.vehicleCode}
-                </Text>{" "}
-                does not have a set rate
-              </Text>
+                </Text>
+                <Text>does not have a set rate</Text>
+              </Box>
+            </Link>
+          );
+        else return null;
+      }
+      case ReportIssueTypes.MaterialRateZero: {
+        if (issue.jobsiteMaterial)
+          return (
+            <Link
+              href={createLink.jobsite(issue.jobsiteMaterial.jobsite._id, {
+                jobsiteMaterialId: issue.jobsiteMaterial._id,
+              })}
+              passHref
+            >
+              <Box>
+                <Text fontWeight="bolder">
+                  {issue.jobsiteMaterial.material.name} -{" "}
+                  {issue.jobsiteMaterial.supplier.name}
+                </Text>
+                <Text>does not have a set rate</Text>
+              </Box>
+            </Link>
+          );
+        else return null;
+      }
+      case ReportIssueTypes.NonCostedMaterials: {
+        if (issue.amount && issue.amount > 0)
+          return (
+            <Text>
+              Job has{" "}
+              <Text as="span" fontWeight="bolder">
+                {issue.amount}
+              </Text>{" "}
+              non-costed materials
+            </Text>
+          );
+        else return null;
+      }
+      case ReportIssueTypes.MaterialEstimatedRate: {
+        console.log(issue);
+        if (issue.jobsiteMaterial)
+          return (
+            <Link
+              href={createLink.jobsite(issue.jobsiteMaterial.jobsite._id, {
+                jobsiteMaterialId: issue.jobsiteMaterial._id,
+              })}
+              passHref
+            >
+              <Box>
+                <Text fontWeight="bolder">
+                  {issue.jobsiteMaterial.material.name} -{" "}
+                  {issue.jobsiteMaterial.supplier.name}
+                </Text>
+                <Text>has an estimated cost</Text>
+              </Box>
             </Link>
           );
         else return null;

@@ -2,6 +2,7 @@ import {
   EmployeeClass,
   JobsiteClass,
   JobsiteDayReportClass,
+  JobsiteMaterialClass,
   VehicleClass,
 } from "@models";
 import { DocumentType, modelOptions, prop, Ref } from "@typegoose/typegoose";
@@ -81,6 +82,18 @@ export class JobsiteReportBaseClass {
       {
         type: ReportIssueVehicleRateZeroClass,
         value: ReportIssueTypes.VehicleRateZero,
+      },
+      {
+        type: ReportIssueMaterialRateZeroClass,
+        value: ReportIssueTypes.MaterialRateZero,
+      },
+      {
+        type: ReportIssueNonCostedMaterialsClass,
+        value: ReportIssueTypes.NonCostedMaterials,
+      },
+      {
+        type: ReportIssueMaterialEstimatedRateClass,
+        value: ReportIssueTypes.MaterialEstimatedRate,
       },
     ],
     default: [],
@@ -183,6 +196,9 @@ export class JobsiteMasterReportItemClass {
 export enum ReportIssueTypes {
   EmployeeRateZero = "EMPLOYEE_RATE_ZERO",
   VehicleRateZero = "VEHICLE_RATE_ZERO",
+  MaterialRateZero = "MATERIAL_RATE_ZERO",
+  NonCostedMaterials = "NON_COSTED_MATERIALS",
+  MaterialEstimatedRate = "MATERIAL_ESTIMATED_RATE",
 }
 
 registerEnumType(ReportIssueTypes, {
@@ -210,13 +226,28 @@ export class ReportIssueEmployeeRateZeroClass extends ReportIssueBaseClass {
   public employee!: Ref<EmployeeClass>;
 }
 
-export type ReportIssueEmployeeRateZeroDocument =
-  DocumentType<ReportIssueEmployeeRateZeroClass>;
-
 @ObjectType()
 export class ReportIssueVehicleRateZeroClass extends ReportIssueBaseClass {
   @prop({ ref: () => VehicleClass, required: true })
   public vehicle!: Ref<VehicleClass>;
+}
+
+@ObjectType()
+export class ReportIssueMaterialRateZeroClass extends ReportIssueBaseClass {
+  @prop({ ref: () => JobsiteMaterialClass, required: true })
+  public jobsiteMaterial!: Ref<JobsiteMaterialClass>;
+}
+
+@ObjectType()
+export class ReportIssueNonCostedMaterialsClass extends ReportIssueBaseClass {
+  @prop({ required: true })
+  public amount!: number;
+}
+
+@ObjectType()
+export class ReportIssueMaterialEstimatedRateClass extends ReportIssueBaseClass {
+  @prop({ ref: () => JobsiteMaterialClass, required: true })
+  public jobsiteMaterial!: Ref<JobsiteMaterialClass>;
 }
 
 /**
@@ -231,6 +262,12 @@ export class ReportIssueFullClass extends ReportIssueBaseClass {
 
   @Field(() => VehicleClass, { nullable: true })
   public vehicle!: Ref<VehicleClass>;
+
+  @Field(() => JobsiteMaterialClass, { nullable: true })
+  public jobsiteMaterial!: Ref<JobsiteMaterialClass>;
+
+  @Field({ nullable: true })
+  public amount!: number;
 }
 
 export type ReportIssueFullDocument = DocumentType<ReportIssueFullClass>;
@@ -241,4 +278,13 @@ export type IssuesGenerationArray =
     } & ReportIssueEmployeeRateZeroClass)
   | ({
       type: ReportIssueTypes.VehicleRateZero;
-    } & ReportIssueVehicleRateZeroClass);
+    } & ReportIssueVehicleRateZeroClass)
+  | ({
+      type: ReportIssueTypes.MaterialRateZero;
+    } & ReportIssueMaterialRateZeroClass)
+  | ({
+      type: ReportIssueTypes.NonCostedMaterials;
+    } & ReportIssueNonCostedMaterialsClass)
+  | ({
+      type: ReportIssueTypes.MaterialEstimatedRate;
+    } & ReportIssueMaterialEstimatedRateClass);

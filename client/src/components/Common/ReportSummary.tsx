@@ -7,6 +7,7 @@ import {
   StatHelpText,
   StatLabel,
   StatNumber,
+  Tooltip,
 } from "@chakra-ui/react";
 import { ReportIssueSnippetFragment } from "../../generated/graphql";
 import formatNumber from "../../utils/formatNumber";
@@ -18,18 +19,26 @@ interface IReportSummaryCard extends BoxProps {
     internal: number;
     external: number;
   };
+  revenueTooltip?: React.ReactNode;
   internalExpenses: number;
+  internalExpensesTooltip?: React.ReactNode;
   totalExpenses: number;
+  totalExpensesTooltip?: React.ReactNode;
   netIncome: number;
+  netIncomeTooltip?: React.ReactNode;
   showRevenueBreakdown?: boolean;
   issues?: ReportIssueSnippetFragment[];
 }
 
 const ReportSummaryCard = ({
   internalExpenses,
+  internalExpensesTooltip,
   netIncome,
+  netIncomeTooltip,
   revenue,
+  revenueTooltip,
   totalExpenses,
+  totalExpensesTooltip,
   issues,
   showRevenueBreakdown = true,
   ...props
@@ -46,7 +55,9 @@ const ReportSummaryCard = ({
     >
       <SimpleGrid spacing={2} columns={[4]}>
         <Stat display="flex" justifyContent="center">
-          <StatLabel>Total Revenue</StatLabel>
+          <Tooltip placement="top" label={revenueTooltip}>
+            <StatLabel>Total Revenue</StatLabel>
+          </Tooltip>
           <StatNumber>
             ${formatNumber(revenue.external + revenue.internal)}
           </StatNumber>
@@ -62,17 +73,23 @@ const ReportSummaryCard = ({
           ) : null}
         </Stat>
         <Stat display="flex" justifyContent="center">
-          <StatLabel>Internal Expenses</StatLabel>
+          <Tooltip placement="top" label={internalExpensesTooltip}>
+            <StatLabel>Internal Expenses</StatLabel>
+          </Tooltip>
           <StatNumber>${formatNumber(internalExpenses)}</StatNumber>
         </Stat>
 
         <Stat display="flex" justifyContent="center">
-          <StatLabel>Total Expenses</StatLabel>
+          <Tooltip placement="top" label={totalExpensesTooltip}>
+            <StatLabel>Total Expenses</StatLabel>
+          </Tooltip>
           <StatNumber>${formatNumber(totalExpenses)}</StatNumber>
         </Stat>
 
         <Stat display="flex" justifyContent="center">
-          <StatLabel>Net Income</StatLabel>
+          <Tooltip placement="top" label={netIncomeTooltip}>
+            <StatLabel>Net Income</StatLabel>
+          </Tooltip>
           <StatNumber color={netIncome < 0 ? "red.500" : undefined}>
             {netIncome < 0 && "("}${formatNumber(Math.abs(netIncome))}
             {netIncome < 0 && ")"}

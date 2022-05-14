@@ -76,7 +76,9 @@ const NumberForm = ({
         {inputLeftElement && (
           <InputLeftElement h="auto">{inputLeftElement}</InputLeftElement>
         )}
-        {inputLeftAddon && <InputLeftAddon>{inputLeftAddon}</InputLeftAddon>}
+        {inputLeftAddon && (
+          <InputLeftAddon size="sm">{inputLeftAddon}</InputLeftAddon>
+        )}
         <NumberInput
           {...props}
           allowMouseWheel={allowMouseWheel}

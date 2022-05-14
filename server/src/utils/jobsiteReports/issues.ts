@@ -1,4 +1,4 @@
-import { JobsiteDayReportDocument } from "@models";
+import { JobsiteDayReportDocument, JobsiteDocument } from "@models";
 import {
   IssuesGenerationArray,
   ReportIssueTypes,
@@ -11,7 +11,9 @@ export const dayReportIssueGeneration = (
   const issues: IssuesGenerationArray[] = [];
 
   const foundZeroEmployee: Id[] = [],
-    foundZeroVehicle: Id[] = [];
+    foundZeroVehicle: Id[] = [],
+    foundZeroMaterial: Id[] = [],
+    foundEstimatedMaterial: Id[] = [];
   for (let i = 0; i < dayReports.length; i++) {
     const dayReport = dayReports[i];
     // Employee
@@ -53,6 +55,59 @@ export const dayReportIssueGeneration = (
         }
       }
     }
+
+    // Materials
+    for (let j = 0; j < dayReport.materials.length; j++) {
+      const materialReport = dayReport.materials[j];
+
+      // Rate is 0
+      if (materialReport.rate === 0) {
+        if (
+          materialReport.jobsiteMaterial &&
+          !foundZeroMaterial.includes(materialReport.jobsiteMaterial.toString())
+        ) {
+          issues.push({
+            type: ReportIssueTypes.MaterialRateZero,
+            jobsiteMaterial: materialReport.jobsiteMaterial,
+          });
+
+          foundZeroMaterial.push(materialReport.jobsiteMaterial.toString());
+        }
+      }
+
+      // Rate is estimated
+      if (materialReport.estimated) {
+        if (
+          materialReport.jobsiteMaterial &&
+          !foundEstimatedMaterial.includes(
+            materialReport.jobsiteMaterial.toString()
+          )
+        ) {
+          issues.push({
+            type: ReportIssueTypes.MaterialEstimatedRate,
+            jobsiteMaterial: materialReport.jobsiteMaterial,
+          });
+
+          foundEstimatedMaterial.push(
+            materialReport.jobsiteMaterial.toString()
+          );
+        }
+      }
+    }
+  }
+
+  return issues;
+};
+
+export const jobsiteReportIssueGenerator = async (jobsite: JobsiteDocument) => {
+  const issues: IssuesGenerationArray[] = [];
+
+  const nonCostedMaterials = await jobsite.getNonCostedMaterialShipments();
+  if (nonCostedMaterials.length > 0) {
+    issues.push({
+      type: ReportIssueTypes.NonCostedMaterials,
+      amount: nonCostedMaterials.length,
+    });
   }
 
   return issues;

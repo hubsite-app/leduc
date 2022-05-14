@@ -1,5 +1,6 @@
 import {
   CompanyClass,
+  JobsiteClass,
   JobsiteMaterialClass,
   JobsiteMaterialDocument,
   MaterialClass,
@@ -33,6 +34,11 @@ export default class JobsiteMaterialResolver {
   @FieldResolver(() => Float, { nullable: false })
   async completedQuantity(@Root() jobsiteMaterial: JobsiteMaterialDocument) {
     return jobsiteMaterial.getCompletedQuantity();
+  }
+
+  @FieldResolver(() => JobsiteClass, { nullable: false })
+  async jobsite(@Root() jobsiteMaterial: JobsiteMaterialDocument) {
+    return jobsiteMaterial.getJobsite();
   }
 
   /**

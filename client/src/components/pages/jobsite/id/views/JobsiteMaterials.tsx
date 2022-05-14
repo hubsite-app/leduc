@@ -21,9 +21,13 @@ import FormContainer from "../../../../Common/FormContainer";
 
 interface IJobsiteMaterialsCosting {
   jobsite: JobsiteFullSnippetFragment;
+  selectedJobsiteMaterial?: string;
 }
 
-const JobsiteMaterialsCosting = ({ jobsite }: IJobsiteMaterialsCosting) => {
+const JobsiteMaterialsCosting = ({
+  jobsite,
+  selectedJobsiteMaterial,
+}: IJobsiteMaterialsCosting) => {
   /**
    * ----- Hook Initialization -----
    */
@@ -31,6 +35,21 @@ const JobsiteMaterialsCosting = ({ jobsite }: IJobsiteMaterialsCosting) => {
   const [addForm, setAddForm] = React.useState(false);
 
   const [nonCostedList, setNonCostedList] = React.useState(false);
+
+  /**
+   * ----- Variables -----
+   */
+
+  const materialsList = React.useMemo(() => {
+    return [
+      ...jobsite.materials.filter(
+        (material) => material._id === selectedJobsiteMaterial
+      ),
+      ...jobsite.materials.filter(
+        (material) => material._id !== selectedJobsiteMaterial
+      ),
+    ];
+  }, [jobsite.materials, selectedJobsiteMaterial]);
 
   /**
    * ----- Rendering -----
@@ -80,12 +99,13 @@ const JobsiteMaterialsCosting = ({ jobsite }: IJobsiteMaterialsCosting) => {
         </Box>
       )}
       <Flex w="100%" flexDir="column" px={4} py={2}>
-        {jobsite.materials.length > 0 ? (
+        {materialsList.length > 0 ? (
           <ShowMore
-            list={jobsite.materials.map((jobsiteMaterial) => (
+            list={materialsList.map((jobsiteMaterial) => (
               <JobsiteMaterialCard
                 jobsiteMaterial={jobsiteMaterial}
                 key={jobsiteMaterial._id}
+                selected={jobsiteMaterial._id === selectedJobsiteMaterial}
               />
             ))}
           />

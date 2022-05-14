@@ -1,3 +1,5 @@
+import createQueryString from "./createQueryString";
+
 const employee = (employeeId: string) => {
   return `/employee/${employeeId}`;
 };
@@ -10,8 +12,25 @@ const crew = (crewId: string) => {
   return `/crew/${crewId}`;
 };
 
-const jobsite = (jobsiteId: string) => {
-  return `/jobsite/${jobsiteId}`;
+export enum JobsiteQueryKeys {
+  jobsiteMaterial = "jobsite-material",
+}
+interface IJobsiteQueryString {
+  jobsiteMaterialId?: string;
+}
+const jobsite = (jobsiteId: string, options?: IJobsiteQueryString) => {
+  let queryString = "";
+  if (options) {
+    const optionObject: Record<string, string> = {};
+
+    if (options.jobsiteMaterialId)
+      optionObject[JobsiteQueryKeys.jobsiteMaterial] =
+        options.jobsiteMaterialId;
+
+    queryString = createQueryString(optionObject);
+  }
+
+  return `/jobsite/${jobsiteId}${queryString}`;
 };
 
 const jobsiteMonthReport = (reportId: string) => {

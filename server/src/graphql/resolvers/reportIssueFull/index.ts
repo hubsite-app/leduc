@@ -1,4 +1,11 @@
-import { Employee, EmployeeClass, Vehicle, VehicleClass } from "@models";
+import {
+  Employee,
+  EmployeeClass,
+  JobsiteMaterial,
+  JobsiteMaterialClass,
+  Vehicle,
+  VehicleClass,
+} from "@models";
 import {
   ReportIssueFullClass,
   ReportIssueFullDocument,
@@ -23,6 +30,16 @@ export default class ReportIssueFullResolver {
   async vehicle(@Root() reportIssueFull: ReportIssueFullDocument) {
     if (reportIssueFull.type === ReportIssueTypes.VehicleRateZero)
       return Vehicle.getById(reportIssueFull.vehicle || "");
+    else return null;
+  }
+
+  @FieldResolver(() => JobsiteMaterialClass, { nullable: true })
+  async jobsiteMaterial(@Root() reportIssueFull: ReportIssueFullDocument) {
+    if (
+      reportIssueFull.type === ReportIssueTypes.MaterialRateZero ||
+      reportIssueFull.type === ReportIssueTypes.MaterialEstimatedRate
+    )
+      return JobsiteMaterial.getById(reportIssueFull.jobsiteMaterial || "");
     else return null;
   }
 }

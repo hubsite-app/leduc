@@ -17,17 +17,45 @@ import FormContainer from "../../../../Common/FormContainer";
 
 interface IJobsiteMaterialCard {
   jobsiteMaterial: JobsiteMaterialCardSnippetFragment;
+  selected?: boolean;
 }
 
-const JobsiteMaterialCard = ({ jobsiteMaterial }: IJobsiteMaterialCard) => {
+const JobsiteMaterialCard = ({
+  jobsiteMaterial,
+  selected,
+}: IJobsiteMaterialCard) => {
   /**
    * ----- Hook Initialization -----
    */
 
   const [edit, setEdit] = React.useState(false);
 
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  /**
+   * ----- Use-effects and other logic -----
+   */
+
+  React.useEffect(() => {
+    if (ref.current && selected) {
+      ref.current.focus();
+    }
+  }, [ref, selected]);
+
+  /**
+   * ----- Rendering -----
+   */
+
   return (
-    <Box p={2} w="100%" border="1px solid lightgray">
+    <Box
+      p={2}
+      w="100%"
+      border="1px solid"
+      borderColor="gray.300"
+      ref={ref}
+      tabIndex={0}
+      _focusWithin={{ borderColor: "gray.600", backgroundColor: "gray.100" }}
+    >
       <Flex flexDir="row" justifyContent="space-between">
         <Stat>
           <StatLabel fontWeight="bold">

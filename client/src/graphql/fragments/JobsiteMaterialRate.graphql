@@ -1,0 +1,6 @@
+fragment JobsiteMaterialRateSnippet on JobsiteMaterialRateClass {
+  _id
+  rate
+  date
+  estimated
+}

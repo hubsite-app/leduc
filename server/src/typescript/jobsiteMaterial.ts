@@ -1,5 +1,12 @@
 import { CompanyDocument, JobsiteDocument, MaterialDocument } from "@models";
-import { IDefaultRateData, RateClass } from "./models";
+import { prop } from "@typegoose/typegoose";
+import { Field, ObjectType } from "type-graphql";
+import {
+  DefaultRateClass,
+  IDefaultRateData,
+  IRatesData,
+  RateClass,
+} from "./models";
 
 export interface IJobsiteMaterialCreate {
   jobsite: JobsiteDocument;
@@ -7,16 +14,47 @@ export interface IJobsiteMaterialCreate {
   supplier: CompanyDocument;
   quantity: number;
   unit: string;
-  rates: RateClass[];
+  rates: IJobsiteMaterialRateData[];
   delivered: boolean;
-  deliveredRates: IDefaultRateData[];
+  deliveredRates: IJobsiteMaterialDeliveredRateData[];
 }
 
 export interface IJobsiteMaterialUpdate {
   supplier: CompanyDocument;
   quantity: number;
   unit: string;
-  rates: RateClass[];
+  rates: IJobsiteMaterialRateData[];
   delivered: boolean;
-  deliveredRates: IDefaultRateData[];
+  deliveredRates: IJobsiteMaterialDeliveredRateData[];
+}
+
+export interface IJobsiteMaterialRateData extends IRatesData {
+  estimated: boolean;
+}
+
+@ObjectType()
+export class JobsiteMaterialRateClass extends RateClass {
+  @Field({ nullable: true })
+  @prop({ required: true, default: false })
+  public estimated!: boolean;
+}
+
+export interface IJobsiteMaterialDeliveredRateData
+  extends Omit<IDefaultRateData, "rates"> {
+  rates: IJobsiteMaterialRateData[];
+}
+
+@ObjectType()
+export class JobsiteMaterialDeliveredRateClass extends DefaultRateClass {
+  @Field(() => [JobsiteMaterialRateClass], { nullable: false })
+  @prop({
+    type: () => [JobsiteMaterialRateClass],
+    required: true,
+    default: [],
+    validate: {
+      validator: (val) => val.length > 0,
+      message: "must have at least one rate",
+    },
+  })
+  public rates!: JobsiteMaterialRateClass[];
 }

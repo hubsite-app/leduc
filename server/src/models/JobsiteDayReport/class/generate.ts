@@ -17,7 +17,7 @@ import {
 } from "@typescript/jobsiteReports";
 import { Id } from "@typescript/models";
 import errorHandler from "@utils/errorHandler";
-import getRateForTime from "@utils/getRateForTime";
+import getRateObjectForTime from "@utils/getRateObjectForTime";
 import getTruckingRateForTime from "@utils/getTruckingRateForTime";
 import dayjs from "dayjs";
 import {
@@ -395,35 +395,55 @@ const materialReports = async (
         );
 
         if (deliveredRate) {
+          const rate = getRateObjectForTime(
+            deliveredRate.rates,
+            jobsiteDayReport.date
+          );
+
+          if (rate) {
+            const materialReport: MaterialReportClass = {
+              jobsiteMaterial: jobsiteMaterial._id,
+              deliveredRateId: deliveredRate._id,
+              materialShipments: jobsiteMaterialObject.materialShipments
+                .filter(
+                  (shipment) =>
+                    shipment.vehicleObject?.deliveredRateId?.toString() ===
+                    deliveredRate._id?.toString()
+                )
+                .map((object) => object._id),
+              crewType: jobsiteMaterialObject.crewType,
+              quantity,
+              rate: rate.rate,
+              estimated: rate.estimated,
+            };
+
+            materialReports.push(materialReport);
+          } else {
+            logger.error("Unable to find delivered rate");
+          }
+        }
+      } else {
+        const rate = getRateObjectForTime(
+          jobsiteMaterial.rates,
+          jobsiteDayReport.date
+        );
+
+        if (rate) {
           const materialReport: MaterialReportClass = {
             jobsiteMaterial: jobsiteMaterial._id,
-            deliveredRateId: deliveredRate._id,
-            materialShipments: jobsiteMaterialObject.materialShipments
-              .filter(
-                (shipment) =>
-                  shipment.vehicleObject?.deliveredRateId?.toString() ===
-                  deliveredRate._id?.toString()
-              )
-              .map((object) => object._id),
+            materialShipments: jobsiteMaterialObject.materialShipments.map(
+              (object) => object._id
+            ),
             crewType: jobsiteMaterialObject.crewType,
             quantity,
-            rate: getRateForTime(deliveredRate.rates, jobsiteDayReport.date),
+            rate: rate.rate,
+            estimated: rate.estimated,
           };
 
           materialReports.push(materialReport);
+        } else {
+          logger.error("Unable to find rate");
         }
-      } else {
-        const materialReport: MaterialReportClass = {
-          jobsiteMaterial: jobsiteMaterial._id,
-          materialShipments: jobsiteMaterialObject.materialShipments.map(
-            (object) => object._id
-          ),
-          crewType: jobsiteMaterialObject.crewType,
-          quantity,
-          rate: await jobsiteMaterial.getRateForTime(jobsiteDayReport.date),
-        };
-
-        materialReports.push(materialReport);
       }
     } catch (error) {
       errorHandler("Unable to create material report", error);

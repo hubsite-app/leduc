@@ -10,17 +10,10 @@ fragment JobsiteMaterialCardSnippet on JobsiteMaterialClass {
   completedQuantity
   unit
   rates {
-    _id
-    date
-    rate
+    ...JobsiteMaterialRateSnippet
   }
   delivered
   deliveredRates {
-    _id
-    title
-    rates {
-      date
-      rate
-    }
+    ...JobsiteMaterialDeliveredRateSnippet
   }
 }

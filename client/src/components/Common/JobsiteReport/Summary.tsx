@@ -1,3 +1,4 @@
+import { Code, Flex, Text } from "@chakra-ui/react";
 import React from "react";
 import {
   JobsiteMonthReportFullSnippetFragment,
@@ -16,8 +17,6 @@ const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
    * ----- Variables -----
    */
 
-  console.log(report.issues);
-
   const internalExpenses = React.useMemo(() => {
     let expenses = 0;
 
@@ -35,8 +34,8 @@ const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
 
   const totalExpenses = React.useMemo(() => {
     return (
-      internalExpenses +
-      report.summary.externalExpenseInvoiceValue +
+      internalExpenses * 1.1 +
+      report.summary.externalExpenseInvoiceValue * 1.03 +
       report.summary.internalExpenseInvoiceValue
     );
   }, [
@@ -67,10 +66,59 @@ const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
         internal: report.summary.internalRevenueInvoiceValue,
         external: report.summary.externalRevenueInvoiceValue,
       }}
+      revenueTooltip={
+        <Flex flexDir="column">
+          <Code backgroundColor="transparent" color="white">
+            + Internal Revenue Invoices
+          </Code>
+          <Code backgroundColor="transparent" color="white">
+            + External Revenue Invoices
+          </Code>
+        </Flex>
+      }
       showRevenueBreakdown={false}
       internalExpenses={internalExpenses}
+      internalExpensesTooltip={
+        <Flex flexDir="column">
+          <Code backgroundColor="transparent" color="white">
+            + Wages
+          </Code>
+          <Code backgroundColor="transparent" color="white">
+            + Equipment
+          </Code>
+          <Code backgroundColor="transparent" color="white">
+            + Materials
+          </Code>
+          <Code backgroundColor="transparent" color="white">
+            + Trucking
+          </Code>
+        </Flex>
+      }
       netIncome={netIncome}
+      netIncomeTooltip={
+        <Flex flexDir="column">
+          <Code backgroundColor="transparent" color="white">
+            + Total Revenue
+          </Code>
+          <Code backgroundColor="transparent" color="white">
+            - Total Expenses
+          </Code>
+        </Flex>
+      }
       totalExpenses={totalExpenses}
+      totalExpensesTooltip={
+        <Flex flexDir="column">
+          <Code backgroundColor="transparent" color="white">
+            + Internal Expenses + 10%
+          </Code>
+          <Code backgroundColor="transparent" color="white">
+            + External Invoices + 3%
+          </Code>
+          <Code backgroundColor="transparent" color="white">
+            + Internal Invoices
+          </Code>
+        </Flex>
+      }
       issues={report.issues}
     />
   );

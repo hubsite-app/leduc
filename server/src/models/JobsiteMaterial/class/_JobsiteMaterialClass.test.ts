@@ -51,6 +51,7 @@ describe("Jobsite Material Class", () => {
               {
                 date: new Date(),
                 rate: 125,
+                estimated: true,
               },
             ],
             unit: "tonnes",
@@ -69,6 +70,8 @@ describe("Jobsite Material Class", () => {
           expect(
             data.jobsite.materials.includes(jobsiteMaterial._id.toString())
           ).toBeTruthy();
+
+          expect(jobsiteMaterial.rates[0].estimated).toBeTruthy();
         });
 
         test("should successfully create new jobsite materials, delivered", async () => {
@@ -87,6 +90,7 @@ describe("Jobsite Material Class", () => {
                   {
                     date: new Date(),
                     rate: 100,
+                    estimated: false,
                   },
                 ],
               },
@@ -104,6 +108,10 @@ describe("Jobsite Material Class", () => {
           expect(
             data.jobsite.materials.includes(jobsiteMaterial._id.toString())
           ).toBeTruthy();
+
+          expect(
+            jobsiteMaterial.deliveredRates[0].rates[0].estimated
+          ).toBeFalsy();
         });
       });
 

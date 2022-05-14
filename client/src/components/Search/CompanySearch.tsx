@@ -107,7 +107,7 @@ const CompanySearch = ({
       const option = fullOptions.find((option) => option.value === props.value);
 
       if (option) {
-        setSearchString(option.value);
+        setSearchString(option.label);
         companySelected({
           _id: option.value,
           name: option.label,

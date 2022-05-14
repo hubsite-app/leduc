@@ -1,6 +1,24 @@
 import { DefaultRateData, RatesData } from "@graphql/types/mutation";
 import { Company, JobsiteMaterial, JobsiteMaterialDocument } from "@models";
-import { Field, Float, InputType } from "type-graphql";
+import { Field, Float, ID, InputType } from "type-graphql";
+
+@InputType()
+export class JobsiteMaterialRateData extends RatesData {
+  @Field({ nullable: false })
+  public estimated!: boolean;
+}
+
+@InputType()
+export class JobsiteMaterialDeliveredRateData implements DefaultRateData {
+  @Field(() => ID, { nullable: true })
+  public _id?: string;
+
+  @Field({ nullable: false })
+  public title!: string;
+
+  @Field(() => [JobsiteMaterialRateData], { nullable: false })
+  public rates!: JobsiteMaterialRateData[];
+}
 
 @InputType()
 export class JobsiteMaterialCreateData {
@@ -16,14 +34,14 @@ export class JobsiteMaterialCreateData {
   @Field({ nullable: false })
   public unit!: string;
 
-  @Field(() => [RatesData], { nullable: true })
-  public rates!: RatesData[];
+  @Field(() => [JobsiteMaterialRateData], { nullable: true })
+  public rates!: JobsiteMaterialRateData[];
 
   @Field(() => Boolean, { nullable: false })
   public delivered!: boolean;
 
-  @Field(() => [DefaultRateData], { nullable: true })
-  public deliveredRates!: DefaultRateData[];
+  @Field(() => [JobsiteMaterialDeliveredRateData], { nullable: true })
+  public deliveredRates!: JobsiteMaterialDeliveredRateData[];
 }
 
 @InputType()
@@ -37,14 +55,14 @@ export class JobsiteMaterialUpdateData {
   @Field({ nullable: false })
   public unit!: string;
 
-  @Field(() => [RatesData], { nullable: false })
-  public rates!: RatesData[];
+  @Field(() => [JobsiteMaterialRateData], { nullable: false })
+  public rates!: JobsiteMaterialRateData[];
 
   @Field(() => Boolean, { nullable: false })
   public delivered!: boolean;
 
-  @Field(() => [DefaultRateData], { nullable: true })
-  public deliveredRates!: DefaultRateData[];
+  @Field(() => [JobsiteMaterialDeliveredRateData], { nullable: true })
+  public deliveredRates!: JobsiteMaterialDeliveredRateData[];
 }
 
 const update = async (

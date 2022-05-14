@@ -1,0 +1,7 @@
+fragment JobsiteMaterialDeliveredRateSnippet on JobsiteMaterialDeliveredRateClass {
+  _id
+  title
+  rates {
+    ...JobsiteMaterialRateSnippet
+  }
+}

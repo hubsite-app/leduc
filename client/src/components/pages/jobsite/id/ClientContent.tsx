@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { FiEdit } from "react-icons/fi";
 import { useJobsiteFullQuery, UserRoles } from "../../../../generated/graphql";
+import { JobsiteQueryKeys } from "../../../../utils/createLink";
 import Card from "../../../Common/Card";
 import DailyReportListCard from "../../../Common/DailyReport/DailyReportListCard";
 import JobsiteMonthlyReportList from "../../../Common/JobsiteMonthlyReport/List";
@@ -44,6 +45,18 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const router = useRouter();
+
+  /**
+   * ----- Variables -----
+   */
+
+  const jobsiteMaterialQuery = React.useMemo(() => {
+    if (router.query[JobsiteQueryKeys.jobsiteMaterial])
+      return router.query[JobsiteQueryKeys.jobsiteMaterial];
+    else return null;
+  }, [router]);
+
+  console.log(jobsiteMaterialQuery);
 
   /**
    * ----- Rendering -----
@@ -83,7 +96,10 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
           </Card>
           <Permission minRole={UserRoles.ProjectManager}>
             <SimpleGrid columns={[1, 1, 1, 2]} spacingX={4} spacingY={2}>
-              <JobsiteMaterialsCosting jobsite={jobsite} />
+              <JobsiteMaterialsCosting
+                jobsite={jobsite}
+                selectedJobsiteMaterial={jobsiteMaterialQuery as string}
+              />
               <TruckingRates jobsite={jobsite} />
             </SimpleGrid>
             <SimpleGrid columns={[1, 1, 1, 2]} spacingX={4} spacingY={2}>
@@ -117,7 +133,7 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
         </Box>
       );
     } else return <Loading />;
-  }, [data, isOpen, onClose, onOpen, router]);
+  }, [data, isOpen, jobsiteMaterialQuery, onClose, onOpen, router]);
 };
 
 export default JobsiteClientContent;

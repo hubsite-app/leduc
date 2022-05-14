@@ -49,6 +49,15 @@ describe("Jobsite Material Resolver", () => {
             rates {
               rate
               date
+              estimated
+            }
+            deliveredRates {
+              title
+              rates {
+                rate
+                date 
+                estimated
+              }
             }
           }
         }
@@ -64,6 +73,7 @@ describe("Jobsite Material Resolver", () => {
               {
                 date: new Date(),
                 rate: 125,
+                estimated: true,
               },
             ],
             supplierId: documents.companies.company_1._id.toString(),
@@ -99,6 +109,66 @@ describe("Jobsite Material Resolver", () => {
           expect(jobsiteMaterial?.quantity).toBe(data.quantity);
           expect(jobsiteMaterial?.rates.length).toBe(data.rates.length);
           expect(jobsiteMaterial?.unit).toBe(data.unit);
+
+          expect(jobsiteMaterial?.rates[0].estimated).toBeTruthy();
+        });
+
+        test("should successfully update invoice w/ delivered", async () => {
+          const token = await jestLogin(app, documents.users.admin_user.email);
+
+          const data: JobsiteMaterialUpdateData = {
+            quantity: 15,
+            rates: [],
+            supplierId: documents.companies.company_1._id.toString(),
+            unit: "tonnes",
+            delivered: true,
+            deliveredRates: [
+              {
+                title: "Tandem",
+                rates: [
+                  {
+                    date: new Date(),
+                    rate: 125,
+                    estimated: true,
+                  },
+                ],
+              },
+            ],
+          };
+
+          const res = await request(app)
+            .post("/graphql")
+            .send({
+              query: jobsiteMaterialUpdate,
+              variables: {
+                data,
+                id: documents.jobsiteMaterials.jobsite_2_material_1._id,
+              },
+            })
+            .set("Authorization", token);
+
+          expect(res.status).toBe(200);
+
+          expect(res.body.data.jobsiteMaterialUpdate._id).toBe(
+            documents.jobsiteMaterials.jobsite_2_material_1._id.toString()
+          );
+
+          const jobsiteMaterial = await JobsiteMaterial.getById(
+            documents.jobsiteMaterials.jobsite_2_material_1._id
+          );
+
+          expect(jobsiteMaterial).toBeDefined();
+
+          expect(jobsiteMaterial?.supplier?.toString()).toBe(data.supplierId);
+          expect(jobsiteMaterial?.quantity).toBe(data.quantity);
+          expect(jobsiteMaterial?.deliveredRates.length).toBe(
+            data.deliveredRates.length
+          );
+          expect(jobsiteMaterial?.unit).toBe(data.unit);
+
+          expect(
+            jobsiteMaterial?.deliveredRates[0].rates[0].estimated
+          ).toBeTruthy();
         });
       });
     });

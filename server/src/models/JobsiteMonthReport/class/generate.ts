@@ -1,7 +1,10 @@
 import { JobsiteMonthReportDocument } from "@models";
 import { InvoiceReportClass } from "@typescript/invoice";
 import { RangeSummaryReportClass } from "@typescript/jobsiteReports";
-import { dayReportIssueGeneration } from "@utils/jobsiteReports/issues";
+import {
+  dayReportIssueGeneration,
+  jobsiteReportIssueGenerator,
+} from "@utils/jobsiteReports/issues";
 import dayjs from "dayjs";
 
 const expenseInvoiceReports = async (
@@ -108,7 +111,12 @@ const summary = async (jobsiteMonthReport: JobsiteMonthReportDocument) => {
 const issues = async (jobsiteMonthReport: JobsiteMonthReportDocument) => {
   const dayReports = await jobsiteMonthReport.getDayReports();
 
-  jobsiteMonthReport.issues = dayReportIssueGeneration(dayReports);
+  jobsiteMonthReport.issues = [
+    ...dayReportIssueGeneration(dayReports),
+    ...(await jobsiteReportIssueGenerator(
+      await jobsiteMonthReport.getJobsite()
+    )),
+  ];
 };
 
 export default {
