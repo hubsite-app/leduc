@@ -29,7 +29,7 @@ describe("Daily Report Class", () => {
       describe("success", () => {
         test("should successfully create a new daily report", async () => {
           const data: IDailyReportCreate = {
-            date: new Date("2022-03-14"),
+            date: new Date("2022-02-22 11:59 pm"),
             crew: documents.crews.base_1,
             jobsite: documents.jobsites.jobsite_1,
           };
