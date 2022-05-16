@@ -66,10 +66,13 @@ const byId = async (
   return dailyReport;
 };
 
+export interface IDailyReportSearchOptions {
+  whitelistedCrews?: Id[];
+}
 const search = async (
   DailyReport: DailyReportModel,
   searchString: string,
-  options?: ISearchOptions
+  options?: ISearchOptions & IDailyReportSearchOptions
 ): Promise<IDailyReportSearchObject[]> => {
   const res = await ElasticsearchClient.search({
     index: ElasticSearchIndices.DailyReport,
@@ -108,11 +111,17 @@ const search = async (
   const dailyReports: IDailyReportSearchObject[] = [];
   for (let i = 0; i < dailyReportObjects.length; i++) {
     const dailyReport = await DailyReport.getById(dailyReportObjects[i].id);
-    if (dailyReport)
-      dailyReports.push({
-        dailyReport,
-        score: dailyReportObjects[i].score,
-      });
+    if (dailyReport) {
+      // Only add whitelisted crews (if provided)
+      if (
+        !options?.whitelistedCrews ||
+        options.whitelistedCrews.includes(dailyReport.crew?.toString() || "")
+      )
+        dailyReports.push({
+          dailyReport,
+          score: dailyReportObjects[i].score,
+        });
+    }
   }
 
   return dailyReports;

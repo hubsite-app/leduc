@@ -1,3 +1,4 @@
+import { getUserCrews } from "@graphql/helpers/general";
 import { SearchOptions } from "@graphql/types/query";
 import {
   CrewClass,
@@ -12,11 +13,12 @@ import {
   JobsiteMonthReportClass,
   JobsiteYearReportClass,
 } from "@models";
-import { ListOptionData } from "@typescript/graphql";
+import { IContext, ListOptionData } from "@typescript/graphql";
 import { Id } from "@typescript/models";
 import {
   Arg,
   Authorized,
+  Ctx,
   FieldResolver,
   ID,
   Mutation,
@@ -44,8 +46,13 @@ export default class JobsiteResolver {
   }
 
   @FieldResolver(() => [DailyReportClass])
-  async dailyReports(@Root() jobsite: JobsiteDocument) {
-    return jobsite.getDailyReports();
+  async dailyReports(
+    @Root() jobsite: JobsiteDocument,
+    @Ctx() context: IContext
+  ) {
+    return jobsite.getDailyReports({
+      whitelistedCrews: await getUserCrews(context),
+    });
   }
 
   @FieldResolver(() => [JobsiteMaterialClass])

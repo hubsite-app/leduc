@@ -14,7 +14,7 @@ import {
   VehicleWorkDocument,
 } from "@models";
 import { DailyReportSchema } from "../schema";
-import get from "./get";
+import get, { IDailyReportSearchOptions } from "./get";
 import {
   GetByIDOptions,
   Id,
@@ -47,7 +47,7 @@ export class DailyReportClass extends DailyReportSchema {
   public static async search(
     this: DailyReportModel,
     searchString: string,
-    options?: ISearchOptions
+    options?: ISearchOptions & IDailyReportSearchOptions
   ) {
     return get.search(this, searchString, options);
   }

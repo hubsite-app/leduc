@@ -3,10 +3,11 @@ import React from "react";
 import { Stack } from "@chakra-ui/react";
 import Employees from "./views/Employees";
 import Vehicles from "./views/Vehicles";
-import { useCrewFullQuery } from "../../../../generated/graphql";
+import { useCrewFullQuery, UserRoles } from "../../../../generated/graphql";
 import Loading from "../../../Common/Loading";
-import DailyReportListCard from "../../../Common/DailyReport/DailyReportListCard";
 import DailyReportFetchListCard from "../../../Common/DailyReport/DailyReportFetchListCard";
+import Permission from "../../../Common/Permission";
+import { useAuth } from "../../../../contexts/Auth";
 
 interface ICrewClientContent {
   id: string;
@@ -23,6 +24,10 @@ const CrewClientContent = ({ id }: ICrewClientContent) => {
     },
   });
 
+  const {
+    state: { user },
+  } = useAuth();
+
   /**
    * ----- Rendering -----
    */
@@ -36,14 +41,21 @@ const CrewClientContent = ({ id }: ICrewClientContent) => {
           <Employees employees={crew.employees} crew={crew} />
           <Vehicles vehicles={crew.vehicles} crew={crew} />
 
-          <DailyReportFetchListCard
-            limit={15}
-            dailyReportIds={crew.dailyReports.map((report) => report._id)}
-          />
+          <Permission
+            minRole={UserRoles.ProjectManager}
+            otherCriteria={user?.employee.crews
+              .map((c) => c._id)
+              .includes(crew._id)}
+          >
+            <DailyReportFetchListCard
+              limit={15}
+              dailyReportIds={crew.dailyReports.map((report) => report._id)}
+            />
+          </Permission>
         </Stack>
       );
     } else return <Loading />;
-  }, [data]);
+  }, [data, user?.employee.crews]);
 };
 
 export default CrewClientContent;

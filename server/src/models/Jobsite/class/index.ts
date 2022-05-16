@@ -9,7 +9,7 @@ import {
   JobsiteModel,
 } from "@models";
 import { JobsiteSchema } from "..";
-import get from "./get";
+import get, { IJobsiteGetDailyReportOptions } from "./get";
 import {
   GetByIDOptions,
   IListOptions,
@@ -61,8 +61,11 @@ export class JobsiteClass extends JobsiteSchema {
     return get.crews(this);
   }
 
-  public async getDailyReports(this: JobsiteDocument) {
-    return get.dailyReports(this);
+  public async getDailyReports(
+    this: JobsiteDocument,
+    options?: IJobsiteGetDailyReportOptions
+  ) {
+    return get.dailyReports(this, options);
   }
 
   public async getMaterials(this: JobsiteDocument) {

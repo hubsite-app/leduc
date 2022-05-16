@@ -143,12 +143,22 @@ const crews = async (jobsite: JobsiteDocument): Promise<CrewDocument[]> => {
   return crews;
 };
 
+export interface IJobsiteGetDailyReportOptions {
+  whitelistedCrews?: Id[];
+}
 const dailyReports = async (
-  jobsite: JobsiteDocument
+  jobsite: JobsiteDocument,
+  options?: IJobsiteGetDailyReportOptions
 ): Promise<DailyReportDocument[]> => {
+  const crewQuery: Record<string, unknown> = {};
+  if (options?.whitelistedCrews) {
+    crewQuery.crew = { $in: options.whitelistedCrews };
+  }
+
   const dailyReports = await DailyReport.find({
     jobsite: jobsite._id,
     archived: false,
+    ...crewQuery,
   }).sort({ date: -1 });
 
   return dailyReports;
