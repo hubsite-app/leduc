@@ -1,5 +1,6 @@
 import { DefaultRateData, RatesData } from "@graphql/types/mutation";
 import { Company, JobsiteMaterial, JobsiteMaterialDocument } from "@models";
+import { Id } from "@typescript/models";
 import { Field, Float, ID, InputType } from "type-graphql";
 
 @InputType()
@@ -89,6 +90,16 @@ const update = async (
   return jobsiteMaterial;
 };
 
+const remove = async (id: Id) => {
+  const jobsiteMaterial = await JobsiteMaterial.getById(id);
+  if (!jobsiteMaterial) throw new Error("Unable to find Jobsite Material");
+
+  await jobsiteMaterial.removeIfPossible();
+
+  return true;
+};
+
 export default {
   update,
+  remove,
 };

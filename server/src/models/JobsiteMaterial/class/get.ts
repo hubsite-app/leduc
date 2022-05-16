@@ -8,6 +8,7 @@ import {
   Material,
   MaterialDocument,
   MaterialShipment,
+  MaterialShipmentDocument,
 } from "@models";
 import { GetByIDOptions, Id } from "@typescript/models";
 import getRateForTime from "@utils/getRateForTime";
@@ -87,13 +88,19 @@ const jobsite = async (
   return jobsite;
 };
 
-const completedQuantity = async (
+const materialShipments = async (
   jobsiteMaterial: JobsiteMaterialDocument
-): Promise<number> => {
-  const materialShipments = await MaterialShipment.find({
+): Promise<MaterialShipmentDocument[]> => {
+  return MaterialShipment.find({
     jobsiteMaterial: jobsiteMaterial._id,
     noJobsiteMaterial: false,
   });
+};
+
+const completedQuantity = async (
+  jobsiteMaterial: JobsiteMaterialDocument
+): Promise<number> => {
+  const materialShipments = await jobsiteMaterial.getMaterialShipments();
 
   let quantity = 0;
   for (let i = 0; i < materialShipments.length; i++) {
@@ -116,6 +123,7 @@ export default {
   material,
   supplier,
   jobsite,
+  materialShipments,
   completedQuantity,
   rateForTime,
 };

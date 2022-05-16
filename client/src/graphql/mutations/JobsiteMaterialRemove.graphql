@@ -1,0 +1,3 @@
+mutation JobsiteMaterialRemove($id: ID!) {
+  jobsiteMaterialRemove(id: $id)
+}

@@ -5,10 +5,12 @@ import {
   JobsiteMaterialDocument,
   MaterialClass,
 } from "@models";
+import { Id } from "@typescript/models";
 import {
   Arg,
   FieldResolver,
   Float,
+  ID,
   Mutation,
   Resolver,
   Root,
@@ -41,6 +43,11 @@ export default class JobsiteMaterialResolver {
     return jobsiteMaterial.getJobsite();
   }
 
+  @FieldResolver(() => Boolean, { nullable: false })
+  async canRemove(@Root() jobsiteMaterial: JobsiteMaterialDocument) {
+    return jobsiteMaterial.canRemove();
+  }
+
   /**
    * ----- Mutations -----
    */
@@ -51,5 +58,12 @@ export default class JobsiteMaterialResolver {
     @Arg("data") data: JobsiteMaterialUpdateData
   ) {
     return mutations.update(id, data);
+  }
+
+  @Mutation(() => Boolean)
+  async jobsiteMaterialRemove(
+    @Arg("id", () => ID, { nullable: false }) id: Id
+  ) {
+    return mutations.remove(id);
   }
 }
