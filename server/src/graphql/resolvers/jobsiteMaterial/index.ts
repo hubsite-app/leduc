@@ -8,6 +8,7 @@ import {
 import { Id } from "@typescript/models";
 import {
   Arg,
+  Authorized,
   FieldResolver,
   Float,
   ID,
@@ -52,6 +53,7 @@ export default class JobsiteMaterialResolver {
    * ----- Mutations -----
    */
 
+  @Authorized(["ADMIN"])
   @Mutation(() => JobsiteMaterialClass)
   async jobsiteMaterialUpdate(
     @Arg("id") id: string,
@@ -60,6 +62,7 @@ export default class JobsiteMaterialResolver {
     return mutations.update(id, data);
   }
 
+  @Authorized(["ADMIN"])
   @Mutation(() => Boolean)
   async jobsiteMaterialRemove(
     @Arg("id", () => ID, { nullable: false }) id: Id
