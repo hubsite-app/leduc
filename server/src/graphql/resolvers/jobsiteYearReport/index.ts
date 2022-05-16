@@ -16,6 +16,7 @@ import {
   Root,
   Subscription,
 } from "type-graphql";
+import excel from "./excel";
 
 @Resolver(() => JobsiteYearReportClass)
 export default class JobsiteYearReportResolver {
@@ -40,6 +41,12 @@ export default class JobsiteYearReportResolver {
   @Query(() => JobsiteYearReportClass, { nullable: true })
   async jobsiteYearReport(@Arg("id", () => ID) id: Id) {
     return JobsiteYearReport.getById(id);
+  }
+
+  @Query(() => Boolean)
+  async jobsiteYearReportExcel(@Arg("id", () => ID) id: Id) {
+    excel(id);
+    return true;
   }
 
   /**
