@@ -188,6 +188,16 @@ const addTruckingRateToAll = async (
   return jobsites;
 };
 
+const setAllEmptyTruckingRates = async () => {
+  const jobsites = await Jobsite.setAllEmptyTruckingRates();
+
+  for (let i = 0; i < jobsites.length; i++) {
+    await jobsites[i].save();
+  }
+
+  return jobsites;
+};
+
 export default {
   create,
   update,
@@ -197,4 +207,5 @@ export default {
   setTruckingRates,
   generateDayReports,
   addTruckingRateToAll,
+  setAllEmptyTruckingRates,
 };

@@ -87,7 +87,7 @@ describe("Jobsite Class", () => {
       });
     });
 
-    describe.only("addTruckingRateToAll", () => {
+    describe("addTruckingRateToAll", () => {
       describe("success", () => {
         afterEach(async () => {
           await setupDatabase();
@@ -119,7 +119,7 @@ describe("Jobsite Class", () => {
           expect(jobsites[0].truckingRates[0].rates[1]).toMatchObject(newRate);
         });
 
-        test.only("should not add trucking rate if requested rate is before the already assigned jobsite rate", async () => {
+        test("should not add trucking rate if requested rate is before the already assigned jobsite rate", async () => {
           const newRate = {
             date: new Date(),
             rate: 145,
@@ -142,6 +142,42 @@ describe("Jobsite Class", () => {
           );
 
           expect(jobsites[0].truckingRates[0].rates.length).toBe(1);
+        });
+
+        test("should add new rate item to all jobsites", async () => {
+          const newRateItem = {
+            title: "New",
+            rates: [
+              {
+                date: new Date(),
+                rate: 40,
+              },
+            ],
+          };
+
+          const system = await System.getSystem();
+          system.materialShipmentVehicleTypeDefaults.push(newRateItem);
+          await system.save();
+
+          expect(documents.jobsites.jobsite_2.truckingRates.length).toBe(1);
+
+          const jobsites = await Jobsite.addTruckingRateToAll(
+            system.materialShipmentVehicleTypeDefaults.length - 1,
+            0
+          );
+
+          expect(jobsites.length).toBe(1);
+
+          expect(jobsites[0]._id.toString()).toBe(
+            documents.jobsites.jobsite_2._id.toString()
+          );
+
+          expect(jobsites[0].truckingRates.length).toBe(2);
+
+          expect(jobsites[0].truckingRates[1].title).toBe(newRateItem.title);
+          expect(jobsites[0].truckingRates[1].rates.length).toBe(
+            newRateItem.rates.length
+          );
         });
       });
     });

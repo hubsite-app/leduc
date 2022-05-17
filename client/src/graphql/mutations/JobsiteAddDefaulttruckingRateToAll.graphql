@@ -1,0 +1,11 @@
+mutation JobsiteAddDefaultTruckingRateToAll(
+  $itemIndex: Int!
+  $rateIndex: Int!
+) {
+  jobsiteAddDefaultTruckingRateToAll(
+    systemRateItemIndex: $itemIndex
+    systemRateIndex: $rateIndex
+  ) {
+    _id
+  }
+}

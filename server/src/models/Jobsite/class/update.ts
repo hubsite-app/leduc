@@ -149,10 +149,6 @@ const addTruckingRateToAll = async (
       if (matchingRateItemIndex !== -1) {
         const jobsiteRateItem = jobsite.truckingRates[matchingRateItemIndex];
 
-        console.log(
-          jobsiteRateItem.rates[jobsiteRateItem.rates.length - 1].date
-        );
-        console.log(systemRate.date);
         // Ensure last rate isn't after the new rate
         if (
           dayjs(
@@ -166,6 +162,19 @@ const addTruckingRateToAll = async (
             type: TruckingRateTypes.Hour,
           });
         }
+      }
+      {
+        // Push new rate item to jobsite
+        jobsites[i].truckingRates.push({
+          title: systemRateItem.title,
+          rates: [
+            {
+              date: systemRate.date,
+              rate: systemRate.rate,
+              type: TruckingRateTypes.Hour,
+            },
+          ],
+        });
       }
     }
   }

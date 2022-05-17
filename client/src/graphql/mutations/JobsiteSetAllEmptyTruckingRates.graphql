@@ -1,0 +1,5 @@
+mutation JobsiteSetAllEmptyTruckingRates {
+  jobsiteSetAllEmptyTruckingRates {
+    _id
+  }
+}

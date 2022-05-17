@@ -527,6 +527,7 @@ export type Mutation = {
   employeeWorkDelete: Scalars['String'];
   employeeWorkUpdate: EmployeeWorkClass;
   invoiceUpdateForJobsite: InvoiceClass;
+  jobsiteAddDefaultTruckingRateToAll: Array<JobsiteClass>;
   jobsiteAddExpenseInvoice: JobsiteClass;
   jobsiteAddMaterial: JobsiteClass;
   jobsiteAddRevenueInvoice: JobsiteClass;
@@ -534,6 +535,7 @@ export type Mutation = {
   jobsiteGenerateDayReports: JobsiteClass;
   jobsiteMaterialRemove: Scalars['Boolean'];
   jobsiteMaterialUpdate: JobsiteMaterialClass;
+  jobsiteSetAllEmptyTruckingRates: Array<JobsiteClass>;
   jobsiteSetTruckingRates: JobsiteClass;
   jobsiteUpdate: JobsiteClass;
   login: Scalars['String'];
@@ -708,6 +710,12 @@ export type MutationInvoiceUpdateForJobsiteArgs = {
   data: InvoiceData;
   id: Scalars['String'];
   jobsiteId: Scalars['ID'];
+};
+
+
+export type MutationJobsiteAddDefaultTruckingRateToAllArgs = {
+  systemRateIndex: Scalars['Int'];
+  systemRateItemIndex: Scalars['Int'];
 };
 
 
@@ -1747,6 +1755,14 @@ export type InvoiceUpdateForJobsiteMutationVariables = Exact<{
 
 export type InvoiceUpdateForJobsiteMutation = { __typename?: 'Mutation', invoiceUpdateForJobsite: { __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } } };
 
+export type JobsiteAddDefaultTruckingRateToAllMutationVariables = Exact<{
+  itemIndex: Scalars['Int'];
+  rateIndex: Scalars['Int'];
+}>;
+
+
+export type JobsiteAddDefaultTruckingRateToAllMutation = { __typename?: 'Mutation', jobsiteAddDefaultTruckingRateToAll: Array<{ __typename?: 'JobsiteClass', _id: string }> };
+
 export type JobsiteAddExpenseInvoiceMutationVariables = Exact<{
   jobsiteId: Scalars['String'];
   data: InvoiceData;
@@ -1792,6 +1808,11 @@ export type JobsiteMaterialUpdateMutationVariables = Exact<{
 
 
 export type JobsiteMaterialUpdateMutation = { __typename?: 'Mutation', jobsiteMaterialUpdate: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, delivered: boolean, canRemove: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }>, deliveredRates: Array<{ __typename?: 'JobsiteMaterialDeliveredRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }> }> } };
+
+export type JobsiteSetAllEmptyTruckingRatesMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type JobsiteSetAllEmptyTruckingRatesMutation = { __typename?: 'Mutation', jobsiteSetAllEmptyTruckingRates: Array<{ __typename?: 'JobsiteClass', _id: string }> };
 
 export type JobsiteSetTruckingRatesMutationVariables = Exact<{
   id: Scalars['String'];
@@ -4067,6 +4088,43 @@ export function useInvoiceUpdateForJobsiteMutation(baseOptions?: Apollo.Mutation
 export type InvoiceUpdateForJobsiteMutationHookResult = ReturnType<typeof useInvoiceUpdateForJobsiteMutation>;
 export type InvoiceUpdateForJobsiteMutationResult = Apollo.MutationResult<InvoiceUpdateForJobsiteMutation>;
 export type InvoiceUpdateForJobsiteMutationOptions = Apollo.BaseMutationOptions<InvoiceUpdateForJobsiteMutation, InvoiceUpdateForJobsiteMutationVariables>;
+export const JobsiteAddDefaultTruckingRateToAllDocument = gql`
+    mutation JobsiteAddDefaultTruckingRateToAll($itemIndex: Int!, $rateIndex: Int!) {
+  jobsiteAddDefaultTruckingRateToAll(
+    systemRateItemIndex: $itemIndex
+    systemRateIndex: $rateIndex
+  ) {
+    _id
+  }
+}
+    `;
+export type JobsiteAddDefaultTruckingRateToAllMutationFn = Apollo.MutationFunction<JobsiteAddDefaultTruckingRateToAllMutation, JobsiteAddDefaultTruckingRateToAllMutationVariables>;
+
+/**
+ * __useJobsiteAddDefaultTruckingRateToAllMutation__
+ *
+ * To run a mutation, you first call `useJobsiteAddDefaultTruckingRateToAllMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJobsiteAddDefaultTruckingRateToAllMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [jobsiteAddDefaultTruckingRateToAllMutation, { data, loading, error }] = useJobsiteAddDefaultTruckingRateToAllMutation({
+ *   variables: {
+ *      itemIndex: // value for 'itemIndex'
+ *      rateIndex: // value for 'rateIndex'
+ *   },
+ * });
+ */
+export function useJobsiteAddDefaultTruckingRateToAllMutation(baseOptions?: Apollo.MutationHookOptions<JobsiteAddDefaultTruckingRateToAllMutation, JobsiteAddDefaultTruckingRateToAllMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<JobsiteAddDefaultTruckingRateToAllMutation, JobsiteAddDefaultTruckingRateToAllMutationVariables>(JobsiteAddDefaultTruckingRateToAllDocument, options);
+      }
+export type JobsiteAddDefaultTruckingRateToAllMutationHookResult = ReturnType<typeof useJobsiteAddDefaultTruckingRateToAllMutation>;
+export type JobsiteAddDefaultTruckingRateToAllMutationResult = Apollo.MutationResult<JobsiteAddDefaultTruckingRateToAllMutation>;
+export type JobsiteAddDefaultTruckingRateToAllMutationOptions = Apollo.BaseMutationOptions<JobsiteAddDefaultTruckingRateToAllMutation, JobsiteAddDefaultTruckingRateToAllMutationVariables>;
 export const JobsiteAddExpenseInvoiceDocument = gql`
     mutation JobsiteAddExpenseInvoice($jobsiteId: String!, $data: InvoiceData!) {
   jobsiteAddExpenseInvoice(jobsiteId: $jobsiteId, data: $data) {
@@ -4267,6 +4325,38 @@ export function useJobsiteMaterialUpdateMutation(baseOptions?: Apollo.MutationHo
 export type JobsiteMaterialUpdateMutationHookResult = ReturnType<typeof useJobsiteMaterialUpdateMutation>;
 export type JobsiteMaterialUpdateMutationResult = Apollo.MutationResult<JobsiteMaterialUpdateMutation>;
 export type JobsiteMaterialUpdateMutationOptions = Apollo.BaseMutationOptions<JobsiteMaterialUpdateMutation, JobsiteMaterialUpdateMutationVariables>;
+export const JobsiteSetAllEmptyTruckingRatesDocument = gql`
+    mutation JobsiteSetAllEmptyTruckingRates {
+  jobsiteSetAllEmptyTruckingRates {
+    _id
+  }
+}
+    `;
+export type JobsiteSetAllEmptyTruckingRatesMutationFn = Apollo.MutationFunction<JobsiteSetAllEmptyTruckingRatesMutation, JobsiteSetAllEmptyTruckingRatesMutationVariables>;
+
+/**
+ * __useJobsiteSetAllEmptyTruckingRatesMutation__
+ *
+ * To run a mutation, you first call `useJobsiteSetAllEmptyTruckingRatesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJobsiteSetAllEmptyTruckingRatesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [jobsiteSetAllEmptyTruckingRatesMutation, { data, loading, error }] = useJobsiteSetAllEmptyTruckingRatesMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useJobsiteSetAllEmptyTruckingRatesMutation(baseOptions?: Apollo.MutationHookOptions<JobsiteSetAllEmptyTruckingRatesMutation, JobsiteSetAllEmptyTruckingRatesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<JobsiteSetAllEmptyTruckingRatesMutation, JobsiteSetAllEmptyTruckingRatesMutationVariables>(JobsiteSetAllEmptyTruckingRatesDocument, options);
+      }
+export type JobsiteSetAllEmptyTruckingRatesMutationHookResult = ReturnType<typeof useJobsiteSetAllEmptyTruckingRatesMutation>;
+export type JobsiteSetAllEmptyTruckingRatesMutationResult = Apollo.MutationResult<JobsiteSetAllEmptyTruckingRatesMutation>;
+export type JobsiteSetAllEmptyTruckingRatesMutationOptions = Apollo.BaseMutationOptions<JobsiteSetAllEmptyTruckingRatesMutation, JobsiteSetAllEmptyTruckingRatesMutationVariables>;
 export const JobsiteSetTruckingRatesDocument = gql`
     mutation JobsiteSetTruckingRates($id: String!, $data: [TruckingTypeRateData!]!) {
   jobsiteSetTruckingRates(id: $id, data: $data) {

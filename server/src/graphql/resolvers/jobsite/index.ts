@@ -21,6 +21,7 @@ import {
   Ctx,
   FieldResolver,
   ID,
+  Int,
   Mutation,
   Query,
   Resolver,
@@ -183,9 +184,15 @@ export default class JobsiteResolver {
   @Authorized(["ADMIN"])
   @Mutation(() => [JobsiteClass])
   async jobsiteAddDefaultTruckingRateToAll(
-    @Arg("systemRateItemIndex") itemIndex: number,
-    @Arg("systemRateIndex") rateIndex: number
+    @Arg("systemRateItemIndex", () => Int) itemIndex: number,
+    @Arg("systemRateIndex", () => Int) rateIndex: number
   ) {
     return mutations.addTruckingRateToAll(itemIndex, rateIndex);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => [JobsiteClass])
+  async jobsiteSetAllEmptyTruckingRates() {
+    return mutations.setAllEmptyTruckingRates();
   }
 }

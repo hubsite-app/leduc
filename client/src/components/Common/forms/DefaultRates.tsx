@@ -127,7 +127,7 @@ const DefaultRates = ({
       )}
       {defaultRates.map((def, index) => (
         <FormContainer
-          key={def._id || def.title || def.rates[0]?.date || index}
+          key={def._id || index}
           justifyContent="space-between"
           display="flex"
           flexDir="row"

@@ -1,14 +1,17 @@
-import { Box, Flex, Heading } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import React from "react";
 import { useSystem } from "../../../../contexts/System";
 import {
   JobsiteTruckingRatesSnippetFragment,
+  useJobsiteSetAllEmptyTruckingRatesMutation,
   useJobsitesTruckingRateQuery,
 } from "../../../../generated/graphql";
 import jobsiteName from "../../../../utils/jobsiteName";
 import TextField from "../../../Common/forms/TextField";
 import Loading from "../../../Common/Loading";
 import Permission from "../../../Common/Permission";
+import PleaseWait from "../../../Common/PleaseWait";
 import SystemMaterialShipmentVehicleTypeDefaults from "../../../Common/System/MaterialShipmentVehicleTypeDefaults";
 import TruckingRates from "../../jobsite/id/views/TruckingRates";
 
@@ -16,6 +19,8 @@ const JobsiteTruckingRateSettingsClientContent = () => {
   /**
    * ----- Hook Initialization -----
    */
+
+  const router = useRouter();
 
   const [jobsites, setJobsites] = React.useState<
     JobsiteTruckingRatesSnippetFragment[]
@@ -36,6 +41,9 @@ const JobsiteTruckingRateSettingsClientContent = () => {
       },
     },
   });
+
+  const [setAll, { loading: setAllLoading }] =
+    useJobsiteSetAllEmptyTruckingRatesMutation();
 
   /**
    * ----- Functions -----
@@ -82,8 +90,31 @@ const JobsiteTruckingRateSettingsClientContent = () => {
   if (system) {
     return (
       <Permission showError>
-        <Heading>Trucking Rates Management</Heading>
-        <SystemMaterialShipmentVehicleTypeDefaults system={system} />
+        {setAllLoading && <PleaseWait />}
+        <Flex justifyContent="space-between">
+          <Heading>Trucking Rates Management</Heading>
+          <Button
+            onClick={() => {
+              if (
+                window.confirm(
+                  "Are you sure? This will set all empty jobsite trucking rate to the default. It cannot be reversed."
+                )
+              ) {
+                setAll().then(() => {
+                  router.reload();
+                });
+              }
+            }}
+            isLoading={setAllLoading}
+            backgroundColor="gray.200"
+          >
+            Fill all empty Rates
+          </Button>
+        </Flex>
+        <SystemMaterialShipmentVehicleTypeDefaults
+          system={system}
+          onPropogationSuccess={() => router.reload()}
+        />
         <Box backgroundColor="gray.200" p={2} borderRadius={4}>
           <Flex flexDir="row" justifyContent="space-between">
             <Heading size="md">Jobsite Trucking Rates</Heading>
@@ -96,14 +127,18 @@ const JobsiteTruckingRateSettingsClientContent = () => {
             </Box>
           </Flex>
           <Box minH="80vh" maxH="80vh" overflowY="scroll" p={2} mt={2}>
-            {jobsites.map((jobsite) => (
-              <TruckingRates
-                jobsite={jobsite}
-                displayJobsiteName
-                defaultCollapsed
-                key={jobsite._id}
-              />
-            ))}
+            {loading ? (
+              <Loading />
+            ) : (
+              jobsites.map((jobsite) => (
+                <TruckingRates
+                  jobsite={jobsite}
+                  displayJobsiteName
+                  defaultCollapsed
+                  key={jobsite._id}
+                />
+              ))
+            )}
           </Box>
         </Box>
       </Permission>

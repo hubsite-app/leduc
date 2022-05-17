@@ -1,20 +1,27 @@
 import { Flex, Heading, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FiEdit, FiX } from "react-icons/fi";
-import { SystemSnippetFragment } from "../../../generated/graphql";
+import {
+  SystemSnippetFragment,
+  useJobsiteAddDefaultTruckingRateToAllMutation,
+} from "../../../generated/graphql";
 import SystemMaterialShipmentVehicleTypeUpdate from "../../Forms/System/SystemMaterialShipmentVehicleTypeUpdate";
 import Card from "../Card";
 import DefaultRatesTable from "../DefaultRatesTable";
 import InfoTooltip from "../Info";
 import Permission from "../Permission";
+import PleaseWait from "../PleaseWait";
 import TextLink from "../TextLink";
+import Warning from "../Warning";
 
 interface ISystemMaterialShipmentVehicleTypeDefaults {
   system: SystemSnippetFragment;
+  onPropogationSuccess?: () => void;
 }
 
 const SystemMaterialShipmentVehicleTypeDefaults = ({
   system,
+  onPropogationSuccess,
 }: ISystemMaterialShipmentVehicleTypeDefaults) => {
   /**
    * ----- Hook Initialization -----
@@ -24,12 +31,16 @@ const SystemMaterialShipmentVehicleTypeDefaults = ({
 
   const [collapsed, setCollapsed] = React.useState(true);
 
+  const [propogate, { loading }] =
+    useJobsiteAddDefaultTruckingRateToAllMutation();
+
   /**
    * ----- Rendering -----
    */
 
   return (
     <Card>
+      {loading && <PleaseWait />}
       <Flex flexDir="row" justifyContent="space-between">
         <Flex flexDir="row">
           <Heading
@@ -73,7 +84,19 @@ const SystemMaterialShipmentVehicleTypeDefaults = ({
       )}
       {!collapsed && (
         <DefaultRatesTable
+          ratePropogateButton
           defaultRates={system.materialShipmentVehicleTypeDefaults}
+          onPropogate={(itemIndex, rateIndex) =>
+            propogate({
+              variables: {
+                itemIndex,
+                rateIndex,
+              },
+            }).then(() => {
+              if (onPropogationSuccess) onPropogationSuccess();
+            })
+          }
+          isLoading={loading}
         />
       )}
     </Card>
