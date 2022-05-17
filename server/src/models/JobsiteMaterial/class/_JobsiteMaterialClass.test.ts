@@ -2,7 +2,7 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 
 import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 import { disconnectAndStopServer, prepareDatabase } from "@testing/jestDB";
-import { JobsiteMaterial } from "@models";
+import { Jobsite, JobsiteMaterial } from "@models";
 import { IJobsiteMaterialCreate } from "@typescript/jobsiteMaterial";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
@@ -156,6 +156,35 @@ describe("Jobsite Material Class", () => {
           } catch (e) {
             expect((e as Error).message).toBe("Must provide delivered rates");
           }
+        });
+      });
+    });
+  });
+
+  describe("REMOVE", () => {
+    describe("removeIfPossible", () => {
+      describe("success", () => {
+        test("should successfully remove unused jobsite material", async () => {
+          const jobsiteMaterial =
+            documents.jobsiteMaterials.jobsite_3_material_1;
+
+          const materialIndexBefore =
+            documents.jobsites.jobsite_3.materials.findIndex(
+              (material) =>
+                material?.toString() === jobsiteMaterial._id.toString()
+            );
+          expect(materialIndexBefore).toBe(0);
+
+          await jobsiteMaterial.removeIfPossible();
+
+          const jobsite = await Jobsite.getById(
+            documents.jobsites.jobsite_3._id
+          );
+          const materialIndexAfter = jobsite?.materials.findIndex(
+            (material) =>
+              material?.toString() === jobsiteMaterial._id.toString()
+          );
+          expect(materialIndexAfter).toBe(-1);
         });
       });
     });

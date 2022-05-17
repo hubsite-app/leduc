@@ -7,9 +7,10 @@ import {
   JobsiteDocument,
   JobsiteMaterialDocument,
   JobsiteModel,
+  SystemDocument,
 } from "@models";
 import { JobsiteSchema } from "..";
-import get from "./get";
+import get, { IJobsiteGetDailyReportOptions } from "./get";
 import {
   GetByIDOptions,
   IListOptions,
@@ -61,8 +62,11 @@ export class JobsiteClass extends JobsiteSchema {
     return get.crews(this);
   }
 
-  public async getDailyReports(this: JobsiteDocument) {
-    return get.dailyReports(this);
+  public async getDailyReports(
+    this: JobsiteDocument,
+    options?: IJobsiteGetDailyReportOptions
+  ) {
+    return get.dailyReports(this, options);
   }
 
   public async getMaterials(this: JobsiteDocument) {
@@ -135,6 +139,25 @@ export class JobsiteClass extends JobsiteSchema {
     truckingRates: ITruckingTypeRateData[]
   ) {
     return update.truckingRates(this, truckingRates);
+  }
+
+  public async setTruckingRatesToDefault(
+    this: JobsiteDocument,
+    system: SystemDocument
+  ) {
+    return update.setTruckingRatesToDefault(this, system);
+  }
+
+  public static async setAllEmptyTruckingRates(this: JobsiteModel) {
+    return update.setAllEmptyTruckingRates(this);
+  }
+
+  public static async addTruckingRateToAll(
+    this: JobsiteModel,
+    systemItemIndex: number,
+    systemRateIndex: number
+  ) {
+    return update.addTruckingRateToAll(this, systemItemIndex, systemRateIndex);
   }
 
   /**

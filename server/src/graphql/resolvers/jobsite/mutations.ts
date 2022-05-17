@@ -172,6 +172,32 @@ const generateDayReports = async (
   return jobsite;
 };
 
+const addTruckingRateToAll = async (
+  systemRateItemIndex: number,
+  systemRateIndex: number
+) => {
+  const jobsites = await Jobsite.addTruckingRateToAll(
+    systemRateItemIndex,
+    systemRateIndex
+  );
+
+  for (let i = 0; i < jobsites.length; i++) {
+    await jobsites[i].save();
+  }
+
+  return jobsites;
+};
+
+const setAllEmptyTruckingRates = async () => {
+  const jobsites = await Jobsite.setAllEmptyTruckingRates();
+
+  for (let i = 0; i < jobsites.length; i++) {
+    await jobsites[i].save();
+  }
+
+  return jobsites;
+};
+
 export default {
   create,
   update,
@@ -180,4 +206,6 @@ export default {
   addRevenueInvoice,
   setTruckingRates,
   generateDayReports,
+  addTruckingRateToAll,
+  setAllEmptyTruckingRates,
 };

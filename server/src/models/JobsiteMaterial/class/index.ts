@@ -8,6 +8,7 @@ import { ObjectType } from "type-graphql";
 import { JobsiteMaterialSchema } from "../schema";
 import create from "./create";
 import get from "./get";
+import remove from "./remove";
 import reports from "./reports";
 import update from "./update";
 import validate from "./validate";
@@ -43,6 +44,10 @@ export class JobsiteMaterialClass extends JobsiteMaterialSchema {
 
   public async getJobsite(this: JobsiteMaterialDocument) {
     return get.jobsite(this);
+  }
+
+  public async getMaterialShipments(this: JobsiteMaterialDocument) {
+    return get.materialShipments(this);
   }
 
   public async getCompletedQuantity(this: JobsiteMaterialDocument) {
@@ -81,6 +86,18 @@ export class JobsiteMaterialClass extends JobsiteMaterialSchema {
 
   public async validateDocument(this: JobsiteMaterialDocument) {
     return validate.document(this);
+  }
+
+  /**
+   * ----- Remove -----
+   */
+
+  public async canRemove(this: JobsiteMaterialDocument) {
+    return remove.canRemove(this);
+  }
+
+  public async removeIfPossible(this: JobsiteMaterialDocument) {
+    return remove.ifPossible(this);
   }
 
   /**

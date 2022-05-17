@@ -26,6 +26,10 @@ export class SystemSchema {
   public materialShipmentVehicleTypeDefaults!: DefaultRateClass[];
 
   @Field({ nullable: false })
+  @prop({ required: true, default: "America/Edmonton" })
+  public timezone!: string;
+
+  @Field({ nullable: false })
   @prop({ required: true, default: Date.now })
   public createdAt!: Date;
 

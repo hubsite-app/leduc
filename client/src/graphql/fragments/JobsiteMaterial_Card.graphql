@@ -16,4 +16,5 @@ fragment JobsiteMaterialCardSnippet on JobsiteMaterialClass {
   deliveredRates {
     ...JobsiteMaterialDeliveredRateSnippet
   }
+  canRemove
 }

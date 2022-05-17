@@ -1,3 +1,4 @@
+import { getUserCrews } from "@graphql/helpers/general";
 import { SearchOptions } from "@graphql/types/query";
 import {
   CrewClass,
@@ -12,13 +13,15 @@ import {
   JobsiteMonthReportClass,
   JobsiteYearReportClass,
 } from "@models";
-import { ListOptionData } from "@typescript/graphql";
+import { IContext, ListOptionData } from "@typescript/graphql";
 import { Id } from "@typescript/models";
 import {
   Arg,
   Authorized,
+  Ctx,
   FieldResolver,
   ID,
+  Int,
   Mutation,
   Query,
   Resolver,
@@ -44,8 +47,13 @@ export default class JobsiteResolver {
   }
 
   @FieldResolver(() => [DailyReportClass])
-  async dailyReports(@Root() jobsite: JobsiteDocument) {
-    return jobsite.getDailyReports();
+  async dailyReports(
+    @Root() jobsite: JobsiteDocument,
+    @Ctx() context: IContext
+  ) {
+    return jobsite.getDailyReports({
+      whitelistedCrews: await getUserCrews(context),
+    });
   }
 
   @FieldResolver(() => [JobsiteMaterialClass])
@@ -171,5 +179,20 @@ export default class JobsiteResolver {
   @Mutation(() => JobsiteClass)
   async jobsiteGenerateDayReports(@Arg("id") id: string) {
     return mutations.generateDayReports(id);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => [JobsiteClass])
+  async jobsiteAddDefaultTruckingRateToAll(
+    @Arg("systemRateItemIndex", () => Int) itemIndex: number,
+    @Arg("systemRateIndex", () => Int) rateIndex: number
+  ) {
+    return mutations.addTruckingRateToAll(itemIndex, rateIndex);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => [JobsiteClass])
+  async jobsiteSetAllEmptyTruckingRates() {
+    return mutations.setAllEmptyTruckingRates();
   }
 }

@@ -3,6 +3,8 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 import { disconnectAndStopServer, prepareDatabase } from "@testing/jestDB";
 import { IJobsiteUpdate } from "@typescript/jobsite";
+import { Jobsite, System } from "@models";
+import dayjs from "dayjs";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
 const setupDatabase = async () => {
@@ -50,6 +52,132 @@ describe("Jobsite Class", () => {
           await jobsite.updateDocument(data);
 
           expect(jobsite.name).toBe(data.name);
+        });
+      });
+    });
+
+    describe("setAllEmptyTruckingRates", () => {
+      afterAll(async () => {
+        await setupDatabase();
+      });
+
+      describe("success", () => {
+        test("should successfully update all empty trucking rates", async () => {
+          expect(documents.jobsites.jobsite_1.truckingRates.length).toBe(0);
+          expect(documents.jobsites.jobsite_3.truckingRates.length).toBe(0);
+
+          const jobsites = await Jobsite.setAllEmptyTruckingRates();
+
+          expect(jobsites.length).toBe(2);
+
+          await jobsites[0].save();
+          await jobsites[1].save();
+
+          const system = await System.getSystem();
+          expect(jobsites[0].truckingRates.length).toBe(
+            system.materialShipmentVehicleTypeDefaults.length
+          );
+          expect(jobsites[1].truckingRates.length).toBe(
+            system.materialShipmentVehicleTypeDefaults.length
+          );
+
+          const anotherAttempt = await Jobsite.setAllEmptyTruckingRates();
+          expect(anotherAttempt.length).toBe(0);
+        });
+      });
+    });
+
+    describe("addTruckingRateToAll", () => {
+      describe("success", () => {
+        afterEach(async () => {
+          await setupDatabase();
+        });
+
+        test("should successfully add trucking rate to all", async () => {
+          const newRate = {
+            date: dayjs().add(1, "year").toDate(),
+            rate: 145,
+          };
+
+          const system = await System.getSystem();
+          system.materialShipmentVehicleTypeDefaults[0].rates.push(newRate);
+          await system.save();
+
+          expect(
+            documents.jobsites.jobsite_2.truckingRates[0].rates.length
+          ).toBe(1);
+
+          const jobsites = await Jobsite.addTruckingRateToAll(0, 1);
+
+          expect(jobsites.length).toBe(1);
+
+          expect(jobsites[0]._id.toString()).toBe(
+            documents.jobsites.jobsite_2._id.toString()
+          );
+
+          expect(jobsites[0].truckingRates[0].rates.length).toBe(2);
+          expect(jobsites[0].truckingRates[0].rates[1]).toMatchObject(newRate);
+        });
+
+        test("should not add trucking rate if requested rate is before the already assigned jobsite rate", async () => {
+          const newRate = {
+            date: new Date(),
+            rate: 145,
+          };
+
+          const system = await System.getSystem();
+          system.materialShipmentVehicleTypeDefaults[0].rates.push(newRate);
+          await system.save();
+
+          expect(
+            documents.jobsites.jobsite_2.truckingRates[0].rates.length
+          ).toBe(1);
+
+          const jobsites = await Jobsite.addTruckingRateToAll(0, 1);
+
+          expect(jobsites.length).toBe(1);
+
+          expect(jobsites[0]._id.toString()).toBe(
+            documents.jobsites.jobsite_2._id.toString()
+          );
+
+          expect(jobsites[0].truckingRates[0].rates.length).toBe(1);
+        });
+
+        test("should add new rate item to all jobsites", async () => {
+          const newRateItem = {
+            title: "New",
+            rates: [
+              {
+                date: new Date(),
+                rate: 40,
+              },
+            ],
+          };
+
+          const system = await System.getSystem();
+          system.materialShipmentVehicleTypeDefaults.push(newRateItem);
+          await system.save();
+
+          expect(documents.jobsites.jobsite_2.truckingRates.length).toBe(1);
+
+          const jobsites = await Jobsite.addTruckingRateToAll(
+            system.materialShipmentVehicleTypeDefaults.length - 1,
+            0
+          );
+
+          expect(jobsites.length).toBe(1);
+
+          expect(jobsites[0]._id.toString()).toBe(
+            documents.jobsites.jobsite_2._id.toString()
+          );
+
+          expect(jobsites[0].truckingRates.length).toBe(2);
+
+          expect(jobsites[0].truckingRates[1].title).toBe(newRateItem.title);
+          expect(jobsites[0].truckingRates[1].rates.length).toBe(
+            newRateItem.rates.length
+          );
         });
       });
     });

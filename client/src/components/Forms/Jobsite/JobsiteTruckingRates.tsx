@@ -2,7 +2,7 @@ import { useToast } from "@chakra-ui/react";
 import React from "react";
 import { useSystem } from "../../../contexts/System";
 import {
-  JobsiteFullSnippetFragment,
+  JobsiteTruckingRatesSnippetFragment,
   TruckingRateTypes,
   useJobsiteSetTruckingRatesMutation,
 } from "../../../generated/graphql";
@@ -10,7 +10,7 @@ import SubmitButton from "../../Common/forms/SubmitButton";
 import TruckingTypeRates from "./TruckingTypeRates";
 
 interface IJobsiteTruckingRates {
-  jobsite: JobsiteFullSnippetFragment;
+  jobsite: JobsiteTruckingRatesSnippetFragment;
   onSuccess?: () => void;
 }
 

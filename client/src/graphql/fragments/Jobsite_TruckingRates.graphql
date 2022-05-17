@@ -1,0 +1,6 @@
+fragment JobsiteTruckingRatesSnippet on JobsiteClass {
+  ...JobsiteCardSnippet
+  truckingRates {
+    ...TruckingTypeRateSnippet
+  }
+}

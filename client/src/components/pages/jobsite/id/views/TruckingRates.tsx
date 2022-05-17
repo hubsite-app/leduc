@@ -1,24 +1,31 @@
 import { Center, Flex, Heading, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FiEdit, FiX } from "react-icons/fi";
-import { JobsiteFullSnippetFragment } from "../../../../../generated/graphql";
+import { JobsiteTruckingRatesSnippetFragment } from "../../../../../generated/graphql";
+import jobsiteName from "../../../../../utils/jobsiteName";
 import Card from "../../../../Common/Card";
 import TruckingTypeRatesTable from "../../../../Common/Jobsite/TruckingTypeRatesTable";
 import Permission from "../../../../Common/Permission";
 import JobsiteTruckingRates from "../../../../Forms/Jobsite/JobsiteTruckingRates";
 
 interface ITruckingRates {
-  jobsite: JobsiteFullSnippetFragment;
+  jobsite: JobsiteTruckingRatesSnippetFragment;
+  displayJobsiteName?: boolean;
+  defaultCollapsed?: boolean;
 }
 
-const TruckingRates = ({ jobsite }: ITruckingRates) => {
+const TruckingRates = ({
+  jobsite,
+  displayJobsiteName = false,
+  defaultCollapsed = true,
+}: ITruckingRates) => {
   /**
    * ----- Hook Initialization -----
    */
 
   const [editForm, setEditForm] = React.useState(false);
 
-  const [collapsed, setCollapsed] = React.useState(false);
+  const [collapsed, setCollapsed] = React.useState(defaultCollapsed);
 
   /**
    * ----- Rendering -----
@@ -35,7 +42,9 @@ const TruckingRates = ({ jobsite }: ITruckingRates) => {
           cursor="pointer"
           onClick={() => setCollapsed(!collapsed)}
         >
-          Trucking Rates
+          {displayJobsiteName
+            ? jobsiteName(jobsite.name, jobsite.jobcode)
+            : "Trucking Rates"}
         </Heading>
         <Permission>
           <IconButton

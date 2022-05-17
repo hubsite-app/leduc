@@ -10,7 +10,7 @@ const document = async (jobsiteDayReport: JobsiteDayReportDocument) => {
   await jobsiteDayReport.save();
 
   if (jobsiteDayReport.jobsite)
-    await JobsiteMonthReport.requestBuild({
+    JobsiteMonthReport.requestBuild({
       jobsiteId: jobsiteDayReport.jobsite,
       date: jobsiteDayReport.date,
     });

@@ -7,10 +7,14 @@ import {
   StatLabel,
   StatNumber,
 } from "@chakra-ui/react";
-import { JobsiteMaterialCardSnippetFragment } from "../../../../../generated/graphql";
+import {
+  JobsiteFullDocument,
+  JobsiteMaterialCardSnippetFragment,
+  useJobsiteMaterialRemoveMutation,
+} from "../../../../../generated/graphql";
 import formatNumber from "../../../../../utils/formatNumber";
 import JobsiteMaterialProgressBar from "../../../../Common/JobsiteMaterial/ProgressBar";
-import { FiEdit, FiX } from "react-icons/fi";
+import { FiEdit, FiTrash, FiX } from "react-icons/fi";
 import JobsiteMaterialUpdate from "../../../../Forms/JobsiteMaterial/JobsiteMaterialUpdate";
 import Permission from "../../../../Common/Permission";
 import FormContainer from "../../../../Common/FormContainer";
@@ -31,6 +35,10 @@ const JobsiteMaterialCard = ({
   const [edit, setEdit] = React.useState(false);
 
   const ref = React.useRef<HTMLDivElement>(null);
+
+  const [remove, { loading }] = useJobsiteMaterialRemoveMutation({
+    refetchQueries: [JobsiteFullDocument],
+  });
 
   /**
    * ----- Use-effects and other logic -----
@@ -68,12 +76,30 @@ const JobsiteMaterialCard = ({
           </StatNumber>
         </Stat>
         <Permission>
-          <IconButton
-            backgroundColor="transparent"
-            aria-label="edit"
-            icon={edit ? <FiX /> : <FiEdit />}
-            onClick={() => setEdit(!edit)}
-          />
+          <Flex flexDir="row">
+            {edit && jobsiteMaterial.canRemove && (
+              <IconButton
+                icon={<FiTrash />}
+                aria-label="delete"
+                backgroundColor="transparent"
+                onClick={() => {
+                  if (window.confirm("Are you sure?")) {
+                    remove({
+                      variables: {
+                        id: jobsiteMaterial._id,
+                      },
+                    });
+                  }
+                }}
+              />
+            )}
+            <IconButton
+              backgroundColor="transparent"
+              aria-label="edit"
+              icon={edit ? <FiX /> : <FiEdit />}
+              onClick={() => setEdit(!edit)}
+            />
+          </Flex>
         </Permission>
       </Flex>
       <Box>

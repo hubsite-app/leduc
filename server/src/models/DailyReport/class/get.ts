@@ -18,6 +18,7 @@ import {
   ProductionDocument,
   ReportNote,
   ReportNoteDocument,
+  System,
   Vehicle,
   VehicleDocument,
   VehicleWork,
@@ -33,8 +34,14 @@ import populateOptions from "@utils/populateOptions";
 import ElasticsearchClient from "@elasticsearch/client";
 import { IDailyReportSearchObject } from "@typescript/dailyReport";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
-import dayjs from "dayjs";
 import { IHit } from "@typescript/elasticsearch";
+
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 /**
  * ----- Static Methods -----
@@ -59,10 +66,13 @@ const byId = async (
   return dailyReport;
 };
 
+export interface IDailyReportSearchOptions {
+  whitelistedCrews?: Id[];
+}
 const search = async (
   DailyReport: DailyReportModel,
   searchString: string,
-  options?: ISearchOptions
+  options?: ISearchOptions & IDailyReportSearchOptions
 ): Promise<IDailyReportSearchObject[]> => {
   const res = await ElasticsearchClient.search({
     index: ElasticSearchIndices.DailyReport,
@@ -101,11 +111,17 @@ const search = async (
   const dailyReports: IDailyReportSearchObject[] = [];
   for (let i = 0; i < dailyReportObjects.length; i++) {
     const dailyReport = await DailyReport.getById(dailyReportObjects[i].id);
-    if (dailyReport)
-      dailyReports.push({
-        dailyReport,
-        score: dailyReportObjects[i].score,
-      });
+    if (dailyReport) {
+      // Only add whitelisted crews (if provided)
+      if (
+        !options?.whitelistedCrews ||
+        options.whitelistedCrews.includes(dailyReport.crew?.toString() || "")
+      )
+        dailyReports.push({
+          dailyReport,
+          score: dailyReportObjects[i].score,
+        });
+    }
   }
 
   return dailyReports;
@@ -145,13 +161,22 @@ const existingReport = async (
   crewId: Id,
   date: Date
 ): Promise<DailyReportDocument | null> => {
+  const system = await System.getSystem();
+
+  console.log(system.timezone);
+  console.log(date);
+  console.log(
+    dayjs(date).tz(system.timezone).startOf("day").toDate(),
+    dayjs(date).tz(system.timezone).endOf("day").toDate()
+  );
+
   const dailyReport = await DailyReport.findOne({
     crew: crewId,
     jobsite: jobsiteId,
     archived: false,
     date: {
-      $gte: dayjs(date).startOf("day").toDate(),
-      $lt: dayjs(date).endOf("day").toDate(),
+      $gte: dayjs(date).tz(system.timezone).startOf("day").toDate(),
+      $lt: dayjs(date).tz(system.timezone).endOf("day").toDate(),
     },
   });
 

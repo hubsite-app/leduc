@@ -1,5 +1,5 @@
 import { JobsiteDocument, JobsiteModel, System } from "@models";
-import { IJobsiteCreate, TruckingRateTypes } from "@typescript/jobsite";
+import { IJobsiteCreate } from "@typescript/jobsite";
 
 const document = async (
   Jobsite: JobsiteModel,
@@ -10,20 +10,7 @@ const document = async (
   });
 
   const system = await System.getSystem();
-  jobsite.truckingRates = system.materialShipmentVehicleTypeDefaults.map(
-    (type) => {
-      return {
-        title: type.title,
-        rates: type.rates.map((rate) => {
-          return {
-            date: rate.date,
-            rate: rate.rate,
-            type: TruckingRateTypes.Hour,
-          };
-        }),
-      };
-    }
-  );
+  await jobsite.setTruckingRatesToDefault(system);
 
   return jobsite;
 };

@@ -1,0 +1,5 @@
+query JobsitesTruckingRate($options: ListOptionData) {
+  jobsites(options: $options) {
+    ...JobsiteTruckingRatesSnippet
+  }
+}
