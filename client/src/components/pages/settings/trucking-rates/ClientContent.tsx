@@ -1,4 +1,12 @@
-import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
 import { useSystem } from "../../../../contexts/System";
@@ -8,6 +16,7 @@ import {
   useJobsitesTruckingRateQuery,
 } from "../../../../generated/graphql";
 import jobsiteName from "../../../../utils/jobsiteName";
+import AlertDialog from "../../../Common/AlertDialog";
 import TextField from "../../../Common/forms/TextField";
 import Loading from "../../../Common/Loading";
 import Permission from "../../../Common/Permission";
@@ -21,6 +30,8 @@ const JobsiteTruckingRateSettingsClientContent = () => {
    */
 
   const router = useRouter();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [jobsites, setJobsites] = React.useState<
     JobsiteTruckingRatesSnippetFragment[]
@@ -90,21 +101,11 @@ const JobsiteTruckingRateSettingsClientContent = () => {
   if (system) {
     return (
       <Permission showError>
-        {setAllLoading && <PleaseWait />}
+        {setAllLoading && <PleaseWait mb={2} />}
         <Flex justifyContent="space-between">
           <Heading>Trucking Rates Management</Heading>
           <Button
-            onClick={() => {
-              if (
-                window.confirm(
-                  "Are you sure? This will set all empty jobsite trucking rate to the default. It cannot be reversed."
-                )
-              ) {
-                setAll().then(() => {
-                  router.reload();
-                });
-              }
-            }}
+            onClick={() => onOpen()}
             isLoading={setAllLoading}
             backgroundColor="gray.200"
           >
@@ -141,6 +142,34 @@ const JobsiteTruckingRateSettingsClientContent = () => {
             )}
           </Box>
         </Box>
+        <AlertDialog
+          isOpen={isOpen}
+          onClose={onClose}
+          header="Are you sure?"
+          body={
+            <Text>
+              This will set all empty jobsite trucking rate to the default. This
+              action <strong>cannot</strong> be reversed and will have to be{" "}
+              <strong>manually</strong> changed if necessary.
+            </Text>
+          }
+          footer={
+            <HStack spacing={2}>
+              <Button onClick={() => onClose()}>Cancel</Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  onClose();
+                  setAll().then(() => {
+                    router.reload();
+                  });
+                }}
+              >
+                Fill
+              </Button>
+            </HStack>
+          }
+        />
       </Permission>
     );
   } else return <Loading />;

@@ -27,7 +27,10 @@ const SystemSettings = () => {
           <Heading>System</Heading>
           <SystemUnits system={system} />
           <SystemLaborTypes system={system} />
-          <SystemMaterialShipmentVehicleTypeDefaults system={system} />
+          <SystemMaterialShipmentVehicleTypeDefaults
+            system={system}
+            showEditAllLink
+          />
           <SystemCompanyVehicleTypeDefaults system={system} />
         </Box>
       );

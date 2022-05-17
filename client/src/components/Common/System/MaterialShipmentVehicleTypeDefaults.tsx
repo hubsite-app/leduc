@@ -12,15 +12,16 @@ import InfoTooltip from "../Info";
 import Permission from "../Permission";
 import PleaseWait from "../PleaseWait";
 import TextLink from "../TextLink";
-import Warning from "../Warning";
 
 interface ISystemMaterialShipmentVehicleTypeDefaults {
   system: SystemSnippetFragment;
+  showEditAllLink?: boolean;
   onPropogationSuccess?: () => void;
 }
 
 const SystemMaterialShipmentVehicleTypeDefaults = ({
   system,
+  showEditAllLink = false,
   onPropogationSuccess,
 }: ISystemMaterialShipmentVehicleTypeDefaults) => {
   /**
@@ -62,7 +63,7 @@ const SystemMaterialShipmentVehicleTypeDefaults = ({
 
         <Permission>
           <Flex flexDir="row">
-            {edit && (
+            {edit && showEditAllLink && (
               <TextLink link={"/settings/trucking-rates"} m="auto" mr={2}>
                 Edit All
               </TextLink>
