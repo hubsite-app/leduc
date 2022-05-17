@@ -179,4 +179,13 @@ export default class JobsiteResolver {
   async jobsiteGenerateDayReports(@Arg("id") id: string) {
     return mutations.generateDayReports(id);
   }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => [JobsiteClass])
+  async jobsiteAddDefaultTruckingRateToAll(
+    @Arg("systemRateItemIndex") itemIndex: number,
+    @Arg("systemRateIndex") rateIndex: number
+  ) {
+    return mutations.addTruckingRateToAll(itemIndex, rateIndex);
+  }
 }

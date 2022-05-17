@@ -1252,6 +1252,7 @@ export type SystemClass = {
   laborTypes: Array<Scalars['String']>;
   materialShipmentVehicleTypeDefaults: Array<DefaultRateClass>;
   schemaVersion: Scalars['Float'];
+  timezone: Scalars['String'];
   unitDefaults: Array<Scalars['String']>;
 };
 
@@ -1505,6 +1506,8 @@ export type JobsiteFullSnippetFragment = { __typename?: 'JobsiteClass', _id: str
 export type JobsiteSsrSnippetFragment = { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null };
 
 export type JobsiteSearchSnippetFragment = { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null };
+
+export type JobsiteTruckingRatesSnippetFragment = { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null, truckingRates: Array<{ __typename?: 'TruckingTypeRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'TruckingRateClass', rate: number, date: any, type: TruckingRateTypes }> }> };
 
 export type MaterialShipmentCardSnippetFragment = { __typename?: 'MaterialShipmentClass', _id: string, shipmentType?: string | null, supplier?: string | null, quantity: number, unit?: string | null, startTime?: any | null, endTime?: any | null, noJobsiteMaterial?: boolean | null, schemaVersion: number, jobsiteMaterial?: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, delivered: boolean, canRemove: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }>, deliveredRates: Array<{ __typename?: 'JobsiteMaterialDeliveredRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }> }> } | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null, truckingRateId?: string | null, deliveredRateId?: string | null } | null };
 
@@ -2237,6 +2240,13 @@ export type JobsitesQueryVariables = Exact<{
 
 
 export type JobsitesQuery = { __typename?: 'Query', jobsites: Array<{ __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null }> };
+
+export type JobsitesTruckingRateQueryVariables = Exact<{
+  options?: InputMaybe<ListOptionData>;
+}>;
+
+
+export type JobsitesTruckingRateQuery = { __typename?: 'Query', jobsites: Array<{ __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null, truckingRates: Array<{ __typename?: 'TruckingTypeRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'TruckingRateClass', rate: number, date: any, type: TruckingRateTypes }> }> }> };
 
 export type MaterialSearchQueryVariables = Exact<{
   searchString: Scalars['String'];
@@ -3099,6 +3109,15 @@ export const JobsiteSearchSnippetFragmentDoc = gql`
   jobcode
 }
     `;
+export const JobsiteTruckingRatesSnippetFragmentDoc = gql`
+    fragment JobsiteTruckingRatesSnippet on JobsiteClass {
+  ...JobsiteCardSnippet
+  truckingRates {
+    ...TruckingTypeRateSnippet
+  }
+}
+    ${JobsiteCardSnippetFragmentDoc}
+${TruckingTypeRateSnippetFragmentDoc}`;
 export const MaterialFullSnippetFragmentDoc = gql`
     fragment MaterialFullSnippet on MaterialClass {
   ...MaterialCardSnippet
@@ -6359,6 +6378,41 @@ export function useJobsitesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<J
 export type JobsitesQueryHookResult = ReturnType<typeof useJobsitesQuery>;
 export type JobsitesLazyQueryHookResult = ReturnType<typeof useJobsitesLazyQuery>;
 export type JobsitesQueryResult = Apollo.QueryResult<JobsitesQuery, JobsitesQueryVariables>;
+export const JobsitesTruckingRateDocument = gql`
+    query JobsitesTruckingRate($options: ListOptionData) {
+  jobsites(options: $options) {
+    ...JobsiteTruckingRatesSnippet
+  }
+}
+    ${JobsiteTruckingRatesSnippetFragmentDoc}`;
+
+/**
+ * __useJobsitesTruckingRateQuery__
+ *
+ * To run a query within a React component, call `useJobsitesTruckingRateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJobsitesTruckingRateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJobsitesTruckingRateQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useJobsitesTruckingRateQuery(baseOptions?: Apollo.QueryHookOptions<JobsitesTruckingRateQuery, JobsitesTruckingRateQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<JobsitesTruckingRateQuery, JobsitesTruckingRateQueryVariables>(JobsitesTruckingRateDocument, options);
+      }
+export function useJobsitesTruckingRateLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<JobsitesTruckingRateQuery, JobsitesTruckingRateQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<JobsitesTruckingRateQuery, JobsitesTruckingRateQueryVariables>(JobsitesTruckingRateDocument, options);
+        }
+export type JobsitesTruckingRateQueryHookResult = ReturnType<typeof useJobsitesTruckingRateQuery>;
+export type JobsitesTruckingRateLazyQueryHookResult = ReturnType<typeof useJobsitesTruckingRateLazyQuery>;
+export type JobsitesTruckingRateQueryResult = Apollo.QueryResult<JobsitesTruckingRateQuery, JobsitesTruckingRateQueryVariables>;
 export const MaterialSearchDocument = gql`
     query MaterialSearch($searchString: String!, $options: SearchOptions) {
   materialSearch(searchString: $searchString, options: $options) {

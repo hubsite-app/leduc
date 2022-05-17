@@ -7,6 +7,7 @@ import Card from "../Card";
 import DefaultRatesTable from "../DefaultRatesTable";
 import InfoTooltip from "../Info";
 import Permission from "../Permission";
+import TextLink from "../TextLink";
 
 interface ISystemMaterialShipmentVehicleTypeDefaults {
   system: SystemSnippetFragment;
@@ -49,12 +50,19 @@ const SystemMaterialShipmentVehicleTypeDefaults = ({
         </Flex>
 
         <Permission>
-          <IconButton
-            aria-label="edit"
-            icon={edit ? <FiX /> : <FiEdit />}
-            backgroundColor="transparent"
-            onClick={() => setEdit(!edit)}
-          />
+          <Flex flexDir="row">
+            {edit && (
+              <TextLink link={"/settings/trucking-rates"} m="auto" mr={2}>
+                Edit All
+              </TextLink>
+            )}
+            <IconButton
+              aria-label="edit"
+              icon={edit ? <FiX /> : <FiEdit />}
+              backgroundColor="transparent"
+              onClick={() => setEdit(!edit)}
+            />
+          </Flex>
         </Permission>
       </Flex>
       {edit && (

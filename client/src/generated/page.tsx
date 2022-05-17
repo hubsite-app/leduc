@@ -1188,6 +1188,41 @@ export const ssrJobsites = {
       withPage: withPageJobsites,
       usePage: useJobsites,
     }
+export async function getServerPageJobsitesTruckingRate
+    (options: Omit<Apollo.QueryOptions<Types.JobsitesTruckingRateQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsitesTruckingRateQuery>({ ...options, query: Operations.JobsitesTruckingRateDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsitesTruckingRate = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsitesTruckingRateQuery, Types.JobsitesTruckingRateQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsitesTruckingRateDocument, options);
+};
+export type PageJobsitesTruckingRateComp = React.FC<{data?: Types.JobsitesTruckingRateQuery, error?: Apollo.ApolloError}>;
+export const withPageJobsitesTruckingRate = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsitesTruckingRateQuery, Types.JobsitesTruckingRateQueryVariables>) => (WrappedComponent:PageJobsitesTruckingRateComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsitesTruckingRateDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsitesTruckingRate = {
+      getServerPage: getServerPageJobsitesTruckingRate,
+      withPage: withPageJobsitesTruckingRate,
+      usePage: useJobsitesTruckingRate,
+    }
 export async function getServerPageMaterialSearch
     (options: Omit<Apollo.QueryOptions<Types.MaterialSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);

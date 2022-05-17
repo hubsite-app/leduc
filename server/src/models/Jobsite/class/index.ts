@@ -7,6 +7,7 @@ import {
   JobsiteDocument,
   JobsiteMaterialDocument,
   JobsiteModel,
+  SystemDocument,
 } from "@models";
 import { JobsiteSchema } from "..";
 import get, { IJobsiteGetDailyReportOptions } from "./get";
@@ -138,6 +139,25 @@ export class JobsiteClass extends JobsiteSchema {
     truckingRates: ITruckingTypeRateData[]
   ) {
     return update.truckingRates(this, truckingRates);
+  }
+
+  public async setTruckingRatesToDefault(
+    this: JobsiteDocument,
+    system: SystemDocument
+  ) {
+    return update.setTruckingRatesToDefault(this, system);
+  }
+
+  public static async setAllEmptyTruckingRates(this: JobsiteModel) {
+    return update.setAllEmptyTruckingRates(this);
+  }
+
+  public static async addTruckingRateToAll(
+    this: JobsiteModel,
+    systemItemIndex: number,
+    systemRateIndex: number
+  ) {
+    return update.addTruckingRateToAll(this, systemItemIndex, systemRateIndex);
   }
 
   /**
