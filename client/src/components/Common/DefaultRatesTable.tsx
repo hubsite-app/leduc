@@ -7,6 +7,7 @@ import {
   Text,
   Th,
   Thead,
+  Tooltip,
   Tr,
 } from "@chakra-ui/react";
 import React from "react";
@@ -17,15 +18,15 @@ import formatNumber from "../../utils/formatNumber";
 
 interface IDefaultRatesTable {
   defaultRates: DefaultRateSnippetFragment[];
-  ratePropogateButton?: boolean;
-  onPropogate?: (itemIndex: number, rateIndex: number) => void;
+  ratePropagateButton?: boolean;
+  onPropagate?: (itemIndex: number, rateIndex: number) => void;
   isLoading?: boolean;
 }
 
 const DefaultRatesTable = ({
   defaultRates,
-  ratePropogateButton = false,
-  onPropogate,
+  ratePropagateButton = false,
+  onPropagate,
   isLoading,
 }: IDefaultRatesTable) => {
   /**
@@ -51,27 +52,29 @@ const DefaultRatesTable = ({
                     <Text my="auto">
                       {formatDate(r.date)} - ${formatNumber(r.rate)}
                     </Text>
-                    {ratePropogateButton &&
-                      onPropogate &&
+                    {ratePropagateButton &&
+                      onPropagate &&
                       rateIndex === rate.rates.length - 1 && (
-                        <IconButton
-                          isLoading={isLoading}
-                          my="auto"
-                          mx={1}
-                          size="sm"
-                          backgroundColor="transparent"
-                          icon={<FiGitMerge />}
-                          onClick={() => {
-                            if (
-                              window.confirm(
-                                "Are you sure? This will add this to the Trucking Rates of all Jobsites where possible. This cannot be reversed."
-                              )
-                            ) {
-                              onPropogate(index, rateIndex);
-                            }
-                          }}
-                          aria-label="propogate"
-                        />
+                        <Tooltip label="Propagates this rate to all applicable Jobsites.">
+                          <IconButton
+                            isLoading={isLoading}
+                            my="auto"
+                            mx={1}
+                            size="sm"
+                            backgroundColor="transparent"
+                            icon={<FiGitMerge />}
+                            onClick={() => {
+                              if (
+                                window.confirm(
+                                  "Are you sure? This will add this to the Trucking Rates of all Jobsites where possible. This cannot be reversed."
+                                )
+                              ) {
+                                onPropagate(index, rateIndex);
+                              }
+                            }}
+                            aria-label="propagate"
+                          />
+                        </Tooltip>
                       )}
                   </Flex>
                 ))}

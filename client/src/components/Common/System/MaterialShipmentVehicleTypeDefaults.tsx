@@ -32,7 +32,7 @@ const SystemMaterialShipmentVehicleTypeDefaults = ({
 
   const [collapsed, setCollapsed] = React.useState(true);
 
-  const [propogate, { loading }] =
+  const [propagate, { loading }] =
     useJobsiteAddDefaultTruckingRateToAllMutation();
 
   /**
@@ -85,10 +85,10 @@ const SystemMaterialShipmentVehicleTypeDefaults = ({
       )}
       {!collapsed && (
         <DefaultRatesTable
-          ratePropogateButton
+          ratePropagateButton
           defaultRates={system.materialShipmentVehicleTypeDefaults}
-          onPropogate={(itemIndex, rateIndex) =>
-            propogate({
+          onPropagate={(itemIndex, rateIndex) =>
+            propagate({
               variables: {
                 itemIndex,
                 rateIndex,
