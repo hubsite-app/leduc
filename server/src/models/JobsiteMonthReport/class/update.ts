@@ -41,7 +41,7 @@ const document = async (jobsiteMonthReport: JobsiteMonthReportDocument) => {
 
   await jobsiteMonthReport.save();
 
-  await JobsiteYearReport.requestBuild({
+  JobsiteYearReport.requestBuild({
     jobsiteId: jobsiteMonthReport.jobsite,
     date: jobsiteMonthReport.startOfMonth,
   });

@@ -128,6 +128,8 @@ const addTruckingRateToAll = async (
     "truckingRates.0": { $exists: true },
   });
 
+  const updatedJobsites: JobsiteDocument[] = [];
+
   const system = await System.getSystem();
   if (
     system.materialShipmentVehicleTypeDefaults[systemItemIndex] &&
@@ -161,9 +163,10 @@ const addTruckingRateToAll = async (
             date: systemRate.date,
             type: TruckingRateTypes.Hour,
           });
+
+          updatedJobsites.push(jobsites[i]);
         }
-      }
-      {
+      } else {
         // Push new rate item to jobsite
         jobsites[i].truckingRates.push({
           title: systemRateItem.title,
@@ -175,11 +178,13 @@ const addTruckingRateToAll = async (
             },
           ],
         });
+
+        updatedJobsites.push(jobsites[i]);
       }
     }
   }
 
-  return jobsites;
+  return updatedJobsites;
 };
 
 export default {

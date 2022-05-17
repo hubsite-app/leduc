@@ -115,6 +115,7 @@ const JobsiteTruckingRateSettingsClientContent = () => {
         <SystemMaterialShipmentVehicleTypeDefaults
           system={system}
           onPropogationSuccess={() => router.reload()}
+          showEditAllLink
         />
         <Box backgroundColor="gray.200" p={2} borderRadius={4}>
           <Flex flexDir="row" justifyContent="space-between">

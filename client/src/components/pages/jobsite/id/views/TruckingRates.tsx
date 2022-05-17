@@ -17,7 +17,7 @@ interface ITruckingRates {
 const TruckingRates = ({
   jobsite,
   displayJobsiteName = false,
-  defaultCollapsed = false,
+  defaultCollapsed = true,
 }: ITruckingRates) => {
   /**
    * ----- Hook Initialization -----
