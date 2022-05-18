@@ -41,7 +41,7 @@ const document = async (jobsiteYearReport: JobsiteYearReportDocument) => {
 
   await jobsiteYearReport.save();
 
-  JobsiteYearMasterReport.requestBuild(jobsiteYearReport.startOfYear);
+  await JobsiteYearMasterReport.requestBuild(jobsiteYearReport.startOfYear);
 
   return;
 };

@@ -10,10 +10,14 @@ import { Field, ID, ObjectType } from "type-graphql";
 @ObjectType()
 @post<EmployeeDocument>("save", async (employee) => {
   try {
-    employee.requestReportUpdate();
-    ES_updateEmployee(employee);
+    await ES_updateEmployee(employee);
   } catch (e) {
-    errorHandler("Employee post save error", e);
+    errorHandler("Employee post save ES error", e);
+  }
+  try {
+    await employee.requestReportUpdate();
+  } catch (e) {
+    errorHandler("Employee post save report error", e);
   }
 })
 export class EmployeeSchema {

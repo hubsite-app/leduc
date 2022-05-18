@@ -32,6 +32,7 @@ const JobsiteReportCrewOnJobSummary = ({
 
   return (
     <JobsiteReportOnJobSummary
+      crewType={crewType}
       dayReports={relevantReports}
       allDayReports={dayReports}
     />

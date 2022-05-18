@@ -7,12 +7,16 @@ import {
   StatProps,
 } from "@chakra-ui/react";
 import React from "react";
-import { JobsiteDayReportFullSnippetFragment } from "../../../generated/graphql";
+import {
+  CrewTypes,
+  JobsiteDayReportFullSnippetFragment,
+} from "../../../generated/graphql";
 import formatNumber from "../../../utils/formatNumber";
 
 interface IJobsiteReportOnJobSummary {
   dayReports: JobsiteDayReportFullSnippetFragment[];
   allDayReports?: JobsiteDayReportFullSnippetFragment[];
+  crewType?: CrewTypes;
   statSize?: StatProps["size"];
 }
 
@@ -28,6 +32,7 @@ const handlePercent = (value: number, total: number) => {
 const JobsiteReportOnJobSummary = ({
   dayReports,
   allDayReports = [],
+  crewType,
   statSize = "sm",
 }: IJobsiteReportOnJobSummary) => {
   /**
@@ -48,11 +53,16 @@ const JobsiteReportOnJobSummary = ({
   const wages = React.useMemo(() => {
     let wages = 0;
     for (let i = 0; i < dayReports.length; i++) {
-      wages += dayReports[i].summary.employeeCost;
+      const employeeCost = crewType
+        ? dayReports[i].summary.crewTypeSummaries.find(
+            (summary) => summary.crewType === crewType
+          )?.employeeCost
+        : dayReports[i].summary.employeeCost;
+      wages += employeeCost || 0;
     }
 
     return wages;
-  }, [dayReports]);
+  }, [crewType, dayReports]);
 
   const totalEquipment = React.useMemo(() => {
     if (allDayReports.length === 0) return null;
@@ -68,11 +78,16 @@ const JobsiteReportOnJobSummary = ({
   const equipment = React.useMemo(() => {
     let equipment = 0;
     for (let i = 0; i < dayReports.length; i++) {
-      equipment += dayReports[i].summary.vehicleCost;
+      const equipmentCost = crewType
+        ? dayReports[i].summary.crewTypeSummaries.find(
+            (summary) => summary.crewType === crewType
+          )?.vehicleCost
+        : dayReports[i].summary.vehicleCost;
+      equipment += equipmentCost || 0;
     }
 
     return equipment;
-  }, [dayReports]);
+  }, [crewType, dayReports]);
 
   const totalMaterials = React.useMemo(() => {
     if (allDayReports.length === 0) return null;
@@ -91,12 +106,23 @@ const JobsiteReportOnJobSummary = ({
       quantity: 0,
     };
     for (let i = 0; i < dayReports.length; i++) {
-      materials.cost += dayReports[i].summary.materialCost;
-      materials.quantity += dayReports[i].summary.materialQuantity;
+      const materialCost = crewType
+        ? dayReports[i].summary.crewTypeSummaries.find(
+            (summary) => summary.crewType === crewType
+          )?.materialCost
+        : dayReports[i].summary.materialCost;
+      materials.cost += materialCost || 0;
+
+      const materialQuantity = crewType
+        ? dayReports[i].summary.crewTypeSummaries.find(
+            (summary) => summary.crewType === crewType
+          )?.materialQuantity
+        : dayReports[i].summary.materialQuantity;
+      materials.quantity += materialQuantity || 0;
     }
 
     return materials;
-  }, [dayReports]);
+  }, [crewType, dayReports]);
 
   const totalTrucking = React.useMemo(() => {
     if (allDayReports.length === 0) return null;
@@ -112,11 +138,16 @@ const JobsiteReportOnJobSummary = ({
   const trucking = React.useMemo(() => {
     let trucking = 0;
     for (let i = 0; i < dayReports.length; i++) {
-      trucking += dayReports[i].summary.truckingCost;
+      const truckingCost = crewType
+        ? dayReports[i].summary.crewTypeSummaries.find(
+            (summary) => summary.crewType === crewType
+          )?.truckingCost
+        : dayReports[i].summary.truckingCost;
+      trucking += truckingCost || 0;
     }
 
     return trucking;
-  }, [dayReports]);
+  }, [crewType, dayReports]);
 
   const total = React.useMemo(() => {
     return wages + equipment + materials.cost + trucking;

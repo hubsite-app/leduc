@@ -87,8 +87,11 @@ const NumberForm = ({
           value={
             format ? format(numberString?.toString()) : numberString?.toString()
           }
-          onInvalid={() => {}}
+          onInvalid={() => {
+            return;
+          }}
           onChange={(val, num) => {
+            console.log(val, num);
             setNumberString(val);
             if (onChange)
               if (parse) onChange(parse(val), num);
