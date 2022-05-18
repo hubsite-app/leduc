@@ -112,6 +112,7 @@ export const useInvoiceForm = (options?: UseFormProps) => {
                 label="Cost"
                 isDisabled={isLoading}
                 inputLeftAddon="$"
+                pattern="^([-+,0-9.]+)"
               />
             )}
           />

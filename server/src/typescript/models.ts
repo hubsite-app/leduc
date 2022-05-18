@@ -44,7 +44,7 @@ export class DefaultRateClass {
   public _id?: Types.ObjectId;
 
   @Field({ nullable: false })
-  @prop({ required: true })
+  @prop({ required: true, trim: true })
   public title!: string;
 
   @Field(() => [RateClass], { nullable: false })
