@@ -1,6 +1,8 @@
 import React from "react";
 import {
   Box,
+  Code,
+  Flex,
   Table,
   Tbody,
   Tfoot,
@@ -13,6 +15,7 @@ import { JobsiteYearMasterReportFullSnippetFragment } from "../../../generated/g
 import JobsiteMasterRow from "./Row";
 import formatNumber from "../../../utils/formatNumber";
 import ReportSummaryCard from "../ReportSummary";
+import { useSystem } from "../../../contexts/System";
 
 interface IJobsiteMaster {
   report: JobsiteYearMasterReportFullSnippetFragment;
@@ -20,13 +23,26 @@ interface IJobsiteMaster {
 
 const JobsiteMaster = ({ report }: IJobsiteMaster) => {
   /**
+   * ----- Hook Initialization -----
+   */
+
+  const {
+    state: { system },
+  } = useSystem();
+
+  /**
    * ----- Variables -----
    */
 
-  const isConcrete = React.useMemo(() => {
-    if (process.env.NEXT_PUBLIC_APP_NAME === "Concrete") return true;
-    else return false;
-  }, []);
+  const overheadPercent = React.useMemo(() => {
+    if (system) {
+      return system.internalExpenseOverheadRate;
+    } else return 10;
+  }, [system]);
+
+  const overheadRate = React.useMemo(() => {
+    return 1 + overheadPercent / 100;
+  }, [overheadPercent]);
 
   const onSiteExpenses = React.useMemo(() => {
     let expenses = 0;
@@ -89,11 +105,16 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
 
   const totalExpenses = React.useMemo(() => {
     return (
-      onSiteExpenses * 1.1 +
-      report.summary.externalExpenseInvoiceValue +
+      onSiteExpenses * overheadRate +
+      report.summary.externalExpenseInvoiceValue * 1.03 +
       report.summary.internalExpenseInvoiceValue
     );
-  }, [report, onSiteExpenses]);
+  }, [
+    onSiteExpenses,
+    overheadRate,
+    report.summary.externalExpenseInvoiceValue,
+    report.summary.internalExpenseInvoiceValue,
+  ]);
 
   const netIncome = React.useMemo(() => {
     return revenue - totalExpenses;
@@ -115,6 +136,20 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
    * ----- Rendering -----
    */
 
+  const totalExpensesTooltip = (
+    <Flex flexDir="column">
+      <Code backgroundColor="transparent" color="white">
+        + Internal Expenses + {overheadPercent}%
+      </Code>
+      <Code backgroundColor="transparent" color="white">
+        + External Invoices + 3%
+      </Code>
+      <Code backgroundColor="transparent" color="white">
+        + Internal Invoices
+      </Code>
+    </Flex>
+  );
+
   return (
     <Box>
       <Box p={2}>
@@ -123,9 +158,46 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
             internal: report.summary.internalRevenueInvoiceValue,
             external: report.summary.externalRevenueInvoiceValue,
           }}
+          revenueTooltip={
+            <Flex flexDir="column">
+              <Code backgroundColor="transparent" color="white">
+                + Internal Revenue Invoices
+              </Code>
+              <Code backgroundColor="transparent" color="white">
+                + External Revenue Invoices
+              </Code>
+            </Flex>
+          }
           internalExpenses={onSiteExpenses}
+          internalExpensesTooltip={
+            <Flex flexDir="column">
+              <Code backgroundColor="transparent" color="white">
+                + Wages
+              </Code>
+              <Code backgroundColor="transparent" color="white">
+                + Equipment
+              </Code>
+              <Code backgroundColor="transparent" color="white">
+                + Materials
+              </Code>
+              <Code backgroundColor="transparent" color="white">
+                + Trucking
+              </Code>
+            </Flex>
+          }
           totalExpenses={totalExpenses}
+          totalExpensesTooltip={totalExpensesTooltip}
           netIncome={netIncome}
+          netIncomeTooltip={
+            <Flex flexDir="column">
+              <Code backgroundColor="transparent" color="white">
+                + Total Revenue
+              </Code>
+              <Code backgroundColor="transparent" color="white">
+                - Total Expenses
+              </Code>
+            </Flex>
+          }
         />
       </Box>
       <Box
@@ -165,12 +237,21 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
                 </Tooltip>
               </Th>
               <Th isNumeric>
-                <Tooltip label="10% of Expenses">Overhead</Tooltip>
+                <Tooltip label={`${overheadPercent}% of Expenses`}>
+                  Overhead
+                </Tooltip>
               </Th>
-              <Th isNumeric>Total Expenses</Th>
+
+              <Th isNumeric>
+                <Tooltip label={totalExpensesTooltip}>Total Expenses</Tooltip>
+              </Th>
               <Th isNumeric>Net Income</Th>
               <Th isNumeric>%</Th>
-              {!isConcrete ? <Th isNumeric>% minus Concrete</Th> : null}
+              <Th isNumeric>
+                <Tooltip label="Profit margin without internal invoices">
+                  % minus internal
+                </Tooltip>
+              </Th>
               <Th isNumeric>Internal</Th>
               <Th isNumeric>External</Th>
               {report.crewTypes.map(() => (
@@ -205,14 +286,12 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
               <Th isNumeric color={margin < 0 ? "red.500" : undefined}>
                 %{formatNumber(margin)}
               </Th>
-              {!isConcrete ? (
-                <Th
-                  isNumeric
-                  color={marginMinusConcrete < 0 ? "red.500" : undefined}
-                >
-                  %{formatNumber(marginMinusConcrete)}
-                </Th>
-              ) : null}
+              <Th
+                isNumeric
+                color={marginMinusConcrete < 0 ? "red.500" : undefined}
+              >
+                %{formatNumber(marginMinusConcrete)}
+              </Th>
               <Th isNumeric>
                 ${formatNumber(report.summary.internalExpenseInvoiceValue || 0)}
               </Th>

@@ -34,9 +34,17 @@ const materialShipmentVehicleTypeDefaults = async (
   return system;
 };
 
+const internalExpenseOverheadRate = async (
+  system: SystemDocument,
+  value: number
+) => {
+  system.internalExpenseOverheadRate = value;
+};
+
 export default {
   unitDefaults,
   laborTypes,
   companyVehicleTypeDefaults,
   materialShipmentVehicleTypeDefaults,
+  internalExpenseOverheadRate,
 };

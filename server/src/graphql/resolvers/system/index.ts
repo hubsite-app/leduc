@@ -1,6 +1,13 @@
 import { DefaultRateData } from "@graphql/types/mutation";
 import { System, SystemClass } from "@models";
-import { Arg, Authorized, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Float,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
 import mutations from "./mutations";
 
 @Resolver(() => SystemClass)
@@ -44,5 +51,13 @@ export default class SystemResolver {
     @Arg("data", () => [DefaultRateData]) data: DefaultRateData[]
   ) {
     return mutations.materialShipmentVehicleTypeDefaults(data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => SystemClass)
+  async systemUpdateInternalExpenseOverheadRate(
+    @Arg("value", () => Float, { nullable: false }) value: number
+  ) {
+    return mutations.internalExpenseOverheadRate(value);
   }
 }
