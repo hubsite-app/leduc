@@ -1,6 +1,7 @@
 import { FileDocument, FileModel } from "@models";
 import { IFileCreate } from "@typescript/file";
 import { uploadFile } from "@utils/fileStorage";
+import getBuffer from "@utils/getBuffer";
 
 const document = async (
   File: FileModel,
@@ -12,7 +13,9 @@ const document = async (
     description: data.description,
   });
 
-  await uploadFile(file._id.toString(), data.stream, data.mimetype);
+  const buffer = await getBuffer(data.stream);
+
+  await uploadFile(file._id.toString(), buffer, data.mimetype);
 
   await file.validate();
 

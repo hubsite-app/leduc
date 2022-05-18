@@ -5,6 +5,7 @@ export enum SupportedMimeTypes {
   PNG = "image/png",
   JPEG = "image/jpeg",
   GIF = "image/gif",
+  XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 }
 
 export interface IFileCreate {

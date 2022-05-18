@@ -91,4 +91,8 @@ export class JobsiteYearReportClass extends JobsiteYearReportSchema {
   public async generateIssues(this: JobsiteYearReportDocument) {
     return generate.issues(this);
   }
+
+  public async generateExcel(this: JobsiteYearReportDocument) {
+    return generate.excel(this);
+  }
 }

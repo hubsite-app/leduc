@@ -1,6 +1,4 @@
-import getBuffer from "@utils/getBuffer";
 import AWS from "aws-sdk";
-import { ReadStream } from "fs";
 
 const client = () => {
   return new AWS.S3({
@@ -12,9 +10,7 @@ const client = () => {
   });
 };
 
-const uploadFile = async (name: string, body: ReadStream, mimetype: string) => {
-  const buffer = await getBuffer(body);
-
+const uploadFile = async (name: string, buffer: Buffer, mimetype: string) => {
   return new Promise((resolve, reject) => {
     if (!process.env.SPACES_NAME) throw new Error("Must provide SPACES_NAME");
 
