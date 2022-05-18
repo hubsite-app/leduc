@@ -43,7 +43,11 @@ const main = async () => {
       if (production) {
         // await saveAll();
       } else {
-        // await saveAll([SkipSave.DailyReport]);
+        // await saveAll([
+        //   SkipSave.DailyReport,
+        //   SkipSave.Employee,
+        //   SkipSave.Vehicle,
+        // ]);
       }
 
       await System.validateSystem();

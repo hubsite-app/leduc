@@ -1,5 +1,6 @@
-import { Code, Flex, Text } from "@chakra-ui/react";
+import { Code, Flex } from "@chakra-ui/react";
 import React from "react";
+import { useSystem } from "../../../contexts/System";
 import {
   JobsiteMonthReportFullSnippetFragment,
   JobsiteYearReportFullSnippetFragment,
@@ -14,8 +15,26 @@ interface IJobsiteReportSummary {
 
 const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
   /**
+   * ----- Hook Initialization -----
+   */
+
+  const {
+    state: { system },
+  } = useSystem();
+
+  /**
    * ----- Variables -----
    */
+
+  const overheadPercent = React.useMemo(() => {
+    if (system) {
+      return system.internalExpenseOverheadRate;
+    } else return 10;
+  }, [system]);
+
+  const overheadRate = React.useMemo(() => {
+    return 1 + overheadPercent / 100;
+  }, [overheadPercent]);
 
   const internalExpenses = React.useMemo(() => {
     let expenses = 0;
@@ -34,12 +53,13 @@ const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
 
   const totalExpenses = React.useMemo(() => {
     return (
-      internalExpenses * 1.1 +
+      internalExpenses * overheadRate +
       report.summary.externalExpenseInvoiceValue * 1.03 +
       report.summary.internalExpenseInvoiceValue
     );
   }, [
     internalExpenses,
+    overheadRate,
     report.summary.externalExpenseInvoiceValue,
     report.summary.internalExpenseInvoiceValue,
   ]);
@@ -109,7 +129,7 @@ const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
       totalExpensesTooltip={
         <Flex flexDir="column">
           <Code backgroundColor="transparent" color="white">
-            + Internal Expenses + 10%
+            + Internal Expenses + {overheadPercent}%
           </Code>
           <Code backgroundColor="transparent" color="white">
             + External Invoices + 3%

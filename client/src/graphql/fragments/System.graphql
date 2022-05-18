@@ -7,4 +7,5 @@ fragment SystemSnippet on SystemClass {
   materialShipmentVehicleTypeDefaults {
     ...DefaultRateSnippet
   }
+  internalExpenseOverheadRate
 }

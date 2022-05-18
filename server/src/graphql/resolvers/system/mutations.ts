@@ -45,9 +45,22 @@ const materialShipmentVehicleTypeDefaults = async (
   return system;
 };
 
+const internalExpenseOverheadRate = async (
+  value: number
+): Promise<SystemDocument> => {
+  const system = await System.getSystem();
+
+  await system.updateInternalExpenseOverheadRate(value);
+
+  await system.save();
+
+  return system;
+};
+
 export default {
   unitDefaults,
   laborTypes,
   companyVehicleTypeDefaults,
   materialShipmentVehicleTypeDefaults,
+  internalExpenseOverheadRate,
 };

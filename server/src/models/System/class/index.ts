@@ -51,6 +51,13 @@ export class SystemClass extends SystemSchema {
     return update.materialShipmentVehicleTypeDefaults(this, data);
   }
 
+  public async updateInternalExpenseOverheadRate(
+    this: SystemDocument,
+    value: number
+  ) {
+    return update.internalExpenseOverheadRate(this, value);
+  }
+
   /**
    * ----- Validate -----
    */

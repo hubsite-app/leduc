@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { prop } from "@typegoose/typegoose";
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, Float, ID, ObjectType } from "type-graphql";
 import SchemaVersions from "@constants/SchemaVersions";
 import { DefaultRateClass } from "@typescript/models";
 
@@ -24,6 +24,14 @@ export class SystemSchema {
   @Field(() => [DefaultRateClass], { nullable: false })
   @prop({ type: () => [DefaultRateClass], required: true, default: [] })
   public materialShipmentVehicleTypeDefaults!: DefaultRateClass[];
+
+  @Field(() => Float, {
+    nullable: false,
+    description:
+      "Percent overhead to be added to internal expenses when calculating total expenses",
+  })
+  @prop({ required: true, default: 10 })
+  public internalExpenseOverheadRate!: number;
 
   @Field({ nullable: false })
   @prop({ required: true, default: "America/Edmonton" })

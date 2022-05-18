@@ -57,14 +57,17 @@ const jobsite = async (
   jobsite: JobsiteDocument
 ) => {
   const materialShipments = await dailyReport.getMaterialShipments();
+  let canUpdate = true;
   for (let i = 0; i < materialShipments.length; i++) {
     if (
-      materialShipments[i].noJobsiteMaterial === true ||
-      !materialShipments[i].jobsiteMaterial
+      materialShipments[i].noJobsiteMaterial === false &&
+      materialShipments[i].jobsiteMaterial
     ) {
-      dailyReport.jobsite = jobsite._id;
+      canUpdate = false;
     }
   }
+
+  if (canUpdate) dailyReport.jobsite = jobsite._id;
 
   return;
 };

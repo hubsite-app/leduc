@@ -3,6 +3,7 @@ import React from "react";
 import { useSystem } from "../../../../contexts/System";
 import Loading from "../../../Common/Loading";
 import SystemCompanyVehicleTypeDefaults from "../../../Common/System/CompanyVehicleTypeDefaults";
+import SystemCosting from "../../../Common/System/Costing";
 import SystemLaborTypes from "../../../Common/System/LaborTypes";
 import SystemMaterialShipmentVehicleTypeDefaults from "../../../Common/System/MaterialShipmentVehicleTypeDefaults";
 import SystemUnits from "../../../Common/System/Units";
@@ -32,6 +33,7 @@ const SystemSettings = () => {
             showEditAllLink
           />
           <SystemCompanyVehicleTypeDefaults system={system} />
+          <SystemCosting system={system} />
         </Box>
       );
     } else return <Loading />;
