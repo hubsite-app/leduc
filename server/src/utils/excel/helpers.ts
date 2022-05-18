@@ -110,6 +110,13 @@ export interface IEmployeeReportCatalog {
   totalCost: number;
 }
 
+/**
+ * Generates a catalog of employees and relevant reports for easy rendering
+ * into a table
+ * @param crewType
+ * @param documentIndex
+ * @returns
+ */
 export const generateCrewEmployeeCatalog = async (
   crewType: CrewTypes,
   documentIndex: IDocumentIndex
@@ -125,11 +132,13 @@ export const generateCrewEmployeeCatalog = async (
       report.employees.map((employee) => employee.crewType).includes(crewType)
   );
 
+  const populatedReportIndices: number[][] = [];
+
   // Instantiate catalog
   for (let i = 0; i < relevantReports.length; i++) {
     const relevantReport = relevantReports[i];
 
-    const populatedReportIndices: number[] = [];
+    populatedReportIndices[i] = [];
 
     for (let j = 0; j < relevantReport.employees.length; j++) {
       const employeeReport = relevantReport.employees[j];
@@ -156,23 +165,24 @@ export const generateCrewEmployeeCatalog = async (
               totalCost: 0,
               totalHours: 0,
             });
-            populatedReportIndices.push(reportCatalog.length - 1);
+            populatedReportIndices[i].push(reportCatalog.length - 1);
           } else {
             // Add to existing item
             reportCatalog[existingIndex].reports.push(employeeReport);
-            populatedReportIndices.push(existingIndex);
+            populatedReportIndices[i].push(existingIndex);
           }
         }
       }
     }
+  }
 
-    // Set null for each employee report that wasn't seen
-    if (populatedReportIndices.length > 0)
-      for (let j = 0; j < reportCatalog.length; j++) {
-        if (!populatedReportIndices.includes(j)) {
-          reportCatalog[j].reports.push(null);
-        }
+  // Set null for each material report that wasn't seen
+  for (let i = 0; i < populatedReportIndices.length; i++) {
+    for (let j = 0; j < reportCatalog.length; j++) {
+      if (!populatedReportIndices[i].includes(j)) {
+        reportCatalog[j].reports.splice(i, 0, null);
       }
+    }
   }
 
   // Generate totals
@@ -204,6 +214,13 @@ export interface IEquipmentReportCatalog {
   totalCost: number;
 }
 
+/**
+ * Generates a catalog of equipment and relevant reports for easy rendering
+ * into a table
+ * @param crewType
+ * @param documentIndex
+ * @returns
+ */
 export const generateCrewEquipmentCatalog = async (
   crewType: CrewTypes,
   documentIndex: IDocumentIndex
@@ -219,11 +236,13 @@ export const generateCrewEquipmentCatalog = async (
       report.vehicles.map((employee) => employee.crewType).includes(crewType)
   );
 
+  const populatedReportIndices: number[][] = [];
+
   // Instantiate catalog
   for (let i = 0; i < relevantReports.length; i++) {
     const relevantReport = relevantReports[i];
 
-    const populatedReportIndices: number[] = [];
+    populatedReportIndices[i] = [];
 
     for (let j = 0; j < relevantReport.vehicles.length; j++) {
       const vehicleReport = relevantReport.vehicles[j];
@@ -248,23 +267,24 @@ export const generateCrewEquipmentCatalog = async (
               totalCost: 0,
               totalHours: 0,
             });
-            populatedReportIndices.push(reportCatalog.length - 1);
+            populatedReportIndices[i].push(reportCatalog.length - 1);
           } else {
             // Add to existing item
             reportCatalog[existingIndex].reports.push(vehicleReport);
-            populatedReportIndices.push(existingIndex);
+            populatedReportIndices[i].push(existingIndex);
           }
         }
       }
     }
+  }
 
-    // Set null for each vehicle report that wasn't seen
-    if (populatedReportIndices.length > 0)
-      for (let j = 0; j < reportCatalog.length; j++) {
-        if (!populatedReportIndices.includes(j)) {
-          reportCatalog[j].reports.push(null);
-        }
+  // Set null for each equipment report that wasn't seen
+  for (let i = 0; i < populatedReportIndices.length; i++) {
+    for (let j = 0; j < reportCatalog.length; j++) {
+      if (!populatedReportIndices[i].includes(j)) {
+        reportCatalog[j].reports.splice(i, 0, null);
       }
+    }
   }
 
   // Generate totals
@@ -297,6 +317,13 @@ export interface IMaterialReportCatalog {
   totalCost: number;
 }
 
+/**
+ * Generates a catalog of materials and relevant reports for easy rendering
+ * into a table
+ * @param crewType
+ * @param documentIndex
+ * @returns
+ */
 export const generateCrewMaterialCatalog = async (
   crewType: CrewTypes,
   documentIndex: IDocumentIndex
@@ -312,11 +339,13 @@ export const generateCrewMaterialCatalog = async (
       report.materials.map((employee) => employee.crewType).includes(crewType)
   );
 
+  const populatedReportIndices: number[][] = [];
+
   // Instantiate catalog
   for (let i = 0; i < relevantReports.length; i++) {
     const relevantReport = relevantReports[i];
 
-    const populatedReportIndices: number[] = [];
+    populatedReportIndices[i] = [];
 
     for (let j = 0; j < relevantReport.materials.length; j++) {
       const materialReport = relevantReport.materials[j];
@@ -349,23 +378,24 @@ export const generateCrewMaterialCatalog = async (
               totalQuantity: 0,
               deliveredRateId: materialReport.deliveredRateId?.toString(),
             });
-            populatedReportIndices.push(reportCatalog.length - 1);
+            populatedReportIndices[i].push(reportCatalog.length - 1);
           } else {
             // Add to existing item
             reportCatalog[existingIndex].reports.push(materialReport);
-            populatedReportIndices.push(existingIndex);
+            populatedReportIndices[i].push(existingIndex);
           }
         }
       }
     }
+  }
 
-    // Set null for each vehicle report that wasn't seen
-    if (populatedReportIndices.length > 0)
-      for (let j = 0; j < reportCatalog.length; j++) {
-        if (!populatedReportIndices.includes(j)) {
-          reportCatalog[j].reports.push(null);
-        }
+  // Set null for each material report that wasn't seen
+  for (let i = 0; i < populatedReportIndices.length; i++) {
+    for (let j = 0; j < reportCatalog.length; j++) {
+      if (!populatedReportIndices[i].includes(j)) {
+        reportCatalog[j].reports.splice(i, 0, null);
       }
+    }
   }
 
   // Generate totals
@@ -398,6 +428,13 @@ export interface ITruckingReportCatalog {
   totalCost: number;
 }
 
+/**
+ * Generates a catalog of trucking and relevant reports for easy rendering
+ * into a table
+ * @param crewType
+ * @param documentIndex
+ * @returns
+ */
 export const generateCrewTruckingCatalog = async (
   crewType: CrewTypes,
   documentIndex: IDocumentIndex
@@ -450,7 +487,7 @@ export const generateCrewTruckingCatalog = async (
     }
   }
 
-  // Set null for each vehicle report that wasn't seen
+  // Set null for each trucking report that wasn't seen
   for (let i = 0; i < populatedReportIndices.length; i++) {
     for (let j = 0; j < reportCatalog.length; j++) {
       if (!populatedReportIndices[i].includes(j)) {
@@ -484,6 +521,14 @@ export const generateCrewTruckingCatalog = async (
   return { truckingCatalog: reportCatalog, relevantReports };
 };
 
+/**
+ * @desc given current table positions,
+ *       provides the column to start the next group of tables
+ * @param worksheet
+ * @param cellLocations
+ * @param row
+ * @returns
+ */
 export const getStartingColumnCell = (
   worksheet: ExcelJS.Worksheet,
   cellLocations: CellLocations[],
@@ -523,6 +568,13 @@ export const getStartingColumnCell = (
   return undefined;
 };
 
+/**
+ * @desc given previous table locations, provides the row on which
+ *       to place your next item
+ * @param worksheet
+ * @param cellLocations
+ * @returns
+ */
 export const getStartRowCell = (
   worksheet: ExcelJS.Worksheet,
   cellLocations: CellLocations[]
