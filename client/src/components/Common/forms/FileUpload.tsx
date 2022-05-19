@@ -22,8 +22,10 @@ const FileUpload = ({ handleSubmit, isLoading, ...props }: IFileUpload) => {
 
   const [description, setDescription] = React.useState("");
 
-  const [file, setFile] =
-    React.useState<{ buffer: string; contentType: string }>();
+  const [file, setFile] = React.useState<{
+    buffer: string;
+    contentType: string;
+  }>();
 
   const [fileError, setFileError] = React.useState<string>();
 
