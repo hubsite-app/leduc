@@ -182,31 +182,40 @@ const generateSummaryValues = async (
   };
 
   const wagesCell = worksheet.getRow(5).getCell(2);
-  wagesCell.value = {
-    formula: wageTotalCells.map((cell) => cell.$col$row).join("+"),
-    date1904: false,
-  };
+  if (wageTotalCells.length > 0)
+    wagesCell.value = {
+      formula: wageTotalCells.map((cell) => cell.$col$row).join("+"),
+      date1904: false,
+    };
+  else wagesCell.value = 0;
+
   formatCell(wagesCell);
 
   const equipmentCell = worksheet.getRow(6).getCell(2);
-  equipmentCell.value = {
-    formula: equipmentTotalCells.map((cell) => cell.$col$row).join("+"),
-    date1904: false,
-  };
+  if (equipmentTotalCells.length > 0)
+    equipmentCell.value = {
+      formula: equipmentTotalCells.map((cell) => cell.$col$row).join("+"),
+      date1904: false,
+    };
+  else equipmentCell.value = 0;
   formatCell(equipmentCell);
 
   const truckingCell = worksheet.getRow(7).getCell(2);
-  truckingCell.value = {
-    formula: truckingTotalCells.map((cell) => cell.$col$row).join("+"),
-    date1904: false,
-  };
+  if (truckingTotalCells.length > 0)
+    truckingCell.value = {
+      formula: truckingTotalCells.map((cell) => cell.$col$row).join("+"),
+      date1904: false,
+    };
+  else truckingCell.value = 0;
   formatCell(truckingCell);
 
   const materialCell = worksheet.getRow(8).getCell(2);
-  materialCell.value = {
-    formula: materialTotalCells.map((cell) => cell.$col$row).join("+"),
-    date1904: false,
-  };
+  if (materialTotalCells.length > 0)
+    materialCell.value = {
+      formula: materialTotalCells.map((cell) => cell.$col$row).join("+"),
+      date1904: false,
+    };
+  else materialCell.value = 0;
   formatCell(materialCell);
 
   // Expense Invoices
@@ -221,10 +230,12 @@ const generateSummaryValues = async (
       invoiceCells.internalExpenses.bottomRight.$col$row
     );
 
-  expenseInvoiceCell.value = {
-    formula: expenseInvoiceTotals.join("+"),
-    date1904: false,
-  };
+  if (expenseInvoiceTotals.length > 0)
+    expenseInvoiceCell.value = {
+      formula: expenseInvoiceTotals.join("+"),
+      date1904: false,
+    };
+  else expenseInvoiceCell.value = 0;
   formatCell(expenseInvoiceCell);
 
   // Revenue
@@ -235,10 +246,12 @@ const generateSummaryValues = async (
   if (invoiceCells.internalRevenue?.bottomRight)
     revenueTotals.push(invoiceCells.internalRevenue.bottomRight.$col$row);
 
-  revenueCell.value = {
-    formula: revenueTotals.join("+"),
-    date1904: false,
-  };
+  if (revenueTotals.length > 0)
+    revenueCell.value = {
+      formula: revenueTotals.join("+"),
+      date1904: false,
+    };
+  else revenueCell.value = 0;
   formatCell(revenueCell);
 
   // Expenses
