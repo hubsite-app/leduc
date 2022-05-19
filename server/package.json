@@ -16,6 +16,8 @@
   "author": "Devin McArthur",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.94.0",
+    "@aws-sdk/s3-request-presigner": "^3.94.0",
     "@elastic/elasticsearch": "^7.16.0",
     "@graphql-tools/schema": "^8.3.8",
     "@typegoose/typegoose": "7.4.5",
@@ -28,6 +30,7 @@
     "cors": "2.8.5",
     "dayjs": "^1.10.8",
     "dotenv": "8.2.0",
+    "exceljs": "^4.3.0",
     "express": "4.17.1",
     "graphql": "^15.8.0",
     "graphql-mongoose-subscriptions": "^1.0.14",

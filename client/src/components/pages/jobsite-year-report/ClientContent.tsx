@@ -7,6 +7,7 @@ import {
 import formatDate from "../../../utils/formatDate";
 import JobsiteReport from "../../Common/JobsiteReport";
 import Loading from "../../Common/Loading";
+import TextLink from "../../Common/TextLink";
 
 interface IJobsiteYearReportClientContent {
   id: string;
@@ -49,6 +50,11 @@ const JobsiteYearReportClientContent = ({
 
       return (
         <Box>
+          {jobsiteYearReport.excelDownloadUrl && (
+            <TextLink link={jobsiteYearReport.excelDownloadUrl}>
+              Download
+            </TextLink>
+          )}
           <Heading size="sm" color="gray.400">
             {jobsiteYearReport.update.status} - Last Updated:{" "}
             {jobsiteYearReport.update.lastUpdatedAt

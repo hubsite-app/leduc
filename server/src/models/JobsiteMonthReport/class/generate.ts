@@ -1,6 +1,9 @@
 import { JobsiteMonthReportDocument } from "@models";
+import { SupportedMimeTypes } from "@typescript/file";
 import { InvoiceReportClass } from "@typescript/invoice";
 import { RangeSummaryReportClass } from "@typescript/jobsiteReports";
+import { generateForRangeReport, getWorkbookBuffer } from "@utils/excel";
+import { uploadFile } from "@utils/fileStorage";
 import {
   dayReportIssueGeneration,
   jobsiteReportIssueGenerator,
@@ -119,9 +122,22 @@ const issues = async (jobsiteMonthReport: JobsiteMonthReportDocument) => {
   ];
 };
 
+const excel = async (jobsiteMonthReport: JobsiteMonthReportDocument) => {
+  const workbook = await generateForRangeReport(jobsiteMonthReport);
+
+  const buffer = await getWorkbookBuffer(workbook);
+
+  await uploadFile(
+    await jobsiteMonthReport.getExcelName(),
+    buffer,
+    SupportedMimeTypes.XLSX
+  );
+};
+
 export default {
   expenseInvoiceReports,
   revenueInvoiceReports,
   summary,
   issues,
+  excel,
 };

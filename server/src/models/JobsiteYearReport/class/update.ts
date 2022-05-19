@@ -41,6 +41,8 @@ const document = async (jobsiteYearReport: JobsiteYearReportDocument) => {
 
   await jobsiteYearReport.save();
 
+  await jobsiteYearReport.generateExcel();
+
   await JobsiteYearMasterReport.requestBuild(jobsiteYearReport.startOfYear);
 
   return;

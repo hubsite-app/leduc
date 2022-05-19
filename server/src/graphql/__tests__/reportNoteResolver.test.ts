@@ -9,6 +9,7 @@ import { ReportNote, File } from "@models";
 import { getFile } from "@utils/fileStorage";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { Server } from "http";
+import { AWSError } from "aws-sdk";
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -89,7 +90,7 @@ describe("Report Note Resolver", () => {
               documents.files.jobsite_1_base_1_1_file_1._id.toString()
             );
           } catch (e) {
-            expect((e as AWS.AWSError).code).toBe("NoSuchKey");
+            expect((e as AWSError).code).toBe("NoSuchKey");
           }
         });
       });

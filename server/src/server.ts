@@ -45,7 +45,9 @@ const main = async () => {
       } else {
         // await saveAll([
         //   SkipSave.DailyReport,
+        //   SkipSave.Company,
         //   SkipSave.Employee,
+        //   SkipSave.Material,
         //   SkipSave.Vehicle,
         // ]);
       }

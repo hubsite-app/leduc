@@ -50,6 +50,14 @@ export class JobsiteYearReportClass extends JobsiteYearReportSchema {
     return get.jobsite(this);
   }
 
+  public async getExcelName(this: JobsiteYearReportDocument) {
+    return get.excelName(this);
+  }
+
+  public async getExcelUrl(this: JobsiteYearReportDocument) {
+    return get.excelUrl(this);
+  }
+
   /**
    * ----- Build -----
    */
@@ -90,5 +98,9 @@ export class JobsiteYearReportClass extends JobsiteYearReportSchema {
 
   public async generateIssues(this: JobsiteYearReportDocument) {
     return generate.issues(this);
+  }
+
+  public async generateExcel(this: JobsiteYearReportDocument) {
+    return generate.excel(this);
   }
 }

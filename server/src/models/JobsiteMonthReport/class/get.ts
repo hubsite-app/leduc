@@ -7,6 +7,7 @@ import {
   JobsiteMonthReportModel,
 } from "@models";
 import { GetByIDOptions, Id, UpdateStatus } from "@typescript/models";
+import { getFileSignedUrl } from "@utils/fileStorage";
 import populateOptions from "@utils/populateOptions";
 import dayjs from "dayjs";
 
@@ -94,6 +95,19 @@ const jobsite = async (
   return jobsite;
 };
 
+const excelName = async (jobsiteMonthReport: JobsiteMonthReportDocument) => {
+  const jobsite = await jobsiteMonthReport.getJobsite();
+  return `${jobsite.jobcode}_${dayjs(jobsiteMonthReport.startOfMonth).format(
+    "MMMM_YYYY"
+  )}`;
+};
+
+const excelUrl = async (jobsiteMonthReport: JobsiteMonthReportDocument) => {
+  const url = await getFileSignedUrl(await jobsiteMonthReport.getExcelName());
+
+  return url;
+};
+
 export default {
   byId,
   byJobsiteAndDate,
@@ -101,4 +115,6 @@ export default {
   byUpdatePending,
   dayReports,
   jobsite,
+  excelName,
+  excelUrl,
 };

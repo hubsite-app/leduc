@@ -33,6 +33,13 @@ export default class JobsiteMonthReportResolver {
     return jobsiteMonthReport.getJobsite();
   }
 
+  @FieldResolver(() => String, { nullable: true })
+  async excelDownloadUrl(
+    @Root() jobsiteMonthReport: JobsiteMonthReportDocument
+  ) {
+    return jobsiteMonthReport.getExcelUrl();
+  }
+
   /**
    * ----- Queries -----
    */

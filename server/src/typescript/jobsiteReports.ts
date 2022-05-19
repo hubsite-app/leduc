@@ -12,6 +12,7 @@ import { CrewTypes } from "./crew";
 import { InvoiceReportClass } from "./invoice";
 import { Id, UpdateClass } from "./models";
 
+// Keep this for comment
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import ReportIssueFullResolver from "@graphql/resolvers/reportIssueFull";
 

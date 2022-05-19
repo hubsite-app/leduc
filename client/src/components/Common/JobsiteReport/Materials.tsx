@@ -143,8 +143,6 @@ const JobsiteReportMaterialReports = ({
     return materials;
   }, [crewType, relevantReports]);
 
-  console.log("materialReports", materialReports);
-
   const totals: { quantity: number; cost: number } = React.useMemo(() => {
     let totalQuantity = 0,
       totalCost = 0;
