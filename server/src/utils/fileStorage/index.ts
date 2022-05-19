@@ -73,16 +73,30 @@ const removeFile = async (name: string) => {
 
 const getFileSignedUrl = async (name: string) => {
   try {
-    const url = await getSignedUrl(
-      client,
-      new GetObjectCommand({
-        Bucket: process.env.SPACES_NAME || "",
-        Key: name,
-      }),
-      { expiresIn: 60 * 60 }
-    );
+    const getCommandObject = new GetObjectCommand({
+      Bucket: process.env.SPACES_NAME || "",
+      Key: name,
+    });
 
-    return url;
+    let file;
+    try {
+      file = await client.send(
+        new GetObjectCommand({
+          Bucket: process.env.SPACES_NAME || "",
+          Key: name,
+        })
+      );
+    } catch (error) {
+      // Did not find file
+    }
+
+    if (file) {
+      return await getSignedUrl(client, getCommandObject, {
+        expiresIn: 60 * 60,
+      });
+    } else {
+      return null;
+    }
   } catch (e) {
     errorHandler("Unable to create a signed download Url", e);
   }
