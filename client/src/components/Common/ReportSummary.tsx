@@ -2,6 +2,7 @@ import {
   BoxProps,
   Flex,
   Heading,
+  Icon,
   SimpleGrid,
   Stat,
   StatHelpText,
@@ -9,6 +10,8 @@ import {
   StatNumber,
   Tooltip,
 } from "@chakra-ui/react";
+import Link from "next/link";
+import { FiDownload } from "react-icons/fi";
 import { ReportIssueSnippetFragment } from "../../generated/graphql";
 import formatNumber from "../../utils/formatNumber";
 import Card from "./Card";
@@ -28,6 +31,7 @@ interface IReportSummaryCard extends BoxProps {
   netIncomeTooltip?: React.ReactNode;
   showRevenueBreakdown?: boolean;
   issues?: ReportIssueSnippetFragment[];
+  excelDownloadUrl?: string | null;
 }
 
 const ReportSummaryCard = ({
@@ -40,6 +44,7 @@ const ReportSummaryCard = ({
   totalExpenses,
   totalExpensesTooltip,
   issues,
+  excelDownloadUrl,
   showRevenueBreakdown = true,
   ...props
 }: IReportSummaryCard) => {
@@ -48,7 +53,22 @@ const ReportSummaryCard = ({
       heading={
         <Flex flexDir="row" justifyContent="space-between">
           <Heading size="md">Summary</Heading>
-          {issues && <JobsiteReportIssues issues={issues} />}
+          <Flex flexDir="row">
+            {excelDownloadUrl && (
+              <Tooltip label="Download excel">
+                <Link href={excelDownloadUrl} passHref>
+                  <Icon
+                    m="auto"
+                    mr={2}
+                    cursor="pointer"
+                    as={FiDownload}
+                    backgroundColor="transparent"
+                  />
+                </Link>
+              </Tooltip>
+            )}
+            {issues && <JobsiteReportIssues issues={issues} />}
+          </Flex>
         </Flex>
       }
       {...props}

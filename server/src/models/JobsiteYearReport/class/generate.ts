@@ -124,7 +124,7 @@ const excel = async (jobsiteYearReport: JobsiteYearReportDocument) => {
   const buffer = await getWorkbookBuffer(workbook);
 
   await uploadFile(
-    `jyr-${jobsiteYearReport._id}`,
+    await jobsiteYearReport.getExcelName(),
     buffer,
     SupportedMimeTypes.XLSX
   );

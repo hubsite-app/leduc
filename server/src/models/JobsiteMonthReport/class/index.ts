@@ -46,6 +46,14 @@ export class JobsiteMonthReportClass extends JobsiteMonthReportSchema {
     return get.jobsite(this);
   }
 
+  public async getExcelName(this: JobsiteMonthReportDocument) {
+    return get.excelName(this);
+  }
+
+  public async getExcelUrl(this: JobsiteMonthReportDocument) {
+    return get.excelUrl(this);
+  }
+
   /**
    * ----- Build -----
    */
@@ -86,5 +94,9 @@ export class JobsiteMonthReportClass extends JobsiteMonthReportSchema {
 
   public async generateIssues(this: JobsiteMonthReportDocument) {
     return generate.issues(this);
+  }
+
+  public async generateExcel(this: JobsiteMonthReportDocument) {
+    return generate.excel(this);
   }
 }

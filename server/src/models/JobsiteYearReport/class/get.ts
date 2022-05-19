@@ -7,6 +7,7 @@ import {
   JobsiteYearReportModel,
 } from "@models";
 import { GetByIDOptions, Id, UpdateStatus } from "@typescript/models";
+import { getFileSignedUrl } from "@utils/fileStorage";
 import populateOptions from "@utils/populateOptions";
 import dayjs from "dayjs";
 
@@ -105,6 +106,17 @@ const jobsite = async (
   return jobsite;
 };
 
+const excelName = async (jobsiteYearReport: JobsiteYearReportDocument) => {
+  const jobsite = await jobsiteYearReport.getJobsite();
+  return `${jobsite.jobcode}_${dayjs(jobsiteYearReport.startOfYear).year()}`;
+};
+
+const excelUrl = async (jobsiteYearReport: JobsiteYearReportDocument) => {
+  const url = await getFileSignedUrl(await jobsiteYearReport.getExcelName());
+
+  return url;
+};
+
 export default {
   byId,
   byDate,
@@ -113,4 +125,6 @@ export default {
   byUpdatePending,
   dayReports,
   jobsite,
+  excelName,
+  excelUrl,
 };

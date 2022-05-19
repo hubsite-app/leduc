@@ -522,21 +522,24 @@ export const generateCrewTruckingCatalog = async (
 };
 
 /**
- * @desc given current table positions,
- *       provides the column to start the next group of tables
+ * given current table positions,
+ * provides the column to start the next group of tables
  * @param worksheet
  * @param cellLocations
- * @param row
+ * @param options
  * @returns
  */
 export const getStartingColumnCell = (
   worksheet: ExcelJS.Worksheet,
   cellLocations: CellLocations[],
-  row?: ExcelJS.Row
+  options?: {
+    row?: ExcelJS.Row;
+    startingColumn?: number;
+  }
 ) => {
   const index = cellLocations.length - 1;
-  if (index === 0 && row) {
-    return row.getCell(1);
+  if (index === 0 && options?.row) {
+    return options.row.getCell(options?.startingColumn || 1);
   } else {
     const cellLocation = cellLocations[index - 1];
 
@@ -561,7 +564,11 @@ export const getStartingColumnCell = (
 
     if (cellLocation.wages)
       return worksheet
-        .getRow(row ? row.number : parseInt(cellLocation.wages.topLeft.row))
+        .getRow(
+          options?.row
+            ? options.row.number
+            : parseInt(cellLocation.wages.topLeft.row)
+        )
         .getCell(sorted[0] + 2);
   }
 

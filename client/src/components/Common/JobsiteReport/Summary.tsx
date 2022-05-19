@@ -140,6 +140,7 @@ const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
         </Flex>
       }
       issues={report.issues}
+      excelDownloadUrl={report.excelDownloadUrl}
     />
   );
 };
