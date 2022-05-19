@@ -104,11 +104,16 @@ export const generateForRangeReport = async (
 
   // Auto Column Width
   worksheet.columns.forEach((column) => {
-    let dataMax = 12;
+    let dataMax = 2;
 
     if (column.values) {
       column.values.forEach((value) => {
-        if (value && `${value}`.length > dataMax) dataMax = `${value}`.length;
+        if (
+          value &&
+          (typeof value === "string" || typeof value === "number") &&
+          `${value}`.length > dataMax
+        )
+          dataMax = `${value}`.length + 2;
       });
     }
 
