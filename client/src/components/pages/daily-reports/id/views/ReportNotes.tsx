@@ -19,6 +19,7 @@ import {
   useDailyReportAddNoteFileMutation,
   useDailyReportNoteUpdateMutation,
   useReportNoteRemoveFileMutation,
+  UserRoles,
 } from "../../../../../generated/graphql";
 import dataUrlToBlob from "../../../../../utils/dataUrlToBlob";
 import Card from "../../../../Common/Card";
@@ -131,7 +132,7 @@ const ReportNotes = ({ dailyReport, editPermission }: IReportNotes) => {
         >
           Notes
         </Heading>
-        <Permission otherCriteria={editPermission}>
+        <Permission otherCriteria={editPermission} minRole={UserRoles.User}>
           <IconButton
             aria-label="edit"
             onClick={() => setEditNotes(!editNotes)}
@@ -163,7 +164,7 @@ const ReportNotes = ({ dailyReport, editPermission }: IReportNotes) => {
             >
               Files ({dailyReport.reportNote?.files.length || 0})
             </Heading>
-            <Permission otherCriteria={editPermission}>
+            <Permission otherCriteria={editPermission} minRole={UserRoles.User}>
               <IconButton
                 aria-label="add-file"
                 onClick={() => setFileForm(!fileForm)}
