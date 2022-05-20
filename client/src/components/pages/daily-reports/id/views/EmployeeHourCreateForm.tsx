@@ -346,6 +346,7 @@ const EmployeeHourCreateForm = ({
                   value={job.startTime}
                   bgColor="white"
                   type="time"
+                  step={900}
                   onChange={(e) =>
                     updateStartTime(e.target.value, dataIndex, jobIndex)
                   }
@@ -359,6 +360,7 @@ const EmployeeHourCreateForm = ({
                   value={job.endTime}
                   bgColor="white"
                   type="time"
+                  step={900}
                   onChange={(e) =>
                     updateEndTime(e.target.value, dataIndex, jobIndex)
                   }

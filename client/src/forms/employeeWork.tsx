@@ -71,6 +71,7 @@ export const useEmployeeWorkUpdateForm = (options?: UseFormProps) => {
                   {...props}
                   {...field}
                   type="time"
+                  step={900}
                   errorMessage={fieldState.error?.message}
                   label="Start Time"
                   isDisabled={isLoading}
@@ -92,6 +93,7 @@ export const useEmployeeWorkUpdateForm = (options?: UseFormProps) => {
                 {...props}
                 {...field}
                 type="time"
+                step={900}
                 errorMessage={fieldState.error?.message}
                 label="End Time"
                 isDisabled={isLoading}
