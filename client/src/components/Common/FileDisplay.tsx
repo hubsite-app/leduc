@@ -69,8 +69,6 @@ const FileDisplay = ({
     }
   }, [data, loading]);
 
-  console.log(propsFile);
-
   return (
     <Box>
       {display}
