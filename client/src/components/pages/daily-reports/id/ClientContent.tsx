@@ -234,6 +234,17 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                 </Permission>
               </SimpleGrid>
               <Flex flexDir="column">
+                <TextLink
+                  link={createLink.dailyReportPDF(data.dailyReport._id)}
+                  newTab
+                  mx="auto"
+                >
+                  <Icon
+                    cursor="pointer"
+                    as={FiDownload}
+                    backgroundColor="transparent"
+                  />
+                </TextLink>
                 <Permission
                   minRole={UserRoles.ProjectManager}
                   otherCriteria={editPermission}
@@ -264,17 +275,6 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                     />
                   </Permission>
                 </Permission>
-                <TextLink
-                  link={createLink.dailyReportPDF(data.dailyReport._id)}
-                  newTab
-                  mx="auto"
-                >
-                  <Icon
-                    cursor="pointer"
-                    as={FiDownload}
-                    backgroundColor="transparent"
-                  />
-                </TextLink>
               </Flex>
             </Flex>
           </Card>
