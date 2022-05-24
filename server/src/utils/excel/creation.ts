@@ -509,7 +509,7 @@ const generateWages = async (
 
   if (openCell && employeeCatalog.length > 0) {
     const tableObject = worksheet.addTable({
-      name: `Wages${crewType}`,
+      name: `Wages${crewType.replace(/\s+/g, "")}`,
       ref: openCell.$col$row,
       totalsRow: true,
       columns: [
@@ -568,7 +568,7 @@ const generateEquipment = async (
 
   if (openCell && equipmentCatalog.length > 0) {
     const tableObject = worksheet.addTable({
-      name: `Equipment${crewType}`,
+      name: `Equipment${crewType.replace(/\s+/g, "")}`,
       ref: openCell.$col$row,
       totalsRow: true,
       columns: [
@@ -627,7 +627,7 @@ const generateMaterial = async (
 
   if (openCell && materialCatalog.length > 0) {
     const tableObject = worksheet.addTable({
-      name: `Material${crewType}`,
+      name: `Material${crewType.replace(/\s+/g, "")}`,
       ref: openCell.$col$row,
       totalsRow: true,
       columns: [
@@ -690,7 +690,7 @@ const generateTrucking = async (
 
   if (openCell && truckingCatalog.length > 0) {
     const tableObject = worksheet.addTable({
-      name: `Trucking${crewType}`,
+      name: `Trucking${crewType.replace(/\s+/g, "")}`,
       ref: openCell.$col$row,
       totalsRow: true,
       columns: [
