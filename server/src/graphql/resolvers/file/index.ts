@@ -1,4 +1,5 @@
 import { File, FileClass, FileDocument } from "@models";
+import { getFileSignedUrl } from "@utils/fileStorage";
 
 import { Arg, FieldResolver, Query, Resolver, Root } from "type-graphql";
 
@@ -11,6 +12,11 @@ export default class FileResolver {
   @FieldResolver(() => String)
   async buffer(@Root() file: FileDocument) {
     return file.getBuffer();
+  }
+
+  @FieldResolver(() => String)
+  async downloadUrl(@Root() file: FileDocument) {
+    return getFileSignedUrl(file._id?.toString());
   }
 
   /**

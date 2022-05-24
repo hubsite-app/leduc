@@ -9,7 +9,9 @@ import {
 } from "@models";
 import { TruckingRateTypes } from "@typescript/jobsite";
 import { Id } from "@typescript/models";
+import { UserRoles } from "@typescript/user";
 import { Field, InputType } from "type-graphql";
+import { FileCreateData } from "../file/mutations";
 import { InvoiceData } from "../invoice/mutations";
 import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
 
@@ -41,6 +43,12 @@ export class TruckingRateData extends RatesData {
 export class TruckingTypeRateData extends DefaultRateData {
   @Field(() => [TruckingRateData], { nullable: false })
   public rates!: TruckingRateData[];
+}
+
+@InputType()
+export class JobsiteFileObjectData {
+  @Field(() => FileCreateData, { nullable: false })
+  public file!: FileCreateData;
 }
 
 const create = async (data: JobsiteCreateData): Promise<JobsiteDocument> => {
@@ -198,6 +206,35 @@ const setAllEmptyTruckingRates = async () => {
   return jobsites;
 };
 
+const addFileObject = async (id: Id, data: JobsiteFileObjectData) => {
+  const jobsite = await Jobsite.getById(id);
+  if (!jobsite) throw new Error("Unable to find jobsite");
+
+  const filestream = await data.file.file;
+
+  await jobsite.addFileObject({
+    file: {
+      mimetype: filestream.mimetype,
+      description: data.file.description,
+      stream: filestream.createReadStream(),
+    },
+    minRole: UserRoles.User,
+  });
+
+  await jobsite.save();
+
+  return jobsite;
+};
+
+const removeFileObject = async (id: Id, fileObjectId: Id) => {
+  const jobsite = await Jobsite.getById(id);
+  if (!jobsite) throw new Error("Unable to find jobsite");
+
+  await jobsite.removeFileObject(fileObjectId);
+
+  return jobsite;
+};
+
 export default {
   create,
   update,
@@ -208,4 +245,6 @@ export default {
   generateDayReports,
   addTruckingRateToAll,
   setAllEmptyTruckingRates,
+  addFileObject,
+  removeFileObject,
 };

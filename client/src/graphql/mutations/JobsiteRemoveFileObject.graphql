@@ -1,0 +1,5 @@
+mutation JobsiteRemoveFileObject($id: ID!, $fileObjectId: ID!) {
+  jobsiteRemoveFileObject(id: $id, fileObjectId: $fileObjectId) {
+    ...JobsiteFullSnippet
+  }
+}

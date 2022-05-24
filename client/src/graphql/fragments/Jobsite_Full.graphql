@@ -32,4 +32,11 @@ fragment JobsiteFullSnippet on JobsiteClass {
   nonCostedMaterialShipments {
     ...MaterialShipmentNonCostedSnippet
   }
+  fileObjects {
+    _id
+    minRole
+    file {
+      ...FilePreloadSnippet
+    }
+  }
 }

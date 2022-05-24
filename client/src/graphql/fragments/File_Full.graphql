@@ -1,4 +1,5 @@
 fragment FileFullSnippet on FileClass {
   ...FilePreloadSnippet
   buffer
+  downloadUrl
 }

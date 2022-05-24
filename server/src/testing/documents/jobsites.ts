@@ -18,6 +18,11 @@ const createJobsites = async (): Promise<SeededJobsites> => {
     active: true,
     crews: [_ids.crews.base_1._id],
     schemaVersion: 1,
+    fileObjects: [
+      {
+        file: _ids.files.jobsite_1_file_1._id,
+      },
+    ],
   });
 
   const jobsite_2 = new Jobsite({

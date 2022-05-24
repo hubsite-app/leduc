@@ -31,6 +31,7 @@ import { InvoiceData } from "../invoice/mutations";
 import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
 import mutations, {
   JobsiteCreateData,
+  JobsiteFileObjectData,
   JobsiteUpdateData,
   TruckingTypeRateData,
 } from "./mutations";
@@ -194,5 +195,23 @@ export default class JobsiteResolver {
   @Mutation(() => [JobsiteClass])
   async jobsiteSetAllEmptyTruckingRates() {
     return mutations.setAllEmptyTruckingRates();
+  }
+
+  @Authorized(["PM"])
+  @Mutation(() => JobsiteClass)
+  async jobsiteAddFileObject(
+    @Arg("id", () => ID) id: Id,
+    @Arg("data", () => JobsiteFileObjectData) data: JobsiteFileObjectData
+  ) {
+    return mutations.addFileObject(id, data);
+  }
+
+  @Authorized(["PM"])
+  @Mutation(() => JobsiteClass)
+  async jobsiteRemoveFileObject(
+    @Arg("id", () => ID) id: Id,
+    @Arg("fileObjectId", () => ID) fileObjectId: Id
+  ) {
+    return mutations.removeFileObject(id, fileObjectId);
   }
 }

@@ -13,17 +13,20 @@ import { JobsiteSchema } from "..";
 import get, { IJobsiteGetDailyReportOptions } from "./get";
 import {
   GetByIDOptions,
+  Id,
   IListOptions,
   ISearchOptions,
 } from "@typescript/models";
 import {
   IJobsiteCreate,
+  IJobsiteFileObject,
   IJobsiteUpdate,
   ITruckingTypeRateData,
 } from "@typescript/jobsite";
 import create from "./create";
 import update from "./update";
 import interact from "./interact";
+import remove from "./remove";
 
 @ObjectType()
 export class JobsiteClass extends JobsiteSchema {
@@ -158,6 +161,21 @@ export class JobsiteClass extends JobsiteSchema {
     systemRateIndex: number
   ) {
     return update.addTruckingRateToAll(this, systemItemIndex, systemRateIndex);
+  }
+
+  public async addFileObject(
+    this: JobsiteDocument,
+    fileObject: IJobsiteFileObject
+  ) {
+    return update.addFileObject(this, fileObject);
+  }
+
+  /**
+   * ----- Remove -----
+   */
+
+  public async removeFileObject(this: JobsiteDocument, fileObjectId: Id) {
+    return remove.fileObject(this, fileObjectId);
   }
 
   /**

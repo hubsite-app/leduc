@@ -25,6 +25,7 @@ import Loading from "../../../Common/Loading";
 import Permission from "../../../Common/Permission";
 import JobsiteUpdateForm from "../../../Forms/Jobsite/JobsiteUpdate";
 import ExpenseInvoices from "./views/ExpenseInvoices";
+import JobsiteFileObjects from "./views/FileObjects";
 import JobsiteMaterialsCosting from "./views/JobsiteMaterials";
 import RevenueInvoices from "./views/RevenueInvoices";
 import TruckingRates from "./views/TruckingRates";
@@ -94,6 +95,7 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
               />
             </Flex>
           </Card>
+          <JobsiteFileObjects jobsite={jobsite} />
           <Permission minRole={UserRoles.ProjectManager}>
             <SimpleGrid columns={[1, 1, 1, 2]} spacingX={4} spacingY={2}>
               <JobsiteMaterialsCosting

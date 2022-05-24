@@ -1,6 +1,8 @@
 import { JobsiteDocument } from "@models";
 import { registerEnumType } from "type-graphql";
 import { IDefaultRateData, IRatesData } from "./models";
+import { IFileCreate } from "./file";
+import { UserRoles } from "./user";
 
 export interface IJobsiteCreate {
   name: string;
@@ -33,4 +35,9 @@ export interface ITruckingRateData extends IRatesData {
 
 export interface ITruckingTypeRateData extends IDefaultRateData {
   rates: ITruckingRateData[];
+}
+
+export interface IJobsiteFileObject {
+  file: IFileCreate;
+  minRole: UserRoles;
 }

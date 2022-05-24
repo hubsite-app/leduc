@@ -1,0 +1,5 @@
+mutation JobsiteAddFileObject($id: ID!, $data: JobsiteFileObjectData!) {
+  jobsiteAddFileObject(id: $id, data: $data) {
+    ...JobsiteFullSnippet
+  }
+}

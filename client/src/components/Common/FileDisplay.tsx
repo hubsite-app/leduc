@@ -1,4 +1,5 @@
-import { Box, Flex, IconButton, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, Icon, IconButton, Text } from "@chakra-ui/react";
+import Link from "next/link";
 import React from "react";
 import { FiTrash } from "react-icons/fi";
 import {
@@ -8,6 +9,7 @@ import {
 } from "../../generated/graphql";
 import ErrorMessage from "./ErrorMessage";
 import Loading from "./Loading";
+import { AiOutlineFilePdf } from "react-icons/ai";
 
 interface IFileDisplay {
   file: FilePreloadSnippetFragment;
@@ -45,6 +47,15 @@ const FileDisplay = ({
           // eslint-disable-next-line @next/next/no-img-element
           return <img src={file.buffer} alt="image" />;
         }
+        case "application/pdf": {
+          return (
+            <Link passHref href={file.downloadUrl}>
+              <Center cursor="pointer">
+                <Icon boxSize={12} as={AiOutlineFilePdf} />
+              </Center>
+            </Link>
+          );
+        }
         default: {
           return (
             <ErrorMessage
@@ -58,11 +69,13 @@ const FileDisplay = ({
     }
   }, [data, loading]);
 
+  console.log(propsFile);
+
   return (
     <Box>
       {display}
       <Flex flexDir="row" justifyContent="space-between">
-        <Text whiteSpace="pre-wrap">{propsFile.description}</Text>
+        <Text my="auto">{propsFile.description}</Text>
         {onRemove && data?.file && (
           <IconButton
             isLoading={removeLoading}

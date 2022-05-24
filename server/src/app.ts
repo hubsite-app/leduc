@@ -23,6 +23,7 @@ import InvoiceResolver from "@graphql/resolvers/invoice";
 import InvoiceReportResolver from "@graphql/resolvers/invoiceReport";
 import JobsiteResolver from "@graphql/resolvers/jobsite";
 import JobsiteDayReportResolver from "@graphql/resolvers/jobsiteDayReport";
+import JobsiteFileObjectResolver from "@graphql/resolvers/jobsiteFileObject";
 import JobsiteMaterialResolver from "@graphql/resolvers/jobsiteMaterial";
 import JobsiteMonthReportResolver from "@graphql/resolvers/jobsiteMonthReport";
 import JobsiteYearMasterReportResolver from "@graphql/resolvers/jobsiteYearMasterReport";
@@ -72,6 +73,7 @@ const createApp = async () => {
       InvoiceReportResolver,
       JobsiteResolver,
       JobsiteDayReportResolver,
+      JobsiteFileObjectResolver,
       JobsiteMaterialResolver,
       JobsiteMonthReportResolver,
       JobsiteYearMasterReportResolver,

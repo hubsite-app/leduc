@@ -6,8 +6,10 @@ import {
   JobsiteModel,
   System,
   SystemDocument,
+  File,
 } from "@models";
 import {
+  IJobsiteFileObject,
   IJobsiteUpdate,
   ITruckingTypeRateData,
   TruckingRateTypes,
@@ -187,6 +189,20 @@ const addTruckingRateToAll = async (
   return updatedJobsites;
 };
 
+const addFileObject = async (
+  jobsite: JobsiteDocument,
+  fileObject: IJobsiteFileObject
+) => {
+  const file = await File.createDocument(fileObject.file);
+
+  jobsite.fileObjects.push({
+    ...fileObject,
+    file,
+  });
+
+  return file;
+};
+
 export default {
   document,
   addMaterial,
@@ -196,4 +212,5 @@ export default {
   setTruckingRatesToDefault,
   setAllEmptyTruckingRates,
   addTruckingRateToAll,
+  addFileObject,
 };
