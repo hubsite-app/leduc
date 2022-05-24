@@ -1,6 +1,7 @@
 import {
   Box,
   Flex,
+  Icon,
   IconButton,
   Modal,
   ModalBody,
@@ -15,9 +16,10 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { FiArchive, FiEdit } from "react-icons/fi";
+import { FiArchive, FiDownload, FiEdit } from "react-icons/fi";
 import { useAuth } from "../../../../contexts/Auth";
 import { useDailyReportUpdateForm } from "../../../../forms/dailyReport";
 import {
@@ -228,22 +230,14 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                         Pay Roll Complete
                       </Checkbox>
                     </Flex>
-                    <Text>
-                      <TextLink
-                        newTab
-                        link={`/daily-report/${data.dailyReport._id}/pdf`}
-                      >
-                        PDF Report
-                      </TextLink>
-                    </Text>
                   </Box>
                 </Permission>
               </SimpleGrid>
-              <Permission
-                minRole={UserRoles.ProjectManager}
-                otherCriteria={editPermission}
-              >
-                <Flex flexDir="column">
+              <Flex flexDir="column">
+                <Permission
+                  minRole={UserRoles.ProjectManager}
+                  otherCriteria={editPermission}
+                >
                   <IconButton
                     backgroundColor="transparent"
                     icon={<FiEdit />}
@@ -269,8 +263,19 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
                       }}
                     />
                   </Permission>
-                </Flex>
-              </Permission>
+                </Permission>
+                <TextLink
+                  link={createLink.dailyReportPDF(data.dailyReport._id)}
+                  newTab
+                  mx="auto"
+                >
+                  <Icon
+                    cursor="pointer"
+                    as={FiDownload}
+                    backgroundColor="transparent"
+                  />
+                </TextLink>
+              </Flex>
             </Flex>
           </Card>
 

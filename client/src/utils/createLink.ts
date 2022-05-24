@@ -49,6 +49,10 @@ const dailyReport = (dailyReportId: string) => {
   return `/daily-report/${dailyReportId}`;
 };
 
+const dailyReportPDF = (dailyReportId: string) => {
+  return `/daily-report/${dailyReportId}/pdf`;
+};
+
 const createLink = {
   employee,
   vehicle,
@@ -58,6 +62,7 @@ const createLink = {
   jobsiteYearReport,
   jobsiteYearMasterReport,
   dailyReport,
+  dailyReportPDF,
 };
 
 export default createLink;
