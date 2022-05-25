@@ -183,16 +183,8 @@ const byJobsiteDayReport = async (
   if (!jobsiteDayReport.jobsite || !jobsiteDayReport.date)
     throw new Error("jobsiteDayReport does not have the correct fields");
 
-  const system = await System.getSystem();
-
-  const startOfDay = dayjs(jobsiteDayReport.date)
-    .tz(system.timezone)
-    .startOf("day")
-    .toDate();
-  const endOfDay = dayjs(jobsiteDayReport.date)
-    .tz(system.timezone)
-    .endOf("day")
-    .toDate();
+  const startOfDay = dayjs(jobsiteDayReport.date).startOf("day").toDate();
+  const endOfDay = dayjs(jobsiteDayReport.date).endOf("day").toDate();
 
   const dailyReports = await DailyReport.find({
     date: {
