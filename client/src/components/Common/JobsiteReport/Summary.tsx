@@ -141,6 +141,7 @@ const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
       }
       issues={report.issues}
       excelDownloadUrl={report.excelDownloadUrl}
+      jobsiteId={report.jobsite._id}
     />
   );
 };

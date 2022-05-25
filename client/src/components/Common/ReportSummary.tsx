@@ -3,16 +3,22 @@ import {
   Flex,
   Heading,
   Icon,
+  IconButton,
   SimpleGrid,
   Stat,
   StatHelpText,
   StatLabel,
   StatNumber,
   Tooltip,
+  useToast,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { FiDownload } from "react-icons/fi";
-import { ReportIssueSnippetFragment } from "../../generated/graphql";
+import React from "react";
+import { FiDownload, FiRefreshCw } from "react-icons/fi";
+import {
+  ReportIssueSnippetFragment,
+  useJobsiteRequestReportGenerationMutation,
+} from "../../generated/graphql";
 import formatNumber from "../../utils/formatNumber";
 import Card from "./Card";
 import JobsiteReportIssues from "./JobsiteReport/Issues";
@@ -32,6 +38,7 @@ interface IReportSummaryCard extends BoxProps {
   showRevenueBreakdown?: boolean;
   issues?: ReportIssueSnippetFragment[];
   excelDownloadUrl?: string | null;
+  jobsiteId?: string;
 }
 
 const ReportSummaryCard = ({
@@ -45,15 +52,85 @@ const ReportSummaryCard = ({
   totalExpensesTooltip,
   issues,
   excelDownloadUrl,
+  jobsiteId,
   showRevenueBreakdown = true,
   ...props
 }: IReportSummaryCard) => {
+  /**
+   * ----- Hook Initialization -----
+   */
+
+  const toast = useToast({
+    isClosable: true,
+  });
+
+  const [request, { loading }] = useJobsiteRequestReportGenerationMutation();
+
+  /**
+   * ----- Functions -----
+   */
+
+  const handleRefreshRequest = React.useCallback(async () => {
+    if (jobsiteId) {
+      try {
+        const res = await request({
+          variables: {
+            id: jobsiteId,
+          },
+        });
+
+        if (res.data?.jobsiteRequestReportGeneration) {
+          toast({
+            status: "success",
+            title: "Success",
+            description:
+              "This report should be refreshed in the next few minutes.",
+          });
+        } else {
+          toast({
+            status: "error",
+            title: "Error",
+            description: "Something went wrong, please try again.",
+          });
+        }
+      } catch (e: any) {
+        toast({
+          status: "error",
+          title: "Error",
+          description: e.message,
+        });
+      }
+    } else {
+      toast({
+        status: "error",
+        title: "Error",
+        description: "Unable to do this",
+      });
+    }
+  }, [jobsiteId, request, toast]);
+
+  /**
+   * ----- Rendering -----
+   */
+
   return (
     <Card
       heading={
         <Flex flexDir="row" justifyContent="space-between">
           <Heading size="md">Summary</Heading>
           <Flex flexDir="row">
+            {jobsiteId && (
+              <Tooltip label="Refresh report">
+                <IconButton
+                  icon={<FiRefreshCw />}
+                  size="sm"
+                  aria-label="refresh"
+                  backgroundColor="transparent"
+                  onClick={() => handleRefreshRequest()}
+                  isLoading={loading}
+                />
+              </Tooltip>
+            )}
             {excelDownloadUrl && (
               <Tooltip label="Download excel">
                 <Link href={excelDownloadUrl} passHref>

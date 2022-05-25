@@ -3,6 +3,7 @@ import {
   Company,
   Invoice,
   Jobsite,
+  JobsiteDayReport,
   JobsiteDocument,
   JobsiteMaterial,
   Material,
@@ -235,6 +236,15 @@ const removeFileObject = async (id: Id, fileObjectId: Id) => {
   return jobsite;
 };
 
+const requestReportGeneration = async (id: Id) => {
+  const jobsite = await Jobsite.getById(id);
+  if (!jobsite) throw new Error("Could not find jobsite");
+
+  await JobsiteDayReport.requestBuildAllForJobsite(jobsite);
+
+  return jobsite;
+};
+
 export default {
   create,
   update,
@@ -247,4 +257,5 @@ export default {
   setAllEmptyTruckingRates,
   addFileObject,
   removeFileObject,
+  requestReportGeneration,
 };

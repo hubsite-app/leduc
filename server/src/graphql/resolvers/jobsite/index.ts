@@ -214,4 +214,10 @@ export default class JobsiteResolver {
   ) {
     return mutations.removeFileObject(id, fileObjectId);
   }
+
+  @Authorized(["PM"])
+  @Mutation(() => JobsiteClass)
+  async jobsiteRequestReportGeneration(@Arg("id", () => ID) id: Id) {
+    return mutations.requestReportGeneration(id);
+  }
 }

@@ -552,6 +552,7 @@ export type Mutation = {
   jobsiteMaterialRemove: Scalars['Boolean'];
   jobsiteMaterialUpdate: JobsiteMaterialClass;
   jobsiteRemoveFileObject: JobsiteClass;
+  jobsiteRequestReportGeneration: JobsiteClass;
   jobsiteSetAllEmptyTruckingRates: Array<JobsiteClass>;
   jobsiteSetTruckingRates: JobsiteClass;
   jobsiteUpdate: JobsiteClass;
@@ -784,6 +785,11 @@ export type MutationJobsiteMaterialUpdateArgs = {
 
 export type MutationJobsiteRemoveFileObjectArgs = {
   fileObjectId: Scalars['ID'];
+  id: Scalars['ID'];
+};
+
+
+export type MutationJobsiteRequestReportGenerationArgs = {
   id: Scalars['ID'];
 };
 
@@ -1868,6 +1874,13 @@ export type JobsiteRemoveFileObjectMutationVariables = Exact<{
 
 
 export type JobsiteRemoveFileObjectMutation = { __typename?: 'Mutation', jobsiteRemoveFileObject: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null, description?: string | null, location_url?: string | null, active: boolean, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, monthReports: Array<{ __typename?: 'JobsiteMonthReportClass', _id: string, startOfMonth: any, update: { __typename?: 'UpdateClass', status: UpdateStatus, lastUpdatedAt?: any | null }, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } }>, yearReports: Array<{ __typename?: 'JobsiteYearReportClass', _id: string, startOfYear: any, update: { __typename?: 'UpdateClass', status: UpdateStatus, lastUpdatedAt?: any | null }, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } }>, dailyReports: Array<{ __typename?: 'DailyReportClass', _id: string, date: any, jobCostApproved: boolean, payrollComplete: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } }>, materials: Array<{ __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, delivered: boolean, canRemove: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }>, deliveredRates: Array<{ __typename?: 'JobsiteMaterialDeliveredRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }> }> }>, expenseInvoices: Array<{ __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } }>, revenueInvoices: Array<{ __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } }>, truckingRates: Array<{ __typename?: 'TruckingTypeRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'TruckingRateClass', rate: number, date: any, type: TruckingRateTypes }> }>, nonCostedMaterialShipments: Array<{ __typename?: 'MaterialShipmentClass', _id: string, shipmentType?: string | null, supplier?: string | null, quantity: number, unit?: string | null, startTime?: any | null, endTime?: any | null, noJobsiteMaterial?: boolean | null, schemaVersion: number, dailyReport: { __typename?: 'DailyReportClass', _id: string, date: any, jobsite: { __typename?: 'JobsiteClass', materials: Array<{ __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, delivered: boolean, canRemove: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }>, deliveredRates: Array<{ __typename?: 'JobsiteMaterialDeliveredRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }> }> }>, truckingRates: Array<{ __typename?: 'TruckingTypeRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'TruckingRateClass', rate: number, date: any, type: TruckingRateTypes }> }> } }, jobsiteMaterial?: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, delivered: boolean, canRemove: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }>, deliveredRates: Array<{ __typename?: 'JobsiteMaterialDeliveredRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }> }> } | null, vehicleObject?: { __typename?: 'VehicleObjectClass', source?: string | null, vehicleType?: string | null, vehicleCode?: string | null, truckingRateId?: string | null, deliveredRateId?: string | null } | null }>, fileObjects: Array<{ __typename?: 'JobsiteFileObjectClass', _id?: string | null, minRole: UserRoles, file: { __typename?: 'FileClass', _id: string, mimetype: string, description?: string | null } }> } };
+
+export type JobsiteRequestReportGenerationMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type JobsiteRequestReportGenerationMutation = { __typename?: 'Mutation', jobsiteRequestReportGeneration: { __typename?: 'JobsiteClass', _id: string } };
 
 export type JobsiteSetAllEmptyTruckingRatesMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -4480,6 +4493,39 @@ export function useJobsiteRemoveFileObjectMutation(baseOptions?: Apollo.Mutation
 export type JobsiteRemoveFileObjectMutationHookResult = ReturnType<typeof useJobsiteRemoveFileObjectMutation>;
 export type JobsiteRemoveFileObjectMutationResult = Apollo.MutationResult<JobsiteRemoveFileObjectMutation>;
 export type JobsiteRemoveFileObjectMutationOptions = Apollo.BaseMutationOptions<JobsiteRemoveFileObjectMutation, JobsiteRemoveFileObjectMutationVariables>;
+export const JobsiteRequestReportGenerationDocument = gql`
+    mutation JobsiteRequestReportGeneration($id: ID!) {
+  jobsiteRequestReportGeneration(id: $id) {
+    _id
+  }
+}
+    `;
+export type JobsiteRequestReportGenerationMutationFn = Apollo.MutationFunction<JobsiteRequestReportGenerationMutation, JobsiteRequestReportGenerationMutationVariables>;
+
+/**
+ * __useJobsiteRequestReportGenerationMutation__
+ *
+ * To run a mutation, you first call `useJobsiteRequestReportGenerationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJobsiteRequestReportGenerationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [jobsiteRequestReportGenerationMutation, { data, loading, error }] = useJobsiteRequestReportGenerationMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useJobsiteRequestReportGenerationMutation(baseOptions?: Apollo.MutationHookOptions<JobsiteRequestReportGenerationMutation, JobsiteRequestReportGenerationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<JobsiteRequestReportGenerationMutation, JobsiteRequestReportGenerationMutationVariables>(JobsiteRequestReportGenerationDocument, options);
+      }
+export type JobsiteRequestReportGenerationMutationHookResult = ReturnType<typeof useJobsiteRequestReportGenerationMutation>;
+export type JobsiteRequestReportGenerationMutationResult = Apollo.MutationResult<JobsiteRequestReportGenerationMutation>;
+export type JobsiteRequestReportGenerationMutationOptions = Apollo.BaseMutationOptions<JobsiteRequestReportGenerationMutation, JobsiteRequestReportGenerationMutationVariables>;
 export const JobsiteSetAllEmptyTruckingRatesDocument = gql`
     mutation JobsiteSetAllEmptyTruckingRates {
   jobsiteSetAllEmptyTruckingRates {
