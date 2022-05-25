@@ -157,7 +157,7 @@ const dailyReports = async (
 
   const dailyReports = await DailyReport.find({
     jobsite: jobsite._id,
-    archived: false,
+    archived: { $ne: true },
     ...crewQuery,
   }).sort({ date: -1 });
 

@@ -139,7 +139,7 @@ const list = async (
 
   const dailyReports = await DailyReport.find(
     {
-      archived: false,
+      archived: { $ne: true },
       ...options?.query,
     },
     undefined,
@@ -166,7 +166,7 @@ const existingReport = async (
   const dailyReport = await DailyReport.findOne({
     crew: crewId,
     jobsite: jobsiteId,
-    archived: false,
+    archived: { $ne: true },
     date: {
       $gte: dayjs(date).tz(system.timezone).startOf("day").toDate(),
       $lt: dayjs(date).tz(system.timezone).endOf("day").toDate(),
@@ -193,7 +193,7 @@ const byJobsiteDayReport = async (
     },
     jobsite: jobsiteDayReport.jobsite,
     approved: true,
-    archived: false,
+    archived: { $ne: true },
   });
 
   return dailyReports;

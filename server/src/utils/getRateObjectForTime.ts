@@ -20,6 +20,9 @@ const getRateObjectForTime = <RateType extends RateClass>(
     // Before all rates
     if (i === 0 && dayjs(date).isBefore(rateDate)) return sortedRates[i];
 
+    // Same date
+    if (dayjs(date).isSame(rateDate)) return sortedRates[i];
+
     // After all rates
     if (i === sortedRates.length - 1 && dayjs(date).isAfter(rateDate))
       return sortedRates[i];

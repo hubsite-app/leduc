@@ -105,7 +105,7 @@ const completedQuantity = async (
   let quantity = 0;
   for (let i = 0; i < materialShipments.length; i++) {
     const dailyReport = await materialShipments[i].getDailyReport();
-    if (dailyReport && dailyReport.archived === false)
+    if (dailyReport && dailyReport.archived !== true)
       quantity += materialShipments[i].quantity;
   }
 

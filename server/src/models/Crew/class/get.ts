@@ -134,7 +134,7 @@ const dailyReports = async (
 ): Promise<DailyReportDocument[]> => {
   const dailyReports = await DailyReport.find({
     crew: crew._id,
-    archived: false,
+    archived: { $ne: true },
   }).sort({
     date: -1,
   });

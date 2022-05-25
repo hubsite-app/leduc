@@ -19,7 +19,7 @@ export const ES_updateDailyReport = async (
   if (process.env.NODE_ENV !== "test") {
     logger.debug(`Updating dailyReport ${dailyReport._id} in ES`);
 
-    if (dailyReport.archived === false) {
+    if (dailyReport.archived !== true) {
       let crew: CrewDocument | undefined = undefined,
         jobsite: JobsiteDocument | undefined = undefined;
       try {
