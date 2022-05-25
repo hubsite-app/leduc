@@ -14,7 +14,8 @@ const getRateObjectForTime = <RateType extends RateClass>(
   for (let i = 0; i < sortedRates.length; i++) {
     const rateDate = dayjs(sortedRates[i].date);
 
-    if (!sortedRates[i].rate) return null;
+    // Ensure rate exists
+    if (isNaN(sortedRates[i].rate)) return null;
 
     // Before all rates
     if (i === 0 && dayjs(date).isBefore(rateDate)) return sortedRates[i];

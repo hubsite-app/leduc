@@ -63,7 +63,6 @@ const MaterialShipmentUpdate = yup
         truckingRateId: yup.string().nullable(),
         deliveredRateId: yup.string().nullable(),
       })
-      .optional()
       .nullable(),
   })
   .required();
