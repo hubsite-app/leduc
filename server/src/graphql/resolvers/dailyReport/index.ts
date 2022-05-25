@@ -123,6 +123,20 @@ export default class DailyReportResolver {
     );
   }
 
+  @Query(() => [DailyReportClass])
+  async dailyReportsForJobsite(
+    @Arg("jobsiteId", () => ID) jobsiteId: Id,
+    @Arg("options", () => DailyReportListOptionData, { nullable: true })
+    options?: DailyReportListOptionData
+  ) {
+    return DailyReport.getList({
+      query: {
+        jobsite: jobsiteId,
+      },
+      ...options,
+    });
+  }
+
   /**
    * ----- Mutations -----
    */

@@ -75,6 +75,12 @@ export default function MyApolloProvider({
                 return [...existing, ...incoming];
               },
             },
+            dailyReportsForJobsite: {
+              keyArgs: [],
+              merge: (existing = [], incoming) => {
+                return [...existing, ...incoming];
+              },
+            },
             materials: {
               keyArgs: [],
               merge: (existing = [], incoming) => {

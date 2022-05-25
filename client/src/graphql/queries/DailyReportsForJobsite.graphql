@@ -1,0 +1,8 @@
+query DailyReportsForJobsite(
+  $jobsiteId: ID!
+  $options: DailyReportListOptionData
+) {
+  dailyReportsForJobsite(jobsiteId: $jobsiteId, options: $options) {
+    _id
+  }
+}

@@ -33,6 +33,10 @@ const jobsite = (jobsiteId: string, options?: IJobsiteQueryString) => {
   return `/jobsite/${jobsiteId}${queryString}`;
 };
 
+const jobsiteDailyReports = (jobsiteId: string) => {
+  return `/jobsite/${jobsiteId}/daily-reports`;
+};
+
 const jobsiteMonthReport = (reportId: string) => {
   return `/jobsite-month-report/${reportId}`;
 };
@@ -58,6 +62,7 @@ const createLink = {
   vehicle,
   crew,
   jobsite,
+  jobsiteDailyReports,
   jobsiteMonthReport,
   jobsiteYearReport,
   jobsiteYearMasterReport,

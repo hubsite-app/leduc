@@ -1027,6 +1027,7 @@ export type Query = {
   dailyReport: DailyReportClass;
   dailyReports: Array<DailyReportClass>;
   dailyReportSearch: Array<DailyReportClass>;
+  dailyReportsForJobsite: Array<DailyReportClass>;
   employee: EmployeeClass;
   employeeSearch: Array<EmployeeClass>;
   file: FileClass;
@@ -1091,6 +1092,12 @@ export type QueryDailyReportsArgs = {
 export type QueryDailyReportSearchArgs = {
   options?: InputMaybe<SearchOptions>;
   searchString: Scalars['String'];
+};
+
+
+export type QueryDailyReportsForJobsiteArgs = {
+  jobsiteId: Scalars['ID'];
+  options?: InputMaybe<DailyReportListOptionData>;
 };
 
 
@@ -2190,6 +2197,14 @@ export type DailyReportsQueryVariables = Exact<{
 
 
 export type DailyReportsQuery = { __typename?: 'Query', dailyReports: Array<{ __typename?: 'DailyReportClass', _id: string, date: any, jobCostApproved: boolean, payrollComplete: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string }, crew: { __typename?: 'CrewClass', _id: string, name: string } }> };
+
+export type DailyReportsForJobsiteQueryVariables = Exact<{
+  jobsiteId: Scalars['ID'];
+  options?: InputMaybe<DailyReportListOptionData>;
+}>;
+
+
+export type DailyReportsForJobsiteQuery = { __typename?: 'Query', dailyReportsForJobsite: Array<{ __typename?: 'DailyReportClass', _id: string }> };
 
 export type EmployeeSearchQueryVariables = Exact<{
   searchString: Scalars['String'];
@@ -5976,6 +5991,42 @@ export function useDailyReportsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type DailyReportsQueryHookResult = ReturnType<typeof useDailyReportsQuery>;
 export type DailyReportsLazyQueryHookResult = ReturnType<typeof useDailyReportsLazyQuery>;
 export type DailyReportsQueryResult = Apollo.QueryResult<DailyReportsQuery, DailyReportsQueryVariables>;
+export const DailyReportsForJobsiteDocument = gql`
+    query DailyReportsForJobsite($jobsiteId: ID!, $options: DailyReportListOptionData) {
+  dailyReportsForJobsite(jobsiteId: $jobsiteId, options: $options) {
+    _id
+  }
+}
+    `;
+
+/**
+ * __useDailyReportsForJobsiteQuery__
+ *
+ * To run a query within a React component, call `useDailyReportsForJobsiteQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDailyReportsForJobsiteQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDailyReportsForJobsiteQuery({
+ *   variables: {
+ *      jobsiteId: // value for 'jobsiteId'
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useDailyReportsForJobsiteQuery(baseOptions: Apollo.QueryHookOptions<DailyReportsForJobsiteQuery, DailyReportsForJobsiteQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DailyReportsForJobsiteQuery, DailyReportsForJobsiteQueryVariables>(DailyReportsForJobsiteDocument, options);
+      }
+export function useDailyReportsForJobsiteLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DailyReportsForJobsiteQuery, DailyReportsForJobsiteQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DailyReportsForJobsiteQuery, DailyReportsForJobsiteQueryVariables>(DailyReportsForJobsiteDocument, options);
+        }
+export type DailyReportsForJobsiteQueryHookResult = ReturnType<typeof useDailyReportsForJobsiteQuery>;
+export type DailyReportsForJobsiteLazyQueryHookResult = ReturnType<typeof useDailyReportsForJobsiteLazyQuery>;
+export type DailyReportsForJobsiteQueryResult = Apollo.QueryResult<DailyReportsForJobsiteQuery, DailyReportsForJobsiteQueryVariables>;
 export const EmployeeSearchDocument = gql`
     query EmployeeSearch($searchString: String!, $options: SearchOptions) {
   employeeSearch(searchString: $searchString, options: $options) {

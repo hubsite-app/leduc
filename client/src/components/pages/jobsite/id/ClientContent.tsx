@@ -57,8 +57,6 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
     else return null;
   }, [router]);
 
-  console.log(jobsiteMaterialQuery);
-
   /**
    * ----- Rendering -----
    */
@@ -113,7 +111,10 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
               jobsiteMonthReports={jobsite.monthReports}
             />
           </Permission>
-          <DailyReportListCard dailyReports={jobsite.dailyReports} />
+          <DailyReportListCard
+            dailyReports={jobsite.dailyReports}
+            jobsiteId={jobsite._id}
+          />
 
           {/* EDIT MODAL */}
           <Modal isOpen={isOpen} onClose={onClose}>
