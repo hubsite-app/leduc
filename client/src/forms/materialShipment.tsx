@@ -10,7 +10,6 @@ import {
 import * as yup from "yup";
 import {
   JobsiteMaterialCardSnippetFragment,
-  MaterialShipmentShipmentData,
   MaterialShipmentUpdateData,
 } from "../generated/graphql";
 
@@ -21,7 +20,6 @@ import Select, { ISelect } from "../components/Common/forms/Select";
 import Unit, { IUnit } from "../components/Common/forms/Unit";
 import NumberForm, { INumber } from "../components/Common/forms/Number";
 import CompanySearch from "../components/Search/CompanySearch";
-import { isEmpty } from "lodash";
 import ContactOffice from "../components/Common/ContactOffice";
 
 const MaterialShipmentUpdate = yup
@@ -56,13 +54,17 @@ const MaterialShipmentUpdate = yup
     quantity: yup.number().required(),
     startTime: yup.string().optional().nullable(),
     endTime: yup.string().optional().nullable(),
-    vehicleObject: yup.object().shape({
-      source: yup.string(),
-      vehicleCode: yup.string(),
-      vehicleType: yup.string(),
-      truckingRateId: yup.string().nullable(),
-      deliveredRateId: yup.string().nullable(),
-    }),
+    vehicleObject: yup
+      .object()
+      .shape({
+        source: yup.string(),
+        vehicleCode: yup.string(),
+        vehicleType: yup.string(),
+        truckingRateId: yup.string().nullable(),
+        deliveredRateId: yup.string().nullable(),
+      })
+      .optional()
+      .nullable(),
   })
   .required();
 
@@ -72,7 +74,7 @@ export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
     ...options,
   });
 
-  const { control, handleSubmit, watch, setValue } = form;
+  const { control, handleSubmit, watch, setValue, clearErrors } = form;
 
   const noJobsiteMaterial = watch("noJobsiteMaterial");
 
@@ -299,15 +301,22 @@ export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
                 {...props}
                 {...field}
                 onChange={(e) => {
-                  console.log(isDelivered);
-                  setValue(
-                    "vehicleObject.vehicleType",
-                    e.target.options[e.target.selectedIndex].text
-                  );
-                  if (isDelivered) {
-                    setValue("vehicleObject.deliveredRateId", e.target.value);
+                  if (e.target.value) {
+                    // Value is defined
+                    setValue(
+                      "vehicleObject.vehicleType",
+                      e.target.options[e.target.selectedIndex].text
+                    );
+                    if (isDelivered) {
+                      setValue("vehicleObject.deliveredRateId", e.target.value);
+                    } else {
+                      setValue("vehicleObject.truckingRateId", e.target.value);
+                    }
                   } else {
-                    setValue("vehicleObject.truckingRateId", e.target.value);
+                    // Value is null
+                    setValue("vehicleObject.vehicleType", null);
+                    setValue("vehicleObject.deliveredRateId", null);
+                    setValue("vehicleObject.truckingRateId", null);
                   }
                 }}
                 placeholder="Select vehicle type"

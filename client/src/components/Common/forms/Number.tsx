@@ -91,7 +91,6 @@ const NumberForm = ({
             return;
           }}
           onChange={(val, num) => {
-            console.log(val, num);
             setNumberString(val);
             if (onChange)
               if (parse) onChange(parse(val), num);

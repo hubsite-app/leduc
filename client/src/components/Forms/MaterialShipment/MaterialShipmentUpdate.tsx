@@ -10,6 +10,7 @@ import {
   useMaterialShipmentUpdateMutation,
 } from "../../../generated/graphql";
 import convertHourToDate from "../../../utils/convertHourToDate";
+import isEmpty from "../../../utils/isEmpty";
 import { ISelect } from "../../Common/forms/Select";
 import SubmitButton from "../../Common/forms/SubmitButton";
 
@@ -106,6 +107,17 @@ const MaterialShipmentUpdate = ({
           endTime = convertHourToDate(data.endTime, dailyReport.date);
         }
 
+        let vehicleObject = data.vehicleObject;
+        if (data.vehicleObject) {
+          if (
+            isEmpty(data.vehicleObject.source) &&
+            isEmpty(data.vehicleObject.vehicleCode) &&
+            isEmpty(data.vehicleObject.vehicleType)
+          ) {
+            vehicleObject = null;
+          }
+        }
+
         const res = await update({
           variables: {
             id: materialShipment._id,
@@ -113,6 +125,7 @@ const MaterialShipmentUpdate = ({
               ...data,
               startTime,
               endTime,
+              vehicleObject,
             },
           },
         });
