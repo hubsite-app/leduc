@@ -4,6 +4,7 @@ import {
   JobsiteDayReportDocument,
   JobsiteDayReportModel,
   JobsiteDocument,
+  System,
   VehicleDocument,
 } from "@models";
 import { Id, UpdateStatus } from "@typescript/models";
@@ -25,11 +26,13 @@ const byJobsiteAndYear = async (
   jobsiteId: Id,
   date: Date
 ): Promise<JobsiteDayReportDocument[]> => {
+  const system = await System.getSystem();
+
   const reports = await JobsiteDayReport.find({
     jobsite: jobsiteId,
     date: {
-      $gte: dayjs(date).startOf("year").toDate(),
-      $lt: dayjs(date).endOf("year").toDate(),
+      $gte: dayjs(date).tz(system.timezone).startOf("year").toDate(),
+      $lt: dayjs(date).tz(system.timezone).endOf("year").toDate(),
     },
   });
 
@@ -41,11 +44,13 @@ const byJobsiteAndMonth = async (
   jobsiteId: Id,
   date: Date
 ): Promise<JobsiteDayReportDocument[]> => {
+  const system = await System.getSystem();
+
   const reports = await JobsiteDayReport.find({
     jobsite: jobsiteId,
     date: {
-      $gte: dayjs(date).startOf("month").toDate(),
-      $lt: dayjs(date).endOf("month").toDate(),
+      $gte: dayjs(date).tz(system.timezone).startOf("month").toDate(),
+      $lt: dayjs(date).tz(system.timezone).endOf("month").toDate(),
     },
   });
 
@@ -57,11 +62,13 @@ const byJobsiteAndDay = async (
   jobsiteId: Id,
   day: Date
 ): Promise<JobsiteDayReportDocument | null> => {
+  const system = await System.getSystem();
+
   const report = await JobsiteDayReport.findOne({
     jobsite: jobsiteId,
     date: {
-      $gte: dayjs(day).startOf("day").toDate(),
-      $lt: dayjs(day).endOf("day").toDate(),
+      $gte: dayjs(day).tz(system.timezone).startOf("day").toDate(),
+      $lt: dayjs(day).tz(system.timezone).endOf("day").toDate(),
     },
   });
 
