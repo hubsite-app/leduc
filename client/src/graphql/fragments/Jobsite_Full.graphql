@@ -17,9 +17,6 @@ fragment JobsiteFullSnippet on JobsiteClass {
   dailyReports {
     ...DailyReportCardSnippet
   }
-  materials {
-    ...JobsiteMaterialCardSnippet
-  }
   expenseInvoices {
     ...InvoiceCardSnippet
   }
@@ -28,9 +25,6 @@ fragment JobsiteFullSnippet on JobsiteClass {
   }
   truckingRates {
     ...TruckingTypeRateSnippet
-  }
-  nonCostedMaterialShipments {
-    ...MaterialShipmentNonCostedSnippet
   }
   fileObjects {
     _id

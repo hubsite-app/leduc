@@ -1,0 +1,9 @@
+fragment JobsiteMaterialsSnippet on JobsiteClass {
+  _id
+  materials {
+    ...JobsiteMaterialCardSnippet
+  }
+  nonCostedMaterialShipments {
+    ...MaterialShipmentNonCostedSnippet
+  }
+}

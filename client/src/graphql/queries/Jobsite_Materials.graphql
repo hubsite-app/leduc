@@ -1,0 +1,5 @@
+query JobsitesMaterials($id: String!) {
+  jobsite(id: $id) {
+    ...JobsiteMaterialsSnippet
+  }
+}

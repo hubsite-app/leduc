@@ -1124,6 +1124,41 @@ export const ssrJobsiteFull = {
       withPage: withPageJobsiteFull,
       usePage: useJobsiteFull,
     }
+export async function getServerPageJobsitesMaterials
+    (options: Omit<Apollo.QueryOptions<Types.JobsitesMaterialsQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsitesMaterialsQuery>({ ...options, query: Operations.JobsitesMaterialsDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsitesMaterials = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsitesMaterialsQuery, Types.JobsitesMaterialsQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsitesMaterialsDocument, options);
+};
+export type PageJobsitesMaterialsComp = React.FC<{data?: Types.JobsitesMaterialsQuery, error?: Apollo.ApolloError}>;
+export const withPageJobsitesMaterials = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsitesMaterialsQuery, Types.JobsitesMaterialsQueryVariables>) => (WrappedComponent:PageJobsitesMaterialsComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsitesMaterialsDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsitesMaterials = {
+      getServerPage: getServerPageJobsitesMaterials,
+      withPage: withPageJobsitesMaterials,
+      usePage: useJobsitesMaterials,
+    }
 export async function getServerPageJobsiteSsr
     (options: Omit<Apollo.QueryOptions<Types.JobsiteSsrQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
