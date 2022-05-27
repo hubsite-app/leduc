@@ -146,6 +146,10 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
           jobsiteYearReport?.summary.externalExpenseInvoiceValue || 0
         )}
       </Th>
+      <Th isNumeric>${formatNumber(reportItem.summary.employeeCost)}</Th>
+      <Th isNumeric>${formatNumber(reportItem.summary.vehicleCost)}</Th>
+      <Th isNumeric>${formatNumber(reportItem.summary.materialCost)}</Th>
+      <Th isNumeric>${formatNumber(reportItem.summary.truckingCost)}</Th>
       {crewTypes.map((crew) => (
         <>
           <Th isNumeric>

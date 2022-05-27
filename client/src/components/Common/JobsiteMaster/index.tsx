@@ -96,6 +96,24 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
     return crewTotals;
   }, [report]);
 
+  const crewSummaryTotals = React.useMemo(() => {
+    const summaryTotals = {
+      wages: 0,
+      equipment: 0,
+      materials: 0,
+      trucking: 0,
+    };
+
+    for (let i = 0; i < report.reports.length; i++) {
+      summaryTotals.wages += report.reports[i].summary.employeeCost;
+      summaryTotals.equipment += report.reports[i].summary.vehicleCost;
+      summaryTotals.materials += report.reports[i].summary.materialCost;
+      summaryTotals.trucking += report.reports[i].summary.truckingCost;
+    }
+
+    return summaryTotals;
+  }, [report.reports]);
+
   const revenue = React.useMemo(() => {
     return (
       report.summary.externalRevenueInvoiceValue +
@@ -205,6 +223,8 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
         overflowX="scroll"
         backgroundColor="gray.200"
         borderRadius={6}
+        maxH="60vh"
+        overflowY="scroll"
       >
         <Table>
           <Thead>
@@ -218,6 +238,10 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
               <Th></Th>
               <Th></Th>
               <Th>Sub Contractors</Th>
+              <Th></Th>
+              <Th>Crew Totals</Th>
+              <Th></Th>
+              <Th></Th>
               <Th></Th>
               {report.crewTypes.map((crew) => (
                 <>
@@ -254,6 +278,10 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
               </Th>
               <Th isNumeric>Internal</Th>
               <Th isNumeric>External</Th>
+              <Th isNumeric>Wages</Th>
+              <Th isNumeric>Equipment</Th>
+              <Th isNumeric>Materials</Th>
+              <Th isNumeric>Trucking</Th>
               {report.crewTypes.map(() => (
                 <>
                   <Th isNumeric>Wages</Th>
@@ -298,6 +326,10 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
               <Th isNumeric>
                 ${formatNumber(report.summary.externalExpenseInvoiceValue || 0)}
               </Th>
+              <Th isNumeric>${formatNumber(crewSummaryTotals.wages)}</Th>
+              <Th isNumeric>${formatNumber(crewSummaryTotals.equipment)}</Th>
+              <Th isNumeric>${formatNumber(crewSummaryTotals.materials)}</Th>
+              <Th isNumeric>${formatNumber(crewSummaryTotals.trucking)}</Th>
               {Object.values(crewTotals).map((totals) => (
                 <>
                   <Th isNumeric>${formatNumber(totals.wages)}</Th>

@@ -45,13 +45,15 @@ const JobsiteReportEmployeeReports = ({
    */
   const relevantReports: JobsiteDayReportFullSnippetFragment[] =
     React.useMemo(() => {
-      return dayReports.filter(
-        (report) =>
-          report.employees.length > 0 &&
-          report.employees
-            .map((employee) => employee.crewType)
-            .includes(crewType)
-      );
+      return dayReports
+        .filter(
+          (report) =>
+            report.employees.length > 0 &&
+            report.employees
+              .map((employee) => employee.crewType)
+              .includes(crewType)
+        )
+        .sort((a, b) => a.date - b.date);
     }, [crewType, dayReports]);
 
   /**
@@ -172,7 +174,7 @@ const JobsiteReportEmployeeReports = ({
               Total Cost
             </Th>
             {relevantReports.map((report, index) => (
-              <Th isNumeric key={index}>
+              <Th isNumeric key={index} whiteSpace="pre-wrap">
                 {formatDate(report.date, "MMM D")}
               </Th>
             ))}
