@@ -91,7 +91,7 @@ const dayReports = async (
     _id: { $in: jobsiteYearReport.dayReports },
   });
 
-  console.log(reports);
+  console.log(reports.length);
 
   return reports;
 };
