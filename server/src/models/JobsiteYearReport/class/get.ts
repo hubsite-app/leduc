@@ -91,6 +91,8 @@ const dayReports = async (
     _id: { $in: jobsiteYearReport.dayReports },
   });
 
+  console.log(reports);
+
   return reports;
 };
 
@@ -102,6 +104,8 @@ const jobsite = async (
 
   const jobsite = await Jobsite.getById(jobsiteYearReport.jobsite);
   if (!jobsite) throw new Error("Could not find month report jobsite");
+
+  console.log(jobsite);
 
   return jobsite;
 };
