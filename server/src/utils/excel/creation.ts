@@ -106,6 +106,11 @@ export const generateForRangeReport = async (
   worksheet.columns.forEach((column) => {
     let dataMax = 2;
 
+    if (column.eachCell)
+      column.eachCell((cell) => {
+        cell.numFmt = "#,##0.00";
+      });
+
     if (column.values) {
       column.values.forEach((value) => {
         if (
@@ -113,7 +118,7 @@ export const generateForRangeReport = async (
           (typeof value === "string" || typeof value === "number") &&
           `${value}`.length > dataMax
         )
-          dataMax = `${value}`.length + 2;
+          dataMax = `${value}`.length + 4;
       });
     }
 
@@ -132,6 +137,7 @@ const generateSummaryOutline = async (worksheet: ExcelJS.Worksheet) => {
     { title: "Equipment" },
     { title: "Materials" },
     { title: "Trucking" },
+    { title: "Sub Overhead" },
     { title: "Expense Invoices" },
     { title: "Total Revenue" },
     { title: "Expenses" },
@@ -205,16 +211,7 @@ const generateSummaryValues = async (
   else equipmentCell.value = 0;
   formatCell(equipmentCell);
 
-  const truckingCell = worksheet.getRow(7).getCell(2);
-  if (truckingTotalCells.length > 0)
-    truckingCell.value = {
-      formula: truckingTotalCells.map((cell) => cell.$col$row).join("+"),
-      date1904: false,
-    };
-  else truckingCell.value = 0;
-  formatCell(truckingCell);
-
-  const materialCell = worksheet.getRow(8).getCell(2);
+  const materialCell = worksheet.getRow(7).getCell(2);
   if (materialTotalCells.length > 0)
     materialCell.value = {
       formula: materialTotalCells.map((cell) => cell.$col$row).join("+"),
@@ -223,28 +220,45 @@ const generateSummaryValues = async (
   else materialCell.value = 0;
   formatCell(materialCell);
 
-  // Expense Invoices
-  const expenseInvoiceCell = worksheet.getRow(9).getCell(2);
-  const expenseInvoiceTotals: string[] = [];
-  if (invoiceCells.externalExpenses?.bottomRight)
-    expenseInvoiceTotals.push(
-      invoiceCells.externalExpenses.bottomRight.$col$row
-    );
-  if (invoiceCells.internalExpenses?.bottomRight)
-    expenseInvoiceTotals.push(
-      invoiceCells.internalExpenses.bottomRight.$col$row
-    );
-
-  if (expenseInvoiceTotals.length > 0)
-    expenseInvoiceCell.value = {
-      formula: expenseInvoiceTotals.join("+"),
+  const truckingCell = worksheet.getRow(8).getCell(2);
+  if (truckingTotalCells.length > 0)
+    truckingCell.value = {
+      formula: truckingTotalCells.map((cell) => cell.$col$row).join("+"),
       date1904: false,
     };
-  else expenseInvoiceCell.value = 0;
+  else truckingCell.value = 0;
+  formatCell(truckingCell);
+
+  // Sub Overhead
+  const subOverheadCell = worksheet.getRow(9).getCell(2);
+  let subInvoiceTotalCell: string | undefined;
+  if (invoiceCells.externalExpenses?.bottomRight) {
+    subInvoiceTotalCell = invoiceCells.externalExpenses.bottomRight.$col$row;
+  }
+  if (subInvoiceTotalCell) {
+    subOverheadCell.value = {
+      formula: `${subInvoiceTotalCell}*1.03`,
+      date1904: false,
+    };
+  } else subOverheadCell.value = 0;
+  formatCell(subOverheadCell);
+
+  // Expense Invoices
+  const expenseInvoiceCell = worksheet.getRow(10).getCell(2);
+  let internalExpense: string | undefined;
+  if (invoiceCells.internalExpenses?.bottomRight)
+    internalExpense = invoiceCells.internalExpenses.bottomRight.$col$row;
+
+  expenseInvoiceCell.value = {
+    formula: `${subOverheadCell.$col$row}${
+      internalExpense ? `+${internalExpense}` : ""
+    }`,
+    date1904: false,
+  };
   formatCell(expenseInvoiceCell);
 
   // Revenue
-  const revenueCell = worksheet.getRow(10).getCell(2);
+  const revenueCell = worksheet.getRow(11).getCell(2);
   const revenueTotals: string[] = [];
   if (invoiceCells.externalRevenue?.bottomRight)
     revenueTotals.push(invoiceCells.externalRevenue.bottomRight.$col$row);
@@ -260,7 +274,7 @@ const generateSummaryValues = async (
   formatCell(revenueCell);
 
   // Expenses
-  const expensesCell = worksheet.getRow(11).getCell(2);
+  const expensesCell = worksheet.getRow(12).getCell(2);
   expensesCell.value = {
     formula: [
       wagesCell.$col$row,
@@ -274,7 +288,7 @@ const generateSummaryValues = async (
 
   // Overhead
   const system = await System.getSystem();
-  const overheadCell = worksheet.getRow(12).getCell(2);
+  const overheadCell = worksheet.getRow(13).getCell(2);
   overheadCell.value = {
     formula: `${expensesCell.$col$row}*${
       system.internalExpenseOverheadRate / 100
@@ -284,15 +298,15 @@ const generateSummaryValues = async (
   formatCell(overheadCell);
 
   // Total Expenses
-  const totalExpensesCell = worksheet.getRow(13).getCell(2);
+  const totalExpensesCell = worksheet.getRow(14).getCell(2);
   totalExpensesCell.value = {
-    formula: `${expensesCell.$col$row}+${overheadCell.$col$row}+${expenseInvoiceCell.$col$row}*1.03`,
+    formula: `${expensesCell.$col$row}+${overheadCell.$col$row}+${expenseInvoiceCell.$col$row}`,
     date1904: false,
   };
   formatCell(totalExpensesCell);
 
   // Net Income
-  const netIncomeCell = worksheet.getRow(14).getCell(2);
+  const netIncomeCell = worksheet.getRow(15).getCell(2);
   netIncomeCell.value = {
     formula: `${revenueCell.$col$row}-${totalExpensesCell.$col$row}`,
     date1904: false,
