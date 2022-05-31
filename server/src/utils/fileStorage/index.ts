@@ -87,7 +87,7 @@ const getFileSignedUrl = async (name: string) => {
         })
       );
     } catch (error) {
-      // Did not find file
+      return null;
     }
 
     if (file) {

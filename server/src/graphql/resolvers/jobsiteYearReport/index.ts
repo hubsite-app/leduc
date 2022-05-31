@@ -35,8 +35,7 @@ export default class JobsiteYearReportResolver {
 
   @FieldResolver(() => String, { nullable: true })
   async excelDownloadUrl(@Root() jobsiteYearReport: JobsiteYearReportDocument) {
-    return null;
-    // return jobsiteYearReport.getExcelUrl();
+    return jobsiteYearReport.getExcelUrl();
   }
 
   /**
