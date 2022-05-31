@@ -33,6 +33,7 @@ build:
         dockerfile: Dockerfile.dev
         # noCache: true
       # Must be using nodemon
+      # will not rebuild image if these files are changed
       sync:
         manual:
           - src: "**/*.js"

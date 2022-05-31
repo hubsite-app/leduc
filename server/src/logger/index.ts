@@ -7,7 +7,9 @@ import {
 const esTransportOpts: ElasticsearchTransportOptions = {
   level: "info",
   clientOpts: {
-    node: "http://elasticsearch-client.kube-devops.svc:9200",
+    node:
+      (process.env.ELASTICSEARCH_URL as string) ||
+      "http://elasticsearch-client.kube-devops.svc:9200",
     auth: {
       username: "elastic",
       password: (process.env.ELASTICSEARCH_PASSWORD as string) || "changeme",
