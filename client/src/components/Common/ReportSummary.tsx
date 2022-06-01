@@ -31,6 +31,10 @@ interface IReportSummaryCard extends BoxProps {
   revenueTooltip?: React.ReactNode;
   internalExpenses: number;
   internalExpensesTooltip?: React.ReactNode;
+  expenseInvoices?: {
+    internal: number;
+    external: number;
+  };
   totalExpenses: number;
   totalExpensesTooltip?: React.ReactNode;
   netIncome: number;
@@ -44,6 +48,7 @@ interface IReportSummaryCard extends BoxProps {
 const ReportSummaryCard = ({
   internalExpenses,
   internalExpensesTooltip,
+  expenseInvoices,
   netIncome,
   netIncomeTooltip,
   revenue,
@@ -171,9 +176,19 @@ const ReportSummaryCard = ({
         </Stat>
         <Stat display="flex" justifyContent="center">
           <Tooltip placement="top" label={internalExpensesTooltip}>
-            <StatLabel>Internal Expenses</StatLabel>
+            <StatLabel>Operating Costs</StatLabel>
           </Tooltip>
           <StatNumber>${formatNumber(internalExpenses)}</StatNumber>
+          {expenseInvoices ? (
+            <>
+              <StatHelpText mb={0}>
+                ${formatNumber(expenseInvoices.external)} external
+              </StatHelpText>
+              <StatHelpText>
+                ${formatNumber(expenseInvoices.internal)} internal
+              </StatHelpText>
+            </>
+          ) : null}
         </Stat>
 
         <Stat display="flex" justifyContent="center">

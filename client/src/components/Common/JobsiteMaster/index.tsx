@@ -203,6 +203,10 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
               </Code>
             </Flex>
           }
+          expenseInvoices={{
+            external: report.summary.externalExpenseInvoiceValue,
+            internal: report.summary.internalExpenseInvoiceValue,
+          }}
           totalExpenses={totalExpenses}
           totalExpensesTooltip={totalExpensesTooltip}
           netIncome={netIncome}
