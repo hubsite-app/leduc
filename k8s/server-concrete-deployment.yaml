@@ -19,11 +19,11 @@ spec:
             - containerPort: 8081
           resources:
             requests:
-              cpu: "800m"
-              memory: "1600Mi"
+              cpu: "500m"
+              memory: "1000Mi"
             limits:
-              cpu: "950m"
-              memory: "1900Mi"
+              cpu: "500m"
+              memory: "1000Mi"
           env:
             - name: NODE_ENV
               value: production
