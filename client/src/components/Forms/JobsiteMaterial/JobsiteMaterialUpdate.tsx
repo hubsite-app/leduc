@@ -1,8 +1,9 @@
 import React from "react";
-import { SimpleGrid, useToast } from "@chakra-ui/react";
+import { Center, SimpleGrid, Text, useToast } from "@chakra-ui/react";
 import { useJobsiteMaterialUpdateForm } from "../../../forms/jobsiteMaterial";
 import {
   JobsiteMaterialCardSnippetFragment,
+  JobsiteMaterialCostType,
   JobsiteMaterialUpdateData,
   useJobsiteMaterialUpdateMutation,
 } from "../../../generated/graphql";
@@ -25,13 +26,13 @@ const JobsiteMaterialUpdate = ({
 
   const [update, { loading }] = useJobsiteMaterialUpdateMutation();
 
-  const { FormComponents, delivered } = useJobsiteMaterialUpdateForm({
+  const { FormComponents, costType } = useJobsiteMaterialUpdateForm({
     defaultValues: {
       supplierId: jobsiteMaterial.supplier._id,
       quantity: jobsiteMaterial.quantity,
       unit: jobsiteMaterial.unit,
       rates: jobsiteMaterial.rates,
-      delivered: jobsiteMaterial.delivered,
+      costType: jobsiteMaterial.costType,
       deliveredRates: jobsiteMaterial.deliveredRates,
     },
   });
@@ -76,6 +77,21 @@ const JobsiteMaterialUpdate = ({
    * ----- Rendering -----
    */
 
+  const costTypeForm = React.useMemo(() => {
+    if (costType === JobsiteMaterialCostType.Rate) {
+      return <FormComponents.Rates isLoading={loading} />;
+    } else if (costType === JobsiteMaterialCostType.DeliveredRate) {
+      return <FormComponents.DeliveredRates isLoading={loading} />;
+    } else
+      return (
+        <Center mt={2}>
+          <Text fontWeight="bold" color="gray.600">
+            Invoices can be added after Update
+          </Text>
+        </Center>
+      );
+  }, [FormComponents, costType, loading]);
+
   return (
     <FormComponents.Form submitHandler={handleSubmit}>
       <FormComponents.Supplier isLoading={loading} />
@@ -83,12 +99,8 @@ const JobsiteMaterialUpdate = ({
         <FormComponents.Quantity isLoading={loading} />
         <FormComponents.Unit isLoading={loading} />
       </SimpleGrid>
-      <FormComponents.Delivered isLoading={loading} />
-      {delivered ? (
-        <FormComponents.DeliveredRates isLoading={loading} />
-      ) : (
-        <FormComponents.Rates isLoading={loading} />
-      )}
+      <FormComponents.CostType isLoading={loading} />
+      {costTypeForm}
       <SubmitButton isLoading={loading} />
     </FormComponents.Form>
   );

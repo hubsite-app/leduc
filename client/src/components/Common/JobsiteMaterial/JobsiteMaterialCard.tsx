@@ -10,14 +10,17 @@ import {
 import {
   JobsiteFullDocument,
   JobsiteMaterialCardSnippetFragment,
+  JobsiteMaterialCostType,
   useJobsiteMaterialRemoveMutation,
-} from "../../../../../generated/graphql";
-import formatNumber from "../../../../../utils/formatNumber";
-import JobsiteMaterialProgressBar from "../../../../Common/JobsiteMaterial/ProgressBar";
+} from "../../../generated/graphql";
+import formatNumber from "../../../utils/formatNumber";
+import JobsiteMaterialProgressBar from "./ProgressBar";
 import { FiEdit, FiTrash, FiX } from "react-icons/fi";
-import JobsiteMaterialUpdate from "../../../../Forms/JobsiteMaterial/JobsiteMaterialUpdate";
-import Permission from "../../../../Common/Permission";
-import FormContainer from "../../../../Common/FormContainer";
+import JobsiteMaterialUpdate from "../../Forms/JobsiteMaterial/JobsiteMaterialUpdate";
+import Permission from "../Permission";
+import FormContainer from "../FormContainer";
+import { FaFileInvoiceDollar } from "react-icons/fa";
+import JobsiteMaterialInvoices from "./Invoices";
 
 interface IJobsiteMaterialCard {
   jobsiteMaterial: JobsiteMaterialCardSnippetFragment;
@@ -34,11 +37,15 @@ const JobsiteMaterialCard = ({
 
   const [edit, setEdit] = React.useState(false);
 
+  const [showInvoice, setShowInvoice] = React.useState(false);
+
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const [remove, { loading }] = useJobsiteMaterialRemoveMutation({
-    refetchQueries: [JobsiteFullDocument],
-  });
+  const [remove, { loading: removeLoading }] = useJobsiteMaterialRemoveMutation(
+    {
+      refetchQueries: [JobsiteFullDocument],
+    }
+  );
 
   /**
    * ----- Use-effects and other logic -----
@@ -54,6 +61,14 @@ const JobsiteMaterialCard = ({
    * ----- Rendering -----
    */
 
+  const costTypeText = React.useMemo(() => {
+    if (jobsiteMaterial.costType === JobsiteMaterialCostType.DeliveredRate)
+      return " (Delivered)";
+    if (jobsiteMaterial.costType === JobsiteMaterialCostType.Invoice)
+      return " (Invoice)";
+    return null;
+  }, [jobsiteMaterial]);
+
   return (
     <Box
       p={2}
@@ -68,7 +83,7 @@ const JobsiteMaterialCard = ({
         <Stat>
           <StatLabel fontWeight="bold">
             {jobsiteMaterial.material.name} - {jobsiteMaterial.supplier.name}
-            {jobsiteMaterial.delivered && " (Delivered)"}
+            {costTypeText}
           </StatLabel>
           <StatNumber>
             {formatNumber(jobsiteMaterial.completedQuantity)}{" "}
@@ -77,6 +92,15 @@ const JobsiteMaterialCard = ({
         </Stat>
         <Permission>
           <Flex flexDir="row">
+            {jobsiteMaterial.costType === JobsiteMaterialCostType.Invoice && (
+              <IconButton
+                backgroundColor="transparent"
+                aria-label="invoices"
+                icon={<FaFileInvoiceDollar />}
+                onClick={() => setShowInvoice(!showInvoice)}
+              />
+            )}
+
             {edit && jobsiteMaterial.canRemove && (
               <IconButton
                 icon={<FiTrash />}
@@ -91,6 +115,7 @@ const JobsiteMaterialCard = ({
                     });
                   }
                 }}
+                isLoading={removeLoading}
               />
             )}
             <IconButton
@@ -109,6 +134,9 @@ const JobsiteMaterialCard = ({
         <FormContainer>
           <JobsiteMaterialUpdate jobsiteMaterial={jobsiteMaterial} />
         </FormContainer>
+      )}
+      {showInvoice && (
+        <JobsiteMaterialInvoices jobsiteMaterial={jobsiteMaterial} />
       )}
     </Box>
   );

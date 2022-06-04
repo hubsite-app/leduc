@@ -14,6 +14,7 @@ import { ITextField } from "../components/Common/forms/TextField";
 import MaterialSearch from "../components/Search/MaterialSearch";
 import CompanySearch from "../components/Search/CompanySearch";
 import {
+  JobsiteMaterialCostType,
   JobsiteMaterialCreateData,
   JobsiteMaterialUpdateData,
 } from "../generated/graphql";
@@ -31,6 +32,9 @@ import JobsiteMaterialDeliveredRatesForm, {
   IJobsiteMaterialDeliveredRateError,
   IJobsiteMaterialDeliveredRatesForm,
 } from "../components/Forms/JobsiteMaterial/DeliveredRates";
+import JobsiteMaterialCostTypeForm, {
+  IJobsiteMaterialCostTypeForm,
+} from "../components/Forms/JobsiteMaterial/CostType";
 
 export const JobsiteMaterialRateSchema = yup.array().of(
   yup.object().shape({
@@ -75,8 +79,8 @@ const JobsiteMaterialCreateSchema = yup
     supplierId: yup.string().required("please enter a supplier"),
     quantity: yup.number().required("please enter a quantity"),
     unit: yup.string().required("please enter a unit"),
+    costType: yup.string().required(),
     rates: JobsiteMaterialRateSchema,
-    delivered: yup.boolean().required(),
     deliveredRates: JobsiteMaterialDeliveredRateSchema,
   })
   .required();
@@ -86,8 +90,8 @@ export const useJobsiteMaterialCreateForm = (options?: UseFormProps) => {
     resolver: yupResolver(JobsiteMaterialCreateSchema),
     defaultValues: {
       quantity: 0,
+      costType: JobsiteMaterialCostType.Rate,
       rates: defaultRates,
-      delivered: false,
       deliveredRates: defaultDeliveredRates,
       ...options?.defaultValues,
     },
@@ -96,17 +100,20 @@ export const useJobsiteMaterialCreateForm = (options?: UseFormProps) => {
 
   const { handleSubmit, control, setValue, watch } = form;
 
-  const delivered: boolean = watch("delivered");
+  const costType: JobsiteMaterialCostType = watch("costType");
 
   React.useEffect(() => {
-    if (delivered) {
+    if (costType === JobsiteMaterialCostType.DeliveredRate) {
       setValue("rates", []);
       setValue("deliveredRates", defaultDeliveredRates);
-    } else {
+    } else if (costType === JobsiteMaterialCostType.Rate) {
       setValue("deliveredRates", []);
       setValue("rates", defaultRates);
+    } else if (costType === JobsiteMaterialCostType.Invoice) {
+      setValue("deliveredRates", []);
+      setValue("rates", []);
     }
-  }, [delivered, setValue]);
+  }, [costType, setValue]);
 
   const FormComponents = {
     Form: ({
@@ -198,6 +205,27 @@ export const useJobsiteMaterialCreateForm = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
+    CostType: ({
+      isLoading,
+      ...props
+    }: IFormProps<IJobsiteMaterialCostTypeForm>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="costType"
+            render={({ field }) => (
+              <JobsiteMaterialCostTypeForm
+                {...props}
+                {...field}
+                label="Costing Type"
+                isDisabled={isLoading}
+              />
+            )}
+          />
+        ),
+        [props, isLoading]
+      ),
     Rates: ({
       isLoading,
       ...props
@@ -216,26 +244,6 @@ export const useJobsiteMaterialCreateForm = (options?: UseFormProps) => {
                 errors={fieldState.error as any}
                 isLoading={isLoading}
               />
-            )}
-          />
-        ),
-        [isLoading, props]
-      ),
-    Delivered: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
-      React.useMemo(
-        () => (
-          <Controller
-            control={control}
-            name="delivered"
-            render={({ field }) => (
-              <Checkbox
-                {...props}
-                {...field}
-                isChecked={field.value}
-                isDisabled={isLoading}
-              >
-                Delivered
-              </Checkbox>
             )}
           />
         ),
@@ -272,7 +280,7 @@ export const useJobsiteMaterialCreateForm = (options?: UseFormProps) => {
 
   return {
     FormComponents,
-    delivered,
+    costType,
     ...form,
   };
 };
@@ -283,8 +291,8 @@ const JobsiteMaterialUpdateSchema = yup
     supplierId: yup.string().required("please enter a supplier"),
     quantity: yup.number().required("please enter a quantity"),
     unit: yup.string().required("please enter a unit"),
+    costType: yup.string().required(),
     rates: JobsiteMaterialRateSchema,
-    delivered: yup.boolean().required(),
     deliveredRates: JobsiteMaterialDeliveredRateSchema,
   })
   .required();
@@ -295,16 +303,16 @@ export const useJobsiteMaterialUpdateForm = (options?: UseFormProps) => {
     defaultValues: {
       quantity: 0,
       rates: defaultRates,
-      delivered: false,
+      costType: JobsiteMaterialCostType.Rate,
       deliveredRates: defaultDeliveredRates,
       ...options?.defaultValues,
     },
     ...options,
   });
 
-  const { handleSubmit, control, setValue, watch, formState } = form;
+  const { handleSubmit, control, setValue, watch } = form;
 
-  const delivered: boolean = watch("delivered");
+  const costType: JobsiteMaterialCostType = watch("costType");
 
   const FormComponents = {
     Form: ({
@@ -374,6 +382,27 @@ export const useJobsiteMaterialUpdateForm = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
+    CostType: ({
+      isLoading,
+      ...props
+    }: IFormProps<IJobsiteMaterialCostTypeForm>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="costType"
+            render={({ field }) => (
+              <JobsiteMaterialCostTypeForm
+                {...props}
+                {...field}
+                label="Costing Type"
+                isDisabled={isLoading}
+              />
+            )}
+          />
+        ),
+        [props, isLoading]
+      ),
     Rates: ({
       isLoading,
       ...props
@@ -392,26 +421,6 @@ export const useJobsiteMaterialUpdateForm = (options?: UseFormProps) => {
                 errors={fieldState.error as any}
                 isLoading={isLoading}
               />
-            )}
-          />
-        ),
-        [isLoading, props]
-      ),
-    Delivered: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
-      React.useMemo(
-        () => (
-          <Controller
-            control={control}
-            name="delivered"
-            render={({ field }) => (
-              <Checkbox
-                {...props}
-                {...field}
-                isChecked={field.value}
-                isDisabled={isLoading}
-              >
-                Delivered
-              </Checkbox>
             )}
           />
         ),
@@ -448,7 +457,7 @@ export const useJobsiteMaterialUpdateForm = (options?: UseFormProps) => {
 
   return {
     FormComponents,
-    delivered,
+    costType,
     ...form,
   };
 };

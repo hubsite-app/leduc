@@ -90,8 +90,6 @@ const getFileSignedUrl = async (name: string) => {
       return null;
     }
 
-    console.log(!!file);
-
     if (file) {
       return getSignedUrl(client, getCommandObject, {
         expiresIn: 60 * 60,

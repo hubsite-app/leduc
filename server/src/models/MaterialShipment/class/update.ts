@@ -3,6 +3,7 @@ import {
   JobsiteMaterialDocument,
   MaterialShipmentDocument,
 } from "@models";
+import { JobsiteMaterialCostType } from "@typescript/jobsiteMaterial";
 import {
   IMaterialShipmentShipmentUpdate,
   IMaterialShipmentUpdate,
@@ -104,7 +105,8 @@ const jobsiteMaterial = async (
 
     // Validate vehicle object if provided
     if (materialShipment.vehicleObject) {
-      if (jobsiteMaterial.delivered) {
+      // Check for delivered rate costType
+      if (jobsiteMaterial.costType === JobsiteMaterialCostType.deliveredRate) {
         if (!materialShipment.vehicleObject?.deliveredRateId)
           throw new Error("Must provide a delivered rate Id");
 

@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Heading, IconButton } from "@chakra-ui/react";
+import { Center, Flex, Heading, IconButton } from "@chakra-ui/react";
 import React from "react";
 import { FiPlus, FiX } from "react-icons/fi";
 import { JobsiteFullSnippetFragment } from "../../../../../generated/graphql";
