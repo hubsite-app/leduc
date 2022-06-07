@@ -105,10 +105,13 @@ const JobsiteMaterialUpdate = ({
       </SimpleGrid>
       <FormComponents.CostType isLoading={loading} />
       <FormComponents.Delivered isLoading={loading} />
-      <InfoTooltip
-        mx={1}
-        description="If delivered, it will be assumed that trucking is included in the invoice and it will not be reported separately."
-      />
+      {costType === JobsiteMaterialCostType.Invoice && (
+        <InfoTooltip
+          mx={1}
+          description="If delivered, it will be assumed that trucking is included in the invoice and it will not be reported separately."
+        />
+      )}
+
       {costTypeForm}
       <SubmitButton isLoading={loading} />
     </FormComponents.Form>
