@@ -221,11 +221,6 @@ const JobsiteReportOnJobSummary = ({
       <Stat size={statSize} display="flex" justifyContent="center">
         <StatLabel>Total</StatLabel>
         <StatNumber>${formatNumber(total)}</StatNumber>
-        {fullTotal !== null ? (
-          <StatHelpText fontSize={statSize} mb={0}>
-            {handlePercent(total, fullTotal)}%
-          </StatHelpText>
-        ) : null}
         <Tooltip
           label={
             <Code backgroundColor="transparent" color="white">
@@ -233,10 +228,15 @@ const JobsiteReportOnJobSummary = ({
             </Code>
           }
         >
-          <StatHelpText fontSize={statSize}>
-            {formatNumber(total * 1.1)}
+          <StatHelpText fontSize={statSize} fontWeight="bold" mb={0}>
+            ${formatNumber(total * 1.1)}
           </StatHelpText>
         </Tooltip>
+        {fullTotal !== null ? (
+          <StatHelpText fontSize={statSize}>
+            {handlePercent(total, fullTotal)}%
+          </StatHelpText>
+        ) : null}
       </Stat>
     </SimpleGrid>
   );
