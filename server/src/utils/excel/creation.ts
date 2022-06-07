@@ -151,7 +151,7 @@ const generateSummaryOutline = async (worksheet: ExcelJS.Worksheet) => {
     bold: true,
   };
 
-  const startFinish = [1, 10];
+  const startFinish = [1, 11];
   for (let i = startFinish[0]; i <= startFinish[1]; i++) {
     summaryRows[i].getCell(1).alignment = {
       horizontal: "right",
