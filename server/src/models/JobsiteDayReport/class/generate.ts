@@ -95,7 +95,7 @@ const employeeReports = async (
     try {
       crewType = (await dailyReports[i].getCrew()).type;
     } catch (e) {
-      logger.error("employeeReports: unable to find crew");
+      logger.info("employeeReports: unable to find crew");
     }
 
     const employeeWork = await dailyReports[i].getEmployeeWork();
@@ -201,7 +201,7 @@ const vehicleReports = async (
     try {
       crewType = (await dailyReports[i].getCrew()).type;
     } catch (e) {
-      logger.error("vehicleReports: unable to find crew");
+      logger.info("vehicleReports: unable to find crew");
     }
 
     const vehicleWork = await dailyReports[i].getVehicleWork();
@@ -303,7 +303,7 @@ const materialReports = async (
     try {
       crewType = (await dailyReports[i].getCrew()).type;
     } catch (e) {
-      logger.error("materialReports: unable to find crew");
+      logger.info("materialReports: unable to find crew");
     }
 
     const materialShipments = await dailyReports[i].getMaterialShipments();
@@ -424,15 +424,15 @@ const materialReports = async (
 
                 materialReports.push(materialReport);
               } else {
-                logger.error("Unable to find delivered rate");
+                logger.info("Unable to find delivered rate");
               }
             } else {
-              logger.error(
+              logger.info(
                 "Invalid jobsite material, does not include a delivered rate"
               );
             }
           } else {
-            logger.error("Could not find delivered rate");
+            logger.info("Could not find delivered rate");
           }
 
           break;
@@ -458,7 +458,7 @@ const materialReports = async (
 
             materialReports.push(materialReport);
           } else {
-            logger.error("Unable to find rate");
+            logger.info("Unable to find rate");
           }
 
           break;
@@ -482,13 +482,13 @@ const materialReports = async (
             };
             materialReports.push(materialReport);
           } else {
-            logger.error("Unable to find material invoice rate");
+            logger.info("Unable to find material invoice rate");
           }
 
           break;
         }
         default: {
-          logger.error("Invalid jobsiteMaterial Cost Type");
+          logger.info("Invalid jobsiteMaterial Cost Type");
           break;
         }
       }
@@ -521,7 +521,7 @@ const nonCostedMaterialReports = async (
     try {
       crewType = (await dailyReports[i].getCrew()).type;
     } catch (e) {
-      logger.error("nonCostedMaterials: unable to find crew");
+      logger.info("nonCostedMaterials: unable to find crew");
     }
 
     const materialShipments = await dailyReports[i].getMaterialShipments();
@@ -632,7 +632,7 @@ const truckingReports = async (
     try {
       crewType = (await dailyReports[i].getCrew()).type;
     } catch (e) {
-      logger.error("truckingReports: unable to find crew");
+      logger.info("truckingReports: unable to find crew");
     }
 
     const materialShipments = await dailyReports[i].getMaterialShipments();

@@ -111,7 +111,6 @@ const JobsiteMaterialUpdate = ({
           description="If delivered, it will be assumed that trucking is included in the invoice and it will not be reported separately."
         />
       )}
-
       {costTypeForm}
       <SubmitButton isLoading={loading} />
     </FormComponents.Form>
