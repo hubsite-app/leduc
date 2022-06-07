@@ -21,6 +21,7 @@ import Permission from "../Permission";
 import FormContainer from "../FormContainer";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import JobsiteMaterialInvoices from "./Invoices";
+import jobsiteMaterialName from "../../../utils/jobsiteMaterialName";
 
 interface IJobsiteMaterialCard {
   jobsiteMaterial: JobsiteMaterialCardSnippetFragment;
@@ -61,14 +62,6 @@ const JobsiteMaterialCard = ({
    * ----- Rendering -----
    */
 
-  const costTypeText = React.useMemo(() => {
-    if (jobsiteMaterial.costType === JobsiteMaterialCostType.DeliveredRate)
-      return " (Delivered)";
-    if (jobsiteMaterial.costType === JobsiteMaterialCostType.Invoice)
-      return " (Invoice)";
-    return null;
-  }, [jobsiteMaterial]);
-
   return (
     <Box
       p={2}
@@ -82,8 +75,7 @@ const JobsiteMaterialCard = ({
       <Flex flexDir="row" justifyContent="space-between">
         <Stat>
           <StatLabel fontWeight="bold">
-            {jobsiteMaterial.material.name} - {jobsiteMaterial.supplier.name}
-            {costTypeText}
+            {jobsiteMaterialName(jobsiteMaterial)}
           </StatLabel>
           <StatNumber>
             {formatNumber(jobsiteMaterial.completedQuantity)}{" "}

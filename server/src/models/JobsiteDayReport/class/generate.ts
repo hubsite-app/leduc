@@ -334,16 +334,18 @@ const materialReports = async (
     let matchedIndex = -1;
     for (let j = 0; j < jobsiteMaterialObjects.length; j++) {
       if (
-        jobsiteMaterialObjects[j].jobsiteMaterial.toString() ===
+        jobsiteMaterialObjects[j].jobsiteMaterial._id.toString() ===
           materialShipmentObjects[
             i
           ].materialShipment.jobsiteMaterial?.toString() &&
         jobsiteMaterialObjects[j].crewType ===
           materialShipmentObjects[i].crewType &&
-        jobsiteMaterialObjects[j].deliveredRateId?.toString() ===
-          materialShipmentObjects[
-            i
-          ].materialShipment.vehicleObject?.deliveredRateId?.toString()
+        (jobsiteMaterialObjects[j].jobsiteMaterial.costType !==
+          JobsiteMaterialCostType.deliveredRate ||
+          jobsiteMaterialObjects[j].deliveredRateId?.toString() ===
+            materialShipmentObjects[
+              i
+            ].materialShipment.vehicleObject?.deliveredRateId?.toString())
       )
         matchedIndex = j;
     }
@@ -462,16 +464,12 @@ const materialReports = async (
           break;
         }
         case JobsiteMaterialCostType.invoice: {
-          console.log("RATE");
-
           const rate = await jobsiteMaterial.getInvoiceMonthRate(
             jobsiteDayReport.date
           );
 
-          console.log(rate);
-
           // Invoice Rate Handling
-          if (rate) {
+          if (rate !== undefined) {
             const materialReport: MaterialReportClass = {
               jobsiteMaterial: jobsiteMaterial._id,
               materialShipments: jobsiteMaterialObject.materialShipments.map(
@@ -655,6 +653,9 @@ const truckingReports = async (
     ];
   }
 
+  // Catalog all jobsite materials
+  const jobsiteMaterials: Record<string, JobsiteMaterialDocument> = {};
+
   // Catalog all trucks and their shipments
   const uniqueTruckingObjects: {
     truckingRateId: Id;
@@ -663,6 +664,29 @@ const truckingReports = async (
   }[] = [];
   for (let i = 0; i < materialShipmentObjects.length; i++) {
     let matchedIndex = -1;
+
+    // Catalog jobsiteMaterials
+    const jobsiteMaterialId =
+      materialShipmentObjects[i].materialShipment.jobsiteMaterial?.toString();
+    if (jobsiteMaterialId !== undefined) {
+      if (!jobsiteMaterials[jobsiteMaterialId]) {
+        const jobsiteMaterial = await JobsiteMaterial.getById(
+          jobsiteMaterialId
+        );
+        if (jobsiteMaterial)
+          jobsiteMaterials[jobsiteMaterialId] = jobsiteMaterial;
+      }
+
+      if (
+        jobsiteMaterials[jobsiteMaterialId].costType ===
+          JobsiteMaterialCostType.invoice &&
+        jobsiteMaterials[jobsiteMaterialId].delivered === true
+      ) {
+        // If the shipments material is a delivered invoice, continue this for loop
+        continue;
+      }
+    }
+
     for (let j = 0; j < uniqueTruckingObjects.length; j++) {
       if (
         materialShipmentObjects[i].materialShipment.vehicleObject

@@ -13,6 +13,7 @@ const document = async (
     rates: data.rates,
     deliveredRates: data.deliveredRates,
     costType: data.costType,
+    delivered: data.delivered,
   });
 
   await jobsiteMaterial.validateDocument();

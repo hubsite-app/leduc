@@ -82,6 +82,7 @@ const JobsiteMaterialCreateSchema = yup
     costType: yup.string().required(),
     rates: JobsiteMaterialRateSchema,
     deliveredRates: JobsiteMaterialDeliveredRateSchema,
+    delivered: yup.boolean().optional(),
   })
   .required();
 
@@ -226,6 +227,22 @@ export const useJobsiteMaterialCreateForm = (options?: UseFormProps) => {
         ),
         [props, isLoading]
       ),
+    Delivered: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
+      React.useMemo(() => {
+        if (costType === JobsiteMaterialCostType.Invoice)
+          return (
+            <Controller
+              control={control}
+              name="delivered"
+              render={({ field }) => (
+                <Checkbox {...props} {...field} isDisabled={isLoading}>
+                  Delivered
+                </Checkbox>
+              )}
+            />
+          );
+        else return null;
+      }, [isLoading, props]),
     Rates: ({
       isLoading,
       ...props
@@ -294,6 +311,7 @@ const JobsiteMaterialUpdateSchema = yup
     costType: yup.string().required(),
     rates: JobsiteMaterialRateSchema,
     deliveredRates: JobsiteMaterialDeliveredRateSchema,
+    delivered: yup.boolean().optional(),
   })
   .required();
 
@@ -305,6 +323,7 @@ export const useJobsiteMaterialUpdateForm = (options?: UseFormProps) => {
       rates: defaultRates,
       costType: JobsiteMaterialCostType.Rate,
       deliveredRates: defaultDeliveredRates,
+      delivered: false,
       ...options?.defaultValues,
     },
     ...options,
@@ -403,6 +422,27 @@ export const useJobsiteMaterialUpdateForm = (options?: UseFormProps) => {
         ),
         [props, isLoading]
       ),
+    Delivered: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
+      React.useMemo(() => {
+        if (costType === JobsiteMaterialCostType.Invoice)
+          return (
+            <Controller
+              control={control}
+              name="delivered"
+              render={({ field }) => (
+                <Checkbox
+                  {...props}
+                  {...field}
+                  isDisabled={isLoading}
+                  isChecked={field.value}
+                >
+                  Delivered
+                </Checkbox>
+              )}
+            />
+          );
+        else return null;
+      }, [isLoading, props]),
     Rates: ({
       isLoading,
       ...props

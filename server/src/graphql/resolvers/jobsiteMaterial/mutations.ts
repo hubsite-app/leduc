@@ -50,6 +50,9 @@ export class JobsiteMaterialCreateData {
 
   @Field(() => [JobsiteMaterialDeliveredRateData], { nullable: true })
   public deliveredRates!: JobsiteMaterialDeliveredRateData[];
+
+  @Field(() => Boolean, { nullable: true })
+  public delivered?: boolean;
 }
 
 @InputType()
@@ -71,6 +74,9 @@ export class JobsiteMaterialUpdateData {
 
   @Field(() => [JobsiteMaterialDeliveredRateData], { nullable: true })
   public deliveredRates!: JobsiteMaterialDeliveredRateData[];
+
+  @Field(() => Boolean, { nullable: true })
+  public delivered?: boolean;
 }
 
 const update = async (

@@ -67,9 +67,9 @@ export class JobsiteMaterialSchema {
   public rates!: JobsiteMaterialRateClass[];
 
   /**
-   * @deprecated cost type is now determined with [jobsiteMaterial.costType]
+   * @desc When costType is an invoice, if delivered, we do not track trucking costs
    */
-  @Field({ nullable: true, deprecationReason: "Replaced with costType" })
+  @Field({ nullable: true })
   @prop({ required: false, default: false })
   public delivered?: boolean;
 

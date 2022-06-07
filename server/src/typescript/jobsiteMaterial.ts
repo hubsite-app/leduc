@@ -16,6 +16,7 @@ export interface IJobsiteMaterialCreate {
   unit: string;
   rates: IJobsiteMaterialRateData[];
   deliveredRates: IJobsiteMaterialDeliveredRateData[];
+  delivered?: boolean;
   costType: JobsiteMaterialCostType;
 }
 
@@ -25,6 +26,7 @@ export interface IJobsiteMaterialUpdate {
   unit: string;
   costType: JobsiteMaterialCostType;
   rates: IJobsiteMaterialRateData[];
+  delivered?: boolean;
   deliveredRates: IJobsiteMaterialDeliveredRateData[];
 }
 

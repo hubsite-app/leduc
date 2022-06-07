@@ -94,6 +94,7 @@ const JobsiteMaterialCreate = ({
         <FormComponents.Unit isLoading={loading} />
       </SimpleGrid>
       <FormComponents.CostType isLoading={loading} />
+      <FormComponents.Delivered isLoading={loading} />
       {costTypeForm}
       <SubmitButton isLoading={loading} />
     </FormComponents.Form>

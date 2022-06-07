@@ -15,6 +15,8 @@ const document = async (
 
   jobsiteMaterial.deliveredRates = data.deliveredRates;
 
+  jobsiteMaterial.delivered = data.delivered;
+
   jobsiteMaterial.costType = data.costType;
 
   await jobsiteMaterial.validateDocument();

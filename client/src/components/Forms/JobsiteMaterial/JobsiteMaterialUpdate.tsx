@@ -1,5 +1,5 @@
 import React from "react";
-import { Center, SimpleGrid, Text, useToast } from "@chakra-ui/react";
+import { Center, SimpleGrid, Text, Tooltip, useToast } from "@chakra-ui/react";
 import { useJobsiteMaterialUpdateForm } from "../../../forms/jobsiteMaterial";
 import {
   JobsiteMaterialCardSnippetFragment,
@@ -8,6 +8,7 @@ import {
   useJobsiteMaterialUpdateMutation,
 } from "../../../generated/graphql";
 import SubmitButton from "../../Common/forms/SubmitButton";
+import InfoTooltip from "../../Common/Info";
 
 interface IJobsiteMaterialUpdate {
   jobsiteMaterial: JobsiteMaterialCardSnippetFragment;
@@ -26,6 +27,8 @@ const JobsiteMaterialUpdate = ({
 
   const [update, { loading }] = useJobsiteMaterialUpdateMutation();
 
+  console.log("Delivered", jobsiteMaterial.delivered);
+
   const { FormComponents, costType } = useJobsiteMaterialUpdateForm({
     defaultValues: {
       supplierId: jobsiteMaterial.supplier._id,
@@ -34,6 +37,7 @@ const JobsiteMaterialUpdate = ({
       rates: jobsiteMaterial.rates,
       costType: jobsiteMaterial.costType,
       deliveredRates: jobsiteMaterial.deliveredRates,
+      delivered: jobsiteMaterial.delivered,
     },
   });
 
@@ -100,6 +104,11 @@ const JobsiteMaterialUpdate = ({
         <FormComponents.Unit isLoading={loading} />
       </SimpleGrid>
       <FormComponents.CostType isLoading={loading} />
+      <FormComponents.Delivered isLoading={loading} />
+      <InfoTooltip
+        mx={1}
+        description="If delivered, it will be assumed that trucking is included in the invoice and it will not be reported separately."
+      />
       {costTypeForm}
       <SubmitButton isLoading={loading} />
     </FormComponents.Form>
