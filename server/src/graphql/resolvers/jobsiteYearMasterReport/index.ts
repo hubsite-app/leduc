@@ -1,10 +1,33 @@
-import { JobsiteYearMasterReport, JobsiteYearMasterReportClass } from "@models";
+import {
+  JobsiteYearMasterReport,
+  JobsiteYearMasterReportClass,
+  JobsiteYearMasterReportDocument,
+} from "@models";
 import { Id } from "@typescript/models";
 import { PubSubTopics } from "@typescript/pubSub";
-import { Arg, ID, Query, Resolver, Root, Subscription } from "type-graphql";
+import {
+  Arg,
+  FieldResolver,
+  ID,
+  Query,
+  Resolver,
+  Root,
+  Subscription,
+} from "type-graphql";
 
 @Resolver(() => JobsiteYearMasterReportClass)
 export default class JobsiteYearMasterReportResolver {
+  /**
+   * ----- Field Resolvers -----
+   */
+
+  @FieldResolver(() => String, { nullable: true })
+  async excelDownloadUrl(
+    @Root() jobsiteYearMasterReport: JobsiteYearMasterReportDocument
+  ) {
+    return jobsiteYearMasterReport.getExcelUrl();
+  }
+
   /**
    * ----- Queries -----
    */

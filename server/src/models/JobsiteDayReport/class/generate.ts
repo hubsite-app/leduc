@@ -18,7 +18,6 @@ import {
   OnSiteSummaryReportClass,
 } from "@typescript/jobsiteReports";
 import { Id } from "@typescript/models";
-import errorHandler from "@utils/errorHandler";
 import getRateObjectForTime from "@utils/getRateObjectForTime";
 import getTruckingRateForTime from "@utils/getTruckingRateForTime";
 import dayjs from "dayjs";
@@ -172,8 +171,10 @@ const employeeReports = async (
       };
 
       employeeReports.push(employeeReport);
-    } catch (error) {
-      errorHandler("Unable to create employee report", error);
+    } catch (error: unknown) {
+      logger.info(
+        `Unable to create employee report: ${(error as Error).message}`
+      );
     }
   }
 
@@ -275,7 +276,9 @@ const vehicleReports = async (
 
       vehicleReports.push(vehicleReport);
     } catch (error) {
-      errorHandler("Unable to create vehicle report", error);
+      logger.info(
+        `Unable to create vehicle report: ${(error as Error).message}`
+      );
     }
   }
 
@@ -493,7 +496,9 @@ const materialReports = async (
         }
       }
     } catch (error) {
-      errorHandler("Unable to create material report", error);
+      logger.info(
+        `Unable to create material report: ${(error as Error).message}`
+      );
     }
   }
 
@@ -603,7 +608,9 @@ const nonCostedMaterialReports = async (
 
       nonCostedMaterialReports.push(materialReport);
     } catch (error) {
-      errorHandler("Unable to create material report", error);
+      logger.info(
+        `Unable to create material report: ${(error as Error).message}`
+      );
     }
   }
 
@@ -766,7 +773,9 @@ const truckingReports = async (
 
       truckingReports.push(truckingReport);
     } catch (error) {
-      errorHandler("Unable to create material report", error);
+      logger.info(
+        `Unable to create material report: ${(error as Error).message}`
+      );
     }
   }
 

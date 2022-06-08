@@ -10,4 +10,5 @@ fragment JobsiteYearMasterReportFullSnippet on JobsiteYearMasterReportClass {
     externalRevenueInvoiceValue
     internalRevenueInvoiceValue
   }
+  excelDownloadUrl
 }

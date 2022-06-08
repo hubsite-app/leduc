@@ -220,6 +220,7 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
               </Code>
             </Flex>
           }
+          excelDownloadUrl={report.excelDownloadUrl}
         />
       </Box>
       <Box
