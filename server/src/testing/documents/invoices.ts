@@ -3,6 +3,7 @@ import _ids from "@testing/_ids";
 
 export interface SeededInvoices {
   jobsite_3_invoice_1: InvoiceDocument;
+  jobsite_3_invoice_2: InvoiceDocument;
   jobsite_2_material_1_invoice_1: InvoiceDocument;
   jobsite_2_material_1_invoice_2: InvoiceDocument;
 }
@@ -11,10 +12,19 @@ const createInvoices = async (): Promise<SeededInvoices> => {
   const jobsite_3_invoice_1 = new Invoice({
     _id: _ids.invoices.jobsite_3_invoice_1._id,
     company: _ids.companies.company_1._id,
-    invoiceNumber: "123",
-    cost: 25,
+    invoiceNumber: "INV-001",
+    cost: 5000,
     internal: false,
-    description: "The description",
+    description: "Revenue Invoice",
+  });
+
+  const jobsite_3_invoice_2 = new Invoice({
+    _id: _ids.invoices.jobsite_3_invoice_2._id,
+    company: _ids.companies.company_1._id,
+    invoiceNumber: "INV-002",
+    cost: 500,
+    internal: false,
+    description: "Expense Invoice",
   });
 
   const jobsite_2_material_1_invoice_1 = new Invoice({
@@ -39,6 +49,7 @@ const createInvoices = async (): Promise<SeededInvoices> => {
 
   const invoices = {
     jobsite_3_invoice_1,
+    jobsite_3_invoice_2,
     jobsite_2_material_1_invoice_1,
     jobsite_2_material_1_invoice_2,
   };

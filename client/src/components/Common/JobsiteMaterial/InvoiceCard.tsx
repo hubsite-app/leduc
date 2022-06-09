@@ -1,7 +1,11 @@
 import React from "react";
 import { Box, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
-import { FiEdit, FiX } from "react-icons/fi";
-import { InvoiceCardSnippetFragment } from "../../../generated/graphql";
+import { FiEdit, FiTrash, FiX } from "react-icons/fi";
+import {
+  InvoiceCardSnippetFragment,
+  JobsitesMaterialsDocument,
+  useInvoiceRemoveMutation,
+} from "../../../generated/graphql";
 import Permission from "../Permission";
 import formatNumber from "../../../utils/formatNumber";
 import FormContainer from "../FormContainer";
@@ -22,6 +26,14 @@ const InvoiceCardForJobsiteMaterial = ({
 
   const [edit, setEdit] = React.useState(false);
 
+  const [remove, { loading }] = useInvoiceRemoveMutation({
+    refetchQueries: [JobsitesMaterialsDocument],
+  });
+
+  /**
+   * ----- Rendering -----
+   */
+
   return (
     <Box p={2} w="100%" border="1px solid lightgray">
       <Flex flexDir="row" justifyContent="space-between">
@@ -35,12 +47,33 @@ const InvoiceCardForJobsiteMaterial = ({
           <Text whiteSpace="pre-wrap">{invoice.description}</Text>
         </Text>
         <Permission>
-          <IconButton
-            backgroundColor="transparent"
-            aria-label="edit"
-            icon={edit ? <FiX /> : <FiEdit />}
-            onClick={() => setEdit(!edit)}
-          />
+          <Flex flexDir="row" justifyContent="end">
+            {edit && (
+              <IconButton
+                aria-label="Remove"
+                backgroundColor="transparent"
+                icon={<FiTrash />}
+                isLoading={loading}
+                onClick={async () => {
+                  if (window.confirm("Are you sure you want to delete this?")) {
+                    await remove({
+                      variables: {
+                        id: invoice._id,
+                      },
+                    });
+                    setEdit(false);
+                  }
+                }}
+              />
+            )}
+            <IconButton
+              isLoading={loading}
+              backgroundColor="transparent"
+              aria-label="edit"
+              icon={edit ? <FiX /> : <FiEdit />}
+              onClick={() => setEdit(!edit)}
+            />
+          </Flex>
         </Permission>
       </Flex>
       {edit && (

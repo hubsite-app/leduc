@@ -173,6 +173,9 @@ const _ids = {
     jobsite_3_invoice_1: {
       _id: Types.ObjectId("6241fc1132d9ce63e6fbf373"),
     },
+    jobsite_3_invoice_2: {
+      _id: Types.ObjectId("62420a9f8e9f9f8b8f9f8b8f"),
+    },
     jobsite_2_material_1_invoice_1: {
       _id: Types.ObjectId("629a4ac6f7d6b66e1a77b344"),
     },

@@ -56,6 +56,8 @@ const createJobsites = async (): Promise<SeededJobsites> => {
     active: true,
     materials: [_ids.jobsiteMaterials.jobsite_3_material_1._id],
     crews: [_ids.crews.base_1._id],
+    revenueInvoices: [_ids.invoices.jobsite_3_invoice_1._id],
+    expenseInvoices: [_ids.invoices.jobsite_3_invoice_2._id],
   });
 
   const jobsites = {

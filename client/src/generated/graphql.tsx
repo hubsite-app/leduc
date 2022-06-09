@@ -552,6 +552,7 @@ export type Mutation = {
   employeeWorkCreate: Array<EmployeeWorkClass>;
   employeeWorkDelete: Scalars['String'];
   employeeWorkUpdate: EmployeeWorkClass;
+  invoiceRemove: Scalars['Boolean'];
   invoiceUpdateForJobsite: InvoiceClass;
   invoiceUpdateForJobsiteMaterial: InvoiceClass;
   jobsiteAddDefaultTruckingRateToAll: Array<JobsiteClass>;
@@ -735,6 +736,11 @@ export type MutationEmployeeWorkDeleteArgs = {
 export type MutationEmployeeWorkUpdateArgs = {
   data: EmployeeWorkUpdateData;
   id: Scalars['String'];
+};
+
+
+export type MutationInvoiceRemoveArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -1823,6 +1829,13 @@ export type EmployeeWorkUpdateMutationVariables = Exact<{
 
 
 export type EmployeeWorkUpdateMutation = { __typename?: 'Mutation', employeeWorkUpdate: { __typename?: 'EmployeeWorkClass', _id: string, jobTitle: string, startTime: any, endTime: any, employee: { __typename?: 'EmployeeClass', _id: string, name: string } } };
+
+export type InvoiceRemoveMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type InvoiceRemoveMutation = { __typename?: 'Mutation', invoiceRemove: boolean };
 
 export type InvoiceUpdateForJobsiteMutationVariables = Exact<{
   id: Scalars['String'];
@@ -4215,6 +4228,37 @@ export function useEmployeeWorkUpdateMutation(baseOptions?: Apollo.MutationHookO
 export type EmployeeWorkUpdateMutationHookResult = ReturnType<typeof useEmployeeWorkUpdateMutation>;
 export type EmployeeWorkUpdateMutationResult = Apollo.MutationResult<EmployeeWorkUpdateMutation>;
 export type EmployeeWorkUpdateMutationOptions = Apollo.BaseMutationOptions<EmployeeWorkUpdateMutation, EmployeeWorkUpdateMutationVariables>;
+export const InvoiceRemoveDocument = gql`
+    mutation InvoiceRemove($id: ID!) {
+  invoiceRemove(id: $id)
+}
+    `;
+export type InvoiceRemoveMutationFn = Apollo.MutationFunction<InvoiceRemoveMutation, InvoiceRemoveMutationVariables>;
+
+/**
+ * __useInvoiceRemoveMutation__
+ *
+ * To run a mutation, you first call `useInvoiceRemoveMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInvoiceRemoveMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [invoiceRemoveMutation, { data, loading, error }] = useInvoiceRemoveMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useInvoiceRemoveMutation(baseOptions?: Apollo.MutationHookOptions<InvoiceRemoveMutation, InvoiceRemoveMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InvoiceRemoveMutation, InvoiceRemoveMutationVariables>(InvoiceRemoveDocument, options);
+      }
+export type InvoiceRemoveMutationHookResult = ReturnType<typeof useInvoiceRemoveMutation>;
+export type InvoiceRemoveMutationResult = Apollo.MutationResult<InvoiceRemoveMutation>;
+export type InvoiceRemoveMutationOptions = Apollo.BaseMutationOptions<InvoiceRemoveMutation, InvoiceRemoveMutationVariables>;
 export const InvoiceUpdateForJobsiteDocument = gql`
     mutation InvoiceUpdateForJobsite($id: String!, $jobsiteId: ID!, $data: InvoiceData!) {
   invoiceUpdateForJobsite(id: $id, jobsiteId: $jobsiteId, data: $data) {

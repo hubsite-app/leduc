@@ -91,7 +91,17 @@ const updateForJobsiteMaterial = async (
   return invoice;
 };
 
+const remove = async (invoiceId: Id): Promise<true> => {
+  const invoice = await Invoice.getById(invoiceId, { throwError: true });
+  if (!invoice) throw new Error("Unable to find invoice");
+
+  await invoice.removeDocument();
+
+  return true;
+};
+
 export default {
   updateForJobsite,
   updateForJobsiteMaterial,
+  remove,
 };
