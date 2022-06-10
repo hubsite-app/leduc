@@ -27,6 +27,14 @@ const JobsiteMaterialInvoices = ({
   const [addForm, setAddForm] = React.useState(false);
 
   /**
+   * ----- Variables -----
+   */
+
+  const sortedInvoices = jobsiteMaterial.invoices?.sort((a, b) =>
+    a.company.name.localeCompare(b.company.name)
+  );
+
+  /**
    * ----- Rendering -----
    */
 
@@ -66,13 +74,14 @@ const JobsiteMaterialInvoices = ({
       )}
 
       <Flex flexDir="column">
-        {jobsiteMaterial.invoices?.map((invoice) => (
-          <InvoiceCardForJobsiteMaterial
-            invoice={invoice}
-            jobsiteMaterialId={jobsiteMaterial._id}
-            key={invoice._id}
-          />
-        ))}
+        {sortedInvoices &&
+          sortedInvoices.map((invoice) => (
+            <InvoiceCardForJobsiteMaterial
+              invoice={invoice}
+              jobsiteMaterialId={jobsiteMaterial._id}
+              key={invoice._id}
+            />
+          ))}
       </Flex>
     </Box>
   );
