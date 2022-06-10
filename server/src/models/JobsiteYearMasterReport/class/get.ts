@@ -70,7 +70,9 @@ const byUpdatePending = async (
 const excelName = async (
   jobsiteYearMasterReport: JobsiteYearMasterReportDocument
 ) => {
-  return `Master_Costing_${dayjs(jobsiteYearMasterReport.startOfYear).year()}`;
+  return `${process.env.APP_NAME}_Master_Costing_${dayjs(
+    jobsiteYearMasterReport.startOfYear
+  ).year()}`;
 };
 
 const excelUrl = async (
