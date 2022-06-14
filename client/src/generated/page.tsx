@@ -1197,6 +1197,41 @@ export const ssrJobsitesMaterials = {
       withPage: withPageJobsitesMaterials,
       usePage: useJobsitesMaterials,
     }
+export async function getServerPageJobsitesNonCostedMaterials
+    (options: Omit<Apollo.QueryOptions<Types.JobsitesNonCostedMaterialsQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsitesNonCostedMaterialsQuery>({ ...options, query: Operations.JobsitesNonCostedMaterialsDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsitesNonCostedMaterials = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsitesNonCostedMaterialsQuery, Types.JobsitesNonCostedMaterialsQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsitesNonCostedMaterialsDocument, options);
+};
+export type PageJobsitesNonCostedMaterialsComp = React.FC<{data?: Types.JobsitesNonCostedMaterialsQuery, error?: Apollo.ApolloError}>;
+export const withPageJobsitesNonCostedMaterials = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsitesNonCostedMaterialsQuery, Types.JobsitesNonCostedMaterialsQueryVariables>) => (WrappedComponent:PageJobsitesNonCostedMaterialsComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsitesNonCostedMaterialsDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsitesNonCostedMaterials = {
+      getServerPage: getServerPageJobsitesNonCostedMaterials,
+      withPage: withPageJobsitesNonCostedMaterials,
+      usePage: useJobsitesNonCostedMaterials,
+    }
 export async function getServerPageJobsiteSsr
     (options: Omit<Apollo.QueryOptions<Types.JobsiteSsrQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
