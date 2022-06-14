@@ -257,7 +257,7 @@ const generateTable = async (
         : 0;
 
     const row: IMasterRow = {
-      jobsiteName: `${jobsite.name} - ${jobsite.jobcode}`,
+      jobsiteName: `${jobsite.jobcode} - ${jobsite.name}`,
       revenue,
       expenses: onSiteExpenses,
       overhead,

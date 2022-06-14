@@ -1,4 +1,5 @@
 import { CrewTypes } from "@typescript/crew";
+import dayjs from "dayjs";
 import ExcelJS, { TableColumnProperties } from "exceljs";
 
 interface ICrewData {
@@ -31,7 +32,13 @@ export interface IMasterRow {
 export const generateMasterTable = async (
   worksheet: ExcelJS.Worksheet,
   crewTypes: CrewTypes[],
-  rowsData: IMasterRow[]
+  rowsData: IMasterRow[],
+  options?: {
+    dateRange?: {
+      startTime: Date;
+      endTime: Date;
+    };
+  }
 ) => {
   const crewColumns: TableColumnProperties[] = [];
   for (let i = 0; i < crewTypes.length; i++) {
@@ -66,12 +73,19 @@ export const generateMasterTable = async (
     });
   }
 
+  const jobsiteTitle = `Jobsite ${
+    options?.dateRange &&
+    `${dayjs(options.dateRange.startTime).format("MM/DD/YYYY")} - ${dayjs(
+      options.dateRange.endTime
+    ).format("MM/DD/YYYY")}`
+  }`;
+
   worksheet.addTable({
     name: "MasterCost",
     ref: "A1",
     totalsRow: true,
     columns: [
-      { name: "Jobsite", filterButton: true },
+      { name: jobsiteTitle, filterButton: true },
       { name: "Revenue", filterButton: true, totalsRowFunction: "sum" },
       { name: "Expenses", filterButton: true, totalsRowFunction: "sum" },
       { name: "Overhead", filterButton: true, totalsRowFunction: "sum" },
