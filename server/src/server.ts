@@ -51,6 +51,7 @@ const main = async () => {
 
       await updateDocuments();
 
+      // UNCOMMENT THIS AND PUSH TO PRODUCTION
       // workers();
     }
   } catch (error: unknown) {
