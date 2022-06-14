@@ -31,7 +31,10 @@ const createJobsites = async (): Promise<SeededJobsites> => {
     description: "Second Job - v2",
     jobcode: "2022-2",
     active: true,
-    materials: [_ids.jobsiteMaterials.jobsite_2_material_1._id],
+    materials: [
+      _ids.jobsiteMaterials.jobsite_2_material_1._id,
+      _ids.jobsiteMaterials.jobsite_2_material_2._id,
+    ],
     crews: [_ids.crews.base_1._id],
     truckingRates: [
       {

@@ -99,6 +99,7 @@ const materialShipments = async (
   return MaterialShipment.find({
     jobsiteMaterial: jobsiteMaterial._id,
     noJobsiteMaterial: false,
+    archivedAt: null,
   });
 };
 
@@ -117,9 +118,7 @@ const completedQuantity = async (
 
   let quantity = 0;
   for (let i = 0; i < materialShipments.length; i++) {
-    const dailyReport = await materialShipments[i].getDailyReport();
-    if (dailyReport && dailyReport.archived !== true)
-      quantity += materialShipments[i].quantity;
+    quantity += materialShipments[i].quantity;
   }
 
   return quantity;

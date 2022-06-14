@@ -210,6 +210,7 @@ const nonCostedMaterialShipments = async (
   const materialShipments = await MaterialShipment.find({
     _id: { $in: materialShipmentIds },
     noJobsiteMaterial: true,
+    archivedAt: null,
   });
 
   return materialShipments;

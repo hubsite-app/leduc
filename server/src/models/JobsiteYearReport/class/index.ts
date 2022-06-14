@@ -50,10 +50,6 @@ export class JobsiteYearReportClass extends JobsiteYearReportSchema {
     return get.jobsite(this);
   }
 
-  public async getMonthReports(this: JobsiteYearReportDocument) {
-    return get.monthReports(this);
-  }
-
   public async getExcelName(this: JobsiteYearReportDocument) {
     return get.excelName(this);
   }

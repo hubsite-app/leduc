@@ -51,7 +51,7 @@ const main = async () => {
 
       await updateDocuments();
 
-      workers();
+      // workers();
     }
   } catch (error: unknown) {
     console.error(error);

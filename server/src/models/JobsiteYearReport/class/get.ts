@@ -3,14 +3,11 @@ import {
   JobsiteDayReport,
   JobsiteDayReportDocument,
   JobsiteDocument,
-  JobsiteMonthReport,
-  JobsiteMonthReportDocument,
   JobsiteYearReportDocument,
   JobsiteYearReportModel,
 } from "@models";
 import { GetByIDOptions, Id, UpdateStatus } from "@typescript/models";
 import { getFileSignedUrl } from "@utils/fileStorage";
-import monthsInYear from "@utils/monthsInYear";
 import populateOptions from "@utils/populateOptions";
 import dayjs from "dayjs";
 
@@ -83,25 +80,6 @@ const byUpdatePending = async (
   return reports;
 };
 
-const monthReports = async (
-  jobsiteYearReport: JobsiteYearReportDocument
-): Promise<JobsiteMonthReportDocument[]> => {
-  const monthReports: JobsiteMonthReportDocument[] = [];
-
-  const monthIndices = monthsInYear(jobsiteYearReport.startOfYear);
-  for (let i = 0; i < monthIndices.length; i++) {
-    const monthReport = await JobsiteMonthReport.getByJobsiteAndDate(
-      jobsiteYearReport.jobsite?.toString() || "",
-      dayjs(jobsiteYearReport.startOfYear)
-        .set("month", monthIndices[i])
-        .toDate()
-    );
-    if (monthReport) monthReports.push(monthReport);
-  }
-
-  return monthReports;
-};
-
 /**
  * ----- Methods -----
  */
@@ -146,7 +124,6 @@ export default {
   byUpdateRequested,
   byUpdatePending,
   dayReports,
-  monthReports,
   jobsite,
   excelName,
   excelUrl,

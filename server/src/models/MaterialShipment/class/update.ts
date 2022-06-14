@@ -137,9 +137,14 @@ const jobsiteMaterial = async (
   return;
 };
 
+const archive = async (materialShipment: MaterialShipmentDocument) => {
+  materialShipment.archivedAt = new Date();
+};
+
 export default {
   document,
   date,
   jobsiteMaterial,
   shipment,
+  archive,
 };
