@@ -27,8 +27,6 @@ const JobsiteMaterialUpdate = ({
 
   const [update, { loading }] = useJobsiteMaterialUpdateMutation();
 
-  console.log("Delivered", jobsiteMaterial.delivered);
-
   const { FormComponents, costType } = useJobsiteMaterialUpdateForm({
     defaultValues: {
       supplierId: jobsiteMaterial.supplier._id,

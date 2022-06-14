@@ -43,6 +43,10 @@ export class JobsiteYearMasterReportClass extends JobsiteYearMasterReportSchema 
     return get.excelName(this);
   }
 
+  public async getExcelMonthNames(this: JobsiteYearMasterReportDocument) {
+    return get.excelMonthNames(this);
+  }
+
   public async getExcelUrl(this: JobsiteYearMasterReportDocument) {
     return get.excelUrl(this);
   }

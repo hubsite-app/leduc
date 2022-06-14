@@ -1,4 +1,4 @@
-import ExcelJS, { TableColumnProperties } from "exceljs";
+import ExcelJS from "exceljs";
 import {
   JobsiteYearMasterReportDocument,
   JobsiteYearMasterReportItemClass,
@@ -6,6 +6,11 @@ import {
   JobsiteYearReportDocument,
   System,
 } from "@models";
+import {
+  generateMasterTable,
+  IMasterRow,
+  MasterCrewTotals,
+} from "../masterTable";
 
 export const generateForMasterReport = async (
   jobsiteYearMasterReport: JobsiteYearMasterReportDocument
@@ -15,29 +20,6 @@ export const generateForMasterReport = async (
   const worksheet = workbook.addWorksheet("Master Cost");
 
   await generateTable(worksheet, jobsiteYearMasterReport);
-
-  // Auto Column Width
-  worksheet.columns.forEach((column) => {
-    let dataMax = 2;
-
-    if (column.eachCell)
-      column.eachCell((cell) => {
-        cell.numFmt = "#,##0.00";
-      });
-
-    if (column.values) {
-      column.values.forEach((value) => {
-        if (
-          value &&
-          (typeof value === "string" || typeof value === "number") &&
-          `${value}`.length > dataMax
-        )
-          dataMax = `${value}`.length + 4;
-      });
-    }
-
-    column.width = dataMax;
-  });
 
   return workbook;
 };
@@ -63,75 +45,19 @@ const generateTable = async (
       });
   }
 
-  const crewColumns: TableColumnProperties[] = [];
-  for (let i = 0; i < jobsiteYearMasterReport.crewTypes.length; i++) {
-    const crewType = jobsiteYearMasterReport.crewTypes[i];
+  await generateMasterTable(
+    worksheet,
+    jobsiteYearMasterReport.crewTypes,
+    await generateRows(jobsiteYearReports)
+  );
 
-    // Crew wages column
-    crewColumns.push({
-      name: `${crewType} Wages`,
-      filterButton: true,
-      totalsRowFunction: "sum",
-    });
-
-    // Crew equipment column
-    crewColumns.push({
-      name: `${crewType} Equipment`,
-      filterButton: true,
-      totalsRowFunction: "sum",
-    });
-
-    // Crew materials column
-    crewColumns.push({
-      name: `${crewType} Materials`,
-      filterButton: true,
-      totalsRowFunction: "sum",
-    });
-
-    // Crew trucking column
-    crewColumns.push({
-      name: `${crewType} Trucking`,
-      filterButton: true,
-      totalsRowFunction: "sum",
-    });
-  }
-
-  worksheet.addTable({
-    name: "MasterCost",
-    ref: "A1",
-    totalsRow: true,
-    columns: [
-      { name: "Jobsite", filterButton: true },
-      { name: "Revenue", filterButton: true, totalsRowFunction: "sum" },
-      { name: "Expenses", filterButton: true, totalsRowFunction: "sum" },
-      { name: "Overhead", filterButton: true, totalsRowFunction: "sum" },
-      { name: "Total Expenses", filterButton: true, totalsRowFunction: "sum" },
-      { name: "Net Income", filterButton: true, totalsRowFunction: "sum" },
-      { name: "%", filterButton: true, totalsRowFunction: "average" },
-      {
-        name: "% minus internal",
-        filterButton: true,
-        totalsRowFunction: "average",
-      },
-      { name: "Internal Subs", filterButton: true, totalsRowFunction: "sum" },
-      { name: "External Subs", filterButton: true, totalsRowFunction: "sum" },
-      { name: "Total Wages", filterButton: true, totalsRowFunction: "sum" },
-      { name: "Total Equipment", filterButton: true, totalsRowFunction: "sum" },
-      { name: "Total Materials", filterButton: true, totalsRowFunction: "sum" },
-      { name: "Total Trucking", filterButton: true, totalsRowFunction: "sum" },
-      ...crewColumns,
-    ],
-    rows: await generateRows(jobsiteYearMasterReport, jobsiteYearReports),
-  });
+  return worksheet;
 };
 
-type Row = (string | number)[];
-
 const generateRows = async (
-  jobsiteYearMasterReport: JobsiteYearMasterReportDocument,
   jobsiteYearReports: IYearReportItem[]
-): Promise<Row[]> => {
-  const rows: Row[] = [];
+): Promise<IMasterRow[]> => {
+  const rows: IMasterRow[] = [];
 
   const system = await System.getSystem();
 
@@ -172,47 +98,39 @@ const generateRows = async (
         : 0;
 
     // Handle Crew Type Costs
-    const crewColumns: Row = [];
-    for (let j = 0; j < jobsiteYearMasterReport.crewTypes.length; j++) {
-      const crewType = jobsiteYearMasterReport.crewTypes[j];
+    const crewColumns: MasterCrewTotals = {} as MasterCrewTotals;
+    for (
+      let j = 0;
+      j < jobsiteYearReportItem.summary.crewTypeSummaries.length;
+      j++
+    ) {
+      const crewSummary = jobsiteYearReportItem.summary.crewTypeSummaries[j];
 
-      // See if this crew type is in the report
-      const index = jobsiteYearReportItem.summary.crewTypeSummaries.findIndex(
-        (summary) => summary.crewType === crewType
-      );
-
-      if (index === -1) {
-        crewColumns.push(0, 0, 0, 0);
-      } else {
-        const crewSummary =
-          jobsiteYearReportItem.summary.crewTypeSummaries[index];
-
-        crewColumns.push(
-          crewSummary.employeeCost,
-          crewSummary.vehicleCost,
-          crewSummary.materialCost,
-          crewSummary.truckingCost
-        );
-      }
+      crewColumns[crewSummary.crewType] = {
+        wages: crewSummary.employeeCost,
+        equipment: crewSummary.vehicleCost,
+        materials: crewSummary.materialCost,
+        trucking: crewSummary.truckingCost,
+      };
     }
 
-    const row: Row = [
-      `${jobsite.jobcode} - ${jobsite.name}`,
+    const row: IMasterRow = {
+      jobsiteName: `${jobsite.jobcode} - ${jobsite.name}`,
       revenue,
-      onSiteExpenses,
+      expenses: onSiteExpenses,
       overhead,
       totalExpenses,
       netIncome,
       margin,
       marginMinusInternal,
-      jobsiteYearReport.summary.internalExpenseInvoiceValue,
-      jobsiteYearReport.summary.externalExpenseInvoiceValue,
-      jobsiteYearReportItem.summary.employeeCost,
-      jobsiteYearReportItem.summary.vehicleCost,
-      jobsiteYearReportItem.summary.materialCost,
-      jobsiteYearReportItem.summary.truckingCost,
-      ...crewColumns,
-    ];
+      internalSubs: jobsiteYearReport.summary.internalExpenseInvoiceValue,
+      externalSubs: jobsiteYearReport.summary.externalExpenseInvoiceValue,
+      totalWages: jobsiteYearReportItem.summary.employeeCost,
+      totalEquipment: jobsiteYearReportItem.summary.vehicleCost,
+      totalMaterials: jobsiteYearReportItem.summary.materialCost,
+      totalTrucking: jobsiteYearReportItem.summary.truckingCost,
+      crewTotals: crewColumns,
+    };
 
     rows.push(row);
   }

@@ -1070,6 +1070,7 @@ export type Query = {
   employeeSearch: Array<EmployeeClass>;
   file: FileClass;
   jobsite: JobsiteClass;
+  jobsiteMasterExcelReportByDate: Scalars['String'];
   jobsiteMonthReport?: Maybe<JobsiteMonthReportClass>;
   jobsites: Array<JobsiteClass>;
   jobsiteSearch: Array<JobsiteClass>;
@@ -1157,6 +1158,12 @@ export type QueryFileArgs = {
 
 export type QueryJobsiteArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryJobsiteMasterExcelReportByDateArgs = {
+  endTime: Scalars['DateTime'];
+  startTime: Scalars['DateTime'];
 };
 
 
@@ -2312,6 +2319,14 @@ export type FileFullQueryVariables = Exact<{
 
 
 export type FileFullQuery = { __typename?: 'Query', file: { __typename?: 'FileClass', buffer: string, downloadUrl: string, _id: string, mimetype: string, description?: string | null } };
+
+export type JobsiteMasterExcelReportByDateQueryVariables = Exact<{
+  startTime: Scalars['DateTime'];
+  endTime: Scalars['DateTime'];
+}>;
+
+
+export type JobsiteMasterExcelReportByDateQuery = { __typename?: 'Query', jobsiteMasterExcelReportByDate: string };
 
 export type JobsiteMonthReportCardQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -6428,6 +6443,40 @@ export function useFileFullLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<F
 export type FileFullQueryHookResult = ReturnType<typeof useFileFullQuery>;
 export type FileFullLazyQueryHookResult = ReturnType<typeof useFileFullLazyQuery>;
 export type FileFullQueryResult = Apollo.QueryResult<FileFullQuery, FileFullQueryVariables>;
+export const JobsiteMasterExcelReportByDateDocument = gql`
+    query JobsiteMasterExcelReportByDate($startTime: DateTime!, $endTime: DateTime!) {
+  jobsiteMasterExcelReportByDate(startTime: $startTime, endTime: $endTime)
+}
+    `;
+
+/**
+ * __useJobsiteMasterExcelReportByDateQuery__
+ *
+ * To run a query within a React component, call `useJobsiteMasterExcelReportByDateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJobsiteMasterExcelReportByDateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJobsiteMasterExcelReportByDateQuery({
+ *   variables: {
+ *      startTime: // value for 'startTime'
+ *      endTime: // value for 'endTime'
+ *   },
+ * });
+ */
+export function useJobsiteMasterExcelReportByDateQuery(baseOptions: Apollo.QueryHookOptions<JobsiteMasterExcelReportByDateQuery, JobsiteMasterExcelReportByDateQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<JobsiteMasterExcelReportByDateQuery, JobsiteMasterExcelReportByDateQueryVariables>(JobsiteMasterExcelReportByDateDocument, options);
+      }
+export function useJobsiteMasterExcelReportByDateLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<JobsiteMasterExcelReportByDateQuery, JobsiteMasterExcelReportByDateQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<JobsiteMasterExcelReportByDateQuery, JobsiteMasterExcelReportByDateQueryVariables>(JobsiteMasterExcelReportByDateDocument, options);
+        }
+export type JobsiteMasterExcelReportByDateQueryHookResult = ReturnType<typeof useJobsiteMasterExcelReportByDateQuery>;
+export type JobsiteMasterExcelReportByDateLazyQueryHookResult = ReturnType<typeof useJobsiteMasterExcelReportByDateLazyQuery>;
+export type JobsiteMasterExcelReportByDateQueryResult = Apollo.QueryResult<JobsiteMasterExcelReportByDateQuery, JobsiteMasterExcelReportByDateQueryVariables>;
 export const JobsiteMonthReportCardDocument = gql`
     query JobsiteMonthReportCard($id: ID!) {
   jobsiteMonthReport(id: $id) {

@@ -742,6 +742,41 @@ export const ssrFileFull = {
       withPage: withPageFileFull,
       usePage: useFileFull,
     }
+export async function getServerPageJobsiteMasterExcelReportByDate
+    (options: Omit<Apollo.QueryOptions<Types.JobsiteMasterExcelReportByDateQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.JobsiteMasterExcelReportByDateQuery>({ ...options, query: Operations.JobsiteMasterExcelReportByDateDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useJobsiteMasterExcelReportByDate = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteMasterExcelReportByDateQuery, Types.JobsiteMasterExcelReportByDateQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.JobsiteMasterExcelReportByDateDocument, options);
+};
+export type PageJobsiteMasterExcelReportByDateComp = React.FC<{data?: Types.JobsiteMasterExcelReportByDateQuery, error?: Apollo.ApolloError}>;
+export const withPageJobsiteMasterExcelReportByDate = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.JobsiteMasterExcelReportByDateQuery, Types.JobsiteMasterExcelReportByDateQueryVariables>) => (WrappedComponent:PageJobsiteMasterExcelReportByDateComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.JobsiteMasterExcelReportByDateDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrJobsiteMasterExcelReportByDate = {
+      getServerPage: getServerPageJobsiteMasterExcelReportByDate,
+      withPage: withPageJobsiteMasterExcelReportByDate,
+      usePage: useJobsiteMasterExcelReportByDate,
+    }
 export async function getServerPageJobsiteMonthReportCard
     (options: Omit<Apollo.QueryOptions<Types.JobsiteMonthReportCardQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);

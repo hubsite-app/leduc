@@ -158,8 +158,6 @@ const JobsiteReportMaterialReports = ({
     };
   }, [materialReports]);
 
-  console.log(materialReports);
-
   /**
    * ----- Rendering -----
    */

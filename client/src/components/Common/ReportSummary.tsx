@@ -43,6 +43,7 @@ interface IReportSummaryCard extends BoxProps {
   issues?: ReportIssueSnippetFragment[];
   excelDownloadUrl?: string | null;
   jobsiteId?: string;
+  extraButtons?: React.ReactNode[];
 }
 
 const ReportSummaryCard = ({
@@ -58,6 +59,7 @@ const ReportSummaryCard = ({
   issues,
   excelDownloadUrl,
   jobsiteId,
+  extraButtons,
   showRevenueBreakdown = true,
   ...props
 }: IReportSummaryCard) => {
@@ -124,6 +126,7 @@ const ReportSummaryCard = ({
         <Flex flexDir="row" justifyContent="space-between">
           <Heading size="md">Summary</Heading>
           <Flex flexDir="row">
+            {extraButtons && extraButtons}
             {jobsiteId && (
               <Tooltip label="Refresh report">
                 <IconButton

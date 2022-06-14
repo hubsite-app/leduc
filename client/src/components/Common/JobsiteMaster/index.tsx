@@ -3,6 +3,13 @@ import {
   Box,
   Code,
   Flex,
+  IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Table,
   Tbody,
   Tfoot,
@@ -10,12 +17,15 @@ import {
   Thead,
   Tooltip,
   Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { JobsiteYearMasterReportFullSnippetFragment } from "../../../generated/graphql";
 import JobsiteMasterRow from "./Row";
 import formatNumber from "../../../utils/formatNumber";
 import ReportSummaryCard from "../ReportSummary";
 import { useSystem } from "../../../contexts/System";
+import { FiCalendar } from "react-icons/fi";
+import JobsiteMasterReportExcelGenerate from "../../Forms/JobsiteMasterReport/ExcelGenerate";
 
 interface IJobsiteMaster {
   report: JobsiteYearMasterReportFullSnippetFragment;
@@ -29,6 +39,8 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
   const {
     state: { system },
   } = useSystem();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   /**
    * ----- Variables -----
@@ -221,6 +233,26 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
             </Flex>
           }
           excelDownloadUrl={report.excelDownloadUrl}
+          extraButtons={[
+            <Box key={1}>
+              <IconButton
+                icon={<FiCalendar />}
+                aria-label="create report"
+                backgroundColor="transparent"
+                onClick={() => onOpen()}
+              />
+              <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Create Excel</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <JobsiteMasterReportExcelGenerate />
+                  </ModalBody>
+                </ModalContent>
+              </Modal>
+            </Box>,
+          ]}
         />
       </Box>
       <Box

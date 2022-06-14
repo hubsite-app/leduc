@@ -3,8 +3,11 @@ import {
   JobsiteYearMasterReportClass,
   JobsiteYearMasterReportDocument,
 } from "@models";
+import { SupportedMimeTypes } from "@typescript/file";
 import { Id } from "@typescript/models";
 import { PubSubTopics } from "@typescript/pubSub";
+import { getWorkbookBuffer } from "@utils/excel";
+import { generateForDateRange } from "@utils/excel/dynamicMasterCost/creation";
 import {
   Arg,
   FieldResolver,
@@ -45,6 +48,20 @@ export default class JobsiteYearMasterReportResolver {
   @Query(() => JobsiteYearMasterReportClass)
   async jobsiteYearMasterReportCurrent() {
     return JobsiteYearMasterReport.getByDate(new Date());
+  }
+
+  @Query(() => String)
+  async jobsiteMasterExcelReportByDate(
+    @Arg("startTime", () => Date) startTime: Date,
+    @Arg("endTime", () => Date) endTime: Date
+  ) {
+    const workbook = await generateForDateRange(startTime, endTime);
+
+    const buffer = await getWorkbookBuffer(workbook);
+
+    return `data:${SupportedMimeTypes.XLSX};base64,${buffer.toString(
+      "base64"
+    )}`;
   }
 
   /**
