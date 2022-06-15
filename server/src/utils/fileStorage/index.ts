@@ -35,6 +35,7 @@ const uploadFile = async (name: string, buffer: Buffer, mimetype: string) => {
 
     return data;
   } catch (e) {
+    console.log(e);
     errorHandler("Unable to upload file", e);
   }
 };

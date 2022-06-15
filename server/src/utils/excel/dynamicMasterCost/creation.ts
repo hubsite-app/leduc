@@ -1,4 +1,6 @@
 import {
+  Invoice,
+  InvoiceDocument,
   Jobsite,
   JobsiteDayReport,
   JobsiteDayReportDocument,
@@ -14,8 +16,15 @@ import {
   MasterCrewTotals,
 } from "../masterTable";
 
-type JobsiteDayReportCatalog = Record<string, JobsiteDayReportDocument[]>;
-type JobsitesCatalog = Record<string, JobsiteDocument>;
+type JobsiteCatalog = Record<
+  string,
+  {
+    jobsite: JobsiteDocument;
+    dayReports: JobsiteDayReportDocument[];
+    revenueInvoices: InvoiceDocument[];
+    expenseInvoices: InvoiceDocument[];
+  }
+>;
 
 export const generateForDateRange = async (startTime: Date, endTime: Date) => {
   const jobsiteDayReports = await JobsiteDayReport.getByDateRange(
@@ -35,8 +44,8 @@ export const generateForDateRange = async (startTime: Date, endTime: Date) => {
     }
   }
 
-  // Unique list of jobsites
-  const jobsites: JobsitesCatalog = {};
+  // Unique list of jobsites and catalog of jobsiteDayReports
+  const jobsites: JobsiteCatalog = {};
   for (let i = 0; i < jobsiteDayReports.length; i++) {
     const jobsiteDayReport = jobsiteDayReports[i];
 
@@ -44,24 +53,65 @@ export const generateForDateRange = async (startTime: Date, endTime: Date) => {
       if (!jobsites[jobsiteDayReport.jobsite.toString()]) {
         const jobsite = await Jobsite.getById(jobsiteDayReport.jobsite);
         if (jobsite) {
-          jobsites[jobsiteDayReport.jobsite.toString()] = jobsite;
+          jobsites[jobsiteDayReport.jobsite.toString()] = {
+            jobsite,
+            dayReports: [],
+            revenueInvoices: [],
+            expenseInvoices: [],
+          };
         }
       }
+
+      jobsites[jobsiteDayReport.jobsite.toString()].dayReports.push(
+        jobsiteDayReport
+      );
     }
   }
 
-  // Catalog of all day reports with their jobsite
-  const jobsiteDayReportsCatalog: JobsiteDayReportCatalog = {};
-  for (let i = 0; i < jobsiteDayReports.length; i++) {
-    const jobsiteDayReport = jobsiteDayReports[i];
+  // Get all invoices that took place during the date range
+  const invoices: InvoiceDocument[] = await Invoice.find({
+    date: {
+      $gte: startTime,
+      $lte: endTime,
+    },
+  });
 
-    if (jobsiteDayReport.jobsite) {
-      if (!jobsiteDayReportsCatalog[jobsiteDayReport.jobsite.toString()]) {
-        jobsiteDayReportsCatalog[jobsiteDayReport.jobsite.toString()] = [];
+  // Catalog all jobsites and their invoices that haven't been covered by their day reports
+  for (let i = 0; i < invoices.length; i++) {
+    const invoice = invoices[i];
+
+    const expenseJobsite: JobsiteDocument | null = await Jobsite.findOne({
+      expenseInvoices: invoice._id,
+    });
+
+    if (expenseJobsite) {
+      if (!jobsites[expenseJobsite._id?.toString()]) {
+        jobsites[expenseJobsite._id?.toString()] = {
+          jobsite: expenseJobsite,
+          dayReports: [],
+          revenueInvoices: [],
+          expenseInvoices: [],
+        };
       }
-      jobsiteDayReportsCatalog[jobsiteDayReport.jobsite.toString()].push(
-        jobsiteDayReport
-      );
+
+      jobsites[expenseJobsite._id?.toString()].expenseInvoices.push(invoice);
+    }
+
+    const revenueJobsite: JobsiteDocument | null = await Jobsite.findOne({
+      revenueInvoices: invoice._id,
+    });
+
+    if (revenueJobsite) {
+      if (!jobsites[revenueJobsite._id?.toString()]) {
+        jobsites[revenueJobsite._id?.toString()] = {
+          jobsite: revenueJobsite,
+          dayReports: [],
+          revenueInvoices: [],
+          expenseInvoices: [],
+        };
+      }
+
+      jobsites[revenueJobsite._id?.toString()].revenueInvoices.push(invoice);
     }
   }
 
@@ -69,14 +119,7 @@ export const generateForDateRange = async (startTime: Date, endTime: Date) => {
 
   const worksheet = workbook.addWorksheet("Master Cost");
 
-  await generateTable(
-    worksheet,
-    startTime,
-    endTime,
-    crewTypes,
-    jobsites,
-    jobsiteDayReportsCatalog
-  );
+  await generateTable(worksheet, startTime, endTime, crewTypes, jobsites);
 
   return workbook;
 };
@@ -86,18 +129,17 @@ const generateTable = async (
   startTime: Date,
   endTime: Date,
   crewTypes: CrewTypes[],
-  jobsitesCatalog: JobsitesCatalog,
-  jobsiteDayReportsCatalog: JobsiteDayReportCatalog
+  jobsiteCatalog: JobsiteCatalog
 ) => {
   const rows: IMasterRow[] = [];
 
-  for (let i = 0; i < Object.keys(jobsiteDayReportsCatalog).length; i++) {
-    const jobsiteId = Object.keys(jobsiteDayReportsCatalog)[i];
-    const jobsite = jobsitesCatalog[jobsiteId];
-    const jobsiteDayReports = jobsiteDayReportsCatalog[jobsiteId];
+  for (let i = 0; i < Object.keys(jobsiteCatalog).length; i++) {
+    const jobsiteId = Object.keys(jobsiteCatalog)[i];
+    const jobsite = jobsiteCatalog[jobsiteId].jobsite;
+    const jobsiteDayReports = jobsiteCatalog[jobsiteId].dayReports;
 
-    // Fetch and filter revenue invoices
-    const allRevenueInvoices = await jobsite.getRevenueInvoices();
+    // Filter revenue invoices
+    const allRevenueInvoices = jobsiteCatalog[jobsiteId].revenueInvoices;
     const filteredRevenueInvoices = allRevenueInvoices.filter(
       (invoice) => invoice.date >= startTime && invoice.date <= endTime
     );
@@ -109,7 +151,7 @@ const generateTable = async (
     );
 
     // Fetch and filter expense invoices
-    const allExpenseInvoices = await jobsite.getExpenseInvoices();
+    const allExpenseInvoices = jobsiteCatalog[jobsiteId].expenseInvoices;
     const filteredExpenseInvoices = allExpenseInvoices.filter(
       (invoice) => invoice.date >= startTime && invoice.date <= endTime
     );
