@@ -123,7 +123,11 @@ const issues = async (jobsiteYearReport: JobsiteYearReportDocument) => {
   jobsiteYearReport.issues = [
     ...dayReportIssueGeneration(dayReports),
     ...(await jobsiteReportIssueGenerator(
-      await jobsiteYearReport.getJobsite()
+      await jobsiteYearReport.getJobsite(),
+      {
+        startTime: jobsiteYearReport.startOfYear,
+        endTime: dayjs(jobsiteYearReport.startOfYear).endOf("year").toDate(),
+      }
     )),
   ];
 };
