@@ -320,6 +320,7 @@ describe("Jobsite Resolver", () => {
             date: new Date(),
             invoiceNumber: "12345",
             description: "Description of invoice",
+            accrual: false,
           };
 
           const res = await request(app)

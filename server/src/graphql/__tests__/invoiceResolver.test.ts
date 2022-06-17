@@ -60,6 +60,7 @@ describe("Invoice Resolver", () => {
             internal: true,
             invoiceNumber: "56789",
             description: "new description",
+            accrual: false,
           };
 
           const res = await request(app)
