@@ -1,12 +1,11 @@
-import { SimpleGrid, useToast } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import React from "react";
-import { useInvoiceForm } from "../../../forms/invoice";
 import {
   InvoiceCardSnippetFragment,
   InvoiceData,
   useInvoiceUpdateForJobsiteMaterialMutation,
 } from "../../../generated/graphql";
-import SubmitButton from "../../Common/forms/SubmitButton";
+import InvoiceForm from "./Form";
 
 interface IInvoiceUpdateForJobsiteMaterial {
   invoice: InvoiceCardSnippetFragment;
@@ -24,17 +23,6 @@ const InvoiceUpdateForJobsiteMaterial = ({
    */
 
   const toast = useToast();
-
-  const { FormComponents } = useInvoiceForm({
-    defaultValues: {
-      companyId: invoice.company._id,
-      invoiceNumber: invoice.invoiceNumber,
-      cost: invoice.cost,
-      date: invoice.date,
-      description: invoice.description,
-      internal: invoice.internal,
-    },
-  });
 
   const [update, { loading }] = useInvoiceUpdateForJobsiteMaterialMutation();
 
@@ -80,20 +68,20 @@ const InvoiceUpdateForJobsiteMaterial = ({
    */
 
   return (
-    <FormComponents.Form submitHandler={handleSubmit}>
-      <FormComponents.Company isLoading={loading} />
-
-      <SimpleGrid spacing={2} columns={[1, 1, 3]}>
-        <FormComponents.Cost isLoading={loading} />
-        <FormComponents.InvoiceNumber isLoading={loading} />
-        <FormComponents.Date isLoading={loading} />
-      </SimpleGrid>
-
-      <FormComponents.Description isLoading={loading} />
-      <FormComponents.Internal isLoading={loading} />
-
-      <SubmitButton isLoading={loading} />
-    </FormComponents.Form>
+    <InvoiceForm
+      formOptions={{
+        defaultValues: {
+          companyId: invoice.company._id,
+          invoiceNumber: invoice.invoiceNumber,
+          cost: invoice.cost,
+          date: invoice.date,
+          description: invoice.description,
+          internal: invoice.internal,
+        },
+      }}
+      submitHandler={handleSubmit}
+      isLoading={loading}
+    />
   );
 };
 

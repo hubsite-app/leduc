@@ -28,6 +28,9 @@ export class InvoiceData {
 
   @Field({ nullable: false })
   public internal!: boolean;
+
+  @Field({ nullable: false })
+  public accrual!: boolean;
 }
 
 const updateForJobsite = async (

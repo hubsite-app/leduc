@@ -29,6 +29,8 @@ const full = async (
     externalRevenueInvoiceValue: 0,
     internalExpenseInvoiceValue: 0,
     internalRevenueInvoiceValue: 0,
+    accrualExpenseInvoiceValue: 0,
+    accrualRevenueInvoiceValue: 0,
   };
 
   const allCrewTypes: CrewTypes[] = [];
@@ -58,6 +60,10 @@ const full = async (
         jobsiteYearReport.summary.internalExpenseInvoiceValue;
       fullSummary.internalRevenueInvoiceValue +=
         jobsiteYearReport.summary.internalRevenueInvoiceValue;
+      fullSummary.accrualExpenseInvoiceValue +=
+        jobsiteYearReport.summary.accrualExpenseInvoiceValue;
+      fullSummary.accrualRevenueInvoiceValue +=
+        jobsiteYearReport.summary.accrualRevenueInvoiceValue;
 
       // Handle rest
 

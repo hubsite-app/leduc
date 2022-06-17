@@ -120,6 +120,12 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
           <Loading />
         )}
       </Th>
+      <Th isNumeric>
+        $
+        {formatNumber(
+          jobsiteYearReport?.summary.accrualRevenueInvoiceValue || 0
+        )}
+      </Th>
       <Th isNumeric>${formatNumber(revenue)}</Th>
       <Th isNumeric>${formatNumber(onSiteExpenses)}</Th>
       <Th isNumeric>${formatNumber(onSiteExpenses * (overheadRate - 1))}</Th>
@@ -144,6 +150,12 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
         $
         {formatNumber(
           jobsiteYearReport?.summary.externalExpenseInvoiceValue || 0
+        )}
+      </Th>
+      <Th isNumeric>
+        $
+        {formatNumber(
+          jobsiteYearReport?.summary.accrualExpenseInvoiceValue || 0
         )}
       </Th>
       <Th isNumeric>${formatNumber(reportItem.summary.employeeCost)}</Th>

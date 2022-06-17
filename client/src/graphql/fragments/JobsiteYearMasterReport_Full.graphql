@@ -7,8 +7,10 @@ fragment JobsiteYearMasterReportFullSnippet on JobsiteYearMasterReportClass {
   summary {
     externalExpenseInvoiceValue
     internalExpenseInvoiceValue
+    accrualExpenseInvoiceValue
     externalRevenueInvoiceValue
     internalRevenueInvoiceValue
+    accrualRevenueInvoiceValue
   }
   excelDownloadUrl
 }

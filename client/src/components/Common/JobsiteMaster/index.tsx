@@ -137,11 +137,13 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
     return (
       onSiteExpenses * overheadRate +
       report.summary.externalExpenseInvoiceValue * 1.03 +
-      report.summary.internalExpenseInvoiceValue
+      report.summary.internalExpenseInvoiceValue +
+      report.summary.accrualExpenseInvoiceValue
     );
   }, [
     onSiteExpenses,
     overheadRate,
+    report.summary.accrualExpenseInvoiceValue,
     report.summary.externalExpenseInvoiceValue,
     report.summary.internalExpenseInvoiceValue,
   ]);
@@ -177,6 +179,9 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
       <Code backgroundColor="transparent" color="white">
         + Internal Invoices
       </Code>
+      <Code backgroundColor="transparent" color="white">
+        + Accrual Invoices
+      </Code>
     </Flex>
   );
 
@@ -187,6 +192,7 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
           revenue={{
             internal: report.summary.internalRevenueInvoiceValue,
             external: report.summary.externalRevenueInvoiceValue,
+            accrual: report.summary.accrualRevenueInvoiceValue,
           }}
           revenueTooltip={
             <Flex flexDir="column">
@@ -195,6 +201,9 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
               </Code>
               <Code backgroundColor="transparent" color="white">
                 + External Revenue Invoices
+              </Code>
+              <Code backgroundColor="transparent" color="white">
+                + Accrual Revenue Invoices
               </Code>
             </Flex>
           }
@@ -218,6 +227,7 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
           expenseInvoices={{
             external: report.summary.externalExpenseInvoiceValue,
             internal: report.summary.internalExpenseInvoiceValue,
+            accrual: report.summary.accrualExpenseInvoiceValue,
           }}
           totalExpenses={totalExpenses}
           totalExpensesTooltip={totalExpensesTooltip}
@@ -274,7 +284,9 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
               <Th></Th>
               <Th></Th>
               <Th></Th>
+              <Th></Th>
               <Th>Sub Contractors</Th>
+              <Th></Th>
               <Th></Th>
               <Th>Crew Totals</Th>
               <Th></Th>
@@ -291,6 +303,7 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
             </Tr>
             <Tr>
               <Th position="sticky">Jobsite</Th>
+              <Th isNumberic>Accruals</Th>
               <Th isNumeric>Revenue</Th>
               <Th isNumeric>
                 <Tooltip label="Employees, equipment, materials and trucking">
@@ -315,6 +328,7 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
               </Th>
               <Th isNumeric>Internal</Th>
               <Th isNumeric>External</Th>
+              <Th isNumeric>Accrual</Th>
               <Th isNumeric>Wages</Th>
               <Th isNumeric>Equipment</Th>
               <Th isNumeric>Materials</Th>
@@ -341,6 +355,9 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
           <Tfoot>
             <Tr>
               <Th>Totals</Th>
+              <Th isNumeric>
+                ${formatNumber(report.summary.accrualRevenueInvoiceValue)}
+              </Th>
               <Th isNumeric>${formatNumber(revenue)}</Th>
               <Th isNumeric>${formatNumber(onSiteExpenses)}</Th>
               <Th isNumeric>${formatNumber(onSiteExpenses * 0.1)}</Th>
@@ -362,6 +379,9 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
               </Th>
               <Th isNumeric>
                 ${formatNumber(report.summary.externalExpenseInvoiceValue || 0)}
+              </Th>
+              <Th isNumeric>
+                ${formatNumber(report.summary.accrualExpenseInvoiceValue || 0)}
               </Th>
               <Th isNumeric>${formatNumber(crewSummaryTotals.wages)}</Th>
               <Th isNumeric>${formatNumber(crewSummaryTotals.equipment)}</Th>
