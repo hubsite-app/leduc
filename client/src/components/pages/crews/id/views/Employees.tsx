@@ -8,7 +8,7 @@ import {
 } from "../../../../../generated/graphql";
 import Card from "../../../../Common/Card";
 import EmployeeCard from "./EmployeeCard";
-import { FiCalendar, FiCheck, FiPlus, FiX } from "react-icons/fi";
+import { FiCheck, FiPlus, FiWatch, FiX } from "react-icons/fi";
 import EmployeeAddForm from "./EmployeeAddForm";
 import ShowMore from "../../../../Common/ShowMore";
 import dayjs from "dayjs";
@@ -66,7 +66,7 @@ const Employees = ({ employees, crew }: IEmployees) => {
         <IconButton
           aria-label="hours"
           backgroundColor="transparent"
-          icon={<FiCalendar />}
+          icon={<FiWatch />}
           onClick={() => setHours(!hours)}
         />
         <IconButton

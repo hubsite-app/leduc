@@ -1,7 +1,7 @@
 import { Flex, Heading, HStack, IconButton } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import React from "react";
-import { FiCalendar, FiCheck } from "react-icons/fi";
+import { FiCheck, FiWatch } from "react-icons/fi";
 import { useEmployeeHourDateForm } from "../../../forms/employee";
 import { Scalars } from "../../../generated/graphql";
 import Card from "../Card";
@@ -67,7 +67,7 @@ const IndividualEmployeeHoursCard = ({
         <IconButton
           aria-label="edit"
           backgroundColor="transparent"
-          icon={<FiCalendar />}
+          icon={<FiWatch />}
           onClick={() => setEdit(true)}
         />
       );
