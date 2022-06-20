@@ -158,6 +158,17 @@ export type EmployeeCreateData = {
   name: Scalars['String'];
 };
 
+export type EmployeeHourReport = {
+  __typename?: 'EmployeeHourReport';
+  date: Scalars['DateTime'];
+  hours: Scalars['Float'];
+};
+
+export type EmployeeHoursReport = {
+  __typename?: 'EmployeeHoursReport';
+  days: Array<EmployeeHourReport>;
+};
+
 export type EmployeeReportClass = {
   __typename?: 'EmployeeReportClass';
   _id: Scalars['ID'];
@@ -1072,6 +1083,7 @@ export type Query = {
   dailyReportSearch: Array<DailyReportClass>;
   dailyReportsForJobsite: Array<DailyReportClass>;
   employee: EmployeeClass;
+  employeeHourReports: EmployeeHoursReport;
   employeeSearch: Array<EmployeeClass>;
   file: FileClass;
   jobsite: JobsiteClass;
@@ -1147,6 +1159,13 @@ export type QueryDailyReportsForJobsiteArgs = {
 
 export type QueryEmployeeArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryEmployeeHourReportsArgs = {
+  endTime: Scalars['DateTime'];
+  id: Scalars['ID'];
+  startTime: Scalars['DateTime'];
 };
 
 
@@ -2293,6 +2312,15 @@ export type DailyReportsForJobsiteQueryVariables = Exact<{
 
 
 export type DailyReportsForJobsiteQuery = { __typename?: 'Query', dailyReportsForJobsite: Array<{ __typename?: 'DailyReportClass', _id: string }> };
+
+export type EmployeeHourReportsQueryVariables = Exact<{
+  id: Scalars['ID'];
+  startTime: Scalars['DateTime'];
+  endTime: Scalars['DateTime'];
+}>;
+
+
+export type EmployeeHourReportsQuery = { __typename?: 'Query', employeeHourReports: { __typename?: 'EmployeeHoursReport', days: Array<{ __typename?: 'EmployeeHourReport', date: any, hours: number }> } };
 
 export type EmployeeSearchQueryVariables = Exact<{
   searchString: Scalars['String'];
@@ -6298,6 +6326,46 @@ export function useDailyReportsForJobsiteLazyQuery(baseOptions?: Apollo.LazyQuer
 export type DailyReportsForJobsiteQueryHookResult = ReturnType<typeof useDailyReportsForJobsiteQuery>;
 export type DailyReportsForJobsiteLazyQueryHookResult = ReturnType<typeof useDailyReportsForJobsiteLazyQuery>;
 export type DailyReportsForJobsiteQueryResult = Apollo.QueryResult<DailyReportsForJobsiteQuery, DailyReportsForJobsiteQueryVariables>;
+export const EmployeeHourReportsDocument = gql`
+    query EmployeeHourReports($id: ID!, $startTime: DateTime!, $endTime: DateTime!) {
+  employeeHourReports(id: $id, startTime: $startTime, endTime: $endTime) {
+    days {
+      date
+      hours
+    }
+  }
+}
+    `;
+
+/**
+ * __useEmployeeHourReportsQuery__
+ *
+ * To run a query within a React component, call `useEmployeeHourReportsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEmployeeHourReportsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEmployeeHourReportsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      startTime: // value for 'startTime'
+ *      endTime: // value for 'endTime'
+ *   },
+ * });
+ */
+export function useEmployeeHourReportsQuery(baseOptions: Apollo.QueryHookOptions<EmployeeHourReportsQuery, EmployeeHourReportsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EmployeeHourReportsQuery, EmployeeHourReportsQueryVariables>(EmployeeHourReportsDocument, options);
+      }
+export function useEmployeeHourReportsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EmployeeHourReportsQuery, EmployeeHourReportsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EmployeeHourReportsQuery, EmployeeHourReportsQueryVariables>(EmployeeHourReportsDocument, options);
+        }
+export type EmployeeHourReportsQueryHookResult = ReturnType<typeof useEmployeeHourReportsQuery>;
+export type EmployeeHourReportsLazyQueryHookResult = ReturnType<typeof useEmployeeHourReportsLazyQuery>;
+export type EmployeeHourReportsQueryResult = Apollo.QueryResult<EmployeeHourReportsQuery, EmployeeHourReportsQueryVariables>;
 export const EmployeeSearchDocument = gql`
     query EmployeeSearch($searchString: String!, $options: SearchOptions) {
   employeeSearch(searchString: $searchString, options: $options) {

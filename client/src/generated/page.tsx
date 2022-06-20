@@ -567,6 +567,41 @@ export const ssrDailyReportsForJobsite = {
       withPage: withPageDailyReportsForJobsite,
       usePage: useDailyReportsForJobsite,
     }
+export async function getServerPageEmployeeHourReports
+    (options: Omit<Apollo.QueryOptions<Types.EmployeeHourReportsQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.EmployeeHourReportsQuery>({ ...options, query: Operations.EmployeeHourReportsDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useEmployeeHourReports = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.EmployeeHourReportsQuery, Types.EmployeeHourReportsQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.EmployeeHourReportsDocument, options);
+};
+export type PageEmployeeHourReportsComp = React.FC<{data?: Types.EmployeeHourReportsQuery, error?: Apollo.ApolloError}>;
+export const withPageEmployeeHourReports = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.EmployeeHourReportsQuery, Types.EmployeeHourReportsQueryVariables>) => (WrappedComponent:PageEmployeeHourReportsComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.EmployeeHourReportsDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrEmployeeHourReports = {
+      getServerPage: getServerPageEmployeeHourReports,
+      withPage: withPageEmployeeHourReports,
+      usePage: useEmployeeHourReports,
+    }
 export async function getServerPageEmployeeSearch
     (options: Omit<Apollo.QueryOptions<Types.EmployeeSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
