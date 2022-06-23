@@ -3,23 +3,14 @@ import {
   DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
-  S3,
 } from "@aws-sdk/client-s3";
 import errorHandler from "@utils/errorHandler";
 import getBuffer from "@utils/getBuffer";
+import client from "./client";
 
 /**
  * @tutorial https://docs.digitalocean.com/products/spaces/resources/s3-sdk-examples/
  */
-
-const client = new S3({
-  endpoint: `https://${process.env.SPACES_REGION}.digitaloceanspaces.com`,
-  region: process.env.SPACES_REGION,
-  credentials: {
-    accessKeyId: process.env.SPACES_KEY || "",
-    secretAccessKey: process.env.SPACES_SECRET || "",
-  },
-});
 
 const uploadFile = async (name: string, buffer: Buffer, mimetype: string) => {
   try {
@@ -91,7 +82,7 @@ const getFileSignedUrl = async (name: string) => {
     }
 
     if (file) {
-      return getSignedUrl(client, getCommandObject, {
+      return await getSignedUrl(client, getCommandObject, {
         expiresIn: 60 * 60,
       });
     } else {
