@@ -157,7 +157,7 @@ const employeeHourReports = async (
     await JobsiteDayReport.find({
       date: {
         $gte: startTime,
-        $lt: endTime,
+        $lte: endTime,
       },
       "employees.employee": employee._id,
     });

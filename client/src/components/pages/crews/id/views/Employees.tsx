@@ -1,6 +1,14 @@
 import React from "react";
 
-import { Center, Flex, Heading, HStack, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Flex,
+  Grid,
+  GridItem,
+  Heading,
+  IconButton,
+} from "@chakra-ui/react";
 import {
   CrewFullSnippetFragment,
   EmployeeCardSnippetFragment,
@@ -77,19 +85,32 @@ const Employees = ({ employees, crew }: IEmployees) => {
         />
       </Flex>
       {hours && (
-        <Flex justifyContent="end">
+        <Box>
           <FormComponents.Form submitHandler={handleSubmit}>
-            <HStack spacing={2} w="50%" m={2}>
-              <FormComponents.StartTime />
-              <FormComponents.EndTime />
-              <IconButton
-                type="submit"
-                aria-label="submit"
-                icon={<FiCheck />}
-              />
-            </HStack>
+            <Grid
+              templateColumns="repeat(10, 1fr)"
+              templateRows="repeat(1, 1fr)"
+              gap={2}
+              m={2}
+              w="100%"
+            >
+              <GridItem colStart={[0, 0, 0, 6]} colSpan={[4, 4, 4, 2]}>
+                <FormComponents.StartTime />
+              </GridItem>
+              <GridItem colSpan={[4, 4, 4, 2]}>
+                <FormComponents.EndTime />
+              </GridItem>
+              <GridItem colspan={[1, 1, 1, 1]}>
+                <IconButton
+                  py="auto"
+                  type="submit"
+                  aria-label="submit"
+                  icon={<FiCheck />}
+                />
+              </GridItem>
+            </Grid>
           </FormComponents.Form>
-        </Flex>
+        </Box>
       )}
 
       {addForm && (

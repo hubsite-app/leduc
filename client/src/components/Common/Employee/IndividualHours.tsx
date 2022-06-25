@@ -1,4 +1,4 @@
-import { Flex, Heading, HStack, IconButton } from "@chakra-ui/react";
+import { Flex, Grid, GridItem, Heading, IconButton } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import React from "react";
 import { FiCheck, FiWatch } from "react-icons/fi";
@@ -55,11 +55,28 @@ const IndividualEmployeeHoursCard = ({
     if (edit) {
       return (
         <FormComponents.Form submitHandler={handleSubmit}>
-          <HStack m={2} w="50%" spacing={2}>
-            <FormComponents.StartTime />
-            <FormComponents.EndTime />
-            <IconButton type="submit" aria-label="submit" icon={<FiCheck />} />
-          </HStack>
+          <Grid
+            templateColumns="repeat(10, 1fr)"
+            templateRows="repeat(1, 1fr)"
+            gap={2}
+            m={2}
+            w="100%"
+          >
+            <GridItem colStart={[0, 0, 0, 6]} colSpan={[4, 4, 4, 2]}>
+              <FormComponents.StartTime />
+            </GridItem>
+            <GridItem colSpan={[4, 4, 4, 2]}>
+              <FormComponents.EndTime />
+            </GridItem>
+            <GridItem colspan={[1, 1, 1, 1]}>
+              <IconButton
+                py="auto"
+                type="submit"
+                aria-label="submit"
+                icon={<FiCheck />}
+              />
+            </GridItem>
+          </Grid>
         </FormComponents.Form>
       );
     } else {

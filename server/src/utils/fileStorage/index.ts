@@ -71,12 +71,7 @@ const getFileSignedUrl = async (name: string) => {
 
     let file;
     try {
-      file = await client.send(
-        new GetObjectCommand({
-          Bucket: process.env.SPACES_NAME || "",
-          Key: name,
-        })
-      );
+      file = await client.send(getCommandObject);
     } catch (error) {
       return null;
     }

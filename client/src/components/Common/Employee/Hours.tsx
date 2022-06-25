@@ -1,25 +1,18 @@
-import {
-  Box,
-  Center,
-  Flex,
-  HStack,
-  IconButton,
-  Table,
-  Tbody,
-  Text,
-  Th,
-  Thead,
-} from "@chakra-ui/react";
-import dayjs from "dayjs";
+import { Box, Center, Table, Tbody, Text, Th, Thead } from "@chakra-ui/react";
 import React from "react";
-import { FiCheck } from "react-icons/fi";
-import { useEmployeeHourDateForm } from "../../../forms/employee";
 import {
   Scalars,
   useEmployeeHourReportsLazyQuery,
 } from "../../../generated/graphql";
 import formatNumber from "../../../utils/formatNumber";
 import Loading from "../Loading";
+
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 interface IEmployeeHours {
   employeeId: string;
@@ -86,7 +79,7 @@ const EmployeeHours = ({
 
         data.employeeHourReports.days.forEach((day) => {
           content.headers.push(
-            <Th isNumeric>{dayjs(day.date).format("MMM DD, YYYY")}</Th>
+            <Th isNumeric>{dayjs(day.date).utc().format("MMM DD, YYYY")}</Th>
           );
           content.rows.push(<Th isNumeric>{formatNumber(day.hours)}</Th>);
         });
