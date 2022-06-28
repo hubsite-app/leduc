@@ -73,12 +73,12 @@ export const generateMasterTable = async (
     });
   }
 
-  const jobsiteTitle = `Jobsite ${
-    options?.dateRange &&
-    `${dayjs(options.dateRange.startTime).format("MM/DD/YYYY")} - ${dayjs(
-      options.dateRange.endTime
-    ).format("MM/DD/YYYY")}`
-  }`;
+  let jobsiteTitle = "Jobsite";
+  if (options?.dateRange) {
+    jobsiteTitle += ` (${dayjs(options.dateRange.startTime).format(
+      "MM/DD/YYYY"
+    )} - ${dayjs(options.dateRange.endTime).format("MM/DD/YYYY")})`;
+  }
 
   worksheet.addTable({
     name: "MasterCost",
