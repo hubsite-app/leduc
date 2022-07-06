@@ -267,16 +267,15 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
       </Box>
       <Box
         w="100%"
-        overflowX="scroll"
+        overflowY="scroll"
         backgroundColor="gray.200"
         borderRadius={6}
         maxH="60vh"
-        overflowY="scroll"
       >
-        <Table>
+        <Table id="jobsite-report-table">
           <Thead>
             <Tr>
-              <Th></Th>
+              <Th scope="row"></Th>
               <Th></Th>
               <Th></Th>
               <Th></Th>
@@ -302,7 +301,7 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
               ))}
             </Tr>
             <Tr>
-              <Th position="sticky">Jobsite</Th>
+              <Th scope="row">Jobsite</Th>
               <Th isNumberic>Accruals</Th>
               <Th isNumeric>Revenue</Th>
               <Th isNumeric>
@@ -354,7 +353,7 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
           </Tbody>
           <Tfoot>
             <Tr>
-              <Th>Totals</Th>
+              <Th scope="row">Totals</Th>
               <Th isNumeric>
                 ${formatNumber(report.summary.accrualRevenueInvoiceValue)}
               </Th>

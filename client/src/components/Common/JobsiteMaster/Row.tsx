@@ -1,4 +1,4 @@
-import { Box, Flex, Th, Tr } from "@chakra-ui/react";
+import { Box, Flex, Th, Tr, Td } from "@chakra-ui/react";
 import React from "react";
 import { useSystem } from "../../../contexts/System";
 import {
@@ -100,7 +100,7 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
 
   return (
     <Tr filter={loading ? "blur(2px)" : undefined}>
-      <Th>
+      <Th scope="row">
         {jobsiteYearReport ? (
           <Flex flexDir="row">
             <TextLink
@@ -120,82 +120,82 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
           <Loading />
         )}
       </Th>
-      <Th isNumeric>
+      <Td isNumeric>
         $
         {formatNumber(
           jobsiteYearReport?.summary.accrualRevenueInvoiceValue || 0
         )}
-      </Th>
-      <Th isNumeric>${formatNumber(revenue)}</Th>
-      <Th isNumeric>${formatNumber(onSiteExpenses)}</Th>
-      <Th isNumeric>${formatNumber(onSiteExpenses * (overheadRate - 1))}</Th>
-      <Th isNumeric>${formatNumber(totalExpenses)}</Th>
-      <Th isNumeric color={netIncome < 0 ? "red.500" : undefined}>
+      </Td>
+      <Td isNumeric>${formatNumber(revenue)}</Td>
+      <Td isNumeric>${formatNumber(onSiteExpenses)}</Td>
+      <Td isNumeric>${formatNumber(onSiteExpenses * (overheadRate - 1))}</Td>
+      <Td isNumeric>${formatNumber(totalExpenses)}</Td>
+      <Td isNumeric color={netIncome < 0 ? "red.500" : undefined}>
         ${formatNumber(netIncome)}
-      </Th>
-      <Th isNumeric color={margin < 0 ? "red.500" : undefined}>
+      </Td>
+      <Td isNumeric color={margin < 0 ? "red.500" : undefined}>
         %{formatNumber(margin)}
-      </Th>
+      </Td>
 
-      <Th isNumeric color={marginMinusConcrete < 0 ? "red.500" : undefined}>
+      <Td isNumeric color={marginMinusConcrete < 0 ? "red.500" : undefined}>
         %{formatNumber(marginMinusConcrete)}
-      </Th>
-      <Th isNumeric>
+      </Td>
+      <Td isNumeric>
         $
         {formatNumber(
           jobsiteYearReport?.summary.internalExpenseInvoiceValue || 0
         )}
-      </Th>
-      <Th isNumeric>
+      </Td>
+      <Td isNumeric>
         $
         {formatNumber(
           jobsiteYearReport?.summary.externalExpenseInvoiceValue || 0
         )}
-      </Th>
-      <Th isNumeric>
+      </Td>
+      <Td isNumeric>
         $
         {formatNumber(
           jobsiteYearReport?.summary.accrualExpenseInvoiceValue || 0
         )}
-      </Th>
-      <Th isNumeric>${formatNumber(reportItem.summary.employeeCost)}</Th>
-      <Th isNumeric>${formatNumber(reportItem.summary.vehicleCost)}</Th>
-      <Th isNumeric>${formatNumber(reportItem.summary.materialCost)}</Th>
-      <Th isNumeric>${formatNumber(reportItem.summary.truckingCost)}</Th>
+      </Td>
+      <Td isNumeric>${formatNumber(reportItem.summary.employeeCost)}</Td>
+      <Td isNumeric>${formatNumber(reportItem.summary.vehicleCost)}</Td>
+      <Td isNumeric>${formatNumber(reportItem.summary.materialCost)}</Td>
+      <Td isNumeric>${formatNumber(reportItem.summary.truckingCost)}</Td>
       {crewTypes.map((crew) => (
         <>
-          <Th isNumeric>
+          <Td isNumeric>
             $
             {formatNumber(
               reportItem.summary.crewTypeSummaries.find(
                 (summary) => summary.crewType === crew
               )?.employeeCost || 0
             )}
-          </Th>
-          <Th isNumeric>
+          </Td>
+          <Td isNumeric>
             $
             {formatNumber(
               reportItem.summary.crewTypeSummaries.find(
                 (summary) => summary.crewType === crew
               )?.vehicleCost || 0
             )}
-          </Th>
-          <Th isNumeric>
+          </Td>
+          <Td isNumeric>
             $
             {formatNumber(
               reportItem.summary.crewTypeSummaries.find(
                 (summary) => summary.crewType === crew
               )?.materialCost || 0
             )}
-          </Th>
-          <Th isNumeric>
+          </Td>
+          <Td isNumeric>
             $
             {formatNumber(
               reportItem.summary.crewTypeSummaries.find(
                 (summary) => summary.crewType === crew
               )?.truckingCost || 0
             )}
-          </Th>
+          </Td>
         </>
       ))}
     </Tr>
