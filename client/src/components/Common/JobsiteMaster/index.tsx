@@ -270,7 +270,7 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
         overflowY="scroll"
         backgroundColor="gray.200"
         borderRadius={6}
-        maxH="60vh"
+        maxH="55vh"
       >
         <Table id="jobsite-report-table">
           <Thead>
