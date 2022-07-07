@@ -162,7 +162,7 @@ const ReportSummaryCard = ({
       }
       {...props}
     >
-      <SimpleGrid spacing={2} columns={[4]}>
+      <SimpleGrid spacing={2} columns={[2, 2, 4]}>
         <Stat display="flex" justifyContent="center">
           <Tooltip placement="top" label={revenueTooltip}>
             <StatLabel>Total Revenue</StatLabel>

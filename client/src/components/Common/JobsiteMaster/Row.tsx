@@ -1,4 +1,4 @@
-import { Box, Flex, Th, Tr, Td } from "@chakra-ui/react";
+import { Box, Flex, Th, Tr, Td, Text } from "@chakra-ui/react";
 import React from "react";
 import { useSystem } from "../../../contexts/System";
 import {
@@ -100,15 +100,19 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
 
   return (
     <Tr filter={loading ? "blur(2px)" : undefined}>
-      <Th scope="row">
+      <Th scope="row" textOverflow="ellipsis">
         {jobsiteYearReport ? (
           <Flex flexDir="row">
             <TextLink
               link={createLink.jobsiteYearReport(jobsiteYearReport._id)}
               whiteSpace="nowrap"
+              textOverflow="ellipsis"
             >
-              {jobsiteYearReport.jobsite.jobcode} -{" "}
-              {jobsiteYearReport.jobsite.name}
+              {jobsiteYearReport.jobsite.jobcode}
+              <Text as="span" display={["none", "none", "none", "inline"]}>
+                {" "}
+                - {jobsiteYearReport.jobsite.name}
+              </Text>
             </TextLink>
             {jobsiteYearReport.issues && (
               <Box ml={1}>
