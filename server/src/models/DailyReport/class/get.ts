@@ -227,7 +227,11 @@ const crew = async (
 
   const crew = await Crew.getById(dailyReport.crew);
 
-  if (!crew) throw new Error("dailyReport.getCrew: unable to find linked crew");
+  if (!crew) {
+    const placeholderCrew = await Crew.getPlaceholderCrew();
+
+    return placeholderCrew;
+  }
 
   return crew;
 };

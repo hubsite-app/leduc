@@ -40,6 +40,10 @@ export class CrewClass extends CrewSchema {
     return get.byVehicle(this, vehicle);
   }
 
+  public static async getPlaceholderCrew(this: CrewModel) {
+    return get.placeholderCrew(this);
+  }
+
   public async getEmployees(this: CrewDocument) {
     return get.employees(this);
   }

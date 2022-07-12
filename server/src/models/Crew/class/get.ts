@@ -14,7 +14,7 @@ import {
 } from "@models";
 import { GetByIDOptions, ISearchOptions } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
-import { ICrewSearchObject } from "@typescript/crew";
+import { CrewTypes, ICrewSearchObject } from "@typescript/crew";
 import ElasticsearchClient from "@elasticsearch/client";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 import { IHit } from "@typescript/elasticsearch";
@@ -105,6 +105,26 @@ const byVehicle = async (
   return crews;
 };
 
+const placeholderCrew = async (Crew: CrewModel): Promise<CrewDocument> => {
+  const placeholderCrewName = "Placeholder Crew";
+
+  const crew = await Crew.findOne({ name: placeholderCrewName });
+
+  // Create placeholder crew if it doesn't exist
+  if (!crew) {
+    const newCrew = await Crew.createDocument({
+      name: placeholderCrewName,
+      type: CrewTypes.Other,
+    });
+
+    await newCrew.save();
+
+    return newCrew;
+  }
+
+  return crew;
+};
+
 /**
  * ----- Methods -----
  */
@@ -147,6 +167,7 @@ export default {
   search,
   list,
   byVehicle,
+  placeholderCrew,
   employees,
   vehicles,
   jobsites,
