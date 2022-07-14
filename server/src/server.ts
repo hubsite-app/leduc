@@ -37,7 +37,12 @@ const main = async () => {
 
     const app = await createApp();
 
-    app.listen(port, () => console.log(`Server running on port: ${port}`));
+    const server = app.listen(port, () =>
+      console.log(`Server running on port: ${port}`)
+    );
+
+    // Set timeout to 5 minutes
+    server.setTimeout(300000);
 
     if (process.env.NODE_ENV !== "test") {
       if (production) {
