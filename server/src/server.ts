@@ -17,6 +17,17 @@ import workers from "@workers";
 
 // import saveAll from "@testing/saveAll";
 
+let workerEnabled = true,
+  apiEnabled = true;
+
+if (process.env.APP_TYPE === "api") {
+  apiEnabled = true;
+  workerEnabled = false;
+} else if (process.env.APP_TYPE === "worker") {
+  workerEnabled = true;
+  apiEnabled = false;
+}
+
 const main = async () => {
   try {
     if (process.env.NODE_ENV !== "test" && process.env.MONGO_URI) {
@@ -31,18 +42,21 @@ const main = async () => {
       }
     }
 
-    await elasticsearch();
+    // Start API server
+    if (apiEnabled) {
+      await elasticsearch();
 
-    const port = process.env.PORT || 8080;
+      const port = process.env.PORT || 8080;
 
-    const app = await createApp();
+      const app = await createApp();
 
-    const server = app.listen(port, () =>
-      console.log(`Server running on port: ${port}`)
-    );
+      const server = app.listen(port, () =>
+        console.log(`Server running on port: ${port}`)
+      );
 
-    // Set timeout to 3 minutes
-    server.setTimeout(3 * 60 * 1000);
+      // Set timeout to 3 minutes
+      server.setTimeout(3 * 60 * 1000);
+    }
 
     if (process.env.NODE_ENV !== "test") {
       if (production) {
@@ -56,7 +70,10 @@ const main = async () => {
 
       await updateDocuments();
 
-      workers();
+      // Enable worker
+      if (workerEnabled) {
+        workers();
+      }
     }
   } catch (error: unknown) {
     console.error(error);

@@ -22,3 +22,5 @@ spec:
               value: development
             - name: ELASTICSEARCH_PASSWORD
               value: thisistest
+            - name: APP_TYPE
+              value: api

@@ -14,6 +14,8 @@ const workers = async () => {
   await pendingJobsiteMonthReportUpdateHelper();
   await pendingJobsiteDayReportUpdateHelper();
 
+  console.log("Workers started");
+
   jobsiteYearMasterReportUpdate;
   jobsiteYearReportUpdate;
   jobsiteMonthReportUpdate;

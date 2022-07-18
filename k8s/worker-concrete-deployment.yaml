@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: server-concrete-deployment
+  name: worker-concrete-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: server-concrete
+      component: worker-concrete
   template:
     metadata:
       labels:
-        component: server-concrete
+        component: worker-concrete
     spec:
       containers:
-        - name: server
+        - name: worker
           image: itsdevin/bow-mark-server:$COMMIT_SHA1
           ports:
             - containerPort: 8081
@@ -30,7 +30,7 @@ spec:
             - name: APP_NAME
               value: Concrete
             - name: APP_TYPE
-              value: api
+              value: worker
             - name: ELASTICSEARCH_GROUP
               value: bow-mark-concrete
             - name: MONGO_URI

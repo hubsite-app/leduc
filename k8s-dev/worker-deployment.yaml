@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: worker
+  template:
+    metadata:
+      labels:
+        component: worker
+    spec:
+      containers:
+        - name: worker
+          image: itsdevin/bow-mark-server
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NODE_ENV
+              value: development
+            - name: ELASTICSEARCH_PASSWORD
+              value: thisistest
+            - name: APP_TYPE
+              value: worker

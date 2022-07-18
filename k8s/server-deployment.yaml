@@ -29,6 +29,8 @@ spec:
               value: production
             - name: APP_NAME
               value: Paving
+            - name: APP_TYPE
+              value: api
             - name: ELASTICSEARCH_GROUP
               value: bow-mark-paving
             - name: MONGO_URI
