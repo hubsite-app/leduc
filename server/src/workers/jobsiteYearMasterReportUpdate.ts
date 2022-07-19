@@ -9,4 +9,4 @@ export default setInterval(async () => {
       `JobsiteYearMasterReport Worker Error: ${(e as Error).message}`
     );
   }
-}, 1 * 60 * 1000);
+}, 0.5 * 60 * 1000);
