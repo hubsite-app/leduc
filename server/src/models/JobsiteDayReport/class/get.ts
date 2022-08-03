@@ -57,7 +57,7 @@ const byJobsiteAndDay = async (
   jobsiteId: Id,
   day: Date
 ): Promise<JobsiteDayReportDocument | null> => {
-  const report = await JobsiteDayReport.findOne({
+  const reports = await JobsiteDayReport.find({
     jobsite: jobsiteId,
     date: {
       $gte: dayjs(day).startOf("day").toDate(),
@@ -65,7 +65,14 @@ const byJobsiteAndDay = async (
     },
   });
 
-  return report;
+  if (reports.length > 1) {
+    // Delete all but the first
+    for (let i = 1; i < reports.length; i++) {
+      await reports[i].removeFull();
+    }
+  }
+
+  return reports[0];
 };
 
 const byDateRange = async (

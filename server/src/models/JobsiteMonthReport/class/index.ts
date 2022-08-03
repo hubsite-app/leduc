@@ -1,4 +1,8 @@
-import { JobsiteMonthReportDocument, JobsiteMonthReportModel } from "@models";
+import {
+  JobsiteDayReportDocument,
+  JobsiteMonthReportDocument,
+  JobsiteMonthReportModel,
+} from "@models";
 import { IJobsiteMonthReportBuild } from "@typescript/jobsiteMonthReport";
 import { GetByIDOptions, Id } from "@typescript/models";
 import { ObjectType } from "type-graphql";
@@ -6,6 +10,7 @@ import { JobsiteMonthReportSchema } from "../schema";
 import build from "./build";
 import generate from "./generate";
 import get from "./get";
+import remove from "./remove";
 import update from "./update";
 
 @ObjectType()
@@ -40,6 +45,13 @@ export class JobsiteMonthReportClass extends JobsiteMonthReportSchema {
 
   public static async getByUpdatePending(this: JobsiteMonthReportModel) {
     return get.byUpdatePending(this);
+  }
+
+  public static async getByJobsiteDayReport(
+    this: JobsiteMonthReportModel,
+    jobsiteDayReport: JobsiteDayReportDocument
+  ) {
+    return get.byJobsiteDayReport(this, jobsiteDayReport);
   }
 
   public async getDayReports(this: JobsiteMonthReportDocument) {
@@ -102,5 +114,14 @@ export class JobsiteMonthReportClass extends JobsiteMonthReportSchema {
 
   public async generateExcel(this: JobsiteMonthReportDocument) {
     return generate.excel(this);
+  }
+
+  // ----- REMOVE -----
+
+  public async removeDayReport(
+    this: JobsiteMonthReportDocument,
+    dayReport: JobsiteDayReportDocument
+  ) {
+    return remove.dayReport(this, dayReport);
   }
 }

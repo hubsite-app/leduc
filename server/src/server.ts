@@ -76,7 +76,7 @@ const main = async () => {
       }
     }
   } catch (error: unknown) {
-    console.error(error);
+    console.error("Unknown server error:", error);
   }
 };
 

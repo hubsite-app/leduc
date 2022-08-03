@@ -80,6 +80,17 @@ const byUpdatePending = async (
   return reports;
 };
 
+const byJobsiteDayReport = async (
+  JobsiteMonthReport: JobsiteMonthReportModel,
+  jobsiteDayReport: JobsiteDayReportDocument
+): Promise<JobsiteMonthReportDocument[]> => {
+  const reports = await JobsiteMonthReport.find({
+    dayReports: jobsiteDayReport._id,
+  });
+
+  return reports;
+};
+
 /**
  * ----- Methods -----
  */
@@ -125,6 +136,7 @@ export default {
   byUpdateRequested,
   byUpdatePending,
   byDate,
+  byJobsiteDayReport,
   dayReports,
   jobsite,
   excelName,

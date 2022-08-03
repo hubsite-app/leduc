@@ -9,6 +9,7 @@ import {
   JobsiteDayReportDocument,
   Signup,
   SignupDocument,
+  System,
   User,
   UserDocument,
 } from "@models";
@@ -22,6 +23,13 @@ import {
 } from "@typescript/employee";
 import getRateForTime from "@utils/getRateForTime";
 import { IHit } from "@typescript/elasticsearch";
+
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 /**
  * ----- Static Methods -----
@@ -153,14 +161,15 @@ const employeeHourReports = async (
     days: [],
   };
 
-  const jobsiteDayReports: JobsiteDayReportDocument[] =
+  const jobsiteDayReports: JobsiteDayReportDocument[] = (
     await JobsiteDayReport.find({
       date: {
-        $gte: startTime,
-        $lte: endTime,
+        $gte: dayjs(startTime).startOf("day").toDate(),
+        $lte: dayjs(endTime).endOf("day").toDate(),
       },
       "employees.employee": employee._id,
-    });
+    })
+  ).sort((a, b) => a.date.getTime() - b.date.getTime());
 
   // Catalog hours for each day
   for (let i = 0; i < jobsiteDayReports.length; i++) {
@@ -171,10 +180,23 @@ const employeeHourReports = async (
         employeeReport.employee?.toString() === employee._id.toString()
     );
 
-    report.days.push({
-      date: jobsiteDayReport.date,
-      hours: employeeReport?.hours || 0,
-    });
+    const system = await System.getSystem();
+
+    // Check for existing day index
+    const existingIndex = report.days.findIndex((day) =>
+      dayjs(day.date)
+        .tz(system.timezone)
+        .isSame(dayjs(jobsiteDayReport.date).tz(system.timezone), "day")
+    );
+
+    if (existingIndex === -1) {
+      report.days.push({
+        date: jobsiteDayReport.date,
+        hours: employeeReport?.hours || 0,
+      });
+    } else {
+      report.days[existingIndex].hours += employeeReport?.hours || 0;
+    }
   }
 
   return report;

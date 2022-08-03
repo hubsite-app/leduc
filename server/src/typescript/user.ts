@@ -12,6 +12,15 @@ export enum UserRoles {
   Admin = 3,
 }
 
+// Trying to find a better way to manage roles
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+enum NewUserRoles {
+  Admin = 1,
+  ProjectManager = 2,
+  Foreman = 3,
+  Operator = 4,
+}
+
 registerEnumType(UserRoles, {
   name: "UserRoles",
 });

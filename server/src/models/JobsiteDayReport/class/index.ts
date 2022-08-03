@@ -13,6 +13,7 @@ import build from "./build";
 import create from "./create";
 import generate from "./generate";
 import get from "./get";
+import remove from "./remove";
 import update from "./update";
 
 @ObjectType()
@@ -178,5 +179,11 @@ export class JobsiteDayReportClass extends JobsiteDayReportSchema {
 
   public async generateCrewTypes(this: JobsiteDayReportDocument) {
     return generate.crewTypes(this);
+  }
+
+  // ----- REMOVE -----
+
+  public async removeFull(this: JobsiteDayReportDocument) {
+    return remove.full(this);
   }
 }

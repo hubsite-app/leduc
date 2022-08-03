@@ -79,7 +79,7 @@ const EmployeeHours = ({
 
         data.employeeHourReports.days.forEach((day) => {
           content.headers.push(
-            <Th isNumeric>{dayjs(day.date).utc().format("MMM DD, YYYY")}</Th>
+            <Th isNumeric>{dayjs(day.date).format("MMM DD, YYYY")}</Th>
           );
           content.rows.push(<Th isNumeric>{formatNumber(day.hours)}</Th>);
         });

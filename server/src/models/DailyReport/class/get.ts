@@ -39,6 +39,7 @@ import { IHit } from "@typescript/elasticsearch";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { timezoneEndOfDayinUTC, timezoneStartOfDayinUTC } from "@utils/time";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -183,8 +184,8 @@ const byJobsiteDayReport = async (
   if (!jobsiteDayReport.jobsite || !jobsiteDayReport.date)
     throw new Error("jobsiteDayReport does not have the correct fields");
 
-  const startOfDay = dayjs(jobsiteDayReport.date).startOf("day").toDate();
-  const endOfDay = dayjs(jobsiteDayReport.date).endOf("day").toDate();
+  const startOfDay = await timezoneStartOfDayinUTC(jobsiteDayReport.date);
+  const endOfDay = await timezoneEndOfDayinUTC(jobsiteDayReport.date);
 
   const dailyReports = await DailyReport.find({
     date: {
