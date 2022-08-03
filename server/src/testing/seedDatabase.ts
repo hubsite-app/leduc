@@ -55,6 +55,8 @@ const seedDatabase = async () => {
 
   // Create documents
 
+  await System.validateSystem();
+
   const jobsites = await createJobsites();
 
   const companies = await createCompanies();
@@ -73,8 +75,6 @@ const seedDatabase = async () => {
   const users = await createUsers();
   const vehicles = await createVehicles();
   const vehicleWork = await createVehicleWork();
-
-  await System.validateSystem();
 
   console.log("seeded");
 
