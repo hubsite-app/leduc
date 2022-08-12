@@ -1,10 +1,11 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 
-import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
-import { disconnectAndStopServer, prepareDatabase } from "@testing/jestDB";
 import { DailyReport, EmployeeWork } from "@models";
-import dayjs from "dayjs";
+import { disconnectAndStopServer, prepareDatabase } from "@testing/jestDB";
+import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
 import { IDailyReportCreate } from "@typescript/dailyReport";
+import { timezoneStartOfDayinUTC } from "@utils/time";
+import dayjs from "dayjs";
 
 let documents: SeededDatabase, mongoServer: MongoMemoryServer;
 const setupDatabase = async () => {
@@ -36,7 +37,9 @@ describe("Daily Report Class", () => {
 
           const dailyReport = await DailyReport.createDocument(data);
 
-          expect(dailyReport.date).toBe(data.date);
+          const startOfDay = await timezoneStartOfDayinUTC(data.date);
+
+          expect(dailyReport.date.toString()).toBe(startOfDay.toString());
           expect(dailyReport.crew?.toString()).toBe(data.crew._id.toString());
           expect(dailyReport.jobsite?.toString()).toBe(
             data.jobsite._id.toString()
