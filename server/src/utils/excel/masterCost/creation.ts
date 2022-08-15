@@ -1,4 +1,3 @@
-import ExcelJS from "exceljs";
 import {
   JobsiteYearMasterReportDocument,
   JobsiteYearMasterReportItemClass,
@@ -6,6 +5,8 @@ import {
   JobsiteYearReportDocument,
   System,
 } from "@models";
+import dayjs from "dayjs";
+import ExcelJS from "exceljs";
 import {
   generateMasterTable,
   IMasterRow,
@@ -97,6 +98,23 @@ const generateRows = async (
           100
         : 0;
 
+    // Get all revenue invoices for this jobsite
+    const revenueInvoices = await jobsite.getRevenueInvoices();
+
+    // Filter array of invoices that are external, not accrual, and within the year
+    const yearlyRevenueInvoices = revenueInvoices.filter(
+      (invoice) =>
+        !invoice.accrual &&
+        dayjs(invoice.date).isSame(jobsiteYearReport.startOfYear, "year")
+    );
+
+    // Get the last invoice by date
+    const lastRevenueInvoice = yearlyRevenueInvoices
+      .sort((a, b) => {
+        return dayjs(a.date).isAfter(dayjs(b.date)) ? 1 : -1;
+      })
+      .pop();
+
     // Handle Crew Type Costs
     const crewColumns: MasterCrewTotals = {} as MasterCrewTotals;
     for (
@@ -116,6 +134,9 @@ const generateRows = async (
 
     const row: IMasterRow = {
       jobsiteName: `${jobsite.jobcode} - ${jobsite.name}`,
+      lastInvoiceDate: lastRevenueInvoice
+        ? dayjs(lastRevenueInvoice.date).format("MMM D, YYYY")
+        : "",
       revenue,
       expenses: onSiteExpenses,
       overhead,

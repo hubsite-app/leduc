@@ -9,6 +9,7 @@ import {
 } from "@models";
 import { CrewTypes } from "@typescript/crew";
 import { TruckingRateTypes } from "@typescript/jobsite";
+import dayjs from "dayjs";
 import ExcelJS from "exceljs";
 import {
   generateMasterTable,
@@ -298,8 +299,24 @@ const generateTable = async (
         ? (netIncome / (totalExpenses - internalExpenseValue)) * 100
         : 0;
 
+    // Filter array of invoices that are external, not accrual, and within the year
+    const yearlyRevenueInvoices = allRevenueInvoices.filter(
+      (invoice) =>
+        !invoice.accrual && dayjs(invoice.date).isSame(endTime, "year")
+    );
+
+    // Get the last invoice by date
+    const lastRevenueInvoice = yearlyRevenueInvoices
+      .sort((a, b) => {
+        return dayjs(a.date).isAfter(dayjs(b.date)) ? 1 : -1;
+      })
+      .pop();
+
     const row: IMasterRow = {
       jobsiteName: `${jobsite.jobcode} - ${jobsite.name}`,
+      lastInvoiceDate: lastRevenueInvoice
+        ? dayjs(lastRevenueInvoice.date).format("MMM D, YYYY")
+        : "",
       revenue,
       expenses: onSiteExpenses,
       overhead,

@@ -1,11 +1,10 @@
-import { Types } from "mongoose";
 import {
   Company,
   CompanyDocument,
   InvoiceDocument,
   InvoiceModel,
 } from "@models";
-import { GetByIDOptions } from "@typescript/models";
+import { GetByIDOptions, Id } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 
 /**
@@ -17,7 +16,7 @@ const byIdDefaultOptions: GetByIDOptions = {
 };
 const byId = async (
   Invoice: InvoiceModel,
-  id: Types.ObjectId | string,
+  id: Id,
   options: GetByIDOptions = byIdDefaultOptions
 ): Promise<InvoiceDocument | null> => {
   options = populateOptions(options, byIdDefaultOptions);

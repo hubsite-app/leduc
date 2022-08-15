@@ -13,6 +13,7 @@ export type MasterCrewTotals = Record<CrewTypes, ICrewData>;
 
 export interface IMasterRow {
   jobsiteName: string;
+  lastInvoiceDate: string;
   revenue: number;
   expenses: number;
   overhead: number;
@@ -86,6 +87,7 @@ export const generateMasterTable = async (
     totalsRow: true,
     columns: [
       { name: jobsiteTitle, filterButton: true },
+      { name: "Last Invoiced", filterButton: true },
       { name: "Revenue", filterButton: true, totalsRowFunction: "sum" },
       { name: "Expenses", filterButton: true, totalsRowFunction: "sum" },
       { name: "Overhead", filterButton: true, totalsRowFunction: "sum" },
@@ -163,6 +165,7 @@ const generateRows = async (
 
     const row: Row = [
       rowData.jobsiteName,
+      rowData.lastInvoiceDate,
       rowData.revenue,
       rowData.expenses,
       rowData.overhead,
