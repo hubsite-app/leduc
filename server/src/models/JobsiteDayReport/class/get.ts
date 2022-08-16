@@ -7,6 +7,7 @@ import {
   VehicleDocument,
 } from "@models";
 import { Id, UpdateStatus } from "@typescript/models";
+import { timezoneEndOfDayinUTC, timezoneStartOfDayinUTC } from "@utils/time";
 import dayjs from "dayjs";
 
 const byJobsite = async (
@@ -60,8 +61,8 @@ const byJobsiteAndDay = async (
   const reports = await JobsiteDayReport.find({
     jobsite: jobsiteId,
     date: {
-      $gte: dayjs(day).startOf("day").toDate(),
-      $lt: dayjs(day).endOf("day").toDate(),
+      $gte: await timezoneStartOfDayinUTC(day),
+      $lte: await timezoneEndOfDayinUTC(day),
     },
   });
 

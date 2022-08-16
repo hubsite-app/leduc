@@ -11,8 +11,8 @@ import {
 import React from "react";
 import {
   CrewTypes,
-  JobsiteDayReportMaterialSnippetFragment,
   JobsiteDayReportFullSnippetFragment,
+  JobsiteDayReportMaterialSnippetFragment,
   JobsiteMaterialCardSnippetFragment,
 } from "../../../generated/graphql";
 import formatDate from "../../../utils/formatDate";
@@ -52,7 +52,9 @@ const JobsiteReportMaterialReports = ({
               .map((material) => material.crewType)
               .includes(crewType)
         )
-        .sort((a, b) => b.date - a.date);
+        .sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        );
     }, [crewType, dayReports]);
 
   /**

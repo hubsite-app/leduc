@@ -53,7 +53,9 @@ const JobsiteReportEmployeeReports = ({
               .map((employee) => employee.crewType)
               .includes(crewType)
         )
-        .sort((a, b) => b.date - a.date);
+        .sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        );
     }, [crewType, dayReports]);
 
   /**

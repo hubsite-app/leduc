@@ -11,9 +11,9 @@ import {
 import React from "react";
 import {
   CrewTypes,
-  VehicleCardSnippetFragment,
-  JobsiteDayReportVehicleSnippetFragment,
   JobsiteDayReportFullSnippetFragment,
+  JobsiteDayReportVehicleSnippetFragment,
+  VehicleCardSnippetFragment,
 } from "../../../generated/graphql";
 import createLink from "../../../utils/createLink";
 import formatDate from "../../../utils/formatDate";
@@ -53,7 +53,9 @@ const JobsiteReportVehicleReports = ({
               .map((vehicle) => vehicle.crewType)
               .includes(crewType)
         )
-        .sort((a, b) => b.date - a.date);
+        .sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        );
     }, [crewType, dayReports]);
 
   /**
