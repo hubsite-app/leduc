@@ -1,6 +1,7 @@
 import {
   JobsiteYearMasterReportDocument,
   JobsiteYearMasterReportModel,
+  JobsiteYearReportDocument,
 } from "@models";
 import { GetByIDOptions, Id } from "@typescript/models";
 import { ObjectType } from "type-graphql";
@@ -8,6 +9,7 @@ import { JobsiteYearMasterReportSchema } from "../schema";
 import build from "./build";
 import generate from "./generate";
 import get from "./get";
+import remove from "./remove";
 import update from "./update";
 
 @ObjectType()
@@ -37,6 +39,13 @@ export class JobsiteYearMasterReportClass extends JobsiteYearMasterReportSchema 
 
   public static async getByUpdatePending(this: JobsiteYearMasterReportModel) {
     return get.byUpdatePending(this);
+  }
+
+  public static async getByJobsiteYearReport(
+    this: JobsiteYearMasterReportModel,
+    jobsiteYearReport: JobsiteYearReportDocument
+  ) {
+    return get.byJobsiteYearReport(this, jobsiteYearReport);
   }
 
   public async getExcelName(this: JobsiteYearMasterReportDocument) {
@@ -76,5 +85,16 @@ export class JobsiteYearMasterReportClass extends JobsiteYearMasterReportSchema 
 
   public async generateExcel(this: JobsiteYearMasterReportDocument) {
     return generate.excel(this);
+  }
+
+  /**
+   * ----- Remove -----
+   */
+
+  public async removeJobsiteYearReport(
+    this: JobsiteYearMasterReportDocument,
+    jobsiteYearReport: JobsiteYearReportDocument
+  ) {
+    return remove.yearReport(this, jobsiteYearReport);
   }
 }

@@ -1,11 +1,11 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 
-import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
-import { disconnectAndStopServer, prepareDatabase } from "@testing/jestDB";
-import { IJobsiteUpdate } from "@typescript/jobsite";
 import { File, Jobsite, System } from "@models";
-import dayjs from "dayjs";
+import { disconnectAndStopServer, prepareDatabase } from "@testing/jestDB";
+import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
+import { IJobsiteUpdate } from "@typescript/jobsite";
 import { UserRoles } from "@typescript/user";
+import dayjs from "dayjs";
 import fs from "fs";
 import path from "path";
 
@@ -241,6 +241,83 @@ describe("Jobsite Class", () => {
 
           const notFound = await File.getById(fileObject.file || "");
           expect(notFound).toBeNull();
+        });
+      });
+    });
+
+    describe("removeDocument", () => {
+      describe("success", () => {
+        afterEach(async () => {
+          await setupDatabase();
+        });
+
+        test("should successfully remove jobsite, transfer materials and daily reports", async () => {
+          const jobsite = documents.jobsites.jobsite_2;
+
+          const originalTransferJobsite = await Jobsite.getById(
+            documents.jobsites.jobsite_1._id
+          );
+
+          const jobsiteDailyReportsLength = (await jobsite.getDailyReports())
+            .length;
+          const originalTransferJobsiteDRLength = (
+            await originalTransferJobsite?.getDailyReports()
+          )?.length;
+
+          await jobsite.removeDocument(documents.jobsites.jobsite_1._id);
+
+          const notFound = await Jobsite.getById(
+            documents.jobsites.jobsite_2._id
+          );
+          expect(notFound).toBeNull();
+
+          const transferJobsite = await Jobsite.getById(
+            documents.jobsites.jobsite_1._id
+          );
+
+          // Transfered materials
+          expect(transferJobsite?.materials.length).toBe(
+            jobsite.materials.length
+          );
+
+          // Transferred daily reports
+          const dailyReports = await transferJobsite?.getDailyReports();
+          expect(dailyReports?.length).toBe(
+            jobsiteDailyReportsLength + (originalTransferJobsiteDRLength || 0)
+          );
+        });
+
+        test("should successfully remove jobsite, transfer invoices", async () => {
+          const jobsite = documents.jobsites.jobsite_3;
+
+          await jobsite.removeDocument(documents.jobsites.jobsite_1._id);
+
+          const notFound = await Jobsite.getById(
+            documents.jobsites.jobsite_3._id
+          );
+          expect(notFound).toBeNull();
+
+          const transferJobsite = await Jobsite.getById(
+            documents.jobsites.jobsite_1._id
+          );
+
+          // Revenue invoices
+          expect(transferJobsite?.revenueInvoices.length).toBe(
+            jobsite.revenueInvoices.length
+          );
+
+          // Revenue invoices
+          expect(transferJobsite?.expenseInvoices.length).toBe(
+            jobsite.expenseInvoices.length
+          );
+        });
+      });
+
+      describe("error", () => {
+        test("should throw error if no tranfer jobsite is provided when it should", async () => {
+          const jobsite = documents.jobsites.jobsite_2;
+
+          await expect(jobsite.removeDocument()).rejects.toThrowError();
         });
       });
     });

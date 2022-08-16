@@ -13,22 +13,22 @@ import {
   VehicleDocument,
   VehicleWorkDocument,
 } from "@models";
-import { DailyReportSchema } from "../schema";
-import get, { IDailyReportSearchOptions } from "./get";
+import {
+  IDailyReportCreate,
+  IDailyReportUpdate,
+} from "@typescript/dailyReport";
 import {
   GetByIDOptions,
   Id,
   IListOptions,
   ISearchOptions,
 } from "@typescript/models";
-import {
-  IDailyReportCreate,
-  IDailyReportUpdate,
-} from "@typescript/dailyReport";
-import update from "./update";
-import remove from "./remove";
+import { DailyReportSchema } from "../schema";
 import create from "./create";
+import get, { IDailyReportSearchOptions } from "./get";
+import remove from "./remove";
 import reports from "./reports";
+import update, { IUpdateJobsiteOptions } from "./update";
 
 @ObjectType()
 export class DailyReportClass extends DailyReportSchema {
@@ -139,9 +139,10 @@ export class DailyReportClass extends DailyReportSchema {
 
   public async updateJobsite(
     this: DailyReportDocument,
-    jobsite: JobsiteDocument
+    jobsite: JobsiteDocument,
+    options?: IUpdateJobsiteOptions
   ) {
-    return update.jobsite(this, jobsite);
+    return update.jobsite(this, jobsite, options);
   }
 
   public async updateJobCostApproval(

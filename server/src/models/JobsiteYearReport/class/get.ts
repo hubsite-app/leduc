@@ -36,6 +36,17 @@ const byId = async (
   return jobsiteYearReport;
 };
 
+const byJobsite = async (
+  JobsiteYearReport: JobsiteYearReportModel,
+  jobsite: JobsiteDocument
+): Promise<JobsiteYearReportDocument[]> => {
+  const reports = await JobsiteYearReport.find({
+    jobsite: jobsite._id,
+  });
+
+  return reports;
+};
+
 const byJobsiteAndDate = async (
   JobsiteYearReport: JobsiteYearReportModel,
   jobsiteId: Id,
@@ -80,6 +91,17 @@ const byUpdatePending = async (
   return reports;
 };
 
+const byJobsiteDayReport = async (
+  JobsiteYearReport: JobsiteYearReportModel,
+  jobsiteDayReport: JobsiteDayReportDocument
+): Promise<JobsiteYearReportDocument[]> => {
+  const reports = await JobsiteYearReport.find({
+    dayReports: jobsiteDayReport._id,
+  });
+
+  return reports;
+};
+
 /**
  * ----- Methods -----
  */
@@ -119,6 +141,7 @@ const excelUrl = async (jobsiteYearReport: JobsiteYearReportDocument) => {
 
 export default {
   byId,
+  byJobsite,
   byDate,
   byJobsiteAndDate,
   byUpdateRequested,
@@ -127,4 +150,5 @@ export default {
   jobsite,
   excelName,
   excelUrl,
+  byJobsiteDayReport,
 };

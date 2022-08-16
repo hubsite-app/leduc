@@ -1,5 +1,6 @@
 import {
   JobsiteDayReportDocument,
+  JobsiteDocument,
   JobsiteMonthReportDocument,
   JobsiteMonthReportModel,
 } from "@models";
@@ -25,6 +26,13 @@ export class JobsiteMonthReportClass extends JobsiteMonthReportSchema {
     options?: GetByIDOptions
   ) {
     return get.byId(this, id, options);
+  }
+
+  public static async getByJobsite(
+    this: JobsiteMonthReportModel,
+    jobsite: JobsiteDocument
+  ) {
+    return get.byJobsite(this, jobsite);
   }
 
   public static async getByJobsiteAndDate(
@@ -117,6 +125,10 @@ export class JobsiteMonthReportClass extends JobsiteMonthReportSchema {
   }
 
   // ----- REMOVE -----
+
+  public async removeFull(this: JobsiteMonthReportDocument) {
+    return remove.full(this);
+  }
 
   public async removeDayReport(
     this: JobsiteMonthReportDocument,

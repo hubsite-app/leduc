@@ -1,4 +1,9 @@
-import { JobsiteYearReportDocument, JobsiteYearReportModel } from "@models";
+import {
+  JobsiteDayReportDocument,
+  JobsiteDocument,
+  JobsiteYearReportDocument,
+  JobsiteYearReportModel,
+} from "@models";
 import { IJobsiteReportBuild } from "@typescript/jobsiteReports";
 import { GetByIDOptions, Id } from "@typescript/models";
 import { ObjectType } from "type-graphql";
@@ -6,6 +11,7 @@ import { JobsiteYearReportSchema } from "../schema";
 import build from "./build";
 import generate from "./generate";
 import get from "./get";
+import remove from "./remove";
 import update from "./update";
 
 @ObjectType()
@@ -30,6 +36,13 @@ export class JobsiteYearReportClass extends JobsiteYearReportSchema {
     return get.byJobsiteAndDate(this, jobsiteId, date);
   }
 
+  public static async getByJobsite(
+    this: JobsiteYearReportModel,
+    jobsite: JobsiteDocument
+  ) {
+    return get.byJobsite(this, jobsite);
+  }
+
   public static async getByDate(this: JobsiteYearReportModel, date: Date) {
     return get.byDate(this, date);
   }
@@ -40,6 +53,13 @@ export class JobsiteYearReportClass extends JobsiteYearReportSchema {
 
   public static async getByUpdatePending(this: JobsiteYearReportModel) {
     return get.byUpdatePending(this);
+  }
+
+  public static async getByJobsiteDayReport(
+    this: JobsiteYearReportModel,
+    jobsiteDayReport: JobsiteDayReportDocument
+  ) {
+    return get.byJobsiteDayReport(this, jobsiteDayReport);
   }
 
   public async getDayReports(this: JobsiteYearReportDocument) {
@@ -102,5 +122,20 @@ export class JobsiteYearReportClass extends JobsiteYearReportSchema {
 
   public async generateExcel(this: JobsiteYearReportDocument) {
     return generate.excel(this);
+  }
+
+  /**
+   * ----- Remove -----
+   */
+
+  public async removeFull(this: JobsiteYearReportDocument) {
+    return remove.full(this);
+  }
+
+  public async removeDayReport(
+    this: JobsiteYearReportDocument,
+    jobsiteDayReport: JobsiteDayReportDocument
+  ) {
+    return remove.dayReport(this, jobsiteDayReport);
   }
 }

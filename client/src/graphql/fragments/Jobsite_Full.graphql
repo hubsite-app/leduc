@@ -26,6 +26,9 @@ fragment JobsiteFullSnippet on JobsiteClass {
   truckingRates {
     ...TruckingTypeRateSnippet
   }
+  materials {
+    _id
+  }
   fileObjects {
     _id
     minRole

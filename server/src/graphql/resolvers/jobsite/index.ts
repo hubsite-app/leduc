@@ -9,9 +9,9 @@ import {
   JobsiteDayReportClass,
   JobsiteDocument,
   JobsiteMaterialClass,
-  MaterialShipmentClass,
   JobsiteMonthReportClass,
   JobsiteYearReportClass,
+  MaterialShipmentClass,
 } from "@models";
 import { IContext, ListOptionData } from "@typescript/graphql";
 import { Id } from "@typescript/models";
@@ -219,5 +219,15 @@ export default class JobsiteResolver {
   @Mutation(() => JobsiteClass)
   async jobsiteRequestReportGeneration(@Arg("id", () => ID) id: Id) {
     return mutations.requestReportGeneration(id);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => Boolean)
+  async jobsiteRemove(
+    @Arg("id", () => ID) id: Id,
+    @Arg("transferJobsiteId", () => ID, { nullable: true })
+    transferJobsiteId: Id
+  ) {
+    return mutations.remove(id, transferJobsiteId);
   }
 }

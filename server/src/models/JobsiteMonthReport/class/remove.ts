@@ -1,5 +1,9 @@
 import { JobsiteDayReportDocument, JobsiteMonthReportDocument } from "@models";
 
+const full = async (jobsiteMonthReport: JobsiteMonthReportDocument) => {
+  await jobsiteMonthReport.save();
+};
+
 const dayReport = (
   jobsiteMonthReport: JobsiteMonthReportDocument,
   jobsiteDayReport: JobsiteDayReportDocument
@@ -15,4 +19,5 @@ const dayReport = (
 
 export default {
   dayReport,
+  full,
 };

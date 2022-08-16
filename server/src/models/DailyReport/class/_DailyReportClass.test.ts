@@ -99,6 +99,32 @@ describe("Daily Report Class", () => {
           );
           expect(dayjs(employeeWork[0].endTime).diff(newDate, "days")).toBe(0);
         });
+
+        test("should successfully update jobsite", async () => {
+          const dailyReport = documents.dailyReports.jobsite_2_base_1_1;
+
+          // Setup for update
+          const originalMaterialShipments =
+            await dailyReport.getMaterialShipments();
+          for (let i = 0; i < originalMaterialShipments.length; i++) {
+            originalMaterialShipments[i].noJobsiteMaterial = true;
+            originalMaterialShipments[i].jobsiteMaterial = undefined;
+            await originalMaterialShipments[i].save();
+          }
+
+          await dailyReport.updateDocument({
+            jobsiteId: documents.jobsites.jobsite_1._id,
+            date: dailyReport.date,
+          });
+
+          const materialShipments = await dailyReport.getMaterialShipments();
+
+          expect(materialShipments.length).toBe(4);
+
+          expect(materialShipments[0].vehicleObject?.truckingRateId).toEqual(
+            documents.jobsites.jobsite_1.truckingRates[0]._id
+          );
+        });
       });
     });
 

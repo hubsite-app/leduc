@@ -1,0 +1,3 @@
+mutation JobsiteRemove($id: ID!, $transferJobsiteId: ID) {
+  jobsiteRemove(id: $id, transferJobsiteId: $transferJobsiteId)
+}

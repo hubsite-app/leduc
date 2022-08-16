@@ -245,6 +245,15 @@ const requestReportGeneration = async (id: Id) => {
   return jobsite;
 };
 
+const remove = async (id: Id, transferJobsiteId?: Id) => {
+  const jobsite = await Jobsite.getById(id);
+  if (!jobsite) throw new Error("Unable to find jobsite");
+
+  await jobsite.removeDocument(transferJobsiteId);
+
+  return true;
+};
+
 export default {
   create,
   update,
@@ -258,4 +267,5 @@ export default {
   addFileObject,
   removeFileObject,
   requestReportGeneration,
+  remove,
 };

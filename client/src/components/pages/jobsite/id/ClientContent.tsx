@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
-import { FiEdit } from "react-icons/fi";
+import { FiEdit, FiTrash } from "react-icons/fi";
 import { useJobsiteFullQuery, UserRoles } from "../../../../generated/graphql";
 import { JobsiteQueryKeys } from "../../../../utils/createLink";
 import Card from "../../../Common/Card";
@@ -27,6 +27,7 @@ import JobsiteUpdateForm from "../../../Forms/Jobsite/JobsiteUpdate";
 import ExpenseInvoices from "./views/ExpenseInvoices";
 import JobsiteFileObjects from "./views/FileObjects";
 import JobsiteMaterialsCosting from "./views/JobsiteMaterials";
+import JobsiteRemoveModal from "./views/RemoveModal";
 import RevenueInvoices from "./views/RevenueInvoices";
 import TruckingRates from "./views/TruckingRates";
 
@@ -44,6 +45,11 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
   });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenRemove,
+    onOpen: onOpenRemove,
+    onClose: onCloseRemove,
+  } = useDisclosure();
 
   const router = useRouter();
 
@@ -85,12 +91,22 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
                   </Text>
                 )}
               </Box>
-              <IconButton
-                aria-label="edit"
-                icon={<FiEdit />}
-                backgroundColor="transparent"
-                onClick={() => onOpen()}
-              />
+              <SimpleGrid columns={2} spacing={2}>
+                <IconButton
+                  aria-label="edit"
+                  icon={<FiEdit />}
+                  backgroundColor="transparent"
+                  onClick={() => onOpen()}
+                />
+                <Permission>
+                  <IconButton
+                    onClick={onOpenRemove}
+                    aria-label="remove"
+                    icon={<FiTrash />}
+                    backgroundColor="transparent"
+                  />
+                </Permission>
+              </SimpleGrid>
             </Flex>
           </Card>
           <JobsiteFileObjects jobsite={jobsite} />
@@ -133,10 +149,25 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
               </ModalBody>
             </ModalContent>
           </Modal>
+          <JobsiteRemoveModal
+            jobsite={jobsite}
+            isOpen={isOpenRemove}
+            onClose={onCloseRemove}
+          />
         </Box>
       );
     } else return <Loading />;
-  }, [data, isOpen, jobsiteMaterialQuery, onClose, onOpen, router]);
+  }, [
+    data,
+    isOpen,
+    isOpenRemove,
+    jobsiteMaterialQuery,
+    onClose,
+    onCloseRemove,
+    onOpen,
+    onOpenRemove,
+    router,
+  ]);
 };
 
 export default JobsiteClientContent;

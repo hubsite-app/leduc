@@ -9,24 +9,24 @@ import {
   JobsiteModel,
   SystemDocument,
 } from "@models";
-import { JobsiteSchema } from "..";
-import get, { IJobsiteGetDailyReportOptions } from "./get";
-import {
-  GetByIDOptions,
-  Id,
-  IListOptions,
-  ISearchOptions,
-} from "@typescript/models";
 import {
   IJobsiteCreate,
   IJobsiteFileObject,
   IJobsiteUpdate,
   ITruckingTypeRateData,
 } from "@typescript/jobsite";
+import {
+  GetByIDOptions,
+  Id,
+  IListOptions,
+  ISearchOptions,
+} from "@typescript/models";
+import { JobsiteSchema } from "..";
 import create from "./create";
-import update from "./update";
+import get, { IJobsiteGetDailyReportOptions } from "./get";
 import interact from "./interact";
 import remove from "./remove";
+import update from "./update";
 
 @ObjectType()
 export class JobsiteClass extends JobsiteSchema {
@@ -176,6 +176,10 @@ export class JobsiteClass extends JobsiteSchema {
   /**
    * ----- Remove -----
    */
+
+  public async removeDocument(this: JobsiteDocument, transferJobsiteId?: Id) {
+    return remove.document(this, transferJobsiteId);
+  }
 
   public async removeFileObject(this: JobsiteDocument, fileObjectId: Id) {
     return remove.fileObject(this, fileObjectId);

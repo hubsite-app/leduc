@@ -23,6 +23,19 @@ const createJobsites = async (): Promise<SeededJobsites> => {
         file: _ids.files.jobsite_1_file_1._id,
       },
     ],
+    truckingRates: [
+      {
+        _id: _ids.jobsites.jobsite_1.truckingRates[0],
+        title: "Tandem",
+        rates: [
+          {
+            date: new Date(),
+            rate: 110,
+            type: TruckingRateTypes.Hour,
+          },
+        ],
+      },
+    ],
   });
 
   const jobsite_2 = new Jobsite({

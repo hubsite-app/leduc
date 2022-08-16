@@ -1,6 +1,7 @@
 import {
   JobsiteYearMasterReportDocument,
   JobsiteYearMasterReportModel,
+  JobsiteYearReportDocument,
 } from "@models";
 import { GetByIDOptions, Id, UpdateStatus } from "@typescript/models";
 import { getFileSignedUrl } from "@utils/fileStorage";
@@ -63,6 +64,17 @@ const byUpdatePending = async (
   return reports;
 };
 
+const byJobsiteYearReport = async (
+  JobsiteYearMasterReport: JobsiteYearMasterReportModel,
+  jobsiteYearReport: JobsiteYearReportDocument
+): Promise<JobsiteYearMasterReportDocument | null> => {
+  const jobsiteYearMasterReport = await JobsiteYearMasterReport.findOne({
+    "reports.report": jobsiteYearReport._id,
+  });
+
+  return jobsiteYearMasterReport;
+};
+
 /**
  * ----- Methods -----
  */
@@ -90,6 +102,7 @@ export default {
   byDate,
   byUpdateRequested,
   byUpdatePending,
+  byJobsiteYearReport,
   excelName,
   excelUrl,
 };

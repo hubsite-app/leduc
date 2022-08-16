@@ -36,6 +36,17 @@ const byId = async (
   return jobsiteMonthReport;
 };
 
+const byJobsite = async (
+  JobsiteMonthReport: JobsiteMonthReportModel,
+  jobsite: JobsiteDocument
+): Promise<JobsiteMonthReportDocument[]> => {
+  const reports = await JobsiteMonthReport.find({
+    jobsite: jobsite._id,
+  });
+
+  return reports;
+};
+
 const byJobsiteAndDate = async (
   JobsiteMonthReport: JobsiteMonthReportModel,
   jobsiteId: Id,
@@ -132,6 +143,7 @@ const excelUrl = async (jobsiteMonthReport: JobsiteMonthReportDocument) => {
 
 export default {
   byId,
+  byJobsite,
   byJobsiteAndDate,
   byUpdateRequested,
   byUpdatePending,

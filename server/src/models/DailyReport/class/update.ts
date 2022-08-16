@@ -11,6 +11,7 @@ import {
   VehicleWorkDocument,
 } from "@models";
 import { IDailyReportUpdate } from "@typescript/dailyReport";
+import populateOptions from "@utils/populateOptions";
 
 const document = async (
   dailyReport: DailyReportDocument,
@@ -52,18 +53,67 @@ const date = async (
   return { employeeWork, materialShipments };
 };
 
+export interface IUpdateJobsiteOptions {
+  checkMaterials?: boolean;
+  checkTrucking?: boolean;
+}
+const jobsiteDefaultOptions: IUpdateJobsiteOptions = {
+  checkMaterials: true,
+  checkTrucking: true,
+};
 const jobsite = async (
   dailyReport: DailyReportDocument,
-  jobsite: JobsiteDocument
+  jobsite: JobsiteDocument,
+  options?: IUpdateJobsiteOptions
 ) => {
+  options = populateOptions(options, jobsiteDefaultOptions);
+
+  const currentJobsite = await dailyReport.getJobsite();
+
   const materialShipments = await dailyReport.getMaterialShipments();
   let canUpdate = true;
   for (let i = 0; i < materialShipments.length; i++) {
+    // Handle materials
     if (
+      options?.checkMaterials &&
       materialShipments[i].noJobsiteMaterial === false &&
       materialShipments[i].jobsiteMaterial
     ) {
       canUpdate = false;
+    }
+
+    const materialShipment = materialShipments[i];
+    // Handle trucking rates
+    if (
+      canUpdate &&
+      options?.checkTrucking &&
+      materialShipment.vehicleObject?.truckingRateId
+    ) {
+      // Find current trucking rate
+      const currentTruckingRate = currentJobsite.truckingRates.find(
+        (rate) =>
+          rate._id?.toString() ===
+          materialShipment.vehicleObject?.truckingRateId?.toString()
+      );
+
+      if (currentTruckingRate) {
+        // Try find matching trucking rate in new jobsite
+        const truckingRate = jobsite.truckingRates.find((rate) => {
+          return rate.title.toString() === currentTruckingRate.title;
+        });
+
+        if (truckingRate) {
+          // Set trucking rate to rate with matching title in new jobsite
+          materialShipment.vehicleObject.truckingRateId = truckingRate._id;
+          materialShipments[i].vehicleObject = materialShipment.vehicleObject;
+
+          await materialShipments[i].save();
+        } else {
+          throw new Error(
+            `Unable to find matching trucking rate for daily report ${dailyReport._id}. Please manually update trucking for material shipment.`
+          );
+        }
+      }
     }
   }
 
