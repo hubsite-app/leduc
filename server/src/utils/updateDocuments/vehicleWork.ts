@@ -28,7 +28,7 @@ const updateToV2 = async () => {
         await vehicleWork.archive();
       }
 
-      if (vehicleWork.hours === null || vehicleWork === undefined) {
+      if (vehicleWork.hours === null || vehicleWork.hours === undefined) {
         let hours = 0;
         if (vehicleWork.startTime && vehicleWork.endTime) {
           hours = dayjs(vehicleWork.endTime).diff(

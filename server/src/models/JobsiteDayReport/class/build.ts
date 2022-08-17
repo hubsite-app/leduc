@@ -5,10 +5,10 @@ import {
   System,
 } from "@models";
 
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
 import { timezoneStartOfDayinUTC } from "@utils/time";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -51,6 +51,24 @@ const allForJobsite = async (
     reports.push(
       await JobsiteDayReport.requestBuildForJobsiteDay(jobsite, uniqueDates[i])
     );
+  }
+
+  /**
+   * ENSURE THIS IS ONLY DONE IF USING ALL DAY REPORTS FOR JOBSITE
+   * AND NOT A PARTICULAR DATE RANGE
+   */
+  const allReports = await JobsiteDayReport.getByJobsite(jobsite);
+
+  // Get all reports from all that are not in the generated list
+  const missingReports = allReports.filter((report) => {
+    return !reports.some(
+      (generated) => generated._id.toString() === report._id.toString()
+    );
+  });
+
+  // Delete all missing reports
+  for (let i = 0; i < missingReports.length; i++) {
+    await missingReports[i].removeFull();
   }
 
   return reports;
