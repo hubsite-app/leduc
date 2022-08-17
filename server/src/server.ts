@@ -15,7 +15,7 @@ import mongoose from "mongoose";
 import createApp from "./app";
 import elasticsearch from "./elasticsearch";
 
-// import saveAll from "@testing/saveAll";
+import saveAll from "@testing/saveAll";
 
 let workerEnabled = true,
   apiEnabled = true;
@@ -63,7 +63,7 @@ const main = async () => {
         if (production) {
           // await saveAll();
         } else {
-          // await saveAll([], "es");
+          await saveAll([], "es");
         }
       }
 
