@@ -7,6 +7,7 @@ import {
   UserRoles,
 } from "../../../generated/graphql";
 import createLink from "../../../utils/createLink";
+import jobsiteName from "../../../utils/jobsiteName";
 import Card from "../Card";
 import Permission from "../Permission";
 import TextGrid from "../TextGrid";
@@ -28,8 +29,11 @@ const DailyReportCard = ({ dailyReport }: IDailyReportCard) => {
               fontWeight="bold"
               fontSize="lg"
             >
-              {dailyReport.jobsite.name} -{" "}
-              {dayjs(dailyReport.date).format("MMMM DD, YYYY")}
+              {jobsiteName(
+                dailyReport.jobsite.name,
+                dailyReport.jobsite.jobcode
+              )}{" "}
+              - {dayjs(dailyReport.date).format("MMMM DD, YYYY")}
             </TextLink>
           </Box>
           <HStack spacing={1}>

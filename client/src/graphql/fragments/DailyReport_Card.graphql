@@ -6,6 +6,7 @@ fragment DailyReportCardSnippet on DailyReportClass {
   jobsite {
     _id
     name
+    jobcode
   }
   crew {
     _id
