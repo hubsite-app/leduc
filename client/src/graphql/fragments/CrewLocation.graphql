@@ -1,0 +1,13 @@
+fragment CrewLocationSnippet on CrewLocationClass {
+  crew {
+    _id
+    name
+  }
+  days {
+    date
+    items {
+      jobsiteName
+      dailyReportId
+    }
+  }
+}

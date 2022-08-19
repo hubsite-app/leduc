@@ -1,0 +1,5 @@
+query CrewLocations($startTime: DateTime, $endTime: DateTime) {
+  crewLocations(startTime: $startTime, endTime: $endTime) {
+    ...CrewLocationSnippet
+  }
+}
