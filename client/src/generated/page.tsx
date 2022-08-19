@@ -183,6 +183,41 @@ export const ssrCompanyCard = {
       withPage: withPageCompanyCard,
       usePage: useCompanyCard,
     }
+export async function getServerPageCrewLocations
+    (options: Omit<Apollo.QueryOptions<Types.CrewLocationsQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.CrewLocationsQuery>({ ...options, query: Operations.CrewLocationsDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useCrewLocations = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CrewLocationsQuery, Types.CrewLocationsQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.CrewLocationsDocument, options);
+};
+export type PageCrewLocationsComp = React.FC<{data?: Types.CrewLocationsQuery, error?: Apollo.ApolloError}>;
+export const withPageCrewLocations = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CrewLocationsQuery, Types.CrewLocationsQueryVariables>) => (WrappedComponent:PageCrewLocationsComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.CrewLocationsDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrCrewLocations = {
+      getServerPage: getServerPageCrewLocations,
+      withPage: withPageCrewLocations,
+      usePage: useCrewLocations,
+    }
 export async function getServerPageCrewSearch
     (options: Omit<Apollo.QueryOptions<Types.CrewSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);

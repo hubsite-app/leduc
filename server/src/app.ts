@@ -1,19 +1,23 @@
-import express from "express";
-import { createServer } from "http";
-import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
-import { Server } from "ws";
-import { useServer } from "graphql-ws/lib/use/ws";
-import cors from "cors";
-import { graphqlUploadExpress } from "graphql-upload";
-import { buildTypeDefsAndResolvers } from "type-graphql";
 import { makeExecutableSchema } from "@graphql-tools/schema";
+import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import { ApolloServer } from "apollo-server-express";
+import cors from "cors";
+import express from "express";
+import { graphqlUploadExpress } from "graphql-upload";
+import { useServer } from "graphql-ws/lib/use/ws";
+import { createServer } from "http";
 import jwt from "jsonwebtoken";
+import { buildTypeDefsAndResolvers } from "type-graphql";
+import { Server } from "ws";
 
 import { IContext } from "@typescript/graphql";
 
 import CompanyResolver from "@graphql/resolvers/company";
-import CrewResolver from "@graphql/resolvers/crew";
+import CrewResolver, {
+  CrewLocationDayItemResolver,
+  CrewLocationDayResolver,
+  CrewLocationResolver,
+} from "@graphql/resolvers/crew";
 import DailyReportResolver from "@graphql/resolvers/dailyReport";
 import EmployeeResolver from "@graphql/resolvers/employee";
 import EmployeeReportResolver from "@graphql/resolvers/employeeReport";
@@ -48,10 +52,10 @@ import VehicleWorkResolver from "@graphql/resolvers/vehicleWork";
 
 import SearchResolver from "@graphql/resolvers/search";
 
-import { User, UserDocument } from "@models";
-import authChecker from "@utils/authChecker";
 import { logger } from "@logger";
+import { User, UserDocument } from "@models";
 import pubsub from "@pubsub";
+import authChecker from "@utils/authChecker";
 
 const createApp = async () => {
   const app = express();
@@ -64,6 +68,9 @@ const createApp = async () => {
     resolvers: [
       CompanyResolver,
       CrewResolver,
+      CrewLocationDayItemResolver,
+      CrewLocationDayResolver,
+      CrewLocationResolver,
       DailyReportResolver,
       EmployeeResolver,
       EmployeeReportResolver,

@@ -1,14 +1,14 @@
 import { Types } from "mongoose";
 
 import { CrewDocument, CrewModel, VehicleDocument } from "@models";
+import { ICrewCreate, ICrewUpdate } from "@typescript/crew";
+import { GetByIDOptions, Id, ISearchOptions } from "@typescript/models";
 import { ObjectType } from "type-graphql";
 import { CrewSchema } from "../schema";
+import create from "./create";
 import get from "./get";
-import { GetByIDOptions, Id, ISearchOptions } from "@typescript/models";
 import remove from "./remove";
 import update from "./update";
-import { ICrewCreate, ICrewUpdate } from "@typescript/crew";
-import create from "./create";
 
 @ObjectType()
 export class CrewClass extends CrewSchema {
@@ -42,6 +42,14 @@ export class CrewClass extends CrewSchema {
 
   public static async getPlaceholderCrew(this: CrewModel) {
     return get.placeholderCrew(this);
+  }
+
+  public static async getCrewLocations(
+    this: CrewModel,
+    startDate?: Date,
+    endDate?: Date
+  ) {
+    return get.crewLocations(this, startDate, endDate);
   }
 
   public async getEmployees(this: CrewDocument) {

@@ -1,5 +1,7 @@
 import { Types } from "mongoose";
 
+import ElasticSearchIndices from "@constants/ElasticSearchIndices";
+import ElasticsearchClient from "@elasticsearch/client";
 import {
   CrewDocument,
   CrewModel,
@@ -12,12 +14,17 @@ import {
   Vehicle,
   VehicleDocument,
 } from "@models";
+import {
+  CrewLocationClass,
+  CrewLocationDayClass,
+  CrewTypes,
+  ICrewSearchObject,
+} from "@typescript/crew";
+import { IHit } from "@typescript/elasticsearch";
 import { GetByIDOptions, ISearchOptions } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
-import { CrewTypes, ICrewSearchObject } from "@typescript/crew";
-import ElasticsearchClient from "@elasticsearch/client";
-import ElasticSearchIndices from "@constants/ElasticSearchIndices";
-import { IHit } from "@typescript/elasticsearch";
+import { timezoneStartOfDayinUTC } from "@utils/time";
+import dayjs from "dayjs";
 
 /**
  * ----- Static Methods -----
@@ -125,6 +132,93 @@ const placeholderCrew = async (Crew: CrewModel): Promise<CrewDocument> => {
   return crew;
 };
 
+const crewLocations = async (
+  Crew: CrewModel,
+  startDate: Date = dayjs().startOf("month").toDate(),
+  endDate: Date = dayjs().endOf("month").toDate()
+): Promise<CrewLocationClass[]> => {
+  const crews = await Crew.find({
+    archivedAt: null,
+  });
+
+  const jobsiteNameCatalog: { [key: string]: string } = {};
+
+  const crewLocations: CrewLocationClass[] = [];
+
+  for (let i = 0; i < crews.length; i++) {
+    const crew = crews[i];
+
+    const dailyReports = await DailyReport.find({
+      date: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+      crew: crew._id,
+    });
+
+    if (dailyReports.length > 0) {
+      crewLocations.push({
+        crew,
+        days: [],
+      });
+    }
+
+    // Get unique days from list of daily reports
+    const uniqueDays: string[] = [];
+    for (let j = 0; j < dailyReports.length; j++) {
+      const dailyReport = dailyReports[j];
+      const startOfDay = await timezoneStartOfDayinUTC(dailyReport.date);
+
+      // Determine if this daily report date is a unique date
+
+      if (!uniqueDays.includes(startOfDay.toISOString())) {
+        // New unique date
+        uniqueDays.push(startOfDay.toISOString());
+
+        const locationDay: CrewLocationDayClass = {
+          date: startOfDay,
+          items: [
+            {
+              dailyReportId: dailyReport._id,
+              jobsiteName: (await dailyReport.getJobsite()).name,
+            },
+          ],
+        };
+
+        crewLocations[crewLocations.length - 1].days.push(locationDay);
+      } else {
+        // Existing unique date
+        const locationDay =
+          crewLocations[crewLocations.length - 1].days[
+            uniqueDays.indexOf(startOfDay.toISOString())
+          ];
+
+        let jobsiteName = "";
+
+        if (dailyReport.jobsite) {
+          if (jobsiteNameCatalog[dailyReport.jobsite?.toString()]) {
+            jobsiteName = jobsiteNameCatalog[dailyReport.jobsite?.toString()];
+          } else {
+            jobsiteName = (await dailyReport.getJobsite()).name;
+            jobsiteNameCatalog[dailyReport.jobsite?.toString()] = jobsiteName;
+          }
+
+          locationDay.items.push({
+            dailyReportId: dailyReport._id,
+            jobsiteName: jobsiteName,
+          });
+
+          crewLocations[crewLocations.length - 1].days[
+            uniqueDays.indexOf(startOfDay.toISOString())
+          ] = locationDay;
+        }
+      }
+    }
+  }
+
+  return crewLocations;
+};
+
 /**
  * ----- Methods -----
  */
@@ -172,4 +266,5 @@ export default {
   vehicles,
   jobsites,
   dailyReports,
+  crewLocations,
 };

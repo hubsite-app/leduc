@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Code,
@@ -10,6 +9,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  SimpleGrid,
   Table,
   Tbody,
   Tfoot,
@@ -19,13 +19,16 @@ import {
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
-import { JobsiteYearMasterReportFullSnippetFragment } from "../../../generated/graphql";
-import JobsiteMasterRow from "./Row";
-import formatNumber from "../../../utils/formatNumber";
-import ReportSummaryCard from "../ReportSummary";
+import React from "react";
+import { FiCalendar, FiMap } from "react-icons/fi";
 import { useSystem } from "../../../contexts/System";
-import { FiCalendar } from "react-icons/fi";
+import { JobsiteYearMasterReportFullSnippetFragment } from "../../../generated/graphql";
+import formatNumber from "../../../utils/formatNumber";
 import JobsiteMasterReportExcelGenerate from "../../Forms/JobsiteMasterReport/ExcelGenerate";
+import CrewLocationsModal from "../CrewLocations/Modal";
+import CrewLocationsTable from "../CrewLocations/Table";
+import ReportSummaryCard from "../ReportSummary";
+import JobsiteMasterRow from "./Row";
 
 interface IJobsiteMaster {
   report: JobsiteYearMasterReportFullSnippetFragment;
@@ -41,6 +44,12 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
   } = useSystem();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const {
+    isOpen: isOpenCrewLocationReport,
+    onOpen: onOpenCrewLocationReport,
+    onClose: onCloseCrewLocationReport,
+  } = useDisclosure();
 
   /**
    * ----- Variables -----
@@ -245,12 +254,20 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
           excelDownloadUrl={report.excelDownloadUrl}
           extraButtons={[
             <Box key={1}>
-              <IconButton
-                icon={<FiCalendar />}
-                aria-label="create report"
-                backgroundColor="transparent"
-                onClick={() => onOpen()}
-              />
+              <SimpleGrid columns={2} spacing={0} mr={2}>
+                <IconButton
+                  icon={<FiMap />}
+                  aria-label="crew-location-report"
+                  backgroundColor="transparent"
+                  onClick={() => onOpenCrewLocationReport()}
+                />
+                <IconButton
+                  icon={<FiCalendar />}
+                  aria-label="create report"
+                  backgroundColor="transparent"
+                  onClick={() => onOpen()}
+                />
+              </SimpleGrid>
               <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
@@ -261,6 +278,10 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
                   </ModalBody>
                 </ModalContent>
               </Modal>
+              <CrewLocationsModal
+                isOpen={isOpenCrewLocationReport}
+                onClose={onCloseCrewLocationReport}
+              />
             </Box>,
           ]}
         />

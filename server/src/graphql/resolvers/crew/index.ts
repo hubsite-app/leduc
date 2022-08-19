@@ -8,6 +8,11 @@ import {
   JobsiteClass,
   VehicleClass,
 } from "@models";
+import {
+  CrewLocationClass,
+  CrewLocationDayClass,
+  CrewLocationDayItemClass,
+} from "@typescript/crew";
 import { Id } from "@typescript/models";
 import {
   Arg,
@@ -72,6 +77,14 @@ export default class CrewResolver {
     );
   }
 
+  @Query(() => [CrewLocationClass])
+  async crewLocations(
+    @Arg("startTime", () => Date, { nullable: true }) startTime?: Date,
+    @Arg("endTime", () => Date, { nullable: true }) endTime?: Date
+  ) {
+    return Crew.getCrewLocations(startTime, endTime);
+  }
+
   /**
    * ----- Mutations -----
    */
@@ -133,3 +146,17 @@ export default class CrewResolver {
     return mutations.archive(id);
   }
 }
+
+@Resolver(() => CrewLocationClass)
+export class CrewLocationResolver {
+  @FieldResolver(() => [CrewClass])
+  async crew(@Root() crewLocation: CrewLocationClass) {
+    return Crew.getById(crewLocation.crew._id);
+  }
+}
+
+@Resolver(() => CrewLocationDayClass)
+export class CrewLocationDayResolver {}
+
+@Resolver(() => CrewLocationDayItemClass)
+export class CrewLocationDayItemResolver {}

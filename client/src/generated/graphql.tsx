@@ -51,6 +51,24 @@ export type CrewCreateData = {
   type: CrewTypes;
 };
 
+export type CrewLocationClass = {
+  __typename?: 'CrewLocationClass';
+  crew: CrewClass;
+  days: Array<CrewLocationDayClass>;
+};
+
+export type CrewLocationDayClass = {
+  __typename?: 'CrewLocationDayClass';
+  date: Scalars['DateTime'];
+  items: Array<CrewLocationDayItemClass>;
+};
+
+export type CrewLocationDayItemClass = {
+  __typename?: 'CrewLocationDayItemClass';
+  dailyReportId: Scalars['ID'];
+  jobsiteName: Scalars['String'];
+};
+
 export type CrewTypeOnSiteSummaryClass = {
   __typename?: 'CrewTypeOnSiteSummaryClass';
   _id: Scalars['ID'];
@@ -1083,6 +1101,7 @@ export type Query = {
   companySearch: Array<CompanyClass>;
   crew: CrewClass;
   crewList: Array<CrewClass>;
+  crewLocations: Array<CrewLocationClass>;
   crewSearch: Array<CrewClass>;
   currentUser: UserClass;
   dailyReport: DailyReportClass;
@@ -1133,6 +1152,12 @@ export type QueryCompanySearchArgs = {
 
 export type QueryCrewArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryCrewLocationsArgs = {
+  endTime?: InputMaybe<Scalars['DateTime']>;
+  startTime?: InputMaybe<Scalars['DateTime']>;
 };
 
 
@@ -1557,6 +1582,8 @@ export type VehicleWorkUpdateData = {
 };
 
 export type CompanyCardSnippetFragment = { __typename?: 'CompanyClass', _id: string, name: string };
+
+export type CrewLocationSnippetFragment = { __typename?: 'CrewLocationClass', crew: { __typename?: 'CrewClass', _id: string, name: string }, days: Array<{ __typename?: 'CrewLocationDayClass', date: any, items: Array<{ __typename?: 'CrewLocationDayItemClass', jobsiteName: string, dailyReportId: string }> }> };
 
 export type CrewCardSnippetFragment = { __typename?: 'CrewClass', _id: string, name: string };
 
@@ -2251,6 +2278,14 @@ export type CompanyCardQueryVariables = Exact<{
 
 export type CompanyCardQuery = { __typename?: 'Query', company: { __typename?: 'CompanyClass', _id: string, name: string } };
 
+export type CrewLocationsQueryVariables = Exact<{
+  startTime?: InputMaybe<Scalars['DateTime']>;
+  endTime?: InputMaybe<Scalars['DateTime']>;
+}>;
+
+
+export type CrewLocationsQuery = { __typename?: 'Query', crewLocations: Array<{ __typename?: 'CrewLocationClass', crew: { __typename?: 'CrewClass', _id: string, name: string }, days: Array<{ __typename?: 'CrewLocationDayClass', date: any, items: Array<{ __typename?: 'CrewLocationDayItemClass', jobsiteName: string, dailyReportId: string }> }> }> };
+
 export type CrewSearchQueryVariables = Exact<{
   searchString: Scalars['String'];
   options?: InputMaybe<SearchOptions>;
@@ -2609,6 +2644,21 @@ export type JobsiteYearReportSubSubscriptionVariables = Exact<{
 
 export type JobsiteYearReportSubSubscription = { __typename?: 'Subscription', jobsiteYearReportSub?: { __typename?: 'JobsiteYearReportClass', crewTypes: Array<CrewTypes>, excelDownloadUrl?: string | null, _id: string, startOfYear: any, dayReports: Array<{ __typename?: 'JobsiteDayReportClass', _id: string, date: any, crewTypes: Array<CrewTypes>, employees: Array<{ __typename?: 'EmployeeReportClass', _id: string, rate: number, hours: number, crewType: CrewTypes, employee?: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } | null, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', jobTitle: string }> }>, vehicles: Array<{ __typename?: 'VehicleReportClass', _id: string, rate: number, hours: number, crewType: CrewTypes, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', jobTitle?: string | null }> }>, materials: Array<{ __typename?: 'MaterialReportClass', _id: string, deliveredRateId?: string | null, rate: number, quantity: number, crewType: CrewTypes, jobsiteMaterial: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, costType: JobsiteMaterialCostType, delivered?: boolean | null, canRemove: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }>, deliveredRates: Array<{ __typename?: 'JobsiteMaterialDeliveredRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }> }>, invoices?: Array<{ __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } }> | null } }>, nonCostedMaterials: Array<{ __typename?: 'NonCostedMaterialReportClass', _id: string, materialName: string, supplierName: string, quantity: number, crewType: CrewTypes }>, trucking: Array<{ __typename?: 'TruckingReportClass', _id: string, truckingType: string, quantity: number, hours?: number | null, type: TruckingRateTypes, rate: number, crewType: CrewTypes }>, summary: { __typename?: 'OnSiteSummaryReportClass', employeeHours: number, employeeCost: number, vehicleHours: number, vehicleCost: number, materialQuantity: number, materialCost: number, nonCostedMaterialQuantity: number, truckingQuantity: number, truckingHours: number, truckingCost: number, crewTypeSummaries: Array<{ __typename?: 'CrewTypeOnSiteSummaryClass', crewType: CrewTypes, employeeHours: number, employeeCost: number, vehicleHours: number, vehicleCost: number, materialQuantity: number, materialCost: number, nonCostedMaterialQuantity: number, truckingQuantity: number, truckingHours: number, truckingCost: number }> } }>, expenseInvoices: Array<{ __typename?: 'InvoiceReportClass', _id: string, value: number, internal: boolean, accrual: boolean, invoice: { __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } } }>, revenueInvoices: Array<{ __typename?: 'InvoiceReportClass', _id: string, value: number, internal: boolean, accrual: boolean, invoice: { __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } } }>, summary: { __typename?: 'RangeSummaryReportClass', externalExpenseInvoiceValue: number, internalExpenseInvoiceValue: number, accrualExpenseInvoiceValue: number, externalRevenueInvoiceValue: number, internalRevenueInvoiceValue: number, accrualRevenueInvoiceValue: number }, issues: Array<{ __typename?: 'ReportIssueFullClass', _id: string, type: ReportIssueTypes, amount?: number | null, employee?: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } | null, vehicle?: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } | null, jobsiteMaterial?: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, costType: JobsiteMaterialCostType, delivered?: boolean | null, canRemove: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string }, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }>, deliveredRates: Array<{ __typename?: 'JobsiteMaterialDeliveredRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }> }>, invoices?: Array<{ __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } }> | null } | null }>, update: { __typename?: 'UpdateClass', status: UpdateStatus, lastUpdatedAt?: any | null }, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } } | null };
 
+export const CrewLocationSnippetFragmentDoc = gql`
+    fragment CrewLocationSnippet on CrewLocationClass {
+  crew {
+    _id
+    name
+  }
+  days {
+    date
+    items {
+      jobsiteName
+      dailyReportId
+    }
+  }
+}
+    `;
 export const MaterialCardSnippetFragmentDoc = gql`
     fragment MaterialCardSnippet on MaterialClass {
   _id
@@ -5990,6 +6040,42 @@ export function useCompanyCardLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type CompanyCardQueryHookResult = ReturnType<typeof useCompanyCardQuery>;
 export type CompanyCardLazyQueryHookResult = ReturnType<typeof useCompanyCardLazyQuery>;
 export type CompanyCardQueryResult = Apollo.QueryResult<CompanyCardQuery, CompanyCardQueryVariables>;
+export const CrewLocationsDocument = gql`
+    query CrewLocations($startTime: DateTime, $endTime: DateTime) {
+  crewLocations(startTime: $startTime, endTime: $endTime) {
+    ...CrewLocationSnippet
+  }
+}
+    ${CrewLocationSnippetFragmentDoc}`;
+
+/**
+ * __useCrewLocationsQuery__
+ *
+ * To run a query within a React component, call `useCrewLocationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCrewLocationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCrewLocationsQuery({
+ *   variables: {
+ *      startTime: // value for 'startTime'
+ *      endTime: // value for 'endTime'
+ *   },
+ * });
+ */
+export function useCrewLocationsQuery(baseOptions?: Apollo.QueryHookOptions<CrewLocationsQuery, CrewLocationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CrewLocationsQuery, CrewLocationsQueryVariables>(CrewLocationsDocument, options);
+      }
+export function useCrewLocationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CrewLocationsQuery, CrewLocationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CrewLocationsQuery, CrewLocationsQueryVariables>(CrewLocationsDocument, options);
+        }
+export type CrewLocationsQueryHookResult = ReturnType<typeof useCrewLocationsQuery>;
+export type CrewLocationsLazyQueryHookResult = ReturnType<typeof useCrewLocationsLazyQuery>;
+export type CrewLocationsQueryResult = Apollo.QueryResult<CrewLocationsQuery, CrewLocationsQueryVariables>;
 export const CrewSearchDocument = gql`
     query CrewSearch($searchString: String!, $options: SearchOptions) {
   crewSearch(searchString: $searchString, options: $options) {
