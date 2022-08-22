@@ -192,4 +192,12 @@ export class JobsiteClass extends JobsiteSchema {
   public async requestGenerateDayReports(this: JobsiteDocument) {
     return interact.requestGenerateDayReports(this);
   }
+
+  public async requestGenerateMonthReports(this: JobsiteDocument) {
+    return interact.requestGenerateMonthReports(this);
+  }
+
+  public async requestGenerateYearReports(this: JobsiteDocument) {
+    return interact.requestGenerateYearReports(this);
+  }
 }

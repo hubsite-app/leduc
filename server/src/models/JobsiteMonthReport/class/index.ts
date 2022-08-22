@@ -86,7 +86,11 @@ export class JobsiteMonthReportClass extends JobsiteMonthReportSchema {
     this: JobsiteMonthReportModel,
     data: IJobsiteMonthReportBuild
   ) {
-    return build.requestBuild(this, data);
+    return build.staticRequestBuild(this, data);
+  }
+
+  public async requestBuild(this: JobsiteMonthReportDocument) {
+    return build.requestBuild(this);
   }
 
   /**

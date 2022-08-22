@@ -1,9 +1,9 @@
-import { JobsiteMonthReportModel } from "@models";
+import { JobsiteMonthReportDocument, JobsiteMonthReportModel } from "@models";
 import { IJobsiteMonthReportBuild } from "@typescript/jobsiteMonthReport";
 import { UpdateStatus } from "@typescript/models";
 import dayjs from "dayjs";
 
-const requestBuild = async (
+const staticRequestBuild = async (
   JobsiteMonthReport: JobsiteMonthReportModel,
   data: IJobsiteMonthReportBuild
 ) => {
@@ -24,10 +24,16 @@ const requestBuild = async (
     jobsiteMonthReport.update.status = UpdateStatus.Requested;
 
   await jobsiteMonthReport.save();
+};
 
-  return;
+const requestBuild = async (jobsiteMonthReport: JobsiteMonthReportDocument) => {
+  if (jobsiteMonthReport.update.status !== UpdateStatus.Pending)
+    jobsiteMonthReport.update.status = UpdateStatus.Requested;
+
+  await jobsiteMonthReport.save();
 };
 
 export default {
+  staticRequestBuild,
   requestBuild,
 };

@@ -3,7 +3,6 @@ import {
   Company,
   Invoice,
   Jobsite,
-  JobsiteDayReport,
   JobsiteDocument,
   JobsiteMaterial,
   Material,
@@ -240,7 +239,9 @@ const requestReportGeneration = async (id: Id) => {
   const jobsite = await Jobsite.getById(id);
   if (!jobsite) throw new Error("Could not find jobsite");
 
-  await JobsiteDayReport.requestBuildAllForJobsite(jobsite);
+  await jobsite.requestGenerateDayReports();
+  await jobsite.requestGenerateMonthReports();
+  await jobsite.requestGenerateYearReports();
 
   return jobsite;
 };
