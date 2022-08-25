@@ -78,53 +78,63 @@ const CrewLocationsModal = ({ isOpen, onClose }: ICrewLocationsModal) => {
         <ModalHeader>
           <Flex justifyContent="space-between">
             Crew Location Report
-            <Grid
-              templateColumns="repeat(10, 1fr)"
-              templateRows="repeat(1, 1fr)"
-              gap={2}
-              mr={2}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleDateSubmit();
+              }}
             >
-              <GridItem colStart={[0, 0, 0, 6]} colSpan={[4, 4, 4, 2]}>
-                <TextField
-                  label="Start Time"
-                  type="date"
-                  name="startTime"
-                  value={startTime.toISOString().split("T")[0]}
-                  onChange={(e) => {
-                    if (
-                      new Date(e.target.value).toString() !== "Invalid Date"
-                    ) {
-                      setStartTime(
-                        dayjs(e.target.value).startOf("day").toDate()
-                      );
-                    }
-                  }}
-                />
-              </GridItem>
-              <GridItem colSpan={[4, 4, 4, 2]}>
-                <TextField
-                  label="End Time"
-                  type="date"
-                  name="endTime"
-                  value={endTime.toISOString().split("T")[0]}
-                  onChange={(e) => {
-                    if (
-                      new Date(e.target.value).toString() !== "Invalid Date"
-                    ) {
-                      setEndTime(dayjs(e.target.value).startOf("day").toDate());
-                    }
-                  }}
-                />
-              </GridItem>
-              <GridItem colspan={[1, 1, 1, 1]}>
-                <IconButton
-                  icon={<FiCheck />}
-                  aria-label="submit"
-                  backgroundColor="transparent"
-                  onClick={handleDateSubmit}
-                />
-              </GridItem>
-            </Grid>
+              <Grid
+                templateColumns="repeat(10, 1fr)"
+                templateRows="repeat(1, 1fr)"
+                gap={2}
+                mr={2}
+              >
+                <GridItem colStart={[0, 0, 0, 6]} colSpan={[4, 4, 4, 2]}>
+                  <TextField
+                    label="Start Time"
+                    type="date"
+                    name="startTime"
+                    value={startTime.toISOString().split("T")[0]}
+                    onChange={(e) => {
+                      if (
+                        new Date(e.target.value).toString() !== "Invalid Date"
+                      ) {
+                        setStartTime(
+                          dayjs(e.target.value).startOf("day").toDate()
+                        );
+                      }
+                    }}
+                  />
+                </GridItem>
+                <GridItem colSpan={[4, 4, 4, 2]}>
+                  <TextField
+                    label="End Time"
+                    type="date"
+                    name="endTime"
+                    value={endTime.toISOString().split("T")[0]}
+                    onChange={(e) => {
+                      if (
+                        new Date(e.target.value).toString() !== "Invalid Date"
+                      ) {
+                        setEndTime(
+                          dayjs(e.target.value).startOf("day").toDate()
+                        );
+                      }
+                    }}
+                  />
+                </GridItem>
+                <GridItem colspan={[1, 1, 1, 1]}>
+                  <IconButton
+                    icon={<FiCheck />}
+                    type="submit"
+                    aria-label="submit"
+                    backgroundColor="transparent"
+                    onClick={handleDateSubmit}
+                  />
+                </GridItem>
+              </Grid>
+            </form>
           </Flex>
         </ModalHeader>
         <ModalCloseButton />

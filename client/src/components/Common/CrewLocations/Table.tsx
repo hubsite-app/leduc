@@ -1,4 +1,4 @@
-import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Table, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import React from "react";
 import { CrewLocationSnippetFragment } from "../../../generated/graphql";
@@ -17,10 +17,6 @@ const CrewLocationsTable = ({
   locations,
 }: ICrewLocationsTable) => {
   /**
-   * ----- Hook Initialization -----
-   */
-
-  /**
    * ----- Variables -----
    */
 
@@ -28,13 +24,26 @@ const CrewLocationsTable = ({
     // Get all dates between start and end time in format YYYY-MM-DD
     const dates = [];
     let start = dayjs(startTime);
-    const end = dayjs(endTime);
-    while (start <= end) {
+    const end = dayjs(endTime).endOf("day");
+    while (start.toDate().getTime() <= end.toDate().getTime()) {
       dates.push(start.format("YYYY-MM-DD"));
       start = start.add(1, "day");
     }
     return dates;
   }, [startTime, endTime]);
+
+  const crewTotals = React.useMemo(() => {
+    // Get total number of days each crew worked
+    const totals: { [crewId: string]: number } = {};
+    locations.forEach((location) => {
+      if (totals[location.crew._id]) {
+        totals[location.crew._id]++;
+      } else {
+        totals[location.crew._id] = location.days.length;
+      }
+    });
+    return totals;
+  }, [locations]);
 
   /**
    * ----- Render -----
@@ -91,6 +100,18 @@ const CrewLocationsTable = ({
             );
           })}
         </Tbody>
+        <Tfoot>
+          <Tr>
+            <Td scope="row">Total</Td>
+            {locations.map((crewLocation, index) => {
+              return (
+                <Td isNumeric key={index}>
+                  {crewTotals[crewLocation.crew._id] || "Not found"}
+                </Td>
+              );
+            })}
+          </Tr>
+        </Tfoot>
       </Table>
     </Box>
   );

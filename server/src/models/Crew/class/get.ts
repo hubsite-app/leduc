@@ -23,7 +23,7 @@ import {
 import { IHit } from "@typescript/elasticsearch";
 import { GetByIDOptions, ISearchOptions } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
-import { timezoneStartOfDayinUTC } from "@utils/time";
+import { timezoneEndOfDayinUTC, timezoneStartOfDayinUTC } from "@utils/time";
 import dayjs from "dayjs";
 
 /**
@@ -150,8 +150,8 @@ const crewLocations = async (
 
     const dailyReports = await DailyReport.find({
       date: {
-        $gte: startDate,
-        $lt: endDate,
+        $gte: await timezoneStartOfDayinUTC(startDate),
+        $lte: await timezoneEndOfDayinUTC(endDate),
       },
       crew: crew._id,
     });
@@ -175,12 +175,15 @@ const crewLocations = async (
         // New unique date
         uniqueDays.push(startOfDay.toISOString());
 
+        const jobsite = await dailyReport.getJobsite();
+        const jobsiteName = `${jobsite.jobcode} - ${jobsite.name}`;
+
         const locationDay: CrewLocationDayClass = {
           date: startOfDay,
           items: [
             {
               dailyReportId: dailyReport._id,
-              jobsiteName: (await dailyReport.getJobsite()).name,
+              jobsiteName,
             },
           ],
         };
@@ -199,7 +202,8 @@ const crewLocations = async (
           if (jobsiteNameCatalog[dailyReport.jobsite?.toString()]) {
             jobsiteName = jobsiteNameCatalog[dailyReport.jobsite?.toString()];
           } else {
-            jobsiteName = (await dailyReport.getJobsite()).name;
+            const jobsite = await dailyReport.getJobsite();
+            jobsiteName = `${jobsite.jobcode} - ${jobsite.name}`;
             jobsiteNameCatalog[dailyReport.jobsite?.toString()] = jobsiteName;
           }
 
