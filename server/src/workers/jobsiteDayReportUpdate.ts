@@ -7,4 +7,4 @@ export default setInterval(async () => {
   } catch (e) {
     errorHandler("JobsiteDayReport Worker Error", e);
   }
-}, 0.4 * 60 * 1000);
+}, 0.6 * 60 * 1000);
