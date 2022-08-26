@@ -26,6 +26,9 @@ const JobsiteDayReportUpdateHelper = async () => {
 
       await jobsiteDayReports[i].updateAndSaveDocument();
     } catch (e) {
+      jobsiteDayReports[i].update.status = UpdateStatus.Updated;
+      await jobsiteDayReports[i].save();
+
       errorHandler(
         `Jobsite day report ${jobsiteDayReports[i]._id} worker error`,
         e

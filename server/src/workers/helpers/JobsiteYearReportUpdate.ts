@@ -26,6 +26,9 @@ const JobsiteYearReportUpdateHelper = async () => {
 
       await jobsiteYearReports[i].updateAndSaveDocument();
     } catch (e) {
+      jobsiteYearReports[i].update.status = UpdateStatus.Updated;
+      await jobsiteYearReports[i].save();
+
       errorHandler(
         `Jobsite year report ${jobsiteYearReports[i]._id} worker error`,
         e
