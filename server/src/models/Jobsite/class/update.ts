@@ -7,6 +7,7 @@ import {
   System,
   SystemDocument,
   File,
+  JobsiteYearReport,
 } from "@models";
 import {
   IJobsiteFileObject,
@@ -53,6 +54,10 @@ const addExpenseInvoice = async (
     date: invoice.date,
     jobsiteId: jobsite._id,
   });
+  await JobsiteYearReport.requestBuild({
+    date: invoice.date,
+    jobsiteId: jobsite._id,
+  });
 
   return;
 };
@@ -70,6 +75,10 @@ const addRevenueInvoice = async (
   }
 
   await JobsiteMonthReport.requestBuild({
+    date: invoice.date,
+    jobsiteId: jobsite._id,
+  });
+  await JobsiteYearReport.requestBuild({
     date: invoice.date,
     jobsiteId: jobsite._id,
   });
