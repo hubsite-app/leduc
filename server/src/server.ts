@@ -14,7 +14,7 @@ import workers from "@workers";
 import mongoose from "mongoose";
 import createApp from "./app";
 import elasticsearch from "./elasticsearch";
-import updateAllJobsites from "workers/helpers/updateAllJobsites";
+import updateAllJobsites from "./workers/helpers/updateAllJobsites";
 
 // import saveAll from "@testing/saveAll";
 
