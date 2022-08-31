@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: server-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       component: server
@@ -19,11 +19,11 @@ spec:
             - containerPort: 8080
           resources:
             requests:
-              cpu: "166m"
-              memory: "333Mi"
+              cpu: "500m"
+              memory: "1000Mi"
             limits:
-              cpu: "333m"
-              memory: "665Mi"
+              cpu: "1000m"
+              memory: "2000Mi"
           env:
             - name: NODE_ENV
               value: production
