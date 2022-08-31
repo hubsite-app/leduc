@@ -14,7 +14,6 @@ import workers from "@workers";
 import mongoose from "mongoose";
 import createApp from "./app";
 import elasticsearch from "./elasticsearch";
-import updateAllJobsites from "./workers/helpers/updateAllJobsites";
 
 // import saveAll from "@testing/saveAll";
 
@@ -75,8 +74,6 @@ const main = async () => {
 
       // Enable worker
       if (workerEnabled) {
-        if (production) await updateAllJobsites();
-
         workers();
       }
     }
