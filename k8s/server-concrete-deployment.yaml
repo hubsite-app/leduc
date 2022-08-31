@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: server-concrete-deployment
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       component: server-concrete
@@ -19,11 +19,11 @@ spec:
             - containerPort: 8081
           resources:
             requests:
+              cpu: "125m"
+              memory: "250Mi"
+            limits:
               cpu: "250m"
               memory: "500Mi"
-            limits:
-              cpu: "1000m"
-              memory: "2000Mi"
           env:
             - name: NODE_ENV
               value: production
