@@ -8,6 +8,8 @@ import jobsiteYearReportUpdate from "./jobsiteYearReportUpdate";
 import jobsiteYearMasterReportUpdate from "./jobsiteYearMasterReportUpdate";
 
 const workers = async () => {
+  console.log("Activating workers");
+
   // Handle any reports stuck in pending
   await pendingJobsiteYearMasterReportUpdateHelper();
   await pendingJobsiteYearReportUpdateHelper();
