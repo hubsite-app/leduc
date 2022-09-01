@@ -8,8 +8,6 @@ import jobsiteYearReportUpdate from "./jobsiteYearReportUpdate";
 import jobsiteYearMasterReportUpdate from "./jobsiteYearMasterReportUpdate";
 
 const workers = async () => {
-  console.log("Activating workers");
-
   // Handle any reports stuck in pending
   await pendingJobsiteYearMasterReportUpdateHelper();
   await pendingJobsiteYearReportUpdateHelper();
@@ -18,10 +16,10 @@ const workers = async () => {
 
   console.log("Workers started");
 
-  jobsiteYearMasterReportUpdate;
-  jobsiteYearReportUpdate;
-  jobsiteMonthReportUpdate;
-  jobsiteDayReportUpdate;
+  jobsiteYearMasterReportUpdate();
+  jobsiteYearReportUpdate();
+  jobsiteMonthReportUpdate();
+  jobsiteDayReportUpdate();
 };
 
 export default workers;

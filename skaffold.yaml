@@ -55,6 +55,7 @@ deploy:
       - k8s-dev/client-deployment.yaml
       - k8s-dev/server-cluster-ip-service.yaml
       - k8s-dev/client-cluster-ip-service.yaml
+      - k8s-dev/ingress.yaml
 portForward:
   - resourceType: Service
     resourceName: server-cluster-ip-service

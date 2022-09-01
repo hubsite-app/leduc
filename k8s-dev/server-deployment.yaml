@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: server-deployment
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       component: server
@@ -17,6 +17,13 @@ spec:
           image: itsdevin/bow-mark-server
           ports:
             - containerPort: 8080
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1000Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2000Mi"
           env:
             - name: NODE_ENV
               value: development

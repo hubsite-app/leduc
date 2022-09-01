@@ -14,6 +14,7 @@ import workers from "@workers";
 import mongoose from "mongoose";
 import createApp from "./app";
 import elasticsearch from "./elasticsearch";
+import errorHandler from "@utils/errorHandler";
 
 // import saveAll from "@testing/saveAll";
 
@@ -44,7 +45,9 @@ const main = async () => {
 
     // Start API server
     if (apiEnabled) {
-      await elasticsearch();
+      elasticsearch().catch((err) => {
+        errorHandler(err.message, err);
+      });
 
       const port = process.env.PORT || 8080;
 
