@@ -10,6 +10,7 @@ import { getWorkbookBuffer } from "@utils/excel";
 import { generateForDateRange } from "@utils/excel/dynamicMasterCost/creation";
 import {
   Arg,
+  Authorized,
   FieldResolver,
   ID,
   Query,
@@ -68,6 +69,7 @@ export default class JobsiteYearMasterReportResolver {
    * ----- Subscriptions -----
    */
 
+  @Authorized(["PM"])
   @Subscription(() => JobsiteYearMasterReportClass, {
     topics: ({ args }) => {
       return `${PubSubTopics.JOBSITE_YEAR_MASTER_REPORT}_${args.id}`;

@@ -240,6 +240,8 @@ const requestReportGeneration = async (id: Id) => {
   if (!jobsite) throw new Error("Could not find jobsite");
 
   await jobsite.requestGenerateDayReports();
+  await jobsite.requestGenerateMonthReports();
+  await jobsite.requestGenerateYearReports();
 
   return jobsite;
 };
