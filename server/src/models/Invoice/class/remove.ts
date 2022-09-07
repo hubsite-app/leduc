@@ -39,8 +39,6 @@ const document = async (invoice: InvoiceDocument) => {
       }
 
       await jobsite.save();
-
-      await jobsite.requestGenerateDayReports();
     }
   }
 
@@ -57,6 +55,9 @@ const document = async (invoice: InvoiceDocument) => {
       );
 
       await jobsiteMaterial.save();
+
+      const jobsite = await jobsiteMaterial.getJobsite();
+      await jobsite.requestGenerateDayReports();
     }
   }
 
@@ -92,6 +93,7 @@ const document = async (invoice: InvoiceDocument) => {
       }
 
       await jobsiteMonthReport.save();
+      await jobsiteMonthReport.requestBuild();
     }
   }
 
@@ -127,6 +129,7 @@ const document = async (invoice: InvoiceDocument) => {
       }
 
       await jobsiteYearReport.save();
+      await jobsiteYearReport.requestBuild();
     }
   }
 
