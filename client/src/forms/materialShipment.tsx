@@ -75,7 +75,7 @@ export const useMaterialShipmentUpdateForm = (options?: UseFormProps) => {
     ...options,
   });
 
-  const { control, handleSubmit, watch, setValue, clearErrors } = form;
+  const { control, handleSubmit, watch, setValue } = form;
 
   const noJobsiteMaterial = watch("noJobsiteMaterial");
 

@@ -1,120 +1,144 @@
-import { Box, Table, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Flex,
+  Grid,
+  GridItem,
+  IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+} from "@chakra-ui/react";
 import dayjs from "dayjs";
 import React from "react";
-import { CrewLocationSnippetFragment } from "../../../generated/graphql";
-import createLink from "../../../utils/createLink";
-import TextLink from "../TextLink";
+import { FiCheck } from "react-icons/fi";
+import { useCrewLocationsLazyQuery } from "../../../generated/graphql";
+import TextField from "../forms/TextField";
+import Loading from "../Loading";
+import CrewLocationsTable from "./Table";
 
-interface ICrewLocationsTable {
-  startTime: Date;
-  endTime: Date;
-  locations: CrewLocationSnippetFragment[];
+interface ICrewLocationsModal {
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-const CrewLocationsTable = ({
-  startTime,
-  endTime,
-  locations,
-}: ICrewLocationsTable) => {
+const CrewLocationsModal = ({ isOpen, onClose }: ICrewLocationsModal) => {
   /**
-   * ----- Variables -----
+   * ----- Hook Initialization -----
    */
 
-  const uniqueDates = React.useMemo(() => {
-    // Get all dates between start and end time in format YYYY-MM-DD
-    const dates = [];
-    let start = dayjs(startTime);
-    const end = dayjs(endTime).endOf("day");
-    while (start.toDate().getTime() <= end.toDate().getTime()) {
-      dates.push(start.format("YYYY-MM-DD"));
-      start = start.add(1, "day");
-    }
-    return dates;
-  }, [startTime, endTime]);
+  const [startTime, setStartTime] = React.useState(
+    dayjs().startOf("month").toDate()
+  );
+  const [endTime, setEndTime] = React.useState(dayjs().toDate());
 
-  const crewTotals = React.useMemo(() => {
-    // Get total number of days each crew worked
-    const totals: { [crewId: string]: number } = {};
-    locations.forEach((location) => {
-      if (totals[location.crew._id]) {
-        totals[location.crew._id]++;
-      } else {
-        totals[location.crew._id] = location.days.length;
-      }
+  const [query, { data, loading, variables }] = useCrewLocationsLazyQuery();
+
+  /**
+   * ----- Functions -----
+   */
+
+  const handleDateSubmit = () => {
+    query({
+      variables: {
+        startTime,
+        endTime,
+      },
     });
-    return totals;
-  }, [locations]);
+  };
+
+  /**
+   * ----- Use-effects and other logic -----
+   */
+
+  React.useEffect(() => {
+    if (isOpen) {
+      query({
+        variables: {
+          startTime: startTime,
+          endTime: endTime,
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   /**
    * ----- Render -----
    */
 
   return (
-    <Box
-      w="100%"
-      backgroundColor="gray.200"
-      borderRadius={6}
-      overflowY="scroll"
-      maxH="80vh"
-    >
-      <Table id="jobsite-report-table">
-        <Thead>
-          <Tr>
-            <Th scope="row">Date</Th>
-            {locations.map((crewLocation) => {
-              return (
-                <Th key={crewLocation.crew._id}>{crewLocation.crew.name}</Th>
-              );
-            })}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {uniqueDates.map((date) => {
-            return (
-              <Tr key={date}>
-                <Td scope="row">{date}</Td>
-                {locations.map((crewLocation) => {
-                  const day = crewLocation.days.find((day) => {
-                    return dayjs(day.date).format("YYYY-MM-DD") === date;
-                  });
-
-                  return (
-                    <Td key={crewLocation.crew._id}>
-                      {day?.items.map((item, index) => {
-                        return (
-                          <>
-                            <TextLink
-                              key={item.dailyReportId}
-                              link={createLink.dailyReport(item.dailyReportId)}
-                            >
-                              {item.jobsiteName}{" "}
-                            </TextLink>
-                            {index < day.items.length - 1 ? " / " : ""}
-                          </>
-                        );
-                      })}
-                    </Td>
-                  );
-                })}
-              </Tr>
-            );
-          })}
-        </Tbody>
-        <Tfoot>
-          <Tr>
-            <Td scope="row">Total</Td>
-            {locations.map((crewLocation, index) => {
-              return (
-                <Td isNumeric key={index}>
-                  {crewTotals[crewLocation.crew._id] || "Not found"}
-                </Td>
-              );
-            })}
-          </Tr>
-        </Tfoot>
-      </Table>
-    </Box>
+    <Modal size="full" isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>
+          <Flex justifyContent="space-between">
+            Crew Location Report
+            <Grid
+              templateColumns="repeat(10, 1fr)"
+              templateRows="repeat(1, 1fr)"
+              gap={2}
+              mr={2}
+            >
+              <GridItem colStart={[0, 0, 0, 6]} colSpan={[4, 4, 4, 2]}>
+                <TextField
+                  label="Start Time"
+                  type="date"
+                  name="startTime"
+                  value={startTime.toISOString().split("T")[0]}
+                  onChange={(e) => {
+                    if (
+                      new Date(e.target.value).toString() !== "Invalid Date"
+                    ) {
+                      setStartTime(
+                        dayjs(e.target.value).startOf("day").toDate()
+                      );
+                    }
+                  }}
+                />
+              </GridItem>
+              <GridItem colSpan={[4, 4, 4, 2]}>
+                <TextField
+                  label="End Time"
+                  type="date"
+                  name="endTime"
+                  value={endTime.toISOString().split("T")[0]}
+                  onChange={(e) => {
+                    if (
+                      new Date(e.target.value).toString() !== "Invalid Date"
+                    ) {
+                      setEndTime(dayjs(e.target.value).startOf("day").toDate());
+                    }
+                  }}
+                />
+              </GridItem>
+              <GridItem colspan={[1, 1, 1, 1]}>
+                <IconButton
+                  icon={<FiCheck />}
+                  aria-label="submit"
+                  backgroundColor="transparent"
+                  onClick={handleDateSubmit}
+                />
+              </GridItem>
+            </Grid>
+          </Flex>
+        </ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          {data?.crewLocations && variables && !loading ? (
+            <CrewLocationsTable
+              startTime={variables.startTime}
+              endTime={variables.endTime}
+              locations={data.crewLocations}
+            />
+          ) : (
+            <Loading />
+          )}
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 };
 
-export default CrewLocationsTable;
+export default CrewLocationsModal;

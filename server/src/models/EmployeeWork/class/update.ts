@@ -12,6 +12,8 @@ const document = async (
 
   employeeWork.endTime = data.endTime;
 
+  await employeeWork.validateDocument();
+
   return;
 };
 

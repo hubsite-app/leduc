@@ -13,6 +13,7 @@ import {
 import remove from "./remove";
 import create from "./create";
 import reports from "./reports";
+import validate from "./validate";
 
 @ObjectType()
 export class EmployeeWorkClass extends EmployeeWorkSchema {
@@ -80,6 +81,14 @@ export class EmployeeWorkClass extends EmployeeWorkSchema {
 
   public async fullDelete(this: EmployeeWorkDocument) {
     return remove.fullDelete(this);
+  }
+
+  /**
+   * ----- Validate -----
+   */
+
+  public async validateDocument(this: EmployeeWorkDocument) {
+    return validate.document(this);
   }
 
   /**

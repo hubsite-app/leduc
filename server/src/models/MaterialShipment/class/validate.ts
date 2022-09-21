@@ -16,6 +16,14 @@ const document = async (materialShipment: MaterialShipmentDocument) => {
       throw new Error("This material shipment must have a jobsite material");
   }
 
+  if (materialShipment.startTime && materialShipment.endTime) {
+    if (
+      new Date(materialShipment.startTime).getTime() >
+      new Date(materialShipment.endTime).getTime()
+    )
+      throw new Error("Start time must be before end time");
+  }
+
   return;
 };
 

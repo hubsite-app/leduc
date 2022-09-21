@@ -1,7 +1,7 @@
 import { JobsiteDayReportDocument, JobsiteMonthReportDocument } from "@models";
 
 const full = async (jobsiteMonthReport: JobsiteMonthReportDocument) => {
-  await jobsiteMonthReport.save();
+  await jobsiteMonthReport.remove();
 };
 
 const dayReport = (

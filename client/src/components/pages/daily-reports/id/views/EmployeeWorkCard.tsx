@@ -1,4 +1,11 @@
-import { Box, Flex, IconButton, SimpleGrid, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  IconButton,
+  SimpleGrid,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import dayjs from "dayjs";
 import React from "react";
 import { FiEdit, FiTrash, FiX } from "react-icons/fi";
@@ -32,6 +39,8 @@ const EmployeeWorkCard = ({
   /**
    * ----- Hook Initialization
    */
+
+  const toast = useToast();
 
   const [edit, setEdit] = React.useState(false);
 
@@ -77,9 +86,18 @@ const EmployeeWorkCard = ({
             endTime,
           },
         },
-      }).then(() => setEdit(false));
+      })
+        .then(() => setEdit(false))
+        .catch((err) => {
+          toast({
+            isClosable: true,
+            description: err.message,
+            status: "error",
+            title: "Error",
+          });
+        });
     },
-    [dailyReportDate, employeeWork._id, update]
+    [dailyReportDate, employeeWork._id, toast, update]
   );
 
   /**

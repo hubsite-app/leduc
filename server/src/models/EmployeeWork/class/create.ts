@@ -20,6 +20,8 @@ const document = async (
       employee: data.employeeId,
     });
 
+    await employeeWork.validateDocument();
+
     await data.dailyReport.addEmployeeWork(employeeWork);
 
     return employeeWork;

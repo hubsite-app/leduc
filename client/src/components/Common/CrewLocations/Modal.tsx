@@ -13,10 +13,7 @@ import {
 import dayjs from "dayjs";
 import React from "react";
 import { FiCheck } from "react-icons/fi";
-import {
-  useCrewLocationsLazyQuery,
-  useCrewLocationsQuery,
-} from "../../../generated/graphql";
+import { useCrewLocationsLazyQuery } from "../../../generated/graphql";
 import TextField from "../forms/TextField";
 import Loading from "../Loading";
 import CrewLocationsTable from "./Table";
