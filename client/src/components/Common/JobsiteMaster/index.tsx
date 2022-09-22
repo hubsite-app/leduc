@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Box,
   Code,
   Flex,
@@ -274,6 +276,10 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
                   <ModalHeader>Create Excel</ModalHeader>
                   <ModalCloseButton />
                   <ModalBody>
+                    <Alert status="info">
+                      <AlertIcon />
+                      This may take up to 5 minutes to complete
+                    </Alert>
                     <JobsiteMasterReportExcelGenerate />
                   </ModalBody>
                 </ModalContent>

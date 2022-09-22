@@ -58,7 +58,7 @@ const main = async () => {
       );
 
       // Set timeout to 3 minutes
-      server.setTimeout(3 * 60 * 1000);
+      server.setTimeout(5 * 60 * 1000);
     }
 
     if (process.env.NODE_ENV !== "test") {
