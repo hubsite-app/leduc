@@ -33,6 +33,7 @@ import { FileCreateData } from "../file/mutations";
 import { DailyReportListOptionData } from "./queries";
 import { FilterQuery } from "mongoose";
 import { Id } from "@typescript/models";
+import { DailyReportListFilter } from "@typescript/dailyReport";
 
 @Resolver(() => DailyReportClass)
 export default class DailyReportResolver {
@@ -103,6 +104,20 @@ export default class DailyReportResolver {
     if (options?.crews && options.crews.length > 0) {
       query = {
         crew: { $in: options.crews },
+      };
+    }
+
+    if (options?.filters?.includes(DailyReportListFilter.NoCostApproval)) {
+      query = {
+        ...query,
+        approved: false,
+      };
+    }
+
+    if (options?.filters?.includes(DailyReportListFilter.NoPayroll)) {
+      query = {
+        ...query,
+        payrollComplete: false,
       };
     }
 

@@ -130,8 +130,14 @@ export type DailyReportCreateData = {
   jobsiteId: Scalars['String'];
 };
 
+export enum DailyReportListFilter {
+  NoCostApproval = 'NoCostApproval',
+  NoPayroll = 'NoPayroll'
+}
+
 export type DailyReportListOptionData = {
   crews?: InputMaybe<Array<Scalars['String']>>;
+  filters?: InputMaybe<Array<DailyReportListFilter>>;
   offset?: InputMaybe<Scalars['Float']>;
   pageLimit?: InputMaybe<Scalars['Float']>;
 };

@@ -1,4 +1,5 @@
 import { CrewDocument, DailyReportDocument, JobsiteDocument } from "@models";
+import { registerEnumType } from "type-graphql";
 import { Id } from "./models";
 
 export interface IDailyReportUpdate {
@@ -16,3 +17,12 @@ export interface IDailyReportSearchObject {
   score: number;
   dailyReport: DailyReportDocument;
 }
+
+export enum DailyReportListFilter {
+  NoPayroll = "NoPayroll",
+  NoCostApproval = "NoCostApproval",
+}
+
+registerEnumType(DailyReportListFilter, {
+  name: "DailyReportListFilter",
+});

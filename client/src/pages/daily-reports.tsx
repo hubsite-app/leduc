@@ -1,12 +1,27 @@
-import { Box, Center, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from "@chakra-ui/react";
 import React from "react";
+import { FaChevronDown } from "react-icons/fa";
+import { FiCheck } from "react-icons/fi";
 import Breadcrumbs from "../components/Common/Breadcrumbs";
 import Container from "../components/Common/Container";
 import DailyReportCard from "../components/Common/DailyReport/DailyReportCard";
 import InfiniteScroll from "../components/Common/InfiniteScroll";
 import Loading from "../components/Common/Loading";
 import { useAuth } from "../contexts/Auth";
-import { useDailyReportsLazyQuery, UserRoles } from "../generated/graphql";
+import {
+  DailyReportListFilter,
+  useDailyReportsLazyQuery,
+  UserRoles,
+} from "../generated/graphql";
 
 const DailyReports = () => {
   /**
@@ -25,12 +40,14 @@ const DailyReports = () => {
     }
   }, [user]);
 
-  const [fetch, { data, loading, fetchMore, networkStatus }] =
+  const [fetch, { data, loading, fetchMore, networkStatus, refetch }] =
     useDailyReportsLazyQuery({
       notifyOnNetworkStatusChange: true,
     });
 
   const [finished, setFinished] = React.useState(false);
+
+  const [filters, setFilters] = React.useState<DailyReportListFilter[]>([]);
 
   /**
    * ----- Functions -----
@@ -43,13 +60,35 @@ const DailyReports = () => {
           options: {
             offset: data?.dailyReports.length,
             crews,
+            filters,
           },
         },
       }).then((data) => {
         if (data.data.dailyReports.length === 0) setFinished(true);
       });
     }
-  }, [crews, data?.dailyReports.length, fetchMore, finished, networkStatus]);
+  }, [
+    crews,
+    data?.dailyReports.length,
+    fetchMore,
+    filters,
+    finished,
+    networkStatus,
+  ]);
+
+  const handleFilterChange = React.useCallback(
+    (filter: DailyReportListFilter) => {
+      const filterCopy = [...filters];
+
+      if (filterCopy.includes(filter)) {
+        const index = filterCopy.findIndex((item) => item === filter);
+        if (index !== -1) filterCopy.splice(index, 1);
+      } else filterCopy.push(filter);
+
+      setFilters(filterCopy);
+    },
+    [filters]
+  );
 
   /**
    * ----- Use-effects and other logic -----
@@ -61,11 +100,22 @@ const DailyReports = () => {
         variables: {
           options: {
             crews,
+            filters,
           },
         },
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [crews]);
+
+  React.useEffect(() => {
+    refetch({
+      options: {
+        crews,
+        filters,
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters]);
 
   /**
    * ----- Rendering -----
@@ -75,14 +125,56 @@ const DailyReports = () => {
     if (data?.dailyReports) {
       return (
         <Box>
-          <Breadcrumbs
-            crumbs={[
-              {
-                title: "Daily Reports",
-                isCurrentPage: true,
-              },
-            ]}
-          />
+          <Flex flexDir="row" justifyContent="space-between">
+            <Breadcrumbs
+              crumbs={[
+                {
+                  title: "Daily Reports",
+                  isCurrentPage: true,
+                },
+              ]}
+            />
+            <Menu>
+              {/** @ts-expect-error */}
+              <MenuButton
+                disabled={loading}
+                as={Button}
+                rightIcon={<FaChevronDown />}
+              >
+                Filters
+              </MenuButton>
+              <MenuList>
+                <MenuItem
+                  display="flex"
+                  justifyContent="space-between"
+                  onClick={() =>
+                    handleFilterChange(DailyReportListFilter.NoCostApproval)
+                  }
+                >
+                  Not approved{" "}
+                  {filters.includes(DailyReportListFilter.NoCostApproval) ? (
+                    <FiCheck />
+                  ) : (
+                    ""
+                  )}
+                </MenuItem>
+                <MenuItem
+                  display="flex"
+                  justifyContent="space-between"
+                  onClick={() =>
+                    handleFilterChange(DailyReportListFilter.NoPayroll)
+                  }
+                >
+                  No payroll{" "}
+                  {filters.includes(DailyReportListFilter.NoPayroll) ? (
+                    <FiCheck />
+                  ) : (
+                    ""
+                  )}
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
           <Flex flexDir="column" alignContent="center" id="pages-flex">
             {data.dailyReports.map((dailyReport) => {
               return (
@@ -103,7 +195,7 @@ const DailyReports = () => {
     } else {
       return <Loading />;
     }
-  }, [data?.dailyReports, loading]);
+  }, [data?.dailyReports, filters, handleFilterChange, loading]);
 
   return (
     <Container>
