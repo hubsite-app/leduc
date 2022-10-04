@@ -43,6 +43,9 @@
     "web-vitals": "^0.2.4",
     "yup": "^0.32.11"
   },
+  "overrides": {
+    "@chakra-ui/system": "1.9.1"
+  },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.3.0",
     "@graphql-codegen/import-types-preset": "^2.1.8",

@@ -50,7 +50,6 @@ const NavbarCreate = () => {
       return (
         <Box height="100%" pt={1}>
           <Menu>
-            {/* @ts-expect-error */}
             <MenuButton
               as={IconButton}
               icon={<FiPlus />}
