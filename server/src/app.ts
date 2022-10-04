@@ -133,12 +133,15 @@ const createApp = async () => {
         if (!process.env.JWT_SECRET)
           throw new Error("Must provide a JWT_SECRET");
 
-        const verified = jwt.verify(token, process.env.JWT_SECRET);
-        if (verified) {
-          const decoded = jwt.decode(token);
-
-          user = await User.getById((decoded as jwt.JwtPayload)?.userId);
+        try {
+          jwt.verify(token, process.env.JWT_SECRET);
+        } catch (error) {
+          throw new Error("Cut it out hackerman");
         }
+
+        const decoded = jwt.decode(token);
+
+        user = await User.getById((decoded as jwt.JwtPayload)?.userId);
       }
 
       return {
