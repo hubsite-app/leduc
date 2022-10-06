@@ -100,7 +100,7 @@ const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
         </Flex>
       }
       showRevenueBreakdown={false}
-      internalExpenses={internalExpenses}
+      internalExpenses={internalExpenses * overheadRate}
       internalExpensesTooltip={
         <Flex flexDir="column">
           <Code backgroundColor="transparent" color="white">

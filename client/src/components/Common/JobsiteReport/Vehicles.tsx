@@ -54,7 +54,7 @@ const JobsiteReportVehicleReports = ({
               .includes(crewType)
         )
         .sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
     }, [crewType, dayReports]);
 
