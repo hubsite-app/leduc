@@ -11,7 +11,11 @@ import { post, prop, Ref } from "@typegoose/typegoose";
 import isUrl from "@validation/isUrl";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
-import { JobsiteFileObjectClass, TruckingTypeRateClass } from "./subDocuments";
+import {
+  JobsiteContractClass,
+  JobsiteFileObjectClass,
+  TruckingTypeRateClass,
+} from "./subDocuments";
 
 export * from "./subDocuments";
 
@@ -76,6 +80,13 @@ export class JobsiteSchema {
   @Field(() => [TruckingTypeRateClass])
   @prop({ type: () => [TruckingTypeRateClass], default: [] })
   public truckingRates!: TruckingTypeRateClass[];
+
+  /**
+   * @version 2
+   */
+  @Field(() => JobsiteContractClass, { nullable: true })
+  @prop({ type: () => JobsiteContractClass, required: false })
+  public contract?: JobsiteContractClass;
 
   /**
    * @deprecated

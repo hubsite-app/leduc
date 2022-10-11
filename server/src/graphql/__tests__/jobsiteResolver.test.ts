@@ -175,6 +175,10 @@ describe("Jobsite Resolver", () => {
       `;
 
       describe("success", () => {
+        afterEach(async () => {
+          await setupDatabase();
+        });
+
         test("should successfully create a jobsite material w/o delievered", async () => {
           const token = await jestLogin(app, documents.users.admin_user.email);
 
@@ -193,6 +197,8 @@ describe("Jobsite Resolver", () => {
             costType: JobsiteMaterialCostType.rate,
             deliveredRates: [],
           };
+
+          expect(documents.jobsites.jobsite_2.materials.length).toBe(2);
 
           const res = await request(app)
             .post("/graphql")
@@ -215,17 +221,15 @@ describe("Jobsite Resolver", () => {
             documents.jobsites.jobsite_2._id
           );
 
-          expect(jobsite?.materials.length).toBe(2);
+          expect(jobsite?.materials.length).toBe(3);
 
           const jobsiteMaterial = await JobsiteMaterial.getById(
-            jobsite?.materials[1]?.toString() || ""
+            jobsite?.materials[2]?.toString() || ""
           );
 
           expect(jobsiteMaterial?.supplier?.toString()).toBe(data.supplierId);
 
           expect(jobsiteMaterial?.rates[0].estimated).toBeTruthy();
-
-          await setupDatabase();
         });
 
         test("should successfully create a jobsite material w/o delievered", async () => {
@@ -252,6 +256,8 @@ describe("Jobsite Resolver", () => {
             ],
           };
 
+          expect(documents.jobsites.jobsite_2.materials.length).toBe(2);
+
           const res = await request(app)
             .post("/graphql")
             .send({
@@ -273,10 +279,10 @@ describe("Jobsite Resolver", () => {
             documents.jobsites.jobsite_2._id
           );
 
-          expect(jobsite?.materials.length).toBe(2);
+          expect(jobsite?.materials.length).toBe(3);
 
           const jobsiteMaterial = await JobsiteMaterial.getById(
-            jobsite?.materials[1]?.toString() || ""
+            jobsite?.materials[2]?.toString() || ""
           );
 
           expect(jobsiteMaterial?.supplier?.toString()).toBe(data.supplierId);

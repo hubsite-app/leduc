@@ -10,6 +10,7 @@ import {
   JobsiteYearReport,
 } from "@models";
 import {
+  IJobsiteContract,
   IJobsiteFileObject,
   IJobsiteUpdate,
   ITruckingTypeRateData,
@@ -84,6 +85,58 @@ const addRevenueInvoice = async (
   });
 
   return;
+};
+
+const contract = async (
+  jobsite: JobsiteDocument,
+  contractData: IJobsiteContract
+) => {
+  if (contractData.expectedProfit > contractData.bidValue)
+    throw new Error("Profits cannot be larger than contract value");
+
+  jobsite.contract = {
+    ...contractData,
+    workOnHand: jobsite.contract?.workOnHand || 0,
+  };
+
+  await jobsite.updateWorkOnHand();
+};
+
+const workOnHand = async (jobsite: JobsiteDocument) => {
+  if (!jobsite.contract) return;
+
+  const system = await System.getSystem();
+
+  const contractExpenses =
+    jobsite.contract.bidValue - jobsite.contract.expectedProfit;
+  let expensesInSystem = 0;
+
+  const jobsiteYearReports = await jobsite.getYearReports();
+  for (let i = 0; i < jobsiteYearReports.length; i++) {
+    const yearReport = jobsiteYearReports[i];
+    let operatingCosts = 0;
+
+    const dayReports = await yearReport.getDayReports();
+    for (let i = 0; i < dayReports.length; i++) {
+      const dayReport = dayReports[i];
+
+      operatingCosts +=
+        dayReport.summary.vehicleCost +
+        dayReport.summary.employeeCost +
+        dayReport.summary.materialCost +
+        dayReport.summary.truckingCost;
+    }
+
+    expensesInSystem +=
+      operatingCosts * (1 + system.internalExpenseOverheadRate / 100) +
+      yearReport.summary.externalExpenseInvoiceValue * 1.03 +
+      yearReport.summary.internalExpenseInvoiceValue +
+      yearReport.summary.accrualExpenseInvoiceValue;
+  }
+
+  const workOnHand = contractExpenses - expensesInSystem;
+
+  jobsite.contract.workOnHand = workOnHand;
 };
 
 const truckingRates = async (
@@ -222,4 +275,6 @@ export default {
   setAllEmptyTruckingRates,
   addTruckingRateToAll,
   addFileObject,
+  contract,
+  workOnHand,
 };

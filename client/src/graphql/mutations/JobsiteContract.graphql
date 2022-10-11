@@ -1,0 +1,8 @@
+mutation JobsiteUpdateContract($id: ID!, $data: JobsiteContractData!) {
+  jobsiteContract(id: $id, data: $data) {
+    _id
+    contract {
+      ...JobsiteContractSnippet
+    }
+  }
+}

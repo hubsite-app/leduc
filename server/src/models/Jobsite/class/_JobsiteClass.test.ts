@@ -3,7 +3,11 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import { File, Jobsite, System } from "@models";
 import { disconnectAndStopServer, prepareDatabase } from "@testing/jestDB";
 import seedDatabase, { SeededDatabase } from "@testing/seedDatabase";
-import { IJobsiteUpdate } from "@typescript/jobsite";
+import {
+  IJobsiteContract,
+  IJobsiteCreate,
+  IJobsiteUpdate,
+} from "@typescript/jobsite";
 import { UserRoles } from "@typescript/user";
 import dayjs from "dayjs";
 import fs from "fs";
@@ -43,6 +47,44 @@ describe("Jobsite Class", () => {
     });
   });
 
+  describe("CREATE", () => {
+    describe("createDocument", () => {
+      describe("success", () => {
+        test("should successfully create jobsite", async () => {
+          const data: IJobsiteCreate = {
+            name: "Test Jobsite",
+            jobcode: "28-001",
+            description: "A short description",
+          };
+
+          const jobsite = await Jobsite.createDocument(data);
+
+          await jobsite.save();
+
+          expect(jobsite).toMatchObject(data);
+        });
+
+        test("should successfully create jobsite w/ contract", async () => {
+          const data: IJobsiteCreate = {
+            name: "Test Jobsite",
+            jobcode: "28-002",
+            description: "A short description",
+            contract: {
+              expectedProfit: 20000,
+              bidValue: 250000,
+            },
+          };
+
+          const jobsite = await Jobsite.createDocument(data);
+
+          await jobsite.save();
+
+          expect(jobsite).toMatchObject(data);
+        });
+      });
+    });
+  });
+
   describe("UPDATE", () => {
     describe("updateDocument", () => {
       describe("success", () => {
@@ -59,6 +101,25 @@ describe("Jobsite Class", () => {
       });
     });
 
+    describe("updateContract", () => {
+      describe("success", () => {
+        test("should successfully update contract", async () => {
+          const jobsite = documents.jobsites.jobsite_1;
+
+          expect(jobsite.contract).toBeDefined();
+
+          const data: IJobsiteContract = {
+            expectedProfit: 60000.5,
+            bidValue: 500000,
+          };
+
+          await jobsite.updateContract(data);
+
+          expect(jobsite.contract).toMatchObject(data);
+        });
+      });
+    });
+
     describe("setAllEmptyTruckingRates", () => {
       afterAll(async () => {
         await setupDatabase();
@@ -66,21 +127,16 @@ describe("Jobsite Class", () => {
 
       describe("success", () => {
         test("should successfully update all empty trucking rates", async () => {
-          expect(documents.jobsites.jobsite_1.truckingRates.length).toBe(0);
           expect(documents.jobsites.jobsite_3.truckingRates.length).toBe(0);
 
           const jobsites = await Jobsite.setAllEmptyTruckingRates();
 
-          expect(jobsites.length).toBe(2);
+          expect(jobsites.length).toBe(1);
 
           await jobsites[0].save();
-          await jobsites[1].save();
 
           const system = await System.getSystem();
           expect(jobsites[0].truckingRates.length).toBe(
-            system.materialShipmentVehicleTypeDefaults.length
-          );
-          expect(jobsites[1].truckingRates.length).toBe(
             system.materialShipmentVehicleTypeDefaults.length
           );
 
@@ -112,14 +168,14 @@ describe("Jobsite Class", () => {
 
           const jobsites = await Jobsite.addTruckingRateToAll(0, 1);
 
-          expect(jobsites.length).toBe(1);
+          expect(jobsites.length).toBe(2);
 
-          expect(jobsites[0]._id.toString()).toBe(
+          expect(jobsites[1]._id.toString()).toBe(
             documents.jobsites.jobsite_2._id.toString()
           );
 
-          expect(jobsites[0].truckingRates[0].rates.length).toBe(2);
-          expect(jobsites[0].truckingRates[0].rates[1]).toMatchObject(newRate);
+          expect(jobsites[1].truckingRates[0].rates.length).toBe(2);
+          expect(jobsites[1].truckingRates[0].rates[1]).toMatchObject(newRate);
         });
 
         test("should not add trucking rate if requested rate is before the already assigned jobsite rate", async () => {
@@ -167,16 +223,16 @@ describe("Jobsite Class", () => {
             0
           );
 
-          expect(jobsites.length).toBe(1);
+          expect(jobsites.length).toBe(2);
 
-          expect(jobsites[0]._id.toString()).toBe(
+          expect(jobsites[1]._id.toString()).toBe(
             documents.jobsites.jobsite_2._id.toString()
           );
 
-          expect(jobsites[0].truckingRates.length).toBe(2);
+          expect(jobsites[1].truckingRates.length).toBe(2);
 
-          expect(jobsites[0].truckingRates[1].title).toBe(newRateItem.title);
-          expect(jobsites[0].truckingRates[1].rates.length).toBe(
+          expect(jobsites[1].truckingRates[1].title).toBe(newRateItem.title);
+          expect(jobsites[1].truckingRates[1].rates.length).toBe(
             newRateItem.rates.length
           );
         });

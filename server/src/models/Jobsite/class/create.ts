@@ -3,11 +3,15 @@ import { IJobsiteCreate } from "@typescript/jobsite";
 
 const document = async (
   Jobsite: JobsiteModel,
-  data: IJobsiteCreate
+  jobsiteData: IJobsiteCreate
 ): Promise<JobsiteDocument> => {
+  const { contract, ...data } = jobsiteData;
+
   const jobsite = new Jobsite({
     ...data,
   });
+
+  if (contract) await jobsite.updateContract(contract);
 
   const system = await System.getSystem();
   await jobsite.setTruckingRatesToDefault(system);

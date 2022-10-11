@@ -14,6 +14,7 @@ export type MasterCrewTotals = Record<CrewTypes, ICrewData>;
 export interface IMasterRow {
   jobsiteName: string;
   lastInvoiceDate: string;
+  extraWork: string;
   revenue: number;
   expenses: number;
   overhead: number;
@@ -29,6 +30,9 @@ export interface IMasterRow {
   totalTrucking: number;
   crewTotals: MasterCrewTotals;
 }
+
+// eslint-disable-next-line quotes
+const currencyFormat = '"$"#,##0.00;[Red]-"$"#,##0.00';
 
 export const generateMasterTable = async (
   worksheet: ExcelJS.Worksheet,
@@ -88,6 +92,7 @@ export const generateMasterTable = async (
     columns: [
       { name: jobsiteTitle, filterButton: true },
       { name: "Last Invoiced", filterButton: true },
+      { name: "Extra Work", filterButton: true },
       { name: "Revenue", filterButton: true, totalsRowFunction: "sum" },
       { name: "Expenses", filterButton: true, totalsRowFunction: "sum" },
       { name: "Overhead", filterButton: true, totalsRowFunction: "sum" },
@@ -116,7 +121,7 @@ export const generateMasterTable = async (
 
     if (column.eachCell)
       column.eachCell((cell) => {
-        cell.numFmt = "#,##0.00";
+        cell.numFmt = currencyFormat;
       });
 
     if (column.values) {
@@ -166,6 +171,7 @@ const generateRows = async (
     const row: Row = [
       rowData.jobsiteName,
       rowData.lastInvoiceDate,
+      rowData.extraWork,
       rowData.revenue,
       rowData.expenses,
       rowData.overhead,

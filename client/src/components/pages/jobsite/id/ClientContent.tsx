@@ -30,6 +30,7 @@ import JobsiteMaterialsCosting from "./views/JobsiteMaterials";
 import JobsiteRemoveModal from "./views/RemoveModal";
 import RevenueInvoices from "./views/RevenueInvoices";
 import TruckingRates from "./views/TruckingRates";
+import JobsiteContract from "./views/Contract";
 
 interface IJobsiteClientContent {
   id: string;
@@ -122,10 +123,17 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
               <ExpenseInvoices jobsite={jobsite} />
               <RevenueInvoices jobsite={jobsite} />
             </SimpleGrid>
-            <JobsiteYearlyReportList jobsiteYearReports={jobsite.yearReports} />
-            <JobsiteMonthlyReportList
-              jobsiteMonthReports={jobsite.monthReports}
-            />
+            <SimpleGrid spacingY={2}>
+              <JobsiteContract jobsite={jobsite} />
+            </SimpleGrid>
+            <SimpleGrid columns={[1, 1, 1, 2]} spacingX={4} spacingY={2}>
+              <JobsiteYearlyReportList
+                jobsiteYearReports={jobsite.yearReports}
+              />
+              <JobsiteMonthlyReportList
+                jobsiteMonthReports={jobsite.monthReports}
+              />
+            </SimpleGrid>
           </Permission>
           <DailyReportListCard
             dailyReports={jobsite.dailyReports}

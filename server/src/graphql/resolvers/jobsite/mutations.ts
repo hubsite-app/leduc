@@ -10,10 +10,19 @@ import {
 import { TruckingRateTypes } from "@typescript/jobsite";
 import { Id } from "@typescript/models";
 import { UserRoles } from "@typescript/user";
-import { Field, InputType } from "type-graphql";
+import { Field, Float, InputType } from "type-graphql";
 import { FileCreateData } from "../file/mutations";
 import { InvoiceData } from "../invoice/mutations";
 import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
+
+@InputType()
+export class JobsiteContractData {
+  @Field(() => Float)
+  public bidValue!: number;
+
+  @Field(() => Float)
+  public expectedProfit!: number;
+}
 
 @InputType()
 export class JobsiteCreateData {
@@ -25,6 +34,9 @@ export class JobsiteCreateData {
 
   @Field({ nullable: true })
   public description?: string;
+
+  @Field(() => JobsiteContractData, { nullable: true })
+  public contract?: JobsiteContractData;
 }
 
 @InputType()
@@ -67,6 +79,20 @@ const update = async (
   if (!jobsite) throw new Error("Unable to find jobsite with that Id");
 
   await jobsite.updateDocument(data);
+
+  await jobsite.save();
+
+  return jobsite;
+};
+
+const updateContract = async (
+  id: Id,
+  data: JobsiteContractData
+): Promise<JobsiteDocument> => {
+  const jobsite = await Jobsite.getById(id);
+  if (!jobsite) throw new Error("Unable to find jobsite with that Id");
+
+  await jobsite.updateContract(data);
 
   await jobsite.save();
 
@@ -258,6 +284,7 @@ const remove = async (id: Id, transferJobsiteId?: Id) => {
 export default {
   create,
   update,
+  updateContract,
   addMaterial,
   addExpenseInvoice,
   addRevenueInvoice,

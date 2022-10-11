@@ -29,6 +29,9 @@ fragment JobsiteFullSnippet on JobsiteClass {
   materials {
     _id
   }
+  contract {
+    ...JobsiteContractSnippet
+  }
   fileObjects {
     _id
     minRole

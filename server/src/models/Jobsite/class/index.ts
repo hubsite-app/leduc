@@ -10,6 +10,7 @@ import {
   SystemDocument,
 } from "@models";
 import {
+  IJobsiteContract,
   IJobsiteCreate,
   IJobsiteFileObject,
   IJobsiteUpdate,
@@ -138,6 +139,17 @@ export class JobsiteClass extends JobsiteSchema {
     invoice: InvoiceDocument
   ) {
     return update.addRevenueInvoice(this, invoice);
+  }
+
+  public async updateContract(
+    this: JobsiteDocument,
+    contractData: IJobsiteContract
+  ) {
+    return update.contract(this, contractData);
+  }
+
+  public async updateWorkOnHand(this: JobsiteDocument) {
+    return update.workOnHand(this);
   }
 
   public async setTruckingRates(

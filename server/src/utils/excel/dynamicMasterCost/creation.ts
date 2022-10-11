@@ -312,11 +312,25 @@ const generateTable = async (
       })
       .pop();
 
+    const lastDayReport = jobsiteDayReports.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    )[0];
+    let extraWork = false;
+    if (
+      lastDayReport &&
+      lastRevenueInvoice &&
+      new Date(lastDayReport.date).getTime() >
+        new Date(lastRevenueInvoice.date).getTime()
+    ) {
+      extraWork = true;
+    }
+
     const row: IMasterRow = {
       jobsiteName: `${jobsite.jobcode} - ${jobsite.name}`,
       lastInvoiceDate: lastRevenueInvoice
         ? dayjs(lastRevenueInvoice.date).format("MMM D, YYYY")
         : "",
+      extraWork: extraWork ? "yes" : "",
       revenue,
       expenses: onSiteExpenses,
       overhead,

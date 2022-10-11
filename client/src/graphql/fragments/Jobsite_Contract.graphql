@@ -1,0 +1,6 @@
+fragment JobsiteContractSnippet on JobsiteContractClass {
+  _id
+  bidValue
+  expectedProfit
+  workOnHand
+}

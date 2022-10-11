@@ -30,6 +30,7 @@ import {
 import { InvoiceData } from "../invoice/mutations";
 import { JobsiteMaterialCreateData } from "../jobsiteMaterial/mutations";
 import mutations, {
+  JobsiteContractData,
   JobsiteCreateData,
   JobsiteFileObjectData,
   JobsiteUpdateData,
@@ -138,6 +139,16 @@ export default class JobsiteResolver {
     data: JobsiteUpdateData
   ) {
     return mutations.update(id, data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => JobsiteClass)
+  async jobsiteContract(
+    @Arg("id", () => ID, { nullable: false }) id: Id,
+    @Arg("data", () => JobsiteContractData, { nullable: false })
+    data: JobsiteContractData
+  ) {
+    return mutations.updateContract(id, data);
   }
 
   @Authorized(["ADMIN"])

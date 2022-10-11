@@ -45,6 +45,10 @@ const document = async (jobsiteYearReport: JobsiteYearReportDocument) => {
 
   await JobsiteYearMasterReport.requestBuild(jobsiteYearReport.startOfYear);
 
+  const jobsite = await jobsiteYearReport.getJobsite();
+  await jobsite.updateWorkOnHand();
+  await jobsite.save();
+
   return;
 };
 

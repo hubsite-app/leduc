@@ -50,4 +50,22 @@ export class JobsiteFileObjectClass {
   public minRole!: UserRoles;
 }
 
+@ObjectType()
+export class JobsiteContractClass {
+  @Field(() => ID, { nullable: true })
+  public _id?: Types.ObjectId;
+
+  @Field()
+  @prop({ required: true })
+  public bidValue!: number;
+
+  @Field()
+  @prop({ required: true })
+  public expectedProfit!: number;
+
+  @Field()
+  @prop({ required: true, default: 0 })
+  public workOnHand!: number;
+}
+
 export type JobsiteFileObjectDocument = DocumentType<JobsiteFileObjectClass>;

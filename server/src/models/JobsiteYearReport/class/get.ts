@@ -116,6 +116,14 @@ const dayReports = async (
   return reports;
 };
 
+const lastDayReport = async (
+  jobsiteYearReport: JobsiteYearReportDocument
+): Promise<JobsiteDayReportDocument | null> => {
+  return JobsiteDayReport.findOne({
+    _id: { $in: jobsiteYearReport.dayReports },
+  }).sort({ date: -1 });
+};
+
 const jobsite = async (
   jobsiteYearReport: JobsiteYearReportDocument
 ): Promise<JobsiteDocument> => {
@@ -147,6 +155,7 @@ export default {
   byUpdateRequested,
   byUpdatePending,
   dayReports,
+  lastDayReport,
   jobsite,
   excelName,
   excelUrl,

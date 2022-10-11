@@ -10,9 +10,14 @@ import {
 import * as yup from "yup";
 
 import TextField, { ITextField } from "../components/Common/forms/TextField";
-import { JobsiteCreateData, JobsiteUpdateData } from "../generated/graphql";
+import {
+  JobsiteContractData,
+  JobsiteCreateData,
+  JobsiteUpdateData,
+} from "../generated/graphql";
 import { IFormProps } from "../typescript/forms";
 import TextArea, { ITextArea } from "../components/Common/forms/TextArea";
+import NumberForm, { INumber } from "../components/Common/forms/Number";
 
 const JobsiteCreate = yup
   .object()
@@ -141,6 +146,82 @@ export const useJobsiteUpdateForm = (options?: UseFormProps) => {
                 errorMessage={fieldState.error?.message}
                 label="Name"
                 isDisabled={isLoading}
+              />
+            )}
+          />
+        ),
+        [isLoading, props]
+      ),
+  };
+
+  return {
+    FormComponents,
+    ...form,
+  };
+};
+
+const JobsiteContractSchema = yup
+  .object()
+  .shape({
+    bidValue: yup.number().required("Please provide a bid value"),
+    expectedProfit: yup.number().required("Please provide an expected value"),
+  })
+  .required();
+
+export const useJobsiteContractForm = (options?: UseFormProps) => {
+  const form = useForm({
+    resolver: yupResolver(JobsiteContractSchema),
+    ...options,
+  });
+
+  const { handleSubmit, control } = form;
+
+  const FormComponents = {
+    Form: ({
+      children,
+      submitHandler,
+    }: {
+      children: React.ReactNode;
+      submitHandler: SubmitHandler<JobsiteContractData>;
+    }) => <form onSubmit={handleSubmit(submitHandler)}>{children}</form>,
+    BidValue: ({ isLoading, ...props }: IFormProps<INumber>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="bidValue"
+            render={({ field, fieldState }) => (
+              <NumberForm
+                {...props}
+                {...field}
+                min={0}
+                errorMessage={fieldState.error?.message}
+                label="Bid Value"
+                isDisabled={isLoading}
+                inputLeftAddon="$"
+                pattern="^([-+,0-9.]+)"
+              />
+            )}
+          />
+        ),
+        [isLoading, props]
+      ),
+    ExpectedProfit: ({ isLoading, ...props }: IFormProps<INumber>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="expectedProfit"
+            render={({ field, fieldState }) => (
+              <NumberForm
+                {...props}
+                {...field}
+                min={0}
+                errorMessage={fieldState.error?.message}
+                label="Expected Profit"
+                isDisabled={isLoading}
+                inputLeftAddon="$"
+                pattern="^([-+,0-9.]+)"
               />
             )}
           />

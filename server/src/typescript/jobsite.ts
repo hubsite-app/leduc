@@ -9,6 +9,7 @@ export interface IJobsiteCreate {
   jobcode: string;
   location_url?: string;
   description?: string;
+  contract?: IJobsiteContract;
 }
 
 export interface IJobsiteUpdate {
@@ -40,4 +41,9 @@ export interface ITruckingTypeRateData extends IDefaultRateData {
 export interface IJobsiteFileObject {
   file: IFileCreate;
   minRole: UserRoles;
+}
+
+export interface IJobsiteContract {
+  bidValue: number;
+  expectedProfit: number;
 }
