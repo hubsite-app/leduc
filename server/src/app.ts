@@ -12,7 +12,10 @@ import { Server } from "ws";
 
 import { IContext } from "@typescript/graphql";
 
-import CompanyResolver from "@graphql/resolvers/company";
+import CompanyResolver, {
+  CompanyMaterialReportResolver,
+  CompanyMaterialReportJobDayResolver,
+} from "@graphql/resolvers/company";
 import CrewResolver, {
   CrewLocationDayItemResolver,
   CrewLocationDayResolver,
@@ -67,6 +70,8 @@ const createApp = async () => {
   const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
     resolvers: [
       CompanyResolver,
+      CompanyMaterialReportResolver,
+      CompanyMaterialReportJobDayResolver,
       CrewResolver,
       CrewLocationDayItemResolver,
       CrewLocationDayResolver,

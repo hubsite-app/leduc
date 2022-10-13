@@ -1,8 +1,16 @@
 import { Types } from "mongoose";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 import ElasticsearchClient from "@elasticsearch/client";
-import { CompanyDocument, CompanyModel } from "@models";
-import { ICompanySearchObject } from "@typescript/company";
+import {
+  CompanyDocument,
+  CompanyModel,
+  JobsiteDayReport,
+  JobsiteMaterial,
+} from "@models";
+import {
+  CompanyMaterialReport,
+  ICompanySearchObject,
+} from "@typescript/company";
 import {
   GetByIDOptions,
   IListOptions,
@@ -10,6 +18,8 @@ import {
 } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 import { IHit } from "@typescript/elasticsearch";
+import { MaterialReportClass } from "models/JobsiteDayReport";
+import { timezoneStartOfDayinUTC } from "@utils/time";
 
 /**
  * ----- Static Methods -----
@@ -114,9 +124,110 @@ const list = async (
   return companys;
 };
 
+/**
+ * ----- Methods -----
+ */
+
+const materialReports = async (
+  company: CompanyDocument
+): Promise<CompanyMaterialReport[]> => {
+  const jobsiteMaterials = await JobsiteMaterial.getByCompany(company._id);
+
+  // Get unique list of all materials used
+  const materialIdString: string[] = jobsiteMaterials
+    .map((mat) => mat.material?.toString())
+    .filter((mat): mat is string => mat !== undefined);
+  const uniqueMaterials = [...new Set(materialIdString)];
+
+  // Create catalog of jobsiteMaterial and it's material
+  const jobsiteMaterialCatalog: { [key: string]: string } = {};
+  for (let i = 0; i < jobsiteMaterials.length; i++) {
+    if (jobsiteMaterials[i].material)
+      jobsiteMaterialCatalog[jobsiteMaterials[i]._id.toString()] =
+        jobsiteMaterials[i].material?.toString() || "";
+  }
+
+  // Instantiate material reports array
+  const materialReports: CompanyMaterialReport[] = uniqueMaterials.map(
+    (mat) => {
+      return {
+        material: mat,
+        jobDays: [],
+      };
+    }
+  );
+
+  // Get all relevant day reports
+  const jobsiteDayReports = await JobsiteDayReport.find({
+    "materials.jobsiteMaterial": {
+      $in: jobsiteMaterials.map((material) => material._id),
+    },
+  });
+
+  interface MaterialReportCatalog {
+    material: MaterialReportClass;
+    date: Date;
+    jobsite: string;
+  }
+
+  // Make an array of all day material reports
+  let dayMaterialReports: MaterialReportCatalog[] = [];
+  for (let i = 0; i < jobsiteDayReports.length; i++) {
+    dayMaterialReports = [
+      ...dayMaterialReports,
+      ...jobsiteDayReports[i].materials.map((mat) => {
+        return {
+          material: mat,
+          date: jobsiteDayReports[i].date,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          jobsite: jobsiteDayReports[i].jobsite!.toString(),
+        };
+      }),
+    ];
+  }
+
+  // Populate material reports
+  const emptyIndices: number[] = [];
+  for (let i = 0; i < materialReports.length; i++) {
+    const materialReport = materialReports[i];
+
+    // Find all relevant material reports for this material
+    const relevantMaterialReports: MaterialReportCatalog[] =
+      dayMaterialReports.filter((mat) => {
+        if (
+          mat.material.jobsiteMaterial &&
+          jobsiteMaterialCatalog[mat.material.jobsiteMaterial.toString()] &&
+          materialReport.material ===
+            jobsiteMaterialCatalog[mat.material.jobsiteMaterial.toString()]
+        )
+          return true;
+        else return false;
+      });
+
+    // Populate material report jobDay array
+    for (let i = 0; i < relevantMaterialReports.length; i++) {
+      materialReport.jobDays.push({
+        jobsite: relevantMaterialReports[i].jobsite,
+        date: await timezoneStartOfDayinUTC(relevantMaterialReports[i].date),
+        quantity: relevantMaterialReports[i].material.quantity,
+      });
+    }
+
+    if (materialReport.jobDays.length === 0) emptyIndices.push(i);
+  }
+
+  // Remove all reports that don't have any days
+  for (let i = 0; i < emptyIndices.length; i++) {
+    materialReports.splice(emptyIndices[i] - i, 1);
+  }
+
+  return materialReports;
+};
+
 export default {
   byId,
   byName,
   search,
   list,
+  materialReports,
 };

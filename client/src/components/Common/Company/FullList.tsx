@@ -5,6 +5,8 @@ import { useCompaniesQuery } from "../../../generated/graphql";
 import Card from "../Card";
 import InfiniteScroll from "../InfiniteScroll";
 import Loading from "../Loading";
+import TextLink from "../TextLink";
+import createLink from "../../../utils/createLink";
 
 const CompanyFullList = () => {
   /**
@@ -45,7 +47,14 @@ const CompanyFullList = () => {
         <Flex flexDir="column" alignContent="center">
           {data.companies.map((company) => (
             <Card key={company._id}>
-              <Heading size="md">{company.name}</Heading>
+              <TextLink
+                link={createLink.company(company._id)}
+                color="black"
+                fontWeight="bold"
+                fontSize="lg"
+              >
+                {company.name}
+              </TextLink>
             </Card>
           ))}
           {loading && <Loading />}

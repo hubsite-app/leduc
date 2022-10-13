@@ -23,12 +23,26 @@ export type CompanyClass = {
   createdAt: Scalars['DateTime'];
   isBowMarkConcrete: Scalars['Boolean'];
   isBowMarkPaving: Scalars['Boolean'];
+  materialReports: Array<CompanyMaterialReport>;
   name: Scalars['String'];
   schemaVersion: Scalars['Float'];
 };
 
 export type CompanyCreateData = {
   name: Scalars['String'];
+};
+
+export type CompanyMaterialReport = {
+  __typename?: 'CompanyMaterialReport';
+  jobDays: Array<CompanyMaterialReportJobDay>;
+  material: MaterialClass;
+};
+
+export type CompanyMaterialReportJobDay = {
+  __typename?: 'CompanyMaterialReportJobDay';
+  date: Scalars['DateTime'];
+  jobsite: JobsiteClass;
+  quantity: Scalars['Float'];
 };
 
 export type CrewClass = {
@@ -1166,7 +1180,7 @@ export type QueryCompaniesArgs = {
 
 
 export type QueryCompanyArgs = {
-  id: Scalars['String'];
+  id: Scalars['ID'];
 };
 
 
@@ -1607,7 +1621,13 @@ export type VehicleWorkUpdateData = {
   jobTitle?: InputMaybe<Scalars['String']>;
 };
 
+export type CompanyMaterialReportSnippetFragment = { __typename?: 'CompanyMaterialReport', material: { __typename?: 'MaterialClass', _id: string, name: string }, jobDays: Array<{ __typename?: 'CompanyMaterialReportJobDay', quantity: number, date: any, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } }> };
+
+export type CompanyMaterialReportJobDaySnippetFragment = { __typename?: 'CompanyMaterialReportJobDay', quantity: number, date: any, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } };
+
 export type CompanyCardSnippetFragment = { __typename?: 'CompanyClass', _id: string, name: string };
+
+export type CompanyFullSnippetFragment = { __typename?: 'CompanyClass', _id: string, name: string, materialReports: Array<{ __typename?: 'CompanyMaterialReport', material: { __typename?: 'MaterialClass', _id: string, name: string }, jobDays: Array<{ __typename?: 'CompanyMaterialReportJobDay', quantity: number, date: any, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } }> }> };
 
 export type CrewLocationSnippetFragment = { __typename?: 'CrewLocationClass', crew: { __typename?: 'CrewClass', _id: string, name: string }, days: Array<{ __typename?: 'CrewLocationDayClass', date: any, items: Array<{ __typename?: 'CrewLocationDayItemClass', jobsiteName: string, dailyReportId: string }> }> };
 
@@ -2308,11 +2328,18 @@ export type CompanySearchQueryVariables = Exact<{
 export type CompanySearchQuery = { __typename?: 'Query', companySearch: Array<{ __typename?: 'CompanyClass', _id: string, name: string }> };
 
 export type CompanyCardQueryVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['ID'];
 }>;
 
 
 export type CompanyCardQuery = { __typename?: 'Query', company: { __typename?: 'CompanyClass', _id: string, name: string } };
+
+export type CompanyFullQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type CompanyFullQuery = { __typename?: 'Query', company: { __typename?: 'CompanyClass', _id: string, name: string, materialReports: Array<{ __typename?: 'CompanyMaterialReport', material: { __typename?: 'MaterialClass', _id: string, name: string }, jobDays: Array<{ __typename?: 'CompanyMaterialReportJobDay', quantity: number, date: any, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } }> }> } };
 
 export type CrewLocationsQueryVariables = Exact<{
   startTime?: InputMaybe<Scalars['DateTime']>;
@@ -2680,6 +2707,48 @@ export type JobsiteYearReportSubSubscriptionVariables = Exact<{
 
 export type JobsiteYearReportSubSubscription = { __typename?: 'Subscription', jobsiteYearReportSub?: { __typename?: 'JobsiteYearReportClass', crewTypes: Array<CrewTypes>, excelDownloadUrl?: string | null, _id: string, startOfYear: any, dayReports: Array<{ __typename?: 'JobsiteDayReportClass', _id: string, date: any, crewTypes: Array<CrewTypes>, employees: Array<{ __typename?: 'EmployeeReportClass', _id: string, rate: number, hours: number, crewType: CrewTypes, employee?: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } | null, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', jobTitle: string }> }>, vehicles: Array<{ __typename?: 'VehicleReportClass', _id: string, rate: number, hours: number, crewType: CrewTypes, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, vehicleWork: Array<{ __typename?: 'VehicleWorkClass', jobTitle?: string | null }> }>, materials: Array<{ __typename?: 'MaterialReportClass', _id: string, deliveredRateId?: string | null, rate: number, quantity: number, crewType: CrewTypes, jobsiteMaterial: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, costType: JobsiteMaterialCostType, delivered?: boolean | null, canRemove: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }>, deliveredRates: Array<{ __typename?: 'JobsiteMaterialDeliveredRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }> }>, invoices?: Array<{ __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } }> | null } }>, nonCostedMaterials: Array<{ __typename?: 'NonCostedMaterialReportClass', _id: string, materialName: string, supplierName: string, quantity: number, crewType: CrewTypes }>, trucking: Array<{ __typename?: 'TruckingReportClass', _id: string, truckingType: string, quantity: number, hours?: number | null, type: TruckingRateTypes, rate: number, crewType: CrewTypes }>, summary: { __typename?: 'OnSiteSummaryReportClass', employeeHours: number, employeeCost: number, vehicleHours: number, vehicleCost: number, materialQuantity: number, materialCost: number, nonCostedMaterialQuantity: number, truckingQuantity: number, truckingHours: number, truckingCost: number, crewTypeSummaries: Array<{ __typename?: 'CrewTypeOnSiteSummaryClass', crewType: CrewTypes, employeeHours: number, employeeCost: number, vehicleHours: number, vehicleCost: number, materialQuantity: number, materialCost: number, nonCostedMaterialQuantity: number, truckingQuantity: number, truckingHours: number, truckingCost: number }> } }>, expenseInvoices: Array<{ __typename?: 'InvoiceReportClass', _id: string, value: number, internal: boolean, accrual: boolean, invoice: { __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } } }>, revenueInvoices: Array<{ __typename?: 'InvoiceReportClass', _id: string, value: number, internal: boolean, accrual: boolean, invoice: { __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } } }>, summary: { __typename?: 'RangeSummaryReportClass', externalExpenseInvoiceValue: number, internalExpenseInvoiceValue: number, accrualExpenseInvoiceValue: number, externalRevenueInvoiceValue: number, internalRevenueInvoiceValue: number, accrualRevenueInvoiceValue: number }, issues: Array<{ __typename?: 'ReportIssueFullClass', _id: string, type: ReportIssueTypes, amount?: number | null, employee?: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } | null, vehicle?: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } | null, jobsiteMaterial?: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, completedQuantity: number, unit: string, costType: JobsiteMaterialCostType, delivered?: boolean | null, canRemove: boolean, jobsite: { __typename?: 'JobsiteClass', _id: string }, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }>, deliveredRates: Array<{ __typename?: 'JobsiteMaterialDeliveredRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }> }>, invoices?: Array<{ __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } }> | null } | null }>, update: { __typename?: 'UpdateClass', status: UpdateStatus, lastUpdatedAt?: any | null }, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } } | null };
 
+export const CompanyCardSnippetFragmentDoc = gql`
+    fragment CompanyCardSnippet on CompanyClass {
+  _id
+  name
+}
+    `;
+export const JobsiteCardSnippetFragmentDoc = gql`
+    fragment JobsiteCardSnippet on JobsiteClass {
+  _id
+  name
+  jobcode
+}
+    `;
+export const CompanyMaterialReportJobDaySnippetFragmentDoc = gql`
+    fragment CompanyMaterialReportJobDaySnippet on CompanyMaterialReportJobDay {
+  jobsite {
+    ...JobsiteCardSnippet
+  }
+  quantity
+  date
+}
+    ${JobsiteCardSnippetFragmentDoc}`;
+export const CompanyMaterialReportSnippetFragmentDoc = gql`
+    fragment CompanyMaterialReportSnippet on CompanyMaterialReport {
+  material {
+    _id
+    name
+  }
+  jobDays {
+    ...CompanyMaterialReportJobDaySnippet
+  }
+}
+    ${CompanyMaterialReportJobDaySnippetFragmentDoc}`;
+export const CompanyFullSnippetFragmentDoc = gql`
+    fragment CompanyFullSnippet on CompanyClass {
+  ...CompanyCardSnippet
+  materialReports {
+    ...CompanyMaterialReportSnippet
+  }
+}
+    ${CompanyCardSnippetFragmentDoc}
+${CompanyMaterialReportSnippetFragmentDoc}`;
 export const CrewLocationSnippetFragmentDoc = gql`
     fragment CrewLocationSnippet on CrewLocationClass {
   crew {
@@ -2697,12 +2766,6 @@ export const CrewLocationSnippetFragmentDoc = gql`
     `;
 export const MaterialCardSnippetFragmentDoc = gql`
     fragment MaterialCardSnippet on MaterialClass {
-  _id
-  name
-}
-    `;
-export const CompanyCardSnippetFragmentDoc = gql`
-    fragment CompanyCardSnippet on CompanyClass {
   _id
   name
 }
@@ -3058,13 +3121,6 @@ export const UpdateSnippetFragmentDoc = gql`
     fragment UpdateSnippet on UpdateClass {
   status
   lastUpdatedAt
-}
-    `;
-export const JobsiteCardSnippetFragmentDoc = gql`
-    fragment JobsiteCardSnippet on JobsiteClass {
-  _id
-  name
-  jobcode
 }
     `;
 export const JobsiteMonthReportCardSnippetFragmentDoc = gql`
@@ -6092,7 +6148,7 @@ export type CompanySearchQueryHookResult = ReturnType<typeof useCompanySearchQue
 export type CompanySearchLazyQueryHookResult = ReturnType<typeof useCompanySearchLazyQuery>;
 export type CompanySearchQueryResult = Apollo.QueryResult<CompanySearchQuery, CompanySearchQueryVariables>;
 export const CompanyCardDocument = gql`
-    query CompanyCard($id: String!) {
+    query CompanyCard($id: ID!) {
   company(id: $id) {
     ...CompanyCardSnippet
   }
@@ -6126,6 +6182,41 @@ export function useCompanyCardLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type CompanyCardQueryHookResult = ReturnType<typeof useCompanyCardQuery>;
 export type CompanyCardLazyQueryHookResult = ReturnType<typeof useCompanyCardLazyQuery>;
 export type CompanyCardQueryResult = Apollo.QueryResult<CompanyCardQuery, CompanyCardQueryVariables>;
+export const CompanyFullDocument = gql`
+    query CompanyFull($id: ID!) {
+  company(id: $id) {
+    ...CompanyFullSnippet
+  }
+}
+    ${CompanyFullSnippetFragmentDoc}`;
+
+/**
+ * __useCompanyFullQuery__
+ *
+ * To run a query within a React component, call `useCompanyFullQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCompanyFullQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCompanyFullQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useCompanyFullQuery(baseOptions: Apollo.QueryHookOptions<CompanyFullQuery, CompanyFullQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CompanyFullQuery, CompanyFullQueryVariables>(CompanyFullDocument, options);
+      }
+export function useCompanyFullLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CompanyFullQuery, CompanyFullQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CompanyFullQuery, CompanyFullQueryVariables>(CompanyFullDocument, options);
+        }
+export type CompanyFullQueryHookResult = ReturnType<typeof useCompanyFullQuery>;
+export type CompanyFullLazyQueryHookResult = ReturnType<typeof useCompanyFullLazyQuery>;
+export type CompanyFullQueryResult = Apollo.QueryResult<CompanyFullQuery, CompanyFullQueryVariables>;
 export const CrewLocationsDocument = gql`
     query CrewLocations($startTime: DateTime, $endTime: DateTime) {
   crewLocations(startTime: $startTime, endTime: $endTime) {

@@ -45,6 +45,10 @@ export class CompanyClass extends CompanySchema {
     return get.list(this, options);
   }
 
+  public async getMaterialReports(this: CompanyDocument) {
+    return get.materialReports(this);
+  }
+
   /**
    * ----- CREATE -----
    */

@@ -28,7 +28,6 @@ import { JobsiteYearMasterReportFullSnippetFragment } from "../../../generated/g
 import formatNumber from "../../../utils/formatNumber";
 import JobsiteMasterReportExcelGenerate from "../../Forms/JobsiteMasterReport/ExcelGenerate";
 import CrewLocationsModal from "../CrewLocations/Modal";
-import CrewLocationsTable from "../CrewLocations/Table";
 import ReportSummaryCard from "../ReportSummary";
 import JobsiteMasterRow from "./Row";
 

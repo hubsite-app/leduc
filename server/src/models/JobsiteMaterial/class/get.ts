@@ -51,6 +51,15 @@ const byMaterial = async (
   });
 };
 
+const byCompany = async (
+  JobsiteMaterial: JobsiteMaterialModel,
+  companyId: Id
+): Promise<JobsiteMaterialDocument[]> => {
+  return JobsiteMaterial.find({
+    supplier: companyId,
+  });
+};
+
 /**
  * ----- Methods -----
  */
@@ -179,6 +188,7 @@ const invoiceMonthRate = async (
 export default {
   byId,
   byMaterial,
+  byCompany,
   material,
   supplier,
   jobsite,

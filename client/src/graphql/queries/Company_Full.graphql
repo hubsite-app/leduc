@@ -1,0 +1,5 @@
+query CompanyFull($id: ID!) {
+  company(id: $id) {
+    ...CompanyFullSnippet
+  }
+}

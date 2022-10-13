@@ -1,4 +1,4 @@
-query CompanyCard($id: String!) {
+query CompanyCard($id: ID!) {
   company(id: $id) {
     ...CompanyCardSnippet
   }

@@ -184,6 +184,41 @@ export const ssrCompanyCard = {
       withPage: withPageCompanyCard,
       usePage: useCompanyCard,
     }
+export async function getServerPageCompanyFull
+    (options: Omit<Apollo.QueryOptions<Types.CompanyFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.CompanyFullQuery>({ ...options, query: Operations.CompanyFullDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useCompanyFull = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CompanyFullQuery, Types.CompanyFullQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.CompanyFullDocument, options);
+};
+export type PageCompanyFullComp = React.FC<{data?: Types.CompanyFullQuery, error?: Apollo.ApolloError}>;
+export const withPageCompanyFull = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CompanyFullQuery, Types.CompanyFullQueryVariables>) => (WrappedComponent:PageCompanyFullComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.CompanyFullDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrCompanyFull = {
+      getServerPage: getServerPageCompanyFull,
+      withPage: withPageCompanyFull,
+      usePage: useCompanyFull,
+    }
 export async function getServerPageCrewLocations
     (options: Omit<Apollo.QueryOptions<Types.CrewLocationsQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);

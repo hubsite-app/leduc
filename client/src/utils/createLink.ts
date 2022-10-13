@@ -57,10 +57,15 @@ const dailyReportPDF = (dailyReportId: string) => {
   return `/daily-report/${dailyReportId}/pdf`;
 };
 
+const company = (companyId: string) => {
+  return `/company/${companyId}`;
+};
+
 const createLink = {
   employee,
   vehicle,
   crew,
+  company,
   jobsite,
   jobsiteDailyReports,
   jobsiteMonthReport,
