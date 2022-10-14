@@ -8,6 +8,7 @@ import CrewSearchCard from "../components/pages/search/CrewCard";
 import EmployeeSearchCard from "../components/pages/search/EmployeeCard";
 import JobsiteSearchCard from "../components/pages/search/JobsiteCard";
 import VehicleSearchCard from "../components/pages/search/VehicleCard";
+import CompanySearchCard from "../components/pages/search/CompanyCard";
 import { PageSearchComp, ssrSearch } from "../generated/page";
 
 const Search: PageSearchComp = ({ data }) => {
@@ -18,19 +19,21 @@ const Search: PageSearchComp = ({ data }) => {
    */
 
   const list = React.useMemo(() => {
-    return results.map((result) => {
+    return results.map((result, index) => {
       if (result.employee) {
-        return <EmployeeSearchCard employee={result.employee} />;
+        return <EmployeeSearchCard key={index} employee={result.employee} />;
       } else if (result.vehicle) {
-        return <VehicleSearchCard vehicle={result.vehicle} />;
+        return <VehicleSearchCard key={index} vehicle={result.vehicle} />;
       } else if (result.jobsite) {
-        return <JobsiteSearchCard jobsite={result.jobsite} />;
+        return <JobsiteSearchCard key={index} jobsite={result.jobsite} />;
       } else if (result.dailyReport) {
-        return <DailyReportCard dailyReport={result.dailyReport} />;
+        return <DailyReportCard key={index} dailyReport={result.dailyReport} />;
       } else if (result.crew) {
-        return <CrewSearchCard crew={result.crew} />;
+        return <CrewSearchCard key={index} crew={result.crew} />;
+      } else if (result.company) {
+        return <CompanySearchCard key={index} company={result.company} />;
       } else {
-        return <Card>Error</Card>;
+        return <Card key={index}>Error</Card>;
       }
     });
   }, [results]);

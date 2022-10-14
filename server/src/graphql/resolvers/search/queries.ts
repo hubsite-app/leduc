@@ -1,6 +1,13 @@
 import { getUserCrews } from "@graphql/helpers/general";
 import { SearchClass } from "@graphql/types/search";
-import { Crew, DailyReport, Employee, Jobsite, Vehicle } from "@models";
+import {
+  Company,
+  Crew,
+  DailyReport,
+  Employee,
+  Jobsite,
+  Vehicle,
+} from "@models";
 import { IContext } from "@typescript/graphql";
 
 const search = async (
@@ -19,12 +26,15 @@ const search = async (
 
   const crewReportObjects = await Crew.search(searchString);
 
+  const companyObjects = await Company.search(searchString);
+
   const searchObjects: SearchClass[] = [
     ...employeeObjects,
     ...vehicleObjects,
     ...jobsiteObjects,
     ...dailyReportObjects,
     ...crewReportObjects,
+    ...companyObjects,
   ];
 
   searchObjects.sort((a, b) => b.score - a.score);

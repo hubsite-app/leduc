@@ -20,4 +20,7 @@ fragment SearchSnippet on SearchClass {
   crew {
     ...CrewCardSnippet
   }
+  company {
+    ...CompanyCardSnippet
+  }
 }

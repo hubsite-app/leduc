@@ -45,7 +45,11 @@ const NavbarSearch = () => {
                 break;
               }
               case "crew": {
-                router.push(createLink.crew(value.value))
+                router.push(createLink.crew(value.value));
+                break;
+              }
+              case "company": {
+                router.push(createLink.company(value.value));
                 break;
               }
             }
