@@ -89,7 +89,7 @@ const JobsiteContract = ({ jobsite }: IJobsiteContract) => {
   const content = React.useMemo(() => {
     if (jobsite.contract) {
       return (
-        <SimpleGrid spacing={2} columns={3}>
+        <SimpleGrid spacing={2} columns={[2, 2, 3]}>
           <Stat display="flex" justifyContent="center">
             <StatLabel>Bid Value</StatLabel>
             <StatNumber>${formatNumber(jobsite.contract.bidValue)}</StatNumber>

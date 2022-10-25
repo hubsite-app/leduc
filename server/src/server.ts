@@ -15,6 +15,7 @@ import mongoose from "mongoose";
 import createApp from "./app";
 import elasticsearch from "./elasticsearch";
 import errorHandler from "@utils/errorHandler";
+import { bindEventEmitters } from "@events";
 
 // import saveAll from "@testing/saveAll";
 
@@ -42,6 +43,9 @@ const main = async () => {
         // await seedDatabase();
       }
     }
+
+    // Bind Event Emitters
+    bindEventEmitters();
 
     // Start API server
     if (apiEnabled) {

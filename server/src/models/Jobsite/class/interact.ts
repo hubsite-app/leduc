@@ -1,43 +1,16 @@
-import {
-  JobsiteDayReport,
-  JobsiteDayReportDocument,
-  JobsiteDocument,
-  JobsiteMonthReport,
-  JobsiteMonthReportDocument,
-  JobsiteYearReport,
-  JobsiteYearReportDocument,
-} from "@models";
+import eventEmitters from "@events";
+import { JobsiteDocument } from "@models";
 
-const requestGenerateDayReports = async (
-  jobsite: JobsiteDocument
-): Promise<JobsiteDayReportDocument[]> => {
-  const reports = await JobsiteDayReport.requestBuildAllForJobsite(jobsite);
-
-  return reports;
+const requestGenerateDayReports = async (jobsite: JobsiteDocument) => {
+  eventEmitters.jobsite.onJobsiteRequestDayReportGeneration.emit(jobsite);
 };
 
-const requestGenerateMonthReports = async (
-  jobsite: JobsiteDocument
-): Promise<JobsiteMonthReportDocument[]> => {
-  const monthReports = await JobsiteMonthReport.getByJobsite(jobsite);
-
-  for (const report of monthReports) {
-    await report.requestBuild();
-  }
-
-  return monthReports;
+const requestGenerateMonthReports = async (jobsite: JobsiteDocument) => {
+  eventEmitters.jobsite.onJobsiteRequestMonthReportGeneration.emit(jobsite);
 };
 
-const requestGenerateYearReports = async (
-  jobsite: JobsiteDocument
-): Promise<JobsiteYearReportDocument[]> => {
-  const yearReports = await JobsiteYearReport.getByJobsite(jobsite);
-
-  for (const report of yearReports) {
-    await report.requestBuild();
-  }
-
-  return yearReports;
+const requestGenerateYearReports = async (jobsite: JobsiteDocument) => {
+  eventEmitters.jobsite.onJobsiteRequestYearReportGeneration.emit(jobsite);
 };
 
 export default {

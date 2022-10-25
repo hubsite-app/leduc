@@ -32,6 +32,7 @@
       "@models": ["./models"],
       "@workers": ["./workers"],
       "@pubsub": ["./pubsub"],
+      "@events": ["./events"],
       "@testing/*": ["testing/*"],
       "@constants/*": ["constants/*"],
       "@config/*": ["config/*"],
