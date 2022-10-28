@@ -254,6 +254,41 @@ export const ssrCrewLocations = {
       withPage: withPageCrewLocations,
       usePage: useCrewLocations,
     }
+export async function getServerPageCrewLocationsExcel
+    (options: Omit<Apollo.QueryOptions<Types.CrewLocationsExcelQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.CrewLocationsExcelQuery>({ ...options, query: Operations.CrewLocationsExcelDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useCrewLocationsExcel = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CrewLocationsExcelQuery, Types.CrewLocationsExcelQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.CrewLocationsExcelDocument, options);
+};
+export type PageCrewLocationsExcelComp = React.FC<{data?: Types.CrewLocationsExcelQuery, error?: Apollo.ApolloError}>;
+export const withPageCrewLocationsExcel = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.CrewLocationsExcelQuery, Types.CrewLocationsExcelQueryVariables>) => (WrappedComponent:PageCrewLocationsExcelComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.CrewLocationsExcelDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrCrewLocationsExcel = {
+      getServerPage: getServerPageCrewLocationsExcel,
+      withPage: withPageCrewLocationsExcel,
+      usePage: useCrewLocationsExcel,
+    }
 export async function getServerPageCrewSearch
     (options: Omit<Apollo.QueryOptions<Types.CrewSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);

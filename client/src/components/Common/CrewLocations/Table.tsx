@@ -86,6 +86,7 @@ const CrewLocationsTable = ({
                             <TextLink
                               key={item.dailyReportId}
                               link={createLink.dailyReport(item.dailyReportId)}
+                              newTab
                             >
                               {item.jobsiteName}{" "}
                             </TextLink>

@@ -13,7 +13,9 @@ import {
   CrewLocationDayClass,
   CrewLocationDayItemClass,
 } from "@typescript/crew";
+import { SupportedMimeTypes } from "@typescript/file";
 import { Id } from "@typescript/models";
+import { generateCrewLocationWorkbook, getWorkbookBuffer } from "@utils/excel";
 import {
   Arg,
   Authorized,
@@ -83,6 +85,26 @@ export default class CrewResolver {
     @Arg("endTime", () => Date, { nullable: true }) endTime?: Date
   ) {
     return Crew.getCrewLocations(startTime, endTime);
+  }
+
+  @Query(() => String)
+  async crewLocationsExcel(
+    @Arg("startTime", () => Date) startTime: Date,
+    @Arg("endTime", () => Date) endTime: Date
+  ) {
+    const crewLocations = await Crew.getCrewLocations(startTime, endTime);
+
+    const workbook = await generateCrewLocationWorkbook(
+      crewLocations,
+      startTime,
+      endTime
+    );
+
+    const buffer = await getWorkbookBuffer(workbook);
+
+    return `data:${SupportedMimeTypes.XLSX};base64,${buffer.toString(
+      "base64"
+    )}`;
   }
 
   /**

@@ -3,6 +3,7 @@ import {
   Grid,
   GridItem,
   IconButton,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,8 +13,11 @@ import {
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import React from "react";
-import { FiCheck } from "react-icons/fi";
-import { useCrewLocationsLazyQuery } from "../../../generated/graphql";
+import { FiCheck, FiDownload } from "react-icons/fi";
+import {
+  useCrewLocationsExcelLazyQuery,
+  useCrewLocationsLazyQuery,
+} from "../../../generated/graphql";
 import TextField from "../forms/TextField";
 import Loading from "../Loading";
 import CrewLocationsTable from "./Table";
@@ -35,12 +39,21 @@ const CrewLocationsModal = ({ isOpen, onClose }: ICrewLocationsModal) => {
 
   const [query, { data, loading, variables }] = useCrewLocationsLazyQuery();
 
+  const [excelQuery, { data: excelData, loading: excelLoading }] =
+    useCrewLocationsExcelLazyQuery();
+
   /**
    * ----- Functions -----
    */
 
   const handleDateSubmit = () => {
     query({
+      variables: {
+        startTime,
+        endTime,
+      },
+    });
+    excelQuery({
       variables: {
         startTime,
         endTime,
@@ -60,6 +73,12 @@ const CrewLocationsModal = ({ isOpen, onClose }: ICrewLocationsModal) => {
           endTime: endTime,
         },
       });
+      excelQuery({
+        variables: {
+          startTime,
+          endTime,
+        },
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
@@ -74,7 +93,24 @@ const CrewLocationsModal = ({ isOpen, onClose }: ICrewLocationsModal) => {
       <ModalContent>
         <ModalHeader>
           <Flex justifyContent="space-between">
-            Crew Location Report
+            <Flex flexDir="row" my="auto">
+              Crew Location Report
+              <Link
+                passHref
+                href={excelData?.crewLocationsExcel}
+                download={`Crew-Locations-${dayjs(startTime).format(
+                  "YYYY-MM-DD"
+                )}-${dayjs(endTime).format("YYYY-MM-DD")}`}
+              >
+                <IconButton
+                  mx={2}
+                  isLoading={excelLoading}
+                  icon={<FiDownload />}
+                  aria-label="download"
+                  backgroundColor="transparent"
+                />
+              </Link>
+            </Flex>
             <form
               onSubmit={(e) => {
                 e.preventDefault();

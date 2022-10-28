@@ -1,0 +1,3 @@
+query CrewLocationsExcel($startTime: DateTime!, $endTime: DateTime!) {
+  crewLocationsExcel(startTime: $startTime, endTime: $endTime)
+}

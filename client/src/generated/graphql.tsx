@@ -1142,6 +1142,7 @@ export type Query = {
   crew: CrewClass;
   crewList: Array<CrewClass>;
   crewLocations: Array<CrewLocationClass>;
+  crewLocationsExcel: Scalars['String'];
   crewSearch: Array<CrewClass>;
   currentUser: UserClass;
   dailyReport: DailyReportClass;
@@ -1198,6 +1199,12 @@ export type QueryCrewArgs = {
 export type QueryCrewLocationsArgs = {
   endTime?: InputMaybe<Scalars['DateTime']>;
   startTime?: InputMaybe<Scalars['DateTime']>;
+};
+
+
+export type QueryCrewLocationsExcelArgs = {
+  endTime: Scalars['DateTime'];
+  startTime: Scalars['DateTime'];
 };
 
 
@@ -2349,6 +2356,14 @@ export type CrewLocationsQueryVariables = Exact<{
 
 
 export type CrewLocationsQuery = { __typename?: 'Query', crewLocations: Array<{ __typename?: 'CrewLocationClass', crew: { __typename?: 'CrewClass', _id: string, name: string }, days: Array<{ __typename?: 'CrewLocationDayClass', date: any, items: Array<{ __typename?: 'CrewLocationDayItemClass', jobsiteName: string, dailyReportId: string }> }> }> };
+
+export type CrewLocationsExcelQueryVariables = Exact<{
+  startTime: Scalars['DateTime'];
+  endTime: Scalars['DateTime'];
+}>;
+
+
+export type CrewLocationsExcelQuery = { __typename?: 'Query', crewLocationsExcel: string };
 
 export type CrewSearchQueryVariables = Exact<{
   searchString: Scalars['String'];
@@ -6258,6 +6273,40 @@ export function useCrewLocationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type CrewLocationsQueryHookResult = ReturnType<typeof useCrewLocationsQuery>;
 export type CrewLocationsLazyQueryHookResult = ReturnType<typeof useCrewLocationsLazyQuery>;
 export type CrewLocationsQueryResult = Apollo.QueryResult<CrewLocationsQuery, CrewLocationsQueryVariables>;
+export const CrewLocationsExcelDocument = gql`
+    query CrewLocationsExcel($startTime: DateTime!, $endTime: DateTime!) {
+  crewLocationsExcel(startTime: $startTime, endTime: $endTime)
+}
+    `;
+
+/**
+ * __useCrewLocationsExcelQuery__
+ *
+ * To run a query within a React component, call `useCrewLocationsExcelQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCrewLocationsExcelQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCrewLocationsExcelQuery({
+ *   variables: {
+ *      startTime: // value for 'startTime'
+ *      endTime: // value for 'endTime'
+ *   },
+ * });
+ */
+export function useCrewLocationsExcelQuery(baseOptions: Apollo.QueryHookOptions<CrewLocationsExcelQuery, CrewLocationsExcelQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CrewLocationsExcelQuery, CrewLocationsExcelQueryVariables>(CrewLocationsExcelDocument, options);
+      }
+export function useCrewLocationsExcelLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CrewLocationsExcelQuery, CrewLocationsExcelQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CrewLocationsExcelQuery, CrewLocationsExcelQueryVariables>(CrewLocationsExcelDocument, options);
+        }
+export type CrewLocationsExcelQueryHookResult = ReturnType<typeof useCrewLocationsExcelQuery>;
+export type CrewLocationsExcelLazyQueryHookResult = ReturnType<typeof useCrewLocationsExcelLazyQuery>;
+export type CrewLocationsExcelQueryResult = Apollo.QueryResult<CrewLocationsExcelQuery, CrewLocationsExcelQueryVariables>;
 export const CrewSearchDocument = gql`
     query CrewSearch($searchString: String!, $options: SearchOptions) {
   crewSearch(searchString: $searchString, options: $options) {
