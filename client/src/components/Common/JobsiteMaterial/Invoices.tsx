@@ -30,9 +30,9 @@ const JobsiteMaterialInvoices = ({
    * ----- Variables -----
    */
 
-  const sortedInvoices = jobsiteMaterial.invoices?.sort((a, b) =>
-    a.company.name.localeCompare(b.company.name)
-  );
+  const sortedInvoices = jobsiteMaterial.invoices?.slice().sort((a, b) => {
+    return a.company.name.localeCompare(b.company.name);
+  });
 
   /**
    * ----- Rendering -----
@@ -73,7 +73,7 @@ const JobsiteMaterialInvoices = ({
         </Center>
       )}
 
-      <Flex flexDir="column">
+      <Flex flexDir="column" maxH="25vh" overflowY="scroll">
         {sortedInvoices &&
           sortedInvoices.map((invoice) => (
             <InvoiceCardForJobsiteMaterial

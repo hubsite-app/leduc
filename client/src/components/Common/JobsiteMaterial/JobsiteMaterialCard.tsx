@@ -12,6 +12,7 @@ import {
   JobsiteMaterialCardSnippetFragment,
   JobsiteMaterialCostType,
   useJobsiteMaterialRemoveMutation,
+  UserRoles,
 } from "../../../generated/graphql";
 import formatNumber from "../../../utils/formatNumber";
 import JobsiteMaterialProgressBar from "./ProgressBar";
@@ -82,18 +83,20 @@ const JobsiteMaterialCard = ({
             {jobsiteMaterial.unit}
           </StatNumber>
         </Stat>
-        <Permission>
-          <Flex flexDir="row">
-            {jobsiteMaterial.costType === JobsiteMaterialCostType.Invoice && (
+        <Flex flexDir="row">
+          {jobsiteMaterial.costType === JobsiteMaterialCostType.Invoice && (
+            <Permission minRole={UserRoles.ProjectManager}>
               <IconButton
                 backgroundColor="transparent"
                 aria-label="invoices"
                 icon={<FaFileInvoiceDollar />}
                 onClick={() => setShowInvoice(!showInvoice)}
               />
-            )}
+            </Permission>
+          )}
 
-            {edit && jobsiteMaterial.canRemove && (
+          {edit && jobsiteMaterial.canRemove && (
+            <Permission>
               <IconButton
                 icon={<FiTrash />}
                 aria-label="delete"
@@ -109,15 +112,17 @@ const JobsiteMaterialCard = ({
                 }}
                 isLoading={removeLoading}
               />
-            )}
+            </Permission>
+          )}
+          <Permission>
             <IconButton
               backgroundColor="transparent"
               aria-label="edit"
               icon={edit ? <FiX /> : <FiEdit />}
               onClick={() => setEdit(!edit)}
             />
-          </Flex>
-        </Permission>
+          </Permission>
+        </Flex>
       </Flex>
       <Box>
         <JobsiteMaterialProgressBar jobsiteMaterial={jobsiteMaterial} />
