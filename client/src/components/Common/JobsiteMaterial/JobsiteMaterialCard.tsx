@@ -2,6 +2,7 @@ import React from "react";
 import {
   Box,
   Flex,
+  Heading,
   IconButton,
   Stat,
   StatLabel,
@@ -23,6 +24,7 @@ import FormContainer from "../FormContainer";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import JobsiteMaterialInvoices from "./Invoices";
 import jobsiteMaterialName from "../../../utils/jobsiteMaterialName";
+import ProgressBar from "../ProgressBar";
 
 interface IJobsiteMaterialCard {
   jobsiteMaterial: JobsiteMaterialCardSnippetFragment;
@@ -74,15 +76,7 @@ const JobsiteMaterialCard = ({
       _focusWithin={{ borderColor: "gray.600", backgroundColor: "gray.100" }}
     >
       <Flex flexDir="row" justifyContent="space-between">
-        <Stat>
-          <StatLabel fontWeight="bold">
-            {jobsiteMaterialName(jobsiteMaterial)}
-          </StatLabel>
-          <StatNumber>
-            {formatNumber(jobsiteMaterial.completedQuantity)}{" "}
-            {jobsiteMaterial.unit}
-          </StatNumber>
-        </Stat>
+        <Heading size="md">{jobsiteMaterialName(jobsiteMaterial)}</Heading>
         <Flex flexDir="row">
           {jobsiteMaterial.costType === JobsiteMaterialCostType.Invoice && (
             <Permission minRole={UserRoles.ProjectManager}>
@@ -125,7 +119,20 @@ const JobsiteMaterialCard = ({
         </Flex>
       </Flex>
       <Box>
-        <JobsiteMaterialProgressBar jobsiteMaterial={jobsiteMaterial} />
+        <ProgressBar
+          totalLabel={`${formatNumber(jobsiteMaterial.quantity)} ${
+            jobsiteMaterial.unit
+          }`}
+          completedLabel={`${formatNumber(jobsiteMaterial.completedQuantity)} ${
+            jobsiteMaterial.unit
+          }`}
+          percentComplete={parseInt(
+            formatNumber(
+              (jobsiteMaterial.completedQuantity / jobsiteMaterial.quantity) *
+                100
+            )
+          )}
+        />
       </Box>
       {edit && (
         <FormContainer>
