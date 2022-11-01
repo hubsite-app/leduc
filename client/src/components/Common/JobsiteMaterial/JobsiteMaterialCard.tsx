@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  Stat,
-  StatLabel,
-  StatNumber,
-} from "@chakra-ui/react";
+import { Box, Flex, Heading, IconButton } from "@chakra-ui/react";
 import {
   JobsiteFullDocument,
   JobsiteMaterialCardSnippetFragment,
@@ -16,7 +8,6 @@ import {
   UserRoles,
 } from "../../../generated/graphql";
 import formatNumber from "../../../utils/formatNumber";
-import JobsiteMaterialProgressBar from "./ProgressBar";
 import { FiEdit, FiTrash, FiX } from "react-icons/fi";
 import JobsiteMaterialUpdate from "../../Forms/JobsiteMaterial/JobsiteMaterialUpdate";
 import Permission from "../Permission";
