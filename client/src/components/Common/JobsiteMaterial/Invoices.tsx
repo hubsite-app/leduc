@@ -11,6 +11,7 @@ import { FiPlus, FiX } from "react-icons/fi";
 import { JobsiteMaterialCardSnippetFragment } from "../../../generated/graphql";
 import JobsiteMaterialInvoiceAddForm from "../../Forms/JobsiteMaterial/InvoiceAdd";
 import FormContainer from "../FormContainer";
+import Permission from "../Permission";
 import InvoiceCardForJobsiteMaterial from "./InvoiceCard";
 
 interface IJobsiteMaterialInvoices {
@@ -40,38 +41,40 @@ const JobsiteMaterialInvoices = ({
 
   return (
     <Box w="100%">
-      {addForm ? (
-        <FormContainer>
-          <Flex justifyContent="space-between">
-            <Heading ml={1} my="auto" size="md">
-              Add Invoice
-            </Heading>
-            <IconButton
-              icon={<FiX />}
-              aria-label="exit"
-              onClick={() => setAddForm(false)}
-              size="sm"
-              backgroundColor="transparent"
+      <Permission>
+        {addForm ? (
+          <FormContainer>
+            <Flex justifyContent="space-between">
+              <Heading ml={1} my="auto" size="md">
+                Add Invoice
+              </Heading>
+              <IconButton
+                icon={<FiX />}
+                aria-label="exit"
+                onClick={() => setAddForm(false)}
+                size="sm"
+                backgroundColor="transparent"
+              />
+            </Flex>
+            <JobsiteMaterialInvoiceAddForm
+              jobsiteMaterial={jobsiteMaterial}
+              onSuccess={() => setAddForm(false)}
             />
-          </Flex>
-          <JobsiteMaterialInvoiceAddForm
-            jobsiteMaterial={jobsiteMaterial}
-            onSuccess={() => setAddForm(false)}
-          />
-        </FormContainer>
-      ) : (
-        <Center my={2}>
-          <Button
-            leftIcon={<FiPlus />}
-            border="1px solid"
-            borderColor="gray.800"
-            variant="outline"
-            onClick={() => setAddForm(true)}
-          >
-            Add Invoice
-          </Button>
-        </Center>
-      )}
+          </FormContainer>
+        ) : (
+          <Center my={2}>
+            <Button
+              leftIcon={<FiPlus />}
+              border="1px solid"
+              borderColor="gray.800"
+              variant="outline"
+              onClick={() => setAddForm(true)}
+            >
+              Add Invoice
+            </Button>
+          </Center>
+        )}
+      </Permission>
 
       <Flex flexDir="column" maxH="25vh" overflowY="scroll">
         {sortedInvoices &&

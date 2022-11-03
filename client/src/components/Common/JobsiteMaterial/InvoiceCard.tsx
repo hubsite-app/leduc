@@ -5,7 +5,6 @@ import {
   InvoiceCardSnippetFragment,
   JobsitesMaterialsDocument,
   useInvoiceRemoveMutation,
-  UserRoles,
 } from "../../../generated/graphql";
 import Permission from "../Permission";
 import FormContainer from "../FormContainer";
@@ -39,7 +38,7 @@ const InvoiceCardForJobsiteMaterial = ({
     <Box p={2} w="100%" border="1px solid lightgray">
       <Flex flexDir="row" justifyContent="space-between">
         <InvoiceCardContent invoice={invoice} />
-        <Permission minRole={UserRoles.ProjectManager}>
+        <Permission>
           <Flex flexDir="row" justifyContent="end">
             {edit && (
               <IconButton
