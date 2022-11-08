@@ -159,8 +159,8 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
   ]);
 
   const netIncome = React.useMemo(() => {
-    return revenue - totalExpenses;
-  }, [revenue, totalExpenses]);
+    return revenue + report.summary.accrualRevenueInvoiceValue - totalExpenses;
+  }, [report.summary.accrualRevenueInvoiceValue, revenue, totalExpenses]);
 
   const margin = React.useMemo(() => {
     return (netIncome / totalExpenses) * 100 || 0;
@@ -211,9 +211,6 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
               </Code>
               <Code backgroundColor="transparent" color="white">
                 + External Revenue Invoices
-              </Code>
-              <Code backgroundColor="transparent" color="white">
-                + Accrual Revenue Invoices
               </Code>
             </Flex>
           }
