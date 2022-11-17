@@ -1,10 +1,11 @@
 import { GetServerSideProps } from "next";
-import { PageCompanyFullComp, ssrCompanyFull } from "../../generated/page";
+import { PageCompanyCardComp, ssrCompanyCard } from "../../generated/page";
 import Container from "../../components/Common/Container";
-import CompanyMaterialReport from "../../components/Common/Company/MaterialReport";
 import { Heading, Box } from "@chakra-ui/react";
+import ClientOnly from "../../components/Common/ClientOnly";
+import CompanyClientContent from "../../components/pages/company/ClientContent";
 
-const Company: PageCompanyFullComp = ({ data }) => {
+const Company: PageCompanyCardComp = ({ data }) => {
   const company = data!.company;
 
   return (
@@ -12,7 +13,9 @@ const Company: PageCompanyFullComp = ({ data }) => {
       <Heading>{company.name}</Heading>
       <Box>
         <Heading size="md">Material Report</Heading>
-        <CompanyMaterialReport materialReports={company.materialReports} />
+        <ClientOnly>
+          <CompanyClientContent company={company} />
+        </ClientOnly>
       </Box>
     </Container>
   );
@@ -22,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...ctx
 }) => {
-  const res = await ssrCompanyFull.getServerPage(
+  const res = await ssrCompanyCard.getServerPage(
     { variables: { id: params?.id as string } },
     ctx
   );
