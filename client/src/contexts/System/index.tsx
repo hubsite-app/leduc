@@ -1,8 +1,6 @@
-import { Center, Heading } from "@chakra-ui/react";
 import React from "react";
 
 import { useImmerReducer } from "use-immer";
-import MainPageContainer from "../../components/Common/MainPageContainer";
 import { SystemSnippetFragment, useSystemQuery } from "../../generated/graphql";
 
 /**
@@ -52,7 +50,7 @@ const SystemContext = React.createContext<ISystemContext | undefined>(
  */
 
 const SystemReducer = (
-  draft: ISystemState,
+  _draft: ISystemState,
   action: ISystemAction
 ): ISystemState => {
   switch (action.type) {

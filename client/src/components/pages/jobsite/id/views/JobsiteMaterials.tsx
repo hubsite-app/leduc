@@ -7,7 +7,7 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import React from "react";
-import { FiPlus, FiX } from "react-icons/fi";
+import { FiMaximize, FiPlus, FiX } from "react-icons/fi";
 
 import {
   JobsiteFullSnippetFragment,
@@ -23,15 +23,18 @@ import JobsiteMaterialCard from "../../../../Common/JobsiteMaterial/JobsiteMater
 import Permission from "../../../../Common/Permission";
 import FormContainer from "../../../../Common/FormContainer";
 import Loading from "../../../../Common/Loading";
+import { usePanel } from "../../../../../contexts/Panel";
 
 interface IJobsiteMaterialsCosting {
   jobsite: JobsiteFullSnippetFragment;
   selectedJobsiteMaterial?: string;
+  hideExpand?: boolean;
 }
 
 const JobsiteMaterialsCosting = ({
   jobsite: propJobsite,
   selectedJobsiteMaterial,
+  hideExpand = false,
 }: IJobsiteMaterialsCosting) => {
   /**
    * ----- Hook Initialization -----
@@ -53,6 +56,8 @@ const JobsiteMaterialsCosting = ({
   const [addForm, setAddForm] = React.useState(false);
 
   const [nonCostedList, setNonCostedList] = React.useState(false);
+
+  const { addPanel } = usePanel();
 
   /**
    * ----- Variables -----
@@ -179,6 +184,14 @@ const JobsiteMaterialsCosting = ({
           Materials ({jobsite ? jobsite.materials.length : "?"})
         </Heading>
         {jobsiteMaterialContent}
+        {!hideExpand && (
+          <IconButton
+            icon={<FiMaximize />}
+            aria-label="maximize"
+            onClick={() => addPanel.jobsiteMaterial(propJobsite)}
+            background="transparent"
+          />
+        )}
       </Flex>
       {otherContent}
     </Card>
