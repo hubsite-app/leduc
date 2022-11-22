@@ -28,12 +28,14 @@ import { usePanel } from "../../../../../contexts/Panel";
 interface IJobsiteMaterialsCosting {
   jobsite: JobsiteFullSnippetFragment;
   selectedJobsiteMaterial?: string;
+  displayFullList?: boolean;
   hideExpand?: boolean;
 }
 
 const JobsiteMaterialsCosting = ({
   jobsite: propJobsite,
   selectedJobsiteMaterial,
+  displayFullList = false,
   hideExpand = false,
 }: IJobsiteMaterialsCosting) => {
   /**
@@ -135,6 +137,31 @@ const JobsiteMaterialsCosting = ({
 
   const otherContent = React.useMemo(() => {
     if (jobsite) {
+      let materialsContent: React.ReactNode = <Center>No Materials</Center>;
+      if (materialsList.length > 0) {
+        if (displayFullList) {
+          materialsContent = materialsList.map((jobsiteMaterial) => (
+            <JobsiteMaterialCard
+              jobsiteMaterial={jobsiteMaterial}
+              key={jobsiteMaterial._id}
+              selected={jobsiteMaterial._id === selectedJobsiteMaterial}
+            />
+          ));
+        } else {
+          materialsContent = (
+            <ShowMore
+              list={materialsList.map((jobsiteMaterial) => (
+                <JobsiteMaterialCard
+                  jobsiteMaterial={jobsiteMaterial}
+                  key={jobsiteMaterial._id}
+                  selected={jobsiteMaterial._id === selectedJobsiteMaterial}
+                />
+              ))}
+            />
+          );
+        }
+      }
+
       return (
         <>
           {addForm && (
@@ -151,19 +178,7 @@ const JobsiteMaterialsCosting = ({
             </Box>
           )}
           <Flex w="100%" flexDir="column" px={4} py={2}>
-            {materialsList.length > 0 ? (
-              <ShowMore
-                list={materialsList.map((jobsiteMaterial) => (
-                  <JobsiteMaterialCard
-                    jobsiteMaterial={jobsiteMaterial}
-                    key={jobsiteMaterial._id}
-                    selected={jobsiteMaterial._id === selectedJobsiteMaterial}
-                  />
-                ))}
-              />
-            ) : (
-              <Center>No Materials</Center>
-            )}
+            {materialsContent}
           </Flex>
         </>
       );
@@ -173,6 +188,7 @@ const JobsiteMaterialsCosting = ({
     jobsite,
     materialsList,
     nonCostedList,
+    displayFullList,
     nonCostedMaterialList,
     selectedJobsiteMaterial,
   ]);

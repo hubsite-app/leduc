@@ -2,6 +2,7 @@
 
 import { Box, Portal } from "@chakra-ui/react";
 import React from "react";
+import { usePanel } from "../../../contexts/Panel";
 import PanelHeader from "./Header";
 import PanelResizer, { Direction } from "./Resize";
 
@@ -9,6 +10,8 @@ interface IPanel {
   name: string;
   id: string;
   children: React.ReactNode;
+  hidden?: boolean;
+  zIndex?: number;
   loading?: boolean;
   minWidth?: number;
   minHeight?: number;
@@ -18,6 +21,8 @@ const Panel = ({
   children,
   name,
   id,
+  hidden = false,
+  zIndex = 50,
   minWidth = 250,
   minHeight = 250,
 }: IPanel) => {
@@ -26,6 +31,8 @@ const Panel = ({
    */
 
   const panelRef = React.useRef<HTMLDivElement>(null);
+
+  const { focusPanel } = usePanel();
 
   /**
    * ----- Functions -----
@@ -118,6 +125,8 @@ const Panel = ({
   return (
     <Portal>
       <Box
+        display={hidden ? "none" : undefined}
+        onMouseDown={() => focusPanel(id)}
         ref={panelRef}
         position="fixed"
         top="200px"
@@ -126,10 +135,14 @@ const Panel = ({
         overflow="hidden"
         backgroundColor="white"
         borderRadius="0.25em"
+        height="500px"
+        zIndex={zIndex}
       >
         <PanelResizer onResize={handleResize} />
         <PanelHeader id={id} name={name} onDrag={handleDrag} />
-        {children}
+        <Box w="100%" h="95%" overflow="scroll">
+          {children}
+        </Box>
       </Box>
     </Portal>
   );

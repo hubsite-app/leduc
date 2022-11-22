@@ -1,4 +1,5 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react";
+import Link from "next/link";
 
 interface ICrumb {
   title: string;
@@ -15,9 +16,23 @@ const Breadcrumbs = ({ crumbs }: IBreadcrumbs) => {
     <Breadcrumb>
       {crumbs.map((crumb, index) => (
         <BreadcrumbItem key={index}>
-          <BreadcrumbLink href={crumb.link} isCurrentPage={crumb.isCurrentPage}>
-            {crumb.title}
-          </BreadcrumbLink>
+          {crumb.link ? (
+            <Link passHref href={crumb.link}>
+              <BreadcrumbLink
+                href={crumb.link}
+                isCurrentPage={crumb.isCurrentPage}
+              >
+                {crumb.title}
+              </BreadcrumbLink>
+            </Link>
+          ) : (
+            <BreadcrumbLink
+              href={crumb.link}
+              isCurrentPage={crumb.isCurrentPage}
+            >
+              {crumb.title}
+            </BreadcrumbLink>
+          )}
         </BreadcrumbItem>
       ))}
     </Breadcrumb>

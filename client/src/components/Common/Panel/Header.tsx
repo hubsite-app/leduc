@@ -1,7 +1,7 @@
 import React from "react";
 
-import { Flex, IconButton } from "@chakra-ui/react";
-import { FiX } from "react-icons/fi";
+import { Flex, IconButton, Heading } from "@chakra-ui/react";
+import { FiMinus, FiX } from "react-icons/fi";
 import { usePanel } from "../../../contexts/Panel";
 
 interface IPanelHeader {
@@ -17,7 +17,7 @@ const PanelHeader = ({ name, onDrag, id }: IPanelHeader) => {
 
   const [mouseDown, setMouseDown] = React.useState(false);
 
-  const { removePanel } = usePanel();
+  const { removePanel, minimizePanel } = usePanel();
 
   /**
    * ----- Logic -----
@@ -56,16 +56,27 @@ const PanelHeader = ({ name, onDrag, id }: IPanelHeader) => {
       flexDir="row"
       justifyContent="space-between"
       padding={2}
-      backgroundColor="gray.200"
+      backgroundColor="gray.300"
       onMouseDown={handleMouseDown}
     >
-      {name}
-      <IconButton
-        aria-label="close"
-        icon={<FiX />}
-        onClick={() => removePanel(id)}
-        background="transparent"
-      />
+      <Heading size="md" my="auto" ml={2}>
+        {name}
+      </Heading>
+
+      <Flex flexDir="row">
+        <IconButton
+          icon={<FiMinus />}
+          aria-label="minimize"
+          onClick={() => minimizePanel(id)}
+          background="transparent"
+        />
+        <IconButton
+          aria-label="close"
+          icon={<FiX />}
+          onClick={() => removePanel(id)}
+          background="transparent"
+        />
+      </Flex>
     </Flex>
   );
 };

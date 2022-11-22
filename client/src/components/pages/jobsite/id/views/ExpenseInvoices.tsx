@@ -1,6 +1,7 @@
 import { Center, Flex, Heading, IconButton } from "@chakra-ui/react";
 import React from "react";
-import { FiPlus, FiX } from "react-icons/fi";
+import { FiMaximize, FiPlus, FiX } from "react-icons/fi";
+import { usePanel } from "../../../../../contexts/Panel";
 import { JobsiteFullSnippetFragment } from "../../../../../generated/graphql";
 import Card from "../../../../Common/Card";
 import FormContainer from "../../../../Common/FormContainer";
@@ -11,14 +12,22 @@ import InvoiceCardForJobsite from "./InvoiceCard";
 
 interface IExpenseInvoices {
   jobsite: JobsiteFullSnippetFragment;
+  displayFullList?: boolean;
+  hideExpand?: boolean;
 }
 
-const ExpenseInvoices = ({ jobsite }: IExpenseInvoices) => {
+const ExpenseInvoices = ({
+  jobsite,
+  displayFullList = false,
+  hideExpand = false,
+}: IExpenseInvoices) => {
   /**
    * ----- Hook Initialization -----
    */
 
   const [addForm, setAddForm] = React.useState(false);
+
+  const { addPanel } = usePanel();
 
   /**
    * ----- Variables -----
@@ -32,20 +41,55 @@ const ExpenseInvoices = ({ jobsite }: IExpenseInvoices) => {
    * ----- Rendering -----
    */
 
+  let list: React.ReactNode = <Center>No Invoices</Center>;
+  if (jobsite.expenseInvoices.length > 0) {
+    if (displayFullList) {
+      list = sortedInvoices.map((invoice) => (
+        <InvoiceCardForJobsite
+          invoice={invoice}
+          key={invoice._id}
+          jobsiteId={jobsite._id}
+        />
+      ));
+    } else {
+      list = (
+        <ShowMore
+          list={sortedInvoices.map((invoice) => (
+            <InvoiceCardForJobsite
+              invoice={invoice}
+              key={invoice._id}
+              jobsiteId={jobsite._id}
+            />
+          ))}
+        />
+      );
+    }
+  }
+
   return (
     <Card h="fit-content">
       <Flex flexDir="row" justifyContent="space-between">
         <Heading my="auto" ml={2} size="md" w="100%">
           Sub-Contractors ({jobsite.expenseInvoices.length})
         </Heading>
-        <Permission>
-          <IconButton
-            icon={addForm ? <FiX /> : <FiPlus />}
-            aria-label="add"
-            backgroundColor="transparent"
-            onClick={() => setAddForm(!addForm)}
-          />
-        </Permission>
+        <Flex flexDir="row" justifyContent="space-between">
+          <Permission>
+            <IconButton
+              icon={addForm ? <FiX /> : <FiPlus />}
+              aria-label="add"
+              backgroundColor="transparent"
+              onClick={() => setAddForm(!addForm)}
+            />
+          </Permission>
+          {!hideExpand && (
+            <IconButton
+              icon={<FiMaximize />}
+              aria-label="maximize"
+              onClick={() => addPanel.jobsiteExpenseInvoices(jobsite)}
+              background="transparent"
+            />
+          )}
+        </Flex>
       </Flex>
       {addForm && (
         <FormContainer>
@@ -56,19 +100,7 @@ const ExpenseInvoices = ({ jobsite }: IExpenseInvoices) => {
         </FormContainer>
       )}
       <Flex w="100%" flexDir="column" px={4} py={2}>
-        {jobsite.expenseInvoices.length > 0 ? (
-          <ShowMore
-            list={sortedInvoices.map((invoice) => (
-              <InvoiceCardForJobsite
-                invoice={invoice}
-                key={invoice._id}
-                jobsiteId={jobsite._id}
-              />
-            ))}
-          />
-        ) : (
-          <Center>No Invoices</Center>
-        )}
+        {list}
       </Flex>
     </Card>
   );
