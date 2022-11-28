@@ -42,7 +42,7 @@ const RevenueInvoices = ({
    */
 
   let list: React.ReactNode = <Center>No Invoices</Center>;
-  if (jobsite.expenseInvoices.length > 0) {
+  if (jobsite.revenueInvoices.length > 0) {
     if (displayFullList) {
       list = sortedInvoices.map((invoice) => (
         <InvoiceCardForJobsite
