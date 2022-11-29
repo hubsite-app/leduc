@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import React from "react";
+import { useSystem } from "../../../contexts/System";
 import {
   CrewTypes,
   JobsiteDayReportFullSnippetFragment,
@@ -38,8 +39,22 @@ const JobsiteReportOnJobSummary = ({
   statSize = "sm",
 }: IJobsiteReportOnJobSummary) => {
   /**
+   * ----- Hook Initialization -----
+   */
+
+  const {
+    state: { system },
+  } = useSystem();
+
+  /**
    * ----- Variables -----
    */
+
+  const overheadPercent = React.useMemo(() => {
+    if (system) {
+      return system.internalExpenseOverheadRate;
+    } else return 10;
+  }, [system]);
 
   const totalWages = React.useMemo(() => {
     if (allDayReports.length === 0) return null;
@@ -224,12 +239,12 @@ const JobsiteReportOnJobSummary = ({
         <Tooltip
           label={
             <Code backgroundColor="transparent" color="white">
-              + 10%
+              + {overheadPercent}%
             </Code>
           }
         >
           <StatHelpText fontSize={statSize} fontWeight="bold" mb={0}>
-            ${formatNumber(total * 1.1)}
+            ${formatNumber(total * (1 + overheadPercent / 100))}
           </StatHelpText>
         </Tooltip>
         {fullTotal !== null ? (
