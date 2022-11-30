@@ -331,6 +331,7 @@ const generateTable = async (
         ? dayjs(lastRevenueInvoice.date).format("MMM D, YYYY")
         : "",
       extraWork: extraWork ? "yes" : "",
+      workOnHand: jobsite.contract?.workOnHand || 0,
       revenue,
       expenses: onSiteExpenses,
       overhead,

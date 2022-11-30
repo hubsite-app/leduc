@@ -49,7 +49,7 @@ deploy:
       - k8s-dev/es-master.yaml
       - k8s-dev/es-data.yaml
       - k8s-dev/es-client.yaml
-      - k8s-dev/kibana.yaml
+      # - k8s-dev/kibana.yaml
       - k8s-dev/worker-deployment.yaml
       - k8s-dev/server-deployment.yaml
       - k8s-dev/client-deployment.yaml
@@ -65,7 +65,7 @@ portForward:
     resourceName: client-cluster-ip-service
     namespace: default
     port: 3000
-  - resourceType: Service
-    resourceName: kibana
-    namespace: kube-devops
-    port: 5601
+  # - resourceType: Service
+  #   resourceName: kibana
+  #   namespace: kube-devops
+  #   port: 5601

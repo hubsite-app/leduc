@@ -15,6 +15,7 @@ export interface IMasterRow {
   jobsiteName: string;
   lastInvoiceDate: string;
   extraWork: string;
+  workOnHand: number;
   revenue: number;
   expenses: number;
   overhead: number;
@@ -93,6 +94,7 @@ export const generateMasterTable = async (
       { name: jobsiteTitle, filterButton: true },
       { name: "Last Invoiced", filterButton: true },
       { name: "Extra Work", filterButton: true },
+      { name: "Work on Hand", filterButton: true, totalsRowFunction: "sum" },
       { name: "Revenue", filterButton: true, totalsRowFunction: "sum" },
       { name: "Expenses", filterButton: true, totalsRowFunction: "sum" },
       { name: "Overhead", filterButton: true, totalsRowFunction: "sum" },
@@ -172,6 +174,7 @@ const generateRows = async (
       rowData.jobsiteName,
       rowData.lastInvoiceDate,
       rowData.extraWork,
+      rowData.workOnHand,
       rowData.revenue,
       rowData.expenses,
       rowData.overhead,
