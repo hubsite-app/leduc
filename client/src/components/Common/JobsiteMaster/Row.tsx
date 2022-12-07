@@ -1,6 +1,5 @@
 import { Box, Flex, Th, Tr, Td, Text } from "@chakra-ui/react";
 import React from "react";
-import { useSystem } from "../../../contexts/System";
 import {
   CrewTypes,
   JobsiteYearMasterReportItemSnippetFragment,
@@ -15,9 +14,14 @@ import TextLink from "../TextLink";
 interface IJobsiteMasterRow {
   reportItem: JobsiteYearMasterReportItemSnippetFragment;
   crewTypes: CrewTypes[];
+  overheadRate: number;
 }
 
-const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
+const JobsiteMasterRow = ({
+  reportItem,
+  crewTypes,
+  overheadRate,
+}: IJobsiteMasterRow) => {
   /**
    * ----- Hook Initialization -----
    */
@@ -28,19 +32,9 @@ const JobsiteMasterRow = ({ reportItem, crewTypes }: IJobsiteMasterRow) => {
     },
   });
 
-  const {
-    state: { system },
-  } = useSystem();
-
   /**
    * ----- Variables -----
    */
-
-  const overheadRate = React.useMemo(() => {
-    if (system) {
-      return 1 + system.internalExpenseOverheadRate / 100;
-    } else return 0.1;
-  }, [system]);
 
   const jobsiteYearReport = React.useMemo(() => {
     if (data?.jobsiteYearReport && !loading) return data?.jobsiteYearReport;

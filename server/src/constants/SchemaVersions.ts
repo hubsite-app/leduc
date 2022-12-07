@@ -18,7 +18,7 @@ export default {
   Production: 1,
   ReportNote: 1,
   Signup: 1,
-  System: 1,
+  System: 2,
   User: 2,
   Vehicle: 1,
   VehicleWork: 2,

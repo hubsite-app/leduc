@@ -5,6 +5,7 @@ import {
   JobsiteYearReportDocument,
   System,
 } from "@models";
+import getRateForTime from "@utils/getRateForTime";
 import dayjs from "dayjs";
 import ExcelJS from "exceljs";
 import {
@@ -79,7 +80,13 @@ const generateRows = async (
       jobsiteYearReportItem.summary.truckingCost;
 
     const overhead =
-      onSiteExpenses * (1 + (system.internalExpenseOverheadRate || 10) / 100);
+      onSiteExpenses *
+      (1 +
+        (getRateForTime(
+          system.internalExpenseOverheadRate,
+          jobsiteYearReportItem.report.startOfYear
+        ) || 10) /
+          100);
 
     const totalExpenses =
       overhead +

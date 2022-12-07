@@ -1,5 +1,5 @@
-mutation SystemUpdateInternalExpenseOverheadRate($value: Float!) {
-  systemUpdateInternalExpenseOverheadRate(value: $value) {
+mutation SystemUpdateInternalExpenseOverheadRate($data: [RatesData!]!) {
+  systemUpdateInternalExpenseOverheadRate(data: $data) {
     ...SystemSnippet
   }
 }

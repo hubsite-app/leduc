@@ -1,5 +1,6 @@
 import { SystemDocument } from "@models";
-import { IDefaultRateData } from "@typescript/models";
+import { IDefaultRateData, IRatesData } from "@typescript/models";
+import validateRates from "@validation/validateRates";
 
 const unitDefaults = async (
   system: SystemDocument,
@@ -36,9 +37,11 @@ const materialShipmentVehicleTypeDefaults = async (
 
 const internalExpenseOverheadRate = async (
   system: SystemDocument,
-  value: number
+  rates: IRatesData[]
 ) => {
-  system.internalExpenseOverheadRate = value;
+  await validateRates(rates);
+
+  system.internalExpenseOverheadRate = rates;
 };
 
 export default {

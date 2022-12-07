@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
 import { prop } from "@typegoose/typegoose";
-import { Field, Float, ID, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import SchemaVersions from "@constants/SchemaVersions";
-import { DefaultRateClass } from "@typescript/models";
+import { DefaultRateClass, RateClass } from "@typescript/models";
 
 @ObjectType()
 export class SystemSchema {
@@ -25,13 +25,20 @@ export class SystemSchema {
   @prop({ type: () => [DefaultRateClass], required: true, default: [] })
   public materialShipmentVehicleTypeDefaults!: DefaultRateClass[];
 
-  @Field(() => Float, {
+  @Field(() => [RateClass], {
     nullable: false,
     description:
       "Percent overhead to be added to internal expenses when calculating total expenses",
   })
-  @prop({ required: true, default: 10 })
-  public internalExpenseOverheadRate!: number;
+  @prop({
+    type: [RateClass],
+    required: true,
+    validate: {
+      validator: (val) => val.length > 0,
+      message: "must have at least one rate",
+    },
+  })
+  public internalExpenseOverheadRate!: RateClass[];
 
   @Field({ nullable: false })
   @prop({ required: true, default: "America/Edmonton" })

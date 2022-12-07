@@ -1,13 +1,14 @@
-import { Code, Flex, IconButton, Text, useToast } from "@chakra-ui/react";
+import { Flex, IconButton, Text, useToast } from "@chakra-ui/react";
 import React from "react";
-import { FiCheck, FiEdit2 } from "react-icons/fi";
+import { FiEdit2 } from "react-icons/fi";
 import {
   SystemDocument,
   SystemSnippetFragment,
   useSystemUpdateInternalExpenseOverheadRateMutation,
 } from "../../../generated/graphql";
-import NumberForm from "../forms/Number";
+import Rates from "../forms/Rates";
 import SubmitButton from "../forms/SubmitButton";
+import RatesTable from "../RatesTable";
 
 interface ISystemInternalExpenseOverheadRate {
   system: SystemSnippetFragment;
@@ -37,7 +38,11 @@ const SystemInternalExpenseOverheadRate = ({
 
   const handleSubmit = React.useCallback(async () => {
     try {
-      const res = await update({ variables: { value } });
+      const res = await update({
+        variables: {
+          data: value,
+        },
+      });
 
       if (res.data?.systemUpdateInternalExpenseOverheadRate) {
         setEdit(false);
@@ -61,7 +66,7 @@ const SystemInternalExpenseOverheadRate = ({
    */
 
   return (
-    <Flex flexDir="row">
+    <div>
       <Flex flexDir="row">
         <IconButton
           size="sm"
@@ -73,39 +78,24 @@ const SystemInternalExpenseOverheadRate = ({
           _focus={{ border: "none" }}
           _active={{ backgroundColor: "transparent" }}
         />
-        <Text m="auto" fontWeight="bold">
+        <Text my="auto" fontWeight="bold">
           Internal Expense Overhead:
         </Text>
       </Flex>
       {edit ? (
         <form
-          style={{
-            display: "flex",
-            flexDirection: "row",
-          }}
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
           }}
         >
-          <NumberForm
-            value={value}
-            onChange={(_, number) => setValue(number)}
-            isDisabled={loading}
-          />
-          <IconButton
-            aria-label="submit"
-            type="submit"
-            icon={<FiCheck />}
-            backgroundColor="transparent"
-          />
+          <Rates rates={value} onChange={(rates) => setValue(rates)} />
+          <SubmitButton isLoading={loading} />
         </form>
       ) : (
-        <Code backgroundColor="transparent" my="auto" mx={2} fontSize="lg">
-          {system.internalExpenseOverheadRate}%
-        </Code>
+        <RatesTable rates={system.internalExpenseOverheadRate} />
       )}
-    </Flex>
+    </div>
   );
 };
 

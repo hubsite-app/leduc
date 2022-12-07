@@ -26,6 +26,7 @@ import { FiCalendar, FiMap } from "react-icons/fi";
 import { useSystem } from "../../../contexts/System";
 import { JobsiteYearMasterReportFullSnippetFragment } from "../../../generated/graphql";
 import formatNumber from "../../../utils/formatNumber";
+import getRateForTime from "../../../utils/getRateForTime";
 import JobsiteMasterReportExcelGenerate from "../../Forms/JobsiteMasterReport/ExcelGenerate";
 import CrewLocationsModal from "../CrewLocations/Modal";
 import ReportSummaryCard from "../ReportSummary";
@@ -58,9 +59,12 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
 
   const overheadPercent = React.useMemo(() => {
     if (system) {
-      return system.internalExpenseOverheadRate;
+      return getRateForTime(
+        system.internalExpenseOverheadRate,
+        report.startOfYear
+      );
     } else return 10;
-  }, [system]);
+  }, [report.startOfYear, system]);
 
   const overheadRate = React.useMemo(() => {
     return 1 + overheadPercent / 100;
@@ -371,6 +375,7 @@ const JobsiteMaster = ({ report }: IJobsiteMaster) => {
                 reportItem={reportItem}
                 crewTypes={report.crewTypes}
                 key={reportItem._id}
+                overheadRate={overheadRate}
               />
             ))}
           </Tbody>

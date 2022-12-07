@@ -9,6 +9,7 @@ import {
   System,
 } from "@models";
 import { CrewTypes } from "@typescript/crew";
+import getRateForTime from "@utils/getRateForTime";
 import dayjs from "dayjs";
 import ExcelJS, { TableColumnProperties } from "exceljs";
 import {
@@ -126,7 +127,12 @@ export const generateForRangeReport = async (
     column.width = dataMax;
   });
 
-  await generateSummaryValues(worksheet, cellLocations, invoiceCells);
+  await generateSummaryValues(
+    worksheet,
+    cellLocations,
+    invoiceCells,
+    dayReports[0].date
+  );
 
   return workbook;
 };
@@ -162,7 +168,8 @@ const generateSummaryOutline = async (worksheet: ExcelJS.Worksheet) => {
 const generateSummaryValues = async (
   worksheet: ExcelJS.Worksheet,
   cellLocations: CellLocations[],
-  invoiceCells: InvoiceCells
+  invoiceCells: InvoiceCells,
+  dateForOverhead: Date
 ) => {
   const wageTotalCells: ExcelJS.Cell[] = [],
     equipmentTotalCells: ExcelJS.Cell[] = [],
@@ -292,7 +299,7 @@ const generateSummaryValues = async (
   const overheadCell = worksheet.getRow(13).getCell(2);
   overheadCell.value = {
     formula: `${expensesCell.$col$row}*${
-      system.internalExpenseOverheadRate / 100
+      getRateForTime(system.internalExpenseOverheadRate, dateForOverhead) / 100
     }`,
     date1904: false,
   };

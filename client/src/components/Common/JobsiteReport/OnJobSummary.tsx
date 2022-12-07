@@ -15,6 +15,7 @@ import {
   JobsiteDayReportFullSnippetFragment,
 } from "../../../generated/graphql";
 import formatNumber from "../../../utils/formatNumber";
+import getRateForTime from "../../../utils/getRateForTime";
 
 interface IJobsiteReportOnJobSummary {
   dayReports: JobsiteDayReportFullSnippetFragment[];
@@ -52,9 +53,12 @@ const JobsiteReportOnJobSummary = ({
 
   const overheadPercent = React.useMemo(() => {
     if (system) {
-      return system.internalExpenseOverheadRate;
+      return getRateForTime(
+        system.internalExpenseOverheadRate,
+        dayReports[0].date
+      );
     } else return 10;
-  }, [system]);
+  }, [dayReports, system]);
 
   const totalWages = React.useMemo(() => {
     if (allDayReports.length === 0) return null;

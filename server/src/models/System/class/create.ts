@@ -8,6 +8,12 @@ const document = async (System: SystemModel): Promise<SystemDocument> => {
   const system = new System({
     unitDefaults: ["tonnes", "m2", "inches", "cm"],
     laborTypes: [],
+    internalExpenseOverheadRate: [
+      {
+        date: new Date(),
+        rate: 10,
+      },
+    ],
     companyVehicleTypeDefaults: [
       {
         title: "Tandem",

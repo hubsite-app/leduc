@@ -1,5 +1,5 @@
 import { SystemDocument, SystemModel } from "@models";
-import { IDefaultRateData } from "@typescript/models";
+import { IDefaultRateData, IRatesData } from "@typescript/models";
 import { ObjectType } from "type-graphql";
 import { SystemSchema } from "../schema";
 import create from "./create";
@@ -53,9 +53,9 @@ export class SystemClass extends SystemSchema {
 
   public async updateInternalExpenseOverheadRate(
     this: SystemDocument,
-    value: number
+    rates: IRatesData[]
   ) {
-    return update.internalExpenseOverheadRate(this, value);
+    return update.internalExpenseOverheadRate(this, rates);
   }
 
   /**

@@ -9,6 +9,7 @@ import {
 } from "@models";
 import { CrewTypes } from "@typescript/crew";
 import { TruckingRateTypes } from "@typescript/jobsite";
+import getRateForTime from "@utils/getRateForTime";
 import dayjs from "dayjs";
 import ExcelJS from "exceljs";
 import {
@@ -285,7 +286,10 @@ const generateTable = async (
       employeeCost + vehicleCost + materialCost + truckingCost;
 
     const overhead =
-      onSiteExpenses * (1 + (system.internalExpenseOverheadRate || 10) / 100);
+      onSiteExpenses *
+      (1 +
+        (getRateForTime(system.internalExpenseOverheadRate, startTime) || 10) /
+          100);
 
     const totalExpenses =
       overhead + externalExpenseValue * 1.03 + internalExpenseValue;

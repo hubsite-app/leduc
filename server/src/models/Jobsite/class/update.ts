@@ -16,6 +16,7 @@ import {
   ITruckingTypeRateData,
   TruckingRateTypes,
 } from "@typescript/jobsite";
+import getRateForTime from "@utils/getRateForTime";
 import dayjs from "dayjs";
 
 const document = async (jobsite: JobsiteDocument, data: IJobsiteUpdate) => {
@@ -121,14 +122,17 @@ const workOnHand = async (jobsite: JobsiteDocument) => {
       const dayReport = dayReports[i];
 
       operatingCosts +=
-        dayReport.summary.vehicleCost +
-        dayReport.summary.employeeCost +
-        dayReport.summary.materialCost +
-        dayReport.summary.truckingCost;
+        (dayReport.summary.vehicleCost +
+          dayReport.summary.employeeCost +
+          dayReport.summary.materialCost +
+          dayReport.summary.truckingCost) *
+        (1 +
+          getRateForTime(system.internalExpenseOverheadRate, dayReport.date) /
+            100);
     }
 
     expensesInSystem +=
-      operatingCosts * (1 + system.internalExpenseOverheadRate / 100) +
+      operatingCosts +
       yearReport.summary.externalExpenseInvoiceValue * 1.03 +
       yearReport.summary.internalExpenseInvoiceValue +
       yearReport.summary.accrualExpenseInvoiceValue;

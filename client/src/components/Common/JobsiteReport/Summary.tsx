@@ -5,6 +5,7 @@ import {
   JobsiteMonthReportFullSnippetFragment,
   JobsiteYearReportFullSnippetFragment,
 } from "../../../generated/graphql";
+import getRateForTime from "../../../utils/getRateForTime";
 import ReportSummaryCard from "../ReportSummary";
 
 interface IJobsiteReportSummary {
@@ -28,9 +29,12 @@ const JobsiteReportSummary = ({ report }: IJobsiteReportSummary) => {
 
   const overheadPercent = React.useMemo(() => {
     if (system) {
-      return system.internalExpenseOverheadRate;
+      return getRateForTime(
+        system.internalExpenseOverheadRate,
+        report.dayReports[0].date
+      );
     } else return 10;
-  }, [system]);
+  }, [report.dayReports, system]);
 
   const overheadRate = React.useMemo(() => {
     return 1 + overheadPercent / 100;

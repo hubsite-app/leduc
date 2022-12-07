@@ -74,10 +74,10 @@ const main = async () => {
         }
       }
 
+      await updateDocuments();
+
       await System.validateSystem();
       await Company.validateCompanies();
-
-      await updateDocuments();
 
       // Enable worker
       if (workerEnabled) {
