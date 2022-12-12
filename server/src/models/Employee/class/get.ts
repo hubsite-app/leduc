@@ -13,7 +13,11 @@ import {
   User,
   UserDocument,
 } from "@models";
-import { GetByIDOptions, ISearchOptions } from "@typescript/models";
+import {
+  GetByIDOptions,
+  IListOptions,
+  ISearchOptions,
+} from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 import ElasticsearchClient from "@elasticsearch/client";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
@@ -102,8 +106,29 @@ const search = async (
   return employees;
 };
 
-const list = async (Employee: EmployeeModel): Promise<EmployeeDocument[]> => {
-  const employees = await Employee.find({});
+const listDefaultOptions: IListOptions<EmployeeDocument> = {
+  pageLimit: 999,
+  offset: 0,
+};
+const list = async (
+  Employee: EmployeeModel,
+  options?: IListOptions<EmployeeDocument>
+): Promise<EmployeeDocument[]> => {
+  options = populateOptions(options, listDefaultOptions);
+
+  if (options?.query) options.query.archivedAt = null;
+
+  const employees = await Employee.find(
+    options?.query || { archivedAt: null },
+    undefined,
+    {
+      limit: options?.pageLimit,
+      skip: options?.offset,
+      sort: {
+        name: "asc",
+      },
+    }
+  );
 
   return employees;
 };

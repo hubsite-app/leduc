@@ -7,7 +7,11 @@ import {
   VehicleModel,
   System,
 } from "@models";
-import { GetByIDOptions, ISearchOptions } from "@typescript/models";
+import {
+  GetByIDOptions,
+  IListOptions,
+  ISearchOptions,
+} from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 import ElasticsearchClient from "@elasticsearch/client";
 import ElasticSearchIndices from "@constants/ElasticSearchIndices";
@@ -97,6 +101,33 @@ const byCode = async (
   return vehicle;
 };
 
+const listDefaultOptions: IListOptions<VehicleDocument> = {
+  pageLimit: 9999,
+  offset: 0,
+};
+const list = async (
+  Vehicle: VehicleModel,
+  options?: IListOptions<VehicleDocument>
+): Promise<VehicleDocument[]> => {
+  options = populateOptions(options, listDefaultOptions);
+
+  if (options?.query) options.query.archivedAt = null;
+
+  const employees = await Vehicle.find(
+    options?.query || { archivedAt: null },
+    undefined,
+    {
+      limit: options?.pageLimit,
+      skip: options?.offset,
+      sort: {
+        vehicleCode: "asc",
+      },
+    }
+  );
+
+  return employees;
+};
+
 /**
  * ----- Methods -----
  */
@@ -131,6 +162,7 @@ export default {
   byId,
   search,
   byCode,
+  list,
   crews,
   rateForTime,
 };

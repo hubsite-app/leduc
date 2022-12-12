@@ -1,0 +1,5 @@
+mutation MaterialArchive($id: ID!) {
+  materialArchive(id: $id) {
+    _id
+  }
+}

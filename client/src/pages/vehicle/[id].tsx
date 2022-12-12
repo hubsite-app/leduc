@@ -21,6 +21,7 @@ import VehicleUpdateForm from "../../components/Forms/Vehicle/Update";
 import VehicleClientContent from "../../components/pages/vehicle/ClientContent";
 import { UserRoles, useVehicleArchiveMutation } from "../../generated/graphql";
 import { PageVehicleSsrComp, ssrVehicleSsr } from "../../generated/page";
+import Breadcrumbs from "../../components/Common/Breadcrumbs";
 
 const Vehicle: PageVehicleSsrComp = ({ data }) => {
   const vehicle = data?.vehicle!;
@@ -41,6 +42,19 @@ const Vehicle: PageVehicleSsrComp = ({ data }) => {
 
   return (
     <Container>
+      <Breadcrumbs
+        crumbs={[
+          {
+            title: "Vehicles",
+            link: "/vehicles",
+          },
+          {
+            title: vehicle.name,
+            isCurrentPage: true,
+          },
+        ]}
+      />
+
       <Flex flexDir="row" justifyContent="space-between">
         <Heading>
           {vehicle.name} ({vehicle.vehicleCode})

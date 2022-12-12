@@ -79,6 +79,8 @@ import { getApolloClient , ApolloClientContext} from '../withApollo';
 
 
 
+
+
 export async function getServerPageCompanies
     (options: Omit<Apollo.QueryOptions<Types.CompaniesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -848,6 +850,41 @@ export const ssrEmployeeFetchSearch = {
       getServerPage: getServerPageEmployeeFetchSearch,
       withPage: withPageEmployeeFetchSearch,
       usePage: useEmployeeFetchSearch,
+    }
+export async function getServerPageEmployees
+    (options: Omit<Apollo.QueryOptions<Types.EmployeesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.EmployeesQuery>({ ...options, query: Operations.EmployeesDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useEmployees = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.EmployeesQuery, Types.EmployeesQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.EmployeesDocument, options);
+};
+export type PageEmployeesComp = React.FC<{data?: Types.EmployeesQuery, error?: Apollo.ApolloError}>;
+export const withPageEmployees = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.EmployeesQuery, Types.EmployeesQueryVariables>) => (WrappedComponent:PageEmployeesComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.EmployeesDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrEmployees = {
+      getServerPage: getServerPageEmployees,
+      withPage: withPageEmployees,
+      usePage: useEmployees,
     }
 export async function getServerPageFileFull
     (options: Omit<Apollo.QueryOptions<Types.FileFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
@@ -1968,6 +2005,41 @@ export const ssrVehicleFetchSearch = {
       getServerPage: getServerPageVehicleFetchSearch,
       withPage: withPageVehicleFetchSearch,
       usePage: useVehicleFetchSearch,
+    }
+export async function getServerPageVehicles
+    (options: Omit<Apollo.QueryOptions<Types.VehiclesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.VehiclesQuery>({ ...options, query: Operations.VehiclesDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useVehicles = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.VehiclesQuery, Types.VehiclesQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.VehiclesDocument, options);
+};
+export type PageVehiclesComp = React.FC<{data?: Types.VehiclesQuery, error?: Apollo.ApolloError}>;
+export const withPageVehicles = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.VehiclesQuery, Types.VehiclesQueryVariables>) => (WrappedComponent:PageVehiclesComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.VehiclesDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrVehicles = {
+      getServerPage: getServerPageVehicles,
+      withPage: withPageVehicles,
+      usePage: useVehicles,
     }
 export async function getServerPageJobsiteMonthReportSub
     (options: Omit<Apollo.QueryOptions<Types.JobsiteMonthReportSubSubscriptionVariables>, 'query'>, ctx: ApolloClientContext ){

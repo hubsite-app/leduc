@@ -40,6 +40,7 @@ const byName = async (
 ): Promise<MaterialDocument | null> => {
   const material = await Material.findOne({
     name: { $regex: new RegExp(name, "i") },
+    archivedAt: null,
   });
 
   return material;
@@ -103,13 +104,19 @@ const list = async (
 ): Promise<MaterialDocument[]> => {
   options = populateOptions(options, listDefaultOptions);
 
-  const materials = await Material.find(options?.query || {}, undefined, {
-    limit: options?.pageLimit,
-    skip: options?.offset,
-    sort: {
-      name: "asc",
-    },
-  });
+  if (options?.query) options.query.archivedAt = null;
+
+  const materials = await Material.find(
+    options?.query || { archivedAt: null },
+    undefined,
+    {
+      limit: options?.pageLimit,
+      skip: options?.offset,
+      sort: {
+        name: "asc",
+      },
+    }
+  );
 
   return materials;
 };

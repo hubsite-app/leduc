@@ -1,0 +1,5 @@
+mutation CompanyArchive($id: ID!) {
+  companyArchive(id: $id) {
+    _id
+  }
+}

@@ -65,6 +65,10 @@ export class MaterialClass extends MaterialSchema {
     return update.document(this, data);
   }
 
+  public async archive(this: MaterialDocument) {
+    return update.archive(this);
+  }
+
   /**
    * ----- REMOVE -----
    */

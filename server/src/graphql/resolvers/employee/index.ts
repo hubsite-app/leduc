@@ -9,6 +9,7 @@ import {
   UserClass,
 } from "@models";
 import { EmployeeHoursReport } from "@typescript/employee";
+import { ListOptionData } from "@typescript/graphql";
 import { Id } from "@typescript/models";
 import {
   Arg,
@@ -50,6 +51,16 @@ export default class EmployeeResolver {
   @Query(() => EmployeeClass)
   async employee(@Arg("id") id: string) {
     return Employee.getById(id);
+  }
+
+  @Query(() => [EmployeeClass])
+  async employees(
+    @Arg("options", () => ListOptionData, { nullable: true })
+    options?: ListOptionData
+  ) {
+    return Employee.getList({
+      ...options,
+    });
   }
 
   @Query(() => [EmployeeClass])

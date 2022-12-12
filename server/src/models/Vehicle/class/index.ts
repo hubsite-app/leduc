@@ -3,7 +3,12 @@ import { ObjectType } from "type-graphql";
 
 import { VehicleDocument, VehicleModel } from "@models";
 import { VehicleSchema } from "..";
-import { GetByIDOptions, IRatesData, ISearchOptions } from "@typescript/models";
+import {
+  GetByIDOptions,
+  IListOptions,
+  IRatesData,
+  ISearchOptions,
+} from "@typescript/models";
 import get from "./get";
 import { IVehicleCreate, IVehicleUpdate } from "@typescript/vehicle";
 import create from "./create";
@@ -34,6 +39,13 @@ export class VehicleClass extends VehicleSchema {
 
   public static async getByCode(this: VehicleModel, code: string) {
     return get.byCode(this, code);
+  }
+
+  public static async getList(
+    this: VehicleModel,
+    options?: IListOptions<VehicleDocument>
+  ) {
+    return get.list(this, options);
   }
 
   public async getCrews(this: VehicleDocument) {

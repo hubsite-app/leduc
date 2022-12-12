@@ -20,6 +20,7 @@ export type Scalars = {
 export type CompanyClass = {
   __typename?: 'CompanyClass';
   _id: Scalars['ID'];
+  archivedAt: Scalars['DateTime'];
   createdAt: Scalars['DateTime'];
   isBowMarkConcrete: Scalars['Boolean'];
   isBowMarkPaving: Scalars['Boolean'];
@@ -513,6 +514,7 @@ export type LoginData = {
 export type MaterialClass = {
   __typename?: 'MaterialClass';
   _id: Scalars['ID'];
+  archivedAt: Scalars['DateTime'];
   canRemove: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
   name: Scalars['String'];
@@ -595,6 +597,7 @@ export type MaterialUpdateData = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  companyArchive: CompanyClass;
   companyCreate: CompanyClass;
   crewAddEmployee: CrewClass;
   crewAddVehicle: CrewClass;
@@ -640,6 +643,7 @@ export type Mutation = {
   jobsiteSetTruckingRates: JobsiteClass;
   jobsiteUpdate: JobsiteClass;
   login: Scalars['String'];
+  materialArchive: MaterialClass;
   materialCreate: MaterialClass;
   materialRemove: Scalars['Boolean'];
   materialShipmentCreate: Array<MaterialShipmentClass>;
@@ -668,6 +672,11 @@ export type Mutation = {
   vehicleWorkCreate: Array<VehicleWorkClass>;
   vehicleWorkDelete: Scalars['String'];
   vehicleWorkUpdate: VehicleWorkClass;
+};
+
+
+export type MutationCompanyArchiveArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -924,6 +933,11 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationMaterialArchiveArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationMaterialCreateArgs = {
   data: MaterialCreateData;
 };
@@ -1151,6 +1165,7 @@ export type Query = {
   dailyReportsForJobsite: Array<DailyReportClass>;
   employee: EmployeeClass;
   employeeHourReports: EmployeeHoursReport;
+  employees: Array<EmployeeClass>;
   employeeSearch: Array<EmployeeClass>;
   file: FileClass;
   jobsite: JobsiteClass;
@@ -1171,6 +1186,7 @@ export type Query = {
   user?: Maybe<UserClass>;
   users: Array<UserClass>;
   vehicle: VehicleClass;
+  vehicles: Array<VehicleClass>;
   vehicleSearch: Array<VehicleClass>;
 };
 
@@ -1245,6 +1261,11 @@ export type QueryEmployeeHourReportsArgs = {
   endTime: Scalars['DateTime'];
   id: Scalars['ID'];
   startTime: Scalars['DateTime'];
+};
+
+
+export type QueryEmployeesArgs = {
+  options?: InputMaybe<ListOptionData>;
 };
 
 
@@ -1334,6 +1355,11 @@ export type QueryUsersArgs = {
 
 export type QueryVehicleArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryVehiclesArgs = {
+  options?: InputMaybe<ListOptionData>;
 };
 
 
@@ -1771,6 +1797,13 @@ export type VehicleSsrSnippetFragment = { __typename?: 'VehicleClass', _id: stri
 
 export type VehicleSearchSnippetFragment = { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string };
 
+export type CompanyArchiveMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type CompanyArchiveMutation = { __typename?: 'Mutation', companyArchive: { __typename?: 'CompanyClass', _id: string } };
+
 export type CompanyCreateMutationVariables = Exact<{
   data: CompanyCreateData;
 }>;
@@ -2109,6 +2142,13 @@ export type LoginMutationVariables = Exact<{
 
 
 export type LoginMutation = { __typename?: 'Mutation', login: string };
+
+export type MaterialArchiveMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type MaterialArchiveMutation = { __typename?: 'Mutation', materialArchive: { __typename?: 'MaterialClass', _id: string } };
 
 export type MaterialCreateMutationVariables = Exact<{
   data: MaterialCreateData;
@@ -2480,6 +2520,13 @@ export type EmployeeFetchSearchQueryVariables = Exact<{
 
 export type EmployeeFetchSearchQuery = { __typename?: 'Query', employee: { __typename?: 'EmployeeClass', _id: string, name: string } };
 
+export type EmployeesQueryVariables = Exact<{
+  options?: InputMaybe<ListOptionData>;
+}>;
+
+
+export type EmployeesQuery = { __typename?: 'Query', employees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> };
+
 export type FileFullQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -2701,6 +2748,13 @@ export type VehicleFetchSearchQueryVariables = Exact<{
 
 
 export type VehicleFetchSearchQuery = { __typename?: 'Query', vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string } };
+
+export type VehiclesQueryVariables = Exact<{
+  options?: InputMaybe<ListOptionData>;
+}>;
+
+
+export type VehiclesQuery = { __typename?: 'Query', vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> };
 
 export type JobsiteMonthReportSubSubscriptionVariables = Exact<{
   id: Scalars['ID'];
@@ -3691,6 +3745,39 @@ export const VehicleSearchSnippetFragmentDoc = gql`
   vehicleType
 }
     `;
+export const CompanyArchiveDocument = gql`
+    mutation CompanyArchive($id: ID!) {
+  companyArchive(id: $id) {
+    _id
+  }
+}
+    `;
+export type CompanyArchiveMutationFn = Apollo.MutationFunction<CompanyArchiveMutation, CompanyArchiveMutationVariables>;
+
+/**
+ * __useCompanyArchiveMutation__
+ *
+ * To run a mutation, you first call `useCompanyArchiveMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCompanyArchiveMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [companyArchiveMutation, { data, loading, error }] = useCompanyArchiveMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useCompanyArchiveMutation(baseOptions?: Apollo.MutationHookOptions<CompanyArchiveMutation, CompanyArchiveMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CompanyArchiveMutation, CompanyArchiveMutationVariables>(CompanyArchiveDocument, options);
+      }
+export type CompanyArchiveMutationHookResult = ReturnType<typeof useCompanyArchiveMutation>;
+export type CompanyArchiveMutationResult = Apollo.MutationResult<CompanyArchiveMutation>;
+export type CompanyArchiveMutationOptions = Apollo.BaseMutationOptions<CompanyArchiveMutation, CompanyArchiveMutationVariables>;
 export const CompanyCreateDocument = gql`
     mutation CompanyCreate($data: CompanyCreateData!) {
   companyCreate(data: $data) {
@@ -5175,6 +5262,39 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const MaterialArchiveDocument = gql`
+    mutation MaterialArchive($id: ID!) {
+  materialArchive(id: $id) {
+    _id
+  }
+}
+    `;
+export type MaterialArchiveMutationFn = Apollo.MutationFunction<MaterialArchiveMutation, MaterialArchiveMutationVariables>;
+
+/**
+ * __useMaterialArchiveMutation__
+ *
+ * To run a mutation, you first call `useMaterialArchiveMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMaterialArchiveMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [materialArchiveMutation, { data, loading, error }] = useMaterialArchiveMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMaterialArchiveMutation(baseOptions?: Apollo.MutationHookOptions<MaterialArchiveMutation, MaterialArchiveMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MaterialArchiveMutation, MaterialArchiveMutationVariables>(MaterialArchiveDocument, options);
+      }
+export type MaterialArchiveMutationHookResult = ReturnType<typeof useMaterialArchiveMutation>;
+export type MaterialArchiveMutationResult = Apollo.MutationResult<MaterialArchiveMutation>;
+export type MaterialArchiveMutationOptions = Apollo.BaseMutationOptions<MaterialArchiveMutation, MaterialArchiveMutationVariables>;
 export const MaterialCreateDocument = gql`
     mutation MaterialCreate($data: MaterialCreateData!) {
   materialCreate(data: $data) {
@@ -6877,6 +6997,41 @@ export function useEmployeeFetchSearchLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type EmployeeFetchSearchQueryHookResult = ReturnType<typeof useEmployeeFetchSearchQuery>;
 export type EmployeeFetchSearchLazyQueryHookResult = ReturnType<typeof useEmployeeFetchSearchLazyQuery>;
 export type EmployeeFetchSearchQueryResult = Apollo.QueryResult<EmployeeFetchSearchQuery, EmployeeFetchSearchQueryVariables>;
+export const EmployeesDocument = gql`
+    query Employees($options: ListOptionData) {
+  employees(options: $options) {
+    ...EmployeeCardSnippet
+  }
+}
+    ${EmployeeCardSnippetFragmentDoc}`;
+
+/**
+ * __useEmployeesQuery__
+ *
+ * To run a query within a React component, call `useEmployeesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEmployeesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEmployeesQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useEmployeesQuery(baseOptions?: Apollo.QueryHookOptions<EmployeesQuery, EmployeesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EmployeesQuery, EmployeesQueryVariables>(EmployeesDocument, options);
+      }
+export function useEmployeesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EmployeesQuery, EmployeesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EmployeesQuery, EmployeesQueryVariables>(EmployeesDocument, options);
+        }
+export type EmployeesQueryHookResult = ReturnType<typeof useEmployeesQuery>;
+export type EmployeesLazyQueryHookResult = ReturnType<typeof useEmployeesLazyQuery>;
+export type EmployeesQueryResult = Apollo.QueryResult<EmployeesQuery, EmployeesQueryVariables>;
 export const FileFullDocument = gql`
     query FileFull($id: String!) {
   file(id: $id) {
@@ -7997,6 +8152,41 @@ export function useVehicleFetchSearchLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type VehicleFetchSearchQueryHookResult = ReturnType<typeof useVehicleFetchSearchQuery>;
 export type VehicleFetchSearchLazyQueryHookResult = ReturnType<typeof useVehicleFetchSearchLazyQuery>;
 export type VehicleFetchSearchQueryResult = Apollo.QueryResult<VehicleFetchSearchQuery, VehicleFetchSearchQueryVariables>;
+export const VehiclesDocument = gql`
+    query Vehicles($options: ListOptionData) {
+  vehicles(options: $options) {
+    ...VehicleCardSnippet
+  }
+}
+    ${VehicleCardSnippetFragmentDoc}`;
+
+/**
+ * __useVehiclesQuery__
+ *
+ * To run a query within a React component, call `useVehiclesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVehiclesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVehiclesQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useVehiclesQuery(baseOptions?: Apollo.QueryHookOptions<VehiclesQuery, VehiclesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<VehiclesQuery, VehiclesQueryVariables>(VehiclesDocument, options);
+      }
+export function useVehiclesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<VehiclesQuery, VehiclesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<VehiclesQuery, VehiclesQueryVariables>(VehiclesDocument, options);
+        }
+export type VehiclesQueryHookResult = ReturnType<typeof useVehiclesQuery>;
+export type VehiclesLazyQueryHookResult = ReturnType<typeof useVehiclesLazyQuery>;
+export type VehiclesQueryResult = Apollo.QueryResult<VehiclesQuery, VehiclesQueryVariables>;
 export const JobsiteMonthReportSubDocument = gql`
     subscription JobsiteMonthReportSub($id: ID!) {
   jobsiteMonthReportSub(id: $id) {

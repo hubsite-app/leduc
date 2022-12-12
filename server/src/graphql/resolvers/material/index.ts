@@ -77,4 +77,10 @@ export default class MaterialResolver {
   async materialRemove(@Arg("id", () => ID) id: Id) {
     return mutations.remove(id);
   }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => MaterialClass)
+  async materialArchive(@Arg("id", () => ID) id: Id) {
+    return mutations.archive(id);
+  }
 }

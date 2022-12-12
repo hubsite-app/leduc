@@ -45,8 +45,20 @@ const remove = async (id: Id) => {
   return true;
 };
 
+const archive = async (id: Id): Promise<MaterialDocument> => {
+  const material = await Material.getById(id);
+  if (!material) throw new Error("Unable to find material");
+
+  await material.archive();
+
+  await material.save();
+
+  return material;
+};
+
 export default {
   create,
   update,
   remove,
+  archive,
 };

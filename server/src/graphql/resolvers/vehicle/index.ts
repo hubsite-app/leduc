@@ -15,6 +15,7 @@ import mutations, { VehicleCreateData, VehicleUpdateData } from "./mutations";
 import { SearchOptions } from "@graphql/types/query";
 import { RatesData } from "@graphql/types/mutation";
 import { Id } from "@typescript/models";
+import { ListOptionData } from "@typescript/graphql";
 
 @Resolver(() => VehicleClass)
 export default class VehicleResolver {
@@ -39,6 +40,16 @@ export default class VehicleResolver {
   @Query(() => VehicleClass)
   async vehicle(@Arg("id") id: string) {
     return Vehicle.getById(id);
+  }
+
+  @Query(() => [VehicleClass])
+  async vehicles(
+    @Arg("options", () => ListOptionData, { nullable: true })
+    options?: ListOptionData
+  ) {
+    return Vehicle.getList({
+      ...options,
+    });
   }
 
   @Query(() => [VehicleClass])

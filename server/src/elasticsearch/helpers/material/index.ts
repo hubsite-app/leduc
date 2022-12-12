@@ -13,8 +13,11 @@ export const ES_ensureMaterialIndex = async () => {
 };
 
 export const ES_updateMaterial = async (material: MaterialDocument) => {
-  if (process.env.NODE_ENV !== "test") {
-    logger.debug(`Updating material ${material._id} in ES`);
+  if (process.env.NODE_ENV === "test") return;
+
+  logger.debug(`Updating material ${material._id} in ES`);
+
+  if (!material.archivedAt) {
     await ElasticsearchClient.update({
       index: ElasticSearchIndices.Material,
       id: material._id.toString(),
@@ -25,9 +28,21 @@ export const ES_updateMaterial = async (material: MaterialDocument) => {
         doc_as_upsert: true,
       },
     });
+  } else {
+    ElasticsearchClient.get({
+      id: material._id.toString(),
+      index: ElasticSearchIndices.Material,
+    })
+      .then(async () => {
+        await ElasticsearchClient.delete({
+          id: material._id.toString(),
+          index: ElasticSearchIndices.Material,
+        });
+      })
+      .catch(() => {
+        return;
+      });
   }
-
-  return;
 };
 
 export const ES_clearMaterial = async () => {

@@ -1,4 +1,5 @@
 import { Company, CompanyDocument } from "@models";
+import { Id } from "@typescript/models";
 import { Field, InputType } from "type-graphql";
 
 @InputType()
@@ -15,6 +16,18 @@ const create = async (data: CompanyCreateData): Promise<CompanyDocument> => {
   return company;
 };
 
+const archive = async (id: Id): Promise<CompanyDocument> => {
+  const company = await Company.getById(id);
+  if (!company) throw new Error("Unable to find company");
+
+  await company.archive();
+
+  await company.save();
+
+  return company;
+};
+
 export default {
   create,
+  archive,
 };

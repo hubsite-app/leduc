@@ -30,18 +30,19 @@ export const ES_updateVehicle = async (vehicle: VehicleDocument) => {
         },
       });
     } else {
-      const existing = await ElasticsearchClient.get({
+      ElasticsearchClient.get({
         id: vehicle._id.toString(),
         index: ElasticSearchIndices.Vehicle,
-      });
-
-      // Remove if necessary
-      if (existing) {
-        await ElasticsearchClient.delete({
-          id: vehicle._id.toString(),
-          index: ElasticSearchIndices.Vehicle,
+      })
+        .then(async () => {
+          await ElasticsearchClient.delete({
+            id: vehicle._id.toString(),
+            index: ElasticSearchIndices.Vehicle,
+          });
+        })
+        .catch(() => {
+          return;
         });
-      }
     }
   }
 

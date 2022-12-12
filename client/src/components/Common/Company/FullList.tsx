@@ -1,12 +1,10 @@
 import React from "react";
 
-import { Flex, Heading } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { useCompaniesQuery } from "../../../generated/graphql";
-import Card from "../Card";
 import InfiniteScroll from "../InfiniteScroll";
 import Loading from "../Loading";
-import TextLink from "../TextLink";
-import createLink from "../../../utils/createLink";
+import CompanyCard from "./Card";
 
 const CompanyFullList = () => {
   /**
@@ -46,16 +44,7 @@ const CompanyFullList = () => {
       return (
         <Flex flexDir="column" alignContent="center">
           {data.companies.map((company) => (
-            <Card key={company._id}>
-              <TextLink
-                link={createLink.company(company._id)}
-                color="black"
-                fontWeight="bold"
-                fontSize="lg"
-              >
-                {company.name}
-              </TextLink>
-            </Card>
+            <CompanyCard company={company} key={company._id} />
           ))}
           {loading && <Loading />}
         </Flex>

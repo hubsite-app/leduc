@@ -11,10 +11,11 @@ import {
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FiEdit, FiTrash } from "react-icons/fi";
+import { FiArchive, FiEdit, FiTrash } from "react-icons/fi";
 import {
   MaterialFullSnippetFragment,
   MaterialsFullDocument,
+  useMaterialArchiveMutation,
   useMaterialRemoveMutation,
 } from "../../../generated/graphql";
 import MaterialUpdateForm from "../../Forms/Material/MaterialUpdate";
@@ -32,16 +33,28 @@ const MaterialCard = ({ material }: IMaterialCard) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [remove, { loading: removeLoading }] = useMaterialRemoveMutation({
-    refetchQueries: [MaterialsFullDocument],
-  });
+  const [remove, { loading: removeLoading, data: removeData }] =
+    useMaterialRemoveMutation({
+      refetchQueries: [MaterialsFullDocument],
+    });
+
+  const [archive, { loading: archiveLoading, data: archiveData }] =
+    useMaterialArchiveMutation({
+      refetchQueries: [MaterialsFullDocument],
+    });
 
   /**
    * ----- Rendering -----
    */
 
   return (
-    <Card>
+    <Card
+      filter={
+        archiveData?.materialArchive._id || removeData?.materialRemove
+          ? "blue(3px)"
+          : ""
+      }
+    >
       <Flex flexDir="row" justifyContent="space-between">
         <Heading size="md">{material.name}</Heading>
         <Flex flexDir="row">
@@ -64,6 +77,20 @@ const MaterialCard = ({ material }: IMaterialCard) => {
                 />
               </Tooltip>
             )}
+            <IconButton
+              aria-label="archive"
+              icon={<FiArchive />}
+              backgroundColor="transparent"
+              isLoading={archiveLoading}
+              onClick={() => {
+                if (window.confirm("Are you sure?"))
+                  archive({
+                    variables: {
+                      id: material._id,
+                    },
+                  });
+              }}
+            />
             <IconButton
               aria-label="edit"
               icon={<FiEdit />}

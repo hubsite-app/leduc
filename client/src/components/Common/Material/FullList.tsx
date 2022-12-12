@@ -1,13 +1,7 @@
-import { Flex, Heading, IconButton, Tooltip } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import React from "react";
-import { FiTrash } from "react-icons/fi";
 
-import {
-  MaterialsFullDocument,
-  useMaterialRemoveMutation,
-  useMaterialsFullQuery,
-} from "../../../generated/graphql";
-import Card from "../Card";
+import { useMaterialsFullQuery } from "../../../generated/graphql";
 import InfiniteScroll from "../InfiniteScroll";
 import Loading from "../Loading";
 import MaterialCard from "./Card";

@@ -21,6 +21,7 @@ import EmployeeUpdateForm from "../../components/Forms/Employee/Update";
 import EmployeeClientContent from "../../components/pages/employee/ClientContent";
 import { UserRoles } from "../../generated/graphql";
 import { PageEmployeeSsrComp, ssrEmployeeSsr } from "../../generated/page";
+import Breadcrumbs from "../../components/Common/Breadcrumbs";
 
 const Employee: PageEmployeeSsrComp = ({ data }) => {
   const employee = data?.employee!;
@@ -39,6 +40,18 @@ const Employee: PageEmployeeSsrComp = ({ data }) => {
 
   return (
     <Container>
+      <Breadcrumbs
+        crumbs={[
+          {
+            title: "Employees",
+            link: "/employees",
+          },
+          {
+            title: employee.name,
+            isCurrentPage: true,
+          },
+        ]}
+      />
       <Flex flexDir="row" justifyContent="space-between">
         <Box>
           <Heading>{employee.name}</Heading>

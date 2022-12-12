@@ -13,38 +13,37 @@ export const ES_ensureEmployeeIndex = async () => {
 };
 
 export const ES_updateEmployee = async (employee: EmployeeDocument) => {
-  if (process.env.NODE_ENV !== "test") {
-    logger.debug(`Updating employee ${employee._id} in ES`);
+  if (process.env.NODE_ENV === "test") return;
 
-    if (!employee.archivedAt) {
-      await ElasticsearchClient.update({
-        index: ElasticSearchIndices.Employee,
-        id: employee._id.toString(),
-        body: {
-          doc: {
-            name: employee.name,
-            jobTitle: employee.jobTitle,
-          },
-          doc_as_upsert: true,
+  logger.debug(`Updating employee ${employee._id} in ES`);
+
+  if (!employee.archivedAt) {
+    await ElasticsearchClient.update({
+      index: ElasticSearchIndices.Employee,
+      id: employee._id.toString(),
+      body: {
+        doc: {
+          name: employee.name,
+          jobTitle: employee.jobTitle,
         },
-      });
-    } else {
-      const existing = await ElasticsearchClient.get({
-        id: employee._id.toString(),
-        index: ElasticSearchIndices.Employee,
-      });
-
-      // Remove if necessary
-      if (existing) {
+        doc_as_upsert: true,
+      },
+    });
+  } else {
+    ElasticsearchClient.get({
+      id: employee._id.toString(),
+      index: ElasticSearchIndices.Employee,
+    })
+      .then(async () => {
         await ElasticsearchClient.delete({
           id: employee._id.toString(),
           index: ElasticSearchIndices.Employee,
         });
-      }
-    }
+      })
+      .catch(() => {
+        return;
+      });
   }
-
-  return;
 };
 
 export const ES_clearEmployee = async () => {

@@ -25,6 +25,10 @@ export class MaterialSchema {
   @prop({ required: true, default: SchemaVersions.Material })
   public schemaVersion!: number;
 
+  @Field(() => Date)
+  @prop({ required: false })
+  public archivedAt!: Date;
+
   @Field({ nullable: false })
   @prop({ required: true, default: Date.now })
   public createdAt!: Date;

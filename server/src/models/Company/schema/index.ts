@@ -29,6 +29,10 @@ export class CompanySchema {
   @prop({ required: true, default: SchemaVersions.Company })
   public schemaVersion!: number;
 
+  @Field(() => Date)
+  @prop({ required: false })
+  public archivedAt!: Date;
+
   @Field({ nullable: false })
   @prop({ required: true, default: Date.now })
   public createdAt!: Date;

@@ -50,6 +50,7 @@ const byName = async (
 ): Promise<CompanyDocument | null> => {
   const company = await Company.findOne({
     name: { $regex: new RegExp(name, "i") },
+    archivedAt: null,
   });
 
   return company;
@@ -113,13 +114,19 @@ const list = async (
 ): Promise<CompanyDocument[]> => {
   options = populateOptions(options, listDefaultOptions);
 
-  const companys = await Company.find(options?.query || {}, undefined, {
-    limit: options?.pageLimit,
-    skip: options?.offset,
-    sort: {
-      name: "asc",
-    },
-  });
+  if (options?.query) options.query.archivedAt = null;
+
+  const companys = await Company.find(
+    options?.query || { archivedAt: null },
+    undefined,
+    {
+      limit: options?.pageLimit,
+      skip: options?.offset,
+      sort: {
+        name: "asc",
+      },
+    }
+  );
 
   return companys;
 };

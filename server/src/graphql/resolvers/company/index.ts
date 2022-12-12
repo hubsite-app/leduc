@@ -15,8 +15,10 @@ import {
   CompanyMaterialReportJobDayDocument,
 } from "@typescript/company";
 import { ListOptionData } from "@typescript/graphql";
+import { Id } from "@typescript/models";
 import {
   Arg,
+  Authorized,
   FieldResolver,
   ID,
   Mutation,
@@ -72,6 +74,12 @@ export default class CompanyResolver {
   @Mutation(() => CompanyClass)
   async companyCreate(@Arg("data") data: CompanyCreateData) {
     return mutations.create(data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => CompanyClass)
+  async companyArchive(@Arg("id", () => ID) id: Id) {
+    return mutations.archive(id);
   }
 }
 

@@ -12,22 +12,37 @@ export const ES_ensureCompanyIndex = async () => {
   return;
 };
 
-export const ES_updateCompany = async (material: CompanyDocument) => {
-  if (process.env.NODE_ENV !== "test") {
-    logger.debug(`Updating material ${material._id} in ES`);
+export const ES_updateCompany = async (company: CompanyDocument) => {
+  if (process.env.NODE_ENV === "test") return;
+
+  logger.debug(`Updating company ${company._id} in ES`);
+
+  if (!company.archivedAt) {
     await ElasticsearchClient.update({
       index: ElasticSearchIndices.Company,
-      id: material._id.toString(),
+      id: company._id.toString(),
       body: {
         doc: {
-          name: material.name,
+          name: company.name,
         },
         doc_as_upsert: true,
       },
     });
+  } else {
+    ElasticsearchClient.get({
+      id: company._id.toString(),
+      index: ElasticSearchIndices.Company,
+    })
+      .then(async () => {
+        await ElasticsearchClient.delete({
+          id: company._id.toString(),
+          index: ElasticSearchIndices.Company,
+        });
+      })
+      .catch(() => {
+        return;
+      });
   }
-
-  return;
 };
 
 export const ES_clearCompany = async () => {

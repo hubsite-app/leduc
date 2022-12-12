@@ -28,18 +28,19 @@ export const ES_updateCrew = async (crew: CrewDocument) => {
         },
       });
     } else {
-      const existing = await ElasticsearchClient.get({
+      ElasticsearchClient.get({
         id: crew._id.toString(),
         index: ElasticSearchIndices.Crew,
-      });
-
-      // Remove if necessary
-      if (existing) {
-        await ElasticsearchClient.delete({
-          id: crew._id.toString(),
-          index: ElasticSearchIndices.Crew,
+      })
+        .then(async () => {
+          await ElasticsearchClient.delete({
+            id: crew._id.toString(),
+            index: ElasticSearchIndices.Crew,
+          });
+        })
+        .catch(() => {
+          return;
         });
-      }
     }
   }
 

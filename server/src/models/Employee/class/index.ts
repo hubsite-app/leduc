@@ -4,7 +4,12 @@ import { ObjectType } from "type-graphql";
 import { EmployeeDocument, EmployeeModel } from "@models";
 import { EmployeeSchema } from "../schema";
 import get from "./get";
-import { GetByIDOptions, IRatesData, ISearchOptions } from "@typescript/models";
+import {
+  GetByIDOptions,
+  IListOptions,
+  IRatesData,
+  ISearchOptions,
+} from "@typescript/models";
 import { IEmployeeCreate, IEmployeeUpdate } from "@typescript/employee";
 import create from "./create";
 import update from "./update";
@@ -36,8 +41,11 @@ export class EmployeeClass extends EmployeeSchema {
     return get.byName(this, name);
   }
 
-  public static async getList(this: EmployeeModel) {
-    return get.list(this);
+  public static async getList(
+    this: EmployeeModel,
+    options?: IListOptions<EmployeeDocument>
+  ) {
+    return get.list(this, options);
   }
 
   public async getUser(this: EmployeeDocument) {

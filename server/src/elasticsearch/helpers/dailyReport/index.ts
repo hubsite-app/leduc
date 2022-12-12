@@ -42,18 +42,19 @@ export const ES_updateDailyReport = async (
         },
       });
     } else {
-      const existing = await ElasticsearchClient.get({
+      ElasticsearchClient.get({
         id: dailyReport._id.toString(),
         index: ElasticSearchIndices.DailyReport,
-      });
-
-      // Remove if necessary
-      if (existing) {
-        await ElasticsearchClient.delete({
-          id: dailyReport._id.toString(),
-          index: ElasticSearchIndices.DailyReport,
+      })
+        .then(async () => {
+          await ElasticsearchClient.delete({
+            id: dailyReport._id.toString(),
+            index: ElasticSearchIndices.DailyReport,
+          });
+        })
+        .catch(() => {
+          return;
         });
-      }
     }
   }
 
