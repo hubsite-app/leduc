@@ -1,0 +1,11 @@
+fragment JobsiteCurrentYearSnippet on JobsiteClass {
+  yearsDailyReports {
+    ...DailyReportCardSnippet
+  }
+  yearsExpenseInvoices {
+    ...InvoiceCardSnippet
+  }
+  yearsRevenueInvoices {
+    ...InvoiceCardSnippet
+  }
+}

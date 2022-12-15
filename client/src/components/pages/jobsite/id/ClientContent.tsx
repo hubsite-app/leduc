@@ -15,7 +15,12 @@ import {
 import { useRouter } from "next/router";
 import React from "react";
 import { FiEdit, FiTrash } from "react-icons/fi";
-import { useJobsiteFullQuery, UserRoles } from "../../../../generated/graphql";
+import {
+  useJobsiteAllDataLazyQuery,
+  useJobsiteCurrentYearLazyQuery,
+  useJobsiteFullQuery,
+  UserRoles,
+} from "../../../../generated/graphql";
 import { JobsiteQueryKeys } from "../../../../utils/createLink";
 import Card from "../../../Common/Card";
 import DailyReportListCard from "../../../Common/DailyReport/DailyReportListCard";
@@ -31,6 +36,7 @@ import JobsiteRemoveModal from "./views/RemoveModal";
 import RevenueInvoices from "./views/RevenueInvoices";
 import TruckingRates from "./views/TruckingRates";
 import JobsiteContract from "./views/Contract";
+import Switch from "../../../Common/forms/Switch";
 
 interface IJobsiteClientContent {
   id: string;
@@ -45,6 +51,17 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
     variables: { id },
   });
 
+  const [currentYearQuery, { data: currentYearData }] =
+    useJobsiteCurrentYearLazyQuery({
+      variables: {
+        id,
+      },
+    });
+
+  const [allDataQuery, { data: allData }] = useJobsiteAllDataLazyQuery({
+    variables: { id },
+  });
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenRemove,
@@ -53,6 +70,8 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
   } = useDisclosure();
 
   const router = useRouter();
+
+  const [previousYears, setPreviousYears] = React.useState(false);
 
   /**
    * ----- Variables -----
@@ -63,6 +82,60 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
       return router.query[JobsiteQueryKeys.jobsiteMaterial];
     else return null;
   }, [router]);
+
+  const dailyReports = React.useMemo(() => {
+    if (previousYears) {
+      return allData?.jobsite.dailyReports;
+    } else {
+      return currentYearData?.jobsite.yearsDailyReports;
+    }
+  }, [
+    allData?.jobsite.dailyReports,
+    currentYearData?.jobsite.yearsDailyReports,
+    previousYears,
+  ]);
+
+  const expenseInvoices = React.useMemo(() => {
+    if (previousYears) {
+      return allData?.jobsite.expenseInvoices;
+    } else {
+      return currentYearData?.jobsite.yearsExpenseInvoices;
+    }
+  }, [
+    allData?.jobsite.expenseInvoices,
+    currentYearData?.jobsite.yearsExpenseInvoices,
+    previousYears,
+  ]);
+
+  const revenueInvoices = React.useMemo(() => {
+    if (previousYears) {
+      return allData?.jobsite.revenueInvoices;
+    } else {
+      return currentYearData?.jobsite.yearsRevenueInvoices;
+    }
+  }, [
+    allData?.jobsite.revenueInvoices,
+    currentYearData?.jobsite.yearsRevenueInvoices,
+    previousYears,
+  ]);
+
+  /**
+   * ----- Lifecycle -----
+   */
+
+  React.useEffect(() => {
+    if (previousYears && !allData?.jobsite) {
+      allDataQuery();
+    } else if (!previousYears && !currentYearData?.jobsite) {
+      currentYearQuery();
+    }
+  }, [
+    allData?.jobsite,
+    allDataQuery,
+    currentYearData?.jobsite,
+    currentYearQuery,
+    previousYears,
+  ]);
 
   /**
    * ----- Rendering -----
@@ -91,15 +164,21 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
                     {jobsite.description}
                   </Text>
                 )}
-              </Box>
-              <SimpleGrid columns={2} spacing={2}>
-                <IconButton
-                  aria-label="edit"
-                  icon={<FiEdit />}
-                  backgroundColor="transparent"
-                  onClick={() => onOpen()}
+                <Switch
+                  label="Previous Data"
+                  isChecked={previousYears}
+                  onChange={() => setPreviousYears(!previousYears)}
+                  id="previous-data"
                 />
+              </Box>
+              <Flex flexDir="row" spacing={2}>
                 <Permission>
+                  <IconButton
+                    aria-label="edit"
+                    icon={<FiEdit />}
+                    backgroundColor="transparent"
+                    onClick={() => onOpen()}
+                  />
                   <IconButton
                     onClick={onOpenRemove}
                     aria-label="remove"
@@ -107,7 +186,7 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
                     backgroundColor="transparent"
                   />
                 </Permission>
-              </SimpleGrid>
+              </Flex>
             </Flex>
           </Card>
           <JobsiteFileObjects jobsite={jobsite} />
@@ -120,8 +199,14 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
               <TruckingRates jobsite={jobsite} />
             </SimpleGrid>
             <SimpleGrid columns={[1, 1, 1, 2]} spacingX={4} spacingY={2}>
-              <ExpenseInvoices jobsite={jobsite} />
-              <RevenueInvoices jobsite={jobsite} />
+              <ExpenseInvoices
+                jobsite={jobsite}
+                expenseInvoices={expenseInvoices}
+              />
+              <RevenueInvoices
+                jobsite={jobsite}
+                revenueInvoices={revenueInvoices}
+              />
             </SimpleGrid>
             <SimpleGrid spacingY={2}>
               <JobsiteContract jobsite={jobsite} />
@@ -136,7 +221,7 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
             </SimpleGrid>
           </Permission>
           <DailyReportListCard
-            dailyReports={jobsite.dailyReports}
+            dailyReports={dailyReports}
             jobsiteId={jobsite._id}
           />
 
@@ -159,6 +244,9 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
           </Modal>
           <JobsiteRemoveModal
             jobsite={jobsite}
+            dailyReports={dailyReports || []}
+            expenseInvoices={expenseInvoices || []}
+            revenueInvoices={revenueInvoices || []}
             isOpen={isOpenRemove}
             onClose={onCloseRemove}
           />
@@ -167,6 +255,10 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
     } else return <Loading />;
   }, [
     data,
+    previousYears,
+    dailyReports,
+    expenseInvoices,
+    revenueInvoices,
     isOpen,
     isOpenRemove,
     jobsiteMaterialQuery,

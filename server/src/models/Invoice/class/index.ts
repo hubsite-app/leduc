@@ -22,6 +22,14 @@ export class InvoiceClass extends InvoiceSchema {
     return get.byId(this, id, options);
   }
 
+  public static async getByCompanyAndNumber(
+    this: InvoiceModel,
+    companyId: Id,
+    invoiceNumber: string
+  ) {
+    return get.byCompanyAndNumber(this, companyId, invoiceNumber);
+  }
+
   public async getCompany(this: InvoiceDocument) {
     return get.company(this);
   }

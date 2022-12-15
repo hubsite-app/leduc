@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Flex,
   Icon,
@@ -8,6 +9,7 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
+  Portal,
 } from "@chakra-ui/react";
 import { FiAlertTriangle } from "react-icons/fi";
 import { ReportIssueSnippetFragment } from "../../../generated/graphql";
@@ -34,18 +36,20 @@ const JobsiteReportIssues = ({ issues }: IJobsiteReportIssues) => {
           />
         </Flex>
       </PopoverTrigger>
-      <PopoverContent>
-        <PopoverArrow />
-        <PopoverCloseButton />
-        <PopoverHeader fontWeight="bold">
-          Issues ({issues.length})
-        </PopoverHeader>
-        <PopoverBody p={0} maxH="60vh" overflowY="scroll">
-          {issues.map((issue) => (
-            <JobsiteReportIssueCard issue={issue} key={issue._id} />
-          ))}
-        </PopoverBody>
-      </PopoverContent>
+      <Portal>
+        <PopoverContent>
+          <PopoverArrow />
+          <PopoverCloseButton />
+          <PopoverHeader fontWeight="bold">
+            Issues ({issues.length})
+          </PopoverHeader>
+          <PopoverBody p={0} maxH="60vh" overflowY="scroll">
+            {issues.map((issue) => (
+              <JobsiteReportIssueCard issue={issue} key={issue._id} />
+            ))}
+          </PopoverBody>
+        </PopoverContent>
+      </Portal>
     </Popover>
   );
 };

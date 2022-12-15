@@ -24,7 +24,10 @@ import {
 } from "@typescript/models";
 import { JobsiteSchema } from "..";
 import create from "./create";
-import get, { IJobsiteGetDailyReportOptions } from "./get";
+import get, {
+  IJobsiteGetDailyReportOptions,
+  IJobsiteGetInvoicesOptions,
+} from "./get";
 import interact from "./interact";
 import remove from "./remove";
 import update from "./update";
@@ -77,12 +80,18 @@ export class JobsiteClass extends JobsiteSchema {
     return get.materials(this);
   }
 
-  public async getExpenseInvoices(this: JobsiteDocument) {
-    return get.expenseInvoices(this);
+  public async getExpenseInvoices(
+    this: JobsiteDocument,
+    options?: IJobsiteGetInvoicesOptions
+  ) {
+    return get.expenseInvoices(this, options);
   }
 
-  public async getRevenueInvoices(this: JobsiteDocument) {
-    return get.revenueInvoices(this);
+  public async getRevenueInvoices(
+    this: JobsiteDocument,
+    options?: IJobsiteGetInvoicesOptions
+  ) {
+    return get.revenueInvoices(this, options);
   }
 
   public async getNonCostedMaterialShipments(

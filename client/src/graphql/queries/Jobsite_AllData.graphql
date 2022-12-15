@@ -1,0 +1,5 @@
+query JobsiteAllData($id: String!) {
+  jobsite(id: $id) {
+    ...JobsiteAllDataSnippet
+  }
+}

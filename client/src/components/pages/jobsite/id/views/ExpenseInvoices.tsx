@@ -1,8 +1,18 @@
-import { Center, Flex, Heading, IconButton } from "@chakra-ui/react";
+import {
+  Center,
+  Flex,
+  Heading,
+  IconButton,
+  Skeleton,
+  Stack,
+} from "@chakra-ui/react";
 import React from "react";
 import { FiMaximize, FiPlus, FiX } from "react-icons/fi";
 import { usePanel } from "../../../../../contexts/Panel";
-import { JobsiteFullSnippetFragment } from "../../../../../generated/graphql";
+import {
+  JobsiteFullSnippetFragment,
+  InvoiceCardSnippetFragment,
+} from "../../../../../generated/graphql";
 import Card from "../../../../Common/Card";
 import FormContainer from "../../../../Common/FormContainer";
 import Permission from "../../../../Common/Permission";
@@ -12,12 +22,14 @@ import InvoiceCardForJobsite from "./InvoiceCard";
 
 interface IExpenseInvoices {
   jobsite: JobsiteFullSnippetFragment;
+  expenseInvoices?: InvoiceCardSnippetFragment[];
   displayFullList?: boolean;
   hideExpand?: boolean;
 }
 
 const ExpenseInvoices = ({
   jobsite,
+  expenseInvoices,
   displayFullList = false,
   hideExpand = false,
 }: IExpenseInvoices) => {
@@ -33,16 +45,18 @@ const ExpenseInvoices = ({
    * ----- Variables -----
    */
 
-  const sortedInvoices = [...jobsite.expenseInvoices].sort((a, b) =>
-    a.company.name.localeCompare(b.company.name)
-  );
+  const sortedInvoices = expenseInvoices
+    ? [...expenseInvoices].sort((a, b) =>
+        a.company.name.localeCompare(b.company.name)
+      )
+    : undefined;
 
   /**
    * ----- Rendering -----
    */
 
   let list: React.ReactNode = <Center>No Invoices</Center>;
-  if (jobsite.expenseInvoices.length > 0) {
+  if (sortedInvoices && expenseInvoices && expenseInvoices.length > 0) {
     if (displayFullList) {
       list = sortedInvoices.map((invoice) => (
         <InvoiceCardForJobsite
@@ -64,13 +78,21 @@ const ExpenseInvoices = ({
         />
       );
     }
+  } else if (expenseInvoices === undefined) {
+    list = (
+      <Stack>
+        <Skeleton h="4em" />
+        <Skeleton h="4em" />
+        <Skeleton h="4em" />
+      </Stack>
+    );
   }
 
   return (
     <Card h="fit-content">
       <Flex flexDir="row" justifyContent="space-between">
         <Heading my="auto" ml={2} size="md" w="100%">
-          Sub-Contractors ({jobsite.expenseInvoices.length})
+          Sub-Contractors {expenseInvoices ? `(${expenseInvoices.length})` : ""}
         </Heading>
         <Flex flexDir="row" justifyContent="space-between">
           <Permission>

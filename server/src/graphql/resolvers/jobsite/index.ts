@@ -58,6 +58,17 @@ export default class JobsiteResolver {
     });
   }
 
+  @FieldResolver(() => [DailyReportClass])
+  async yearsDailyReports(
+    @Root() jobsite: JobsiteDocument,
+    @Ctx() context: IContext
+  ) {
+    return jobsite.getDailyReports({
+      currentYear: true,
+      whitelistedCrews: await getUserCrews(context),
+    });
+  }
+
   @FieldResolver(() => [JobsiteMaterialClass])
   async materials(@Root() jobsite: JobsiteDocument) {
     return jobsite.getMaterials();
@@ -69,8 +80,22 @@ export default class JobsiteResolver {
   }
 
   @FieldResolver(() => [InvoiceClass])
+  async yearsExpenseInvoices(@Root() jobsite: JobsiteDocument) {
+    return jobsite.getExpenseInvoices({
+      currentYear: true,
+    });
+  }
+
+  @FieldResolver(() => [InvoiceClass])
   async revenueInvoices(@Root() jobsite: JobsiteDocument) {
     return jobsite.getRevenueInvoices();
+  }
+
+  @FieldResolver(() => [InvoiceClass])
+  async yearsRevenueInvoices(@Root() jobsite: JobsiteDocument) {
+    return jobsite.getRevenueInvoices({
+      currentYear: true,
+    });
   }
 
   @FieldResolver(() => [MaterialShipmentClass])

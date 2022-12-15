@@ -1,0 +1,5 @@
+query JobsiteCurrentYear($id: String!) {
+  jobsite(id: $id) {
+    ...JobsiteCurrentYearSnippet
+  }
+}

@@ -146,6 +146,7 @@ const crews = async (jobsite: JobsiteDocument): Promise<CrewDocument[]> => {
 
 export interface IJobsiteGetDailyReportOptions {
   whitelistedCrews?: Id[];
+  currentYear?: boolean;
 }
 const dailyReports = async (
   jobsite: JobsiteDocument,
@@ -156,10 +157,19 @@ const dailyReports = async (
     crewQuery.crew = { $in: options.whitelistedCrews };
   }
 
+  const yearQuery: Record<string, unknown> = {};
+  if (options?.currentYear) {
+    yearQuery.date = {
+      $gt: dayjs().startOf("year").toDate(),
+      $lt: dayjs().endOf("year").toDate(),
+    };
+  }
+
   const dailyReports = await DailyReport.find({
     jobsite: jobsite._id,
     archived: { $ne: true },
     ...crewQuery,
+    ...yearQuery,
   }).sort({ date: -1 });
 
   return dailyReports;
@@ -175,21 +185,47 @@ const materials = async (
   return jobsiteMaterials;
 };
 
+export interface IJobsiteGetInvoicesOptions {
+  currentYear?: boolean;
+}
 const expenseInvoices = async (
-  jobsite: JobsiteDocument
+  jobsite: JobsiteDocument,
+  options?: IJobsiteGetInvoicesOptions
 ): Promise<InvoiceDocument[]> => {
+  const yearQuery: Record<string, unknown> = {};
+  if (options?.currentYear) {
+    yearQuery.date = {
+      $gt: dayjs().startOf("year").toDate(),
+      $lt: dayjs().endOf("year").toDate(),
+    };
+  }
+
   const invoices = await Invoice.find({
     _id: { $in: jobsite.expenseInvoices },
+    ...yearQuery,
   });
 
   return invoices;
 };
 
+export interface IJobsiteGetInvoicesOptions {
+  currentYear?: boolean;
+}
 const revenueInvoices = async (
-  jobsite: JobsiteDocument
+  jobsite: JobsiteDocument,
+  options?: IJobsiteGetInvoicesOptions
 ): Promise<InvoiceDocument[]> => {
+  const yearQuery: Record<string, unknown> = {};
+  if (options?.currentYear) {
+    yearQuery.date = {
+      $gt: dayjs().startOf("year").toDate(),
+      $lt: dayjs().endOf("year").toDate(),
+    };
+  }
+
   const invoices = await Invoice.find({
     _id: { $in: jobsite.revenueInvoices },
+    ...yearQuery,
   });
 
   return invoices;

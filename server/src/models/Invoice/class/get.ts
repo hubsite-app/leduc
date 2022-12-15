@@ -30,6 +30,19 @@ const byId = async (
   return invoice;
 };
 
+const byCompanyAndNumber = async (
+  Invoice: InvoiceModel,
+  companyId: Id,
+  invoiceNumber: string
+): Promise<InvoiceDocument | null> => {
+  const invoice = await Invoice.findOne({
+    company: companyId,
+    invoiceNumber: invoiceNumber,
+  });
+
+  return invoice;
+};
+
 /**
  * ----- Methods -----
  */
@@ -48,5 +61,6 @@ const company = async (invoice: InvoiceDocument): Promise<CompanyDocument> => {
 
 export default {
   byId,
+  byCompanyAndNumber,
   company,
 };

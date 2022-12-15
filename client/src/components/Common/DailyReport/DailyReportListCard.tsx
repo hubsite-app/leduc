@@ -1,4 +1,4 @@
-import { Flex, Heading } from "@chakra-ui/react";
+import { Flex, Heading, Skeleton, Stack } from "@chakra-ui/react";
 import React from "react";
 
 import { DailyReportCardSnippetFragment } from "../../../generated/graphql";
@@ -9,7 +9,7 @@ import TextLink from "../TextLink";
 import createLink from "../../../utils/createLink";
 
 interface IDailyReportListCard {
-  dailyReports: DailyReportCardSnippetFragment[];
+  dailyReports?: DailyReportCardSnippetFragment[];
   jobsiteId?: string;
   limit?: number;
 }
@@ -27,7 +27,7 @@ const DailyReportListCard = ({
     <Card>
       <Flex flexDir="row" justifyContent="space-between">
         <Heading ml={2} my="auto" size="md">
-          Daily Reports ({dailyReports.length})
+          Daily Reports {dailyReports ? `(${dailyReports.length})` : ""}
         </Heading>
         {jobsiteId && (
           <TextLink link={createLink.jobsiteDailyReports(jobsiteId)}>
@@ -35,12 +35,19 @@ const DailyReportListCard = ({
           </TextLink>
         )}
       </Flex>
-      <ShowMore
-        limit={limit}
-        list={dailyReports.map((dailyReport) => (
-          <DailyReportCard key={dailyReport._id} dailyReport={dailyReport} />
-        ))}
-      />
+      {dailyReports ? (
+        <ShowMore
+          limit={limit}
+          list={dailyReports.map((dailyReport) => (
+            <DailyReportCard key={dailyReport._id} dailyReport={dailyReport} />
+          ))}
+        />
+      ) : (
+        <Stack spacing={2} my={4}>
+          <Skeleton h="4em" />
+          <Skeleton h="4em" />
+        </Stack>
+      )}
     </Card>
   );
 };

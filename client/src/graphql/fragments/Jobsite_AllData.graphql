@@ -1,0 +1,11 @@
+fragment JobsiteAllDataSnippet on JobsiteClass {
+  dailyReports {
+    ...DailyReportCardSnippet
+  }
+  expenseInvoices {
+    ...InvoiceCardSnippet
+  }
+  revenueInvoices {
+    ...InvoiceCardSnippet
+  }
+}

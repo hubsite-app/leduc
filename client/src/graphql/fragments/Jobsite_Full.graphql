@@ -14,15 +14,6 @@ fragment JobsiteFullSnippet on JobsiteClass {
   yearReports {
     ...JobsiteYearReportCardSnippet
   }
-  dailyReports {
-    ...DailyReportCardSnippet
-  }
-  expenseInvoices {
-    ...InvoiceCardSnippet
-  }
-  revenueInvoices {
-    ...InvoiceCardSnippet
-  }
   truckingRates {
     ...TruckingTypeRateSnippet
   }

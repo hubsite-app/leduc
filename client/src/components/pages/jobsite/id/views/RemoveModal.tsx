@@ -15,6 +15,8 @@ import router from "next/router";
 import React from "react";
 import { FiTrash, FiX } from "react-icons/fi";
 import {
+  DailyReportCardSnippetFragment,
+  InvoiceCardSnippetFragment,
   JobsiteFullSnippetFragment,
   useJobsiteRemoveMutation,
 } from "../../../../../generated/graphql";
@@ -24,12 +26,18 @@ import JobsiteSearch from "../../../../Search/JobsiteSearch";
 
 interface IJobsiteRemoveModal {
   jobsite: JobsiteFullSnippetFragment;
+  dailyReports: DailyReportCardSnippetFragment[];
+  revenueInvoices: InvoiceCardSnippetFragment[];
+  expenseInvoices: InvoiceCardSnippetFragment[];
   isOpen: boolean;
   onClose: () => void;
 }
 
 const JobsiteRemoveModal = ({
   jobsite,
+  dailyReports,
+  revenueInvoices,
+  expenseInvoices,
   isOpen,
   onClose,
 }: IJobsiteRemoveModal) => {
@@ -53,12 +61,17 @@ const JobsiteRemoveModal = ({
    */
 
   const requiresTransfer = React.useMemo(() => {
-    if (jobsite.dailyReports.length > 0) return true;
-    if (jobsite.revenueInvoices.length > 0) return true;
-    if (jobsite.expenseInvoices.length > 0) return true;
+    if (dailyReports.length > 0) return true;
+    if (revenueInvoices.length > 0) return true;
+    if (expenseInvoices.length > 0) return true;
     if (jobsite.materials.length > 0) return true;
     return false;
-  }, [jobsite]);
+  }, [
+    dailyReports.length,
+    expenseInvoices.length,
+    jobsite.materials.length,
+    revenueInvoices.length,
+  ]);
 
   /**
    * ----- Functions -----
