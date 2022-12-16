@@ -1,0 +1,6 @@
+fragment JobsiteYearNonCostedMaterialsSnippet on JobsiteClass {
+  _id
+  yearsNonCostedMaterialShipments {
+    ...MaterialShipmentNonCostedSnippet
+  }
+}

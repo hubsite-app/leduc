@@ -118,13 +118,19 @@ export const generateMasterTable = async (
   });
 
   // Auto Column Width
-  worksheet.columns.forEach((column) => {
+  worksheet.columns.forEach((column, index) => {
     let dataMax = 2;
 
-    if (column.eachCell)
+    // Not percentage columns
+    if (column.eachCell) {
       column.eachCell((cell) => {
-        cell.numFmt = currencyFormat;
+        if (index !== 9 && index !== 10) {
+          cell.numFmt = currencyFormat;
+        } else {
+          cell.numFmt = "0.00%";
+        }
       });
+    }
 
     if (column.values) {
       column.values.forEach((value) => {
@@ -180,8 +186,8 @@ const generateRows = async (
       rowData.overhead,
       rowData.totalExpenses,
       rowData.netIncome,
-      rowData.margin,
-      rowData.marginMinusInternal,
+      rowData.margin / 100,
+      rowData.marginMinusInternal / 100,
       rowData.internalSubs,
       rowData.externalSubs,
       rowData.totalWages,

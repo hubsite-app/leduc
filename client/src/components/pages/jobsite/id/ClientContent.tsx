@@ -195,6 +195,7 @@ const JobsiteClientContent = ({ id }: IJobsiteClientContent) => {
               <JobsiteMaterialsCosting
                 jobsite={jobsite}
                 selectedJobsiteMaterial={jobsiteMaterialQuery as string}
+                showPreviousYears={previousYears}
               />
               <TruckingRates jobsite={jobsite} />
             </SimpleGrid>

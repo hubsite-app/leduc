@@ -12,7 +12,8 @@ import { FiMaximize, FiPlus, FiX } from "react-icons/fi";
 import {
   JobsiteFullSnippetFragment,
   useJobsitesMaterialsQuery,
-  useJobsitesNonCostedMaterialsQuery,
+  useJobsitesNonCostedMaterialsLazyQuery,
+  useJobsitesYearNonCostedMaterialsLazyQuery,
 } from "../../../../../generated/graphql";
 import Card from "../../../../Common/Card";
 import ShowMore from "../../../../Common/ShowMore";
@@ -30,6 +31,7 @@ interface IJobsiteMaterialsCosting {
   selectedJobsiteMaterial?: string;
   displayFullList?: boolean;
   hideExpand?: boolean;
+  showPreviousYears?: boolean;
 }
 
 const JobsiteMaterialsCosting = ({
@@ -37,6 +39,7 @@ const JobsiteMaterialsCosting = ({
   selectedJobsiteMaterial,
   displayFullList = false,
   hideExpand = false,
+  showPreviousYears = true,
 }: IJobsiteMaterialsCosting) => {
   /**
    * ----- Hook Initialization -----
@@ -48,12 +51,19 @@ const JobsiteMaterialsCosting = ({
     },
   });
 
-  const { data: nonCostedData, loading: nonCostedLoading } =
-    useJobsitesNonCostedMaterialsQuery({
-      variables: {
-        id: propJobsite._id,
-      },
-    });
+  const [
+    allNonCostedQuery,
+    { data: allNonCostedData, loading: allNonCostedLoading },
+  ] = useJobsitesNonCostedMaterialsLazyQuery({
+    variables: { id: propJobsite._id },
+  });
+
+  const [
+    yearNonCostedQuery,
+    { data: yearNonCostedData, loading: yearNonCostedLoading },
+  ] = useJobsitesYearNonCostedMaterialsLazyQuery({
+    variables: { id: propJobsite._id },
+  });
 
   const [addForm, setAddForm] = React.useState(false);
 
@@ -84,38 +94,70 @@ const JobsiteMaterialsCosting = ({
     } else return [];
   }, [jobsite, selectedJobsiteMaterial]);
 
+  const nonCostedMaterials = React.useMemo(() => {
+    if (showPreviousYears) {
+      return allNonCostedData?.jobsite.nonCostedMaterialShipments;
+    } else {
+      return yearNonCostedData?.jobsite.yearsNonCostedMaterialShipments;
+    }
+  }, [
+    allNonCostedData?.jobsite.nonCostedMaterialShipments,
+    showPreviousYears,
+    yearNonCostedData?.jobsite.yearsNonCostedMaterialShipments,
+  ]);
+
+  const nonCostedLoading = React.useMemo(() => {
+    return allNonCostedLoading || yearNonCostedLoading;
+  }, [allNonCostedLoading, yearNonCostedLoading]);
+
+  /**
+   * ----- Lifecycle -----
+   */
+
+  React.useEffect(() => {
+    if (showPreviousYears && !allNonCostedData?.jobsite) {
+      allNonCostedQuery();
+    } else if (!showPreviousYears && !yearNonCostedData?.jobsite) {
+      yearNonCostedQuery();
+    }
+  }, [
+    allNonCostedData?.jobsite,
+    allNonCostedQuery,
+    showPreviousYears,
+    yearNonCostedData?.jobsite,
+    yearNonCostedQuery,
+  ]);
+
   /**
    * ----- Rendering -----
    */
 
   const jobsiteNonCostedMaterialContent = React.useMemo(() => {
-    if (nonCostedData?.jobsite && !nonCostedLoading) {
-      if (nonCostedData.jobsite.nonCostedMaterialShipments.length > 0) {
+    if (nonCostedMaterials) {
+      if (nonCostedMaterials.length > 0) {
         return (
           <Warning
-            description={`${nonCostedData.jobsite.nonCostedMaterialShipments.length} non-costed`}
+            description={`${nonCostedMaterials.length} non-costed`}
             onClick={() => setNonCostedList(!nonCostedList)}
           />
         );
       } else return null;
     } else if (nonCostedLoading) return <Loading />;
     else return null;
-  }, [nonCostedData?.jobsite, nonCostedList, nonCostedLoading]);
+  }, [nonCostedList, nonCostedLoading, nonCostedMaterials]);
 
   const nonCostedMaterialList = React.useMemo(() => {
-    if (nonCostedData?.jobsite && !nonCostedLoading) {
-      return nonCostedData.jobsite.nonCostedMaterialShipments.map(
-        (materialShipment) => (
-          <MaterialShipmentCard
-            backgroundColor="white"
-            key={materialShipment._id}
-            materialShipment={materialShipment}
-            dailyReport={materialShipment.dailyReport}
-          />
-        )
-      );
+    if (nonCostedMaterials) {
+      return nonCostedMaterials.map((materialShipment) => (
+        <MaterialShipmentCard
+          backgroundColor="white"
+          key={materialShipment._id}
+          materialShipment={materialShipment}
+          dailyReport={materialShipment.dailyReport}
+        />
+      ));
     } else return null;
-  }, [nonCostedData?.jobsite, nonCostedLoading]);
+  }, [nonCostedMaterials]);
 
   const jobsiteMaterialContent = React.useMemo(() => {
     if (jobsite) {

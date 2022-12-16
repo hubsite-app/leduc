@@ -55,7 +55,7 @@ const JobsiteReportOnJobSummary = ({
     if (system) {
       return getRateForTime(
         system.internalExpenseOverheadRate,
-        dayReports[0].date
+        dayReports[0]?.date || new Date()
       );
     } else return 10;
   }, [dayReports, system]);

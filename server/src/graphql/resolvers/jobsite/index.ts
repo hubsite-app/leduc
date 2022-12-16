@@ -15,6 +15,7 @@ import {
 } from "@models";
 import { IContext, ListOptionData } from "@typescript/graphql";
 import { Id } from "@typescript/models";
+import dayjs from "dayjs";
 import {
   Arg,
   Authorized,
@@ -101,6 +102,14 @@ export default class JobsiteResolver {
   @FieldResolver(() => [MaterialShipmentClass])
   async nonCostedMaterialShipments(@Root() jobsite: JobsiteDocument) {
     return jobsite.getNonCostedMaterialShipments();
+  }
+
+  @FieldResolver(() => [MaterialShipmentClass])
+  yearsNonCostedMaterialShipments(@Root() jobsite: JobsiteDocument) {
+    return jobsite.getNonCostedMaterialShipments({
+      startTime: dayjs().startOf("year").toDate(),
+      endTime: dayjs().endOf("year").toDate(),
+    });
   }
 
   @FieldResolver(() => [JobsiteDayReportClass])
