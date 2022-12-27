@@ -1,17 +1,8 @@
-import {
-  Box,
-  Code,
-  Divider,
-  Flex,
-  Heading,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Divider, Flex, Heading, Stack } from "@chakra-ui/react";
 import React from "react";
 import { SystemSnippetFragment } from "../../../generated/graphql";
 import Card from "../Card";
 import InfoTooltip from "../Info";
-import TextGrid from "../TextGrid";
 import SystemInternalExpenseOverheadRate from "./InternalExpenseOverheadRate";
 
 interface ISystemCosting {

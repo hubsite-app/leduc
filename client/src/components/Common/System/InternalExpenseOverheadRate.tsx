@@ -89,11 +89,15 @@ const SystemInternalExpenseOverheadRate = ({
             handleSubmit();
           }}
         >
-          <Rates rates={value} onChange={(rates) => setValue(rates)} />
+          <Rates
+            rates={value}
+            onChange={(rates) => setValue(rates)}
+            formSymbol="%"
+          />
           <SubmitButton isLoading={loading} />
         </form>
       ) : (
-        <RatesTable rates={system.internalExpenseOverheadRate} />
+        <RatesTable rates={system.internalExpenseOverheadRate} symbol="%" />
       )}
     </div>
   );

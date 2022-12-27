@@ -117,7 +117,11 @@ const jobsite = async (
     }
   }
 
-  if (canUpdate) dailyReport.jobsite = jobsite._id;
+  if (canUpdate) {
+    dailyReport.jobsite = jobsite._id;
+    await currentJobsite.requestGenerateDayReports();
+    await jobsite.requestGenerateDayReports();
+  }
 
   return;
 };

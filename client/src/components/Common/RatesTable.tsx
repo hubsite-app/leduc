@@ -5,9 +5,10 @@ import formatNumber from "../../utils/formatNumber";
 
 interface IRatesTable {
   rates: RateSnippetFragment[];
+  symbol?: string;
 }
 
-const RatesTable = ({ rates }: IRatesTable) => {
+const RatesTable = ({ rates, symbol = "$" }: IRatesTable) => {
   return (
     <Table>
       <Thead>
@@ -20,7 +21,10 @@ const RatesTable = ({ rates }: IRatesTable) => {
         {rates.map((rate, index) => (
           <Tr key={index}>
             <Td>{dayjs(rate.date).format("MMMM D, YYYY")}</Td>
-            <Td>${formatNumber(rate.rate)}</Td>
+            <Td>
+              {symbol}
+              {formatNumber(rate.rate)}
+            </Td>
           </Tr>
         ))}
       </Tbody>

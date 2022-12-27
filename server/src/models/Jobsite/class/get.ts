@@ -243,11 +243,12 @@ const nonCostedMaterialShipments = async (
       !dateRange ||
       (dayjs(dailyReports[i].date).isAfter(dateRange.startTime) &&
         dayjs(dailyReports[i].date).isBefore(dateRange.endTime))
-    )
+    ) {
       materialShipmentIds = [
         ...materialShipmentIds,
         ...dailyReports[i].materialShipment.map((id) => id?.toString() || ""),
       ];
+    }
   }
 
   const materialShipments = await MaterialShipment.find({

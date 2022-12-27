@@ -28,9 +28,17 @@ export interface IRates {
   isLoading?: boolean;
   errors?: IRateError[];
   label?: string;
+  formSymbol?: string;
 }
 
-const Rates = ({ rates = [], onChange, isLoading, errors, label }: IRates) => {
+const Rates = ({
+  rates = [],
+  onChange,
+  isLoading,
+  errors,
+  label,
+  formSymbol = "$",
+}: IRates) => {
   /**
    * ----- Variables -----
    */
@@ -112,7 +120,7 @@ const Rates = ({ rates = [], onChange, isLoading, errors, label }: IRates) => {
           border="1px solid"
           borderColor="gray.400"
         >
-          <Flex flexDir="column">
+          <Flex flexDir="column" w="100%">
             <SimpleGrid columns={[1, 1, 2]} spacing={2} w="100%">
               <TextField
                 value={rate.date}
@@ -127,7 +135,7 @@ const Rates = ({ rates = [], onChange, isLoading, errors, label }: IRates) => {
                 isDisabled={isLoading}
                 label="Rate"
                 precision={2}
-                inputLeftAddon="$"
+                inputLeftAddon={formSymbol}
                 onChange={(_, num) => setRate(num, index)}
                 errorMessage={errors && errors[index]?.rate?.message}
               />
