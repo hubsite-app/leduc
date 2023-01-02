@@ -48,7 +48,8 @@ export default class JobsiteYearMasterReportResolver {
 
   @Query(() => JobsiteYearMasterReportClass)
   async jobsiteYearMasterReportCurrent() {
-    return JobsiteYearMasterReport.getByDate(new Date());
+    // Return most recent Report
+    return JobsiteYearMasterReport.findOne().sort({ startOfYear: -1 });
   }
 
   @Query(() => String)
