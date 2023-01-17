@@ -260,6 +260,25 @@ const dailyReports = async (
   return dailyReports;
 };
 
+const dailyReportsByMonth = async (crew: CrewDocument, startOfMonth: Date) => {
+  const dailyReports = await DailyReport.find({
+    crew: crew._id,
+    archived: { $ne: true },
+    date: {
+      $gte: await timezoneStartOfDayinUTC(
+        dayjs(startOfMonth).startOf("month").toDate()
+      ),
+      $lt: await timezoneEndOfDayinUTC(
+        dayjs(startOfMonth).endOf("month").toDate()
+      ),
+    },
+  }).sort({
+    date: -1,
+  });
+
+  return dailyReports;
+};
+
 export default {
   byId,
   search,
@@ -271,4 +290,5 @@ export default {
   jobsites,
   dailyReports,
   crewLocations,
+  dailyReportsByMonth,
 };

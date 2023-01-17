@@ -1,8 +1,9 @@
-import { DailyReport } from "@models";
+import { Crew, DailyReport } from "@models";
 import { SupportedMimeTypes } from "@typescript/file";
 import { generateForDailyReport, getWorkbookBuffer } from "@utils/excel";
 import dayjs from "dayjs";
 import { Router } from "express";
+import archiver from "archiver";
 
 const router = Router();
 
@@ -25,6 +26,45 @@ router.get("/daily-report/:dailyReportId", async (req, res) => {
   );
 
   return res.send(await getWorkbookBuffer(workbook));
+});
+
+router.get("/crew/:crewId", async (req, res) => {
+  const crew = await Crew.getById(req.params.crewId);
+
+  if (!crew) return res.status(404).send("Could not find Crew");
+
+  const date = new Date(
+    req.query.start_of_month?.toString() || "invalid string"
+  );
+  if (isNaN(date.getTime())) return res.status(400).send("Invalid date format");
+
+  const dailyReports = await crew.getDailyReportsByMonth(date);
+
+  const archive = archiver("zip", { zlib: { level: 9 } });
+  archive.pipe(res);
+
+  res.setHeader("Content-Type", "application/zip");
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename=${crew.name}-${dayjs(date).format("MMMM-YYYY")}.zip`
+  );
+
+  for (let i = 0; i < dailyReports.length; i++) {
+    const workbook = await generateForDailyReport(dailyReports[i]);
+
+    const crew = await dailyReports[i].getCrew();
+    const jobsite = await dailyReports[i].getJobsite();
+
+    const buffer = await getWorkbookBuffer(workbook);
+
+    archive.append(buffer, {
+      name: `${jobsite.jobcode}-${crew.name}-${dayjs(
+        dailyReports[i].date
+      ).format("YYYY-MM-DD")}.xlsx`,
+    });
+  }
+
+  archive.finalize();
 });
 
 export default router;

@@ -68,6 +68,10 @@ export class CrewClass extends CrewSchema {
     return get.dailyReports(this);
   }
 
+  public async getDailyReportsByMonth(this: CrewDocument, startOfMonth: Date) {
+    return get.dailyReportsByMonth(this, startOfMonth);
+  }
+
   /**
    * ----- Create -----
    */
