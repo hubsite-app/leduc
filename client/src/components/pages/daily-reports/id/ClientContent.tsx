@@ -235,7 +235,9 @@ const DailyReportClientContent = ({ id }: IDailyReportClientContent) => {
               </SimpleGrid>
               <Flex flexDir="column">
                 <TextLink
-                  link={createLink.dailyReportPDF(data.dailyReport._id)}
+                  link={createLink.server_dailyReportExcelDownload(
+                    data?.dailyReport._id
+                  )}
                   newTab
                   mx="auto"
                 >

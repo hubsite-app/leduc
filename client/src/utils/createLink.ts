@@ -61,6 +61,13 @@ const company = (companyId: string) => {
   return `/company/${companyId}`;
 };
 
+const server_dailyReportExcelDownload = (dailyReportId: string) => {
+  return `${(process.env.NEXT_PUBLIC_API_URL as string).replace(
+    "/graphql",
+    ""
+  )}/file/daily-report/${dailyReportId}`;
+};
+
 const createLink = {
   employee,
   vehicle,
@@ -73,6 +80,7 @@ const createLink = {
   jobsiteYearMasterReport,
   dailyReport,
   dailyReportPDF,
+  server_dailyReportExcelDownload,
 };
 
 export default createLink;

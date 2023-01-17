@@ -39,7 +39,9 @@ const DailyReportCard = ({ dailyReport }: IDailyReportCard) => {
           <HStack spacing={1}>
             <Permission minRole={UserRoles.ProjectManager}>
               <TextLink
-                link={createLink.dailyReportPDF(dailyReport._id)}
+                link={createLink.server_dailyReportExcelDownload(
+                  dailyReport._id
+                )}
                 newTab
                 mx="auto"
               >

@@ -9,6 +9,7 @@ import { createServer } from "http";
 import jwt from "jsonwebtoken";
 import { buildTypeDefsAndResolvers } from "type-graphql";
 import { Server } from "ws";
+import fileRouter from "./router/files";
 
 import { IContext } from "@typescript/graphql";
 
@@ -191,6 +192,8 @@ const createApp = async () => {
       maxFiles: 20,
     })
   );
+
+  app.use("/file", fileRouter);
 
   await apolloServer.start();
 
