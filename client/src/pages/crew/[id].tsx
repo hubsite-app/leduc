@@ -14,12 +14,13 @@ import {
 } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { FiArchive, FiEdit } from "react-icons/fi";
+import { FiArchive, FiEdit, FiDownload } from "react-icons/fi";
 import ClientOnly from "../../components/Common/ClientOnly";
 import Container from "../../components/Common/Container";
 import Permission from "../../components/Common/Permission";
 import CrewUpdateForm from "../../components/Forms/Crew/Update";
 import CrewClientContent from "../../components/pages/crews/id/ClientContent";
+import CrewDownloadDailyReports from "../../components/pages/crews/id/views/DownloadDailyReports";
 import { useCrewArchiveMutation, UserRoles } from "../../generated/graphql";
 import { PageCrewSsrComp, ssrCrewSsr } from "../../generated/page";
 
@@ -33,6 +34,11 @@ const Crew: PageCrewSsrComp = ({ data }) => {
   const router = useRouter();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenDownload,
+    onOpen: onOpenDownload,
+    onClose: onCloseDownload,
+  } = useDisclosure();
 
   const [archive, { loading: archiveLoading }] = useCrewArchiveMutation();
 
@@ -74,6 +80,12 @@ const Crew: PageCrewSsrComp = ({ data }) => {
               icon={<FiEdit />}
               onClick={() => onOpen()}
             />
+            <IconButton
+              aria-label="download"
+              backgroundColor="transparent"
+              icon={<FiDownload />}
+              onClick={() => onOpenDownload()}
+            />
           </Flex>
         </Permission>
       </Flex>
@@ -92,6 +104,16 @@ const Crew: PageCrewSsrComp = ({ data }) => {
                   router.reload();
                 }}
               />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+        <Modal isOpen={isOpenDownload} onClose={onCloseDownload}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Daily Report Download</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <CrewDownloadDailyReports crewId={crew._id} />
             </ModalBody>
           </ModalContent>
         </Modal>

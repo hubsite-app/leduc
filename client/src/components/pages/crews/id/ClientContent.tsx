@@ -40,7 +40,6 @@ const CrewClientContent = ({ id }: ICrewClientContent) => {
         <Stack spacing={2}>
           <Employees employees={crew.employees} crew={crew} />
           <Vehicles vehicles={crew.vehicles} crew={crew} />
-
           <Permission
             minRole={UserRoles.ProjectManager}
             otherCriteria={user?.employee.crews
