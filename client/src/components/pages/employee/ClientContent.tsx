@@ -14,6 +14,7 @@ import {
   useEmployeeArchiveMutation,
   useEmployeeFullQuery,
   useSignupCreateMutation,
+  useUserDeleteMutation,
 } from "../../../generated/graphql";
 import Loading from "../../Common/Loading";
 import Card from "../../Common/Card";
@@ -23,7 +24,7 @@ import EmployeeRates from "./views/Rates";
 import createLink from "../../../utils/createLink";
 import Permission from "../../Common/Permission";
 import UserUpdateRole from "../../Forms/User/Role";
-import { FiArchive } from "react-icons/fi";
+import { FiArchive, FiTrash } from "react-icons/fi";
 import { useRouter } from "next/router";
 import IndividualEmployeeHours from "../../Common/Employee/IndividualHours";
 
@@ -49,6 +50,10 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
   });
 
   const [archive, { loading: archiveLoading }] = useEmployeeArchiveMutation();
+
+  const [deleteUser, { loading: userDeleteLoading }] = useUserDeleteMutation({
+    refetchQueries: [EmployeeFullDocument],
+  });
 
   /**
    * ----- Rendering -----
@@ -108,27 +113,53 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
           <Card>
             <Flex flexDir="row" justifyContent="space-between">
               <Heading size="md">User Info</Heading>
-              <Permission>
-                <Tooltip label="Archive">
-                  <IconButton
-                    icon={<FiArchive />}
-                    aria-label="archive"
-                    backgroundColor="transparent"
-                    isLoading={archiveLoading}
-                    onClick={() => {
-                      if (window.confirm("Are you sure?")) {
-                        archive({
-                          variables: {
-                            id: employee._id,
-                          },
-                        }).then(() => {
-                          router.back();
-                        });
-                      }
-                    }}
-                  />
-                </Tooltip>
-              </Permission>
+              <div>
+                <Permission>
+                  <Tooltip label="Archive">
+                    <IconButton
+                      icon={<FiArchive />}
+                      aria-label="archive"
+                      backgroundColor="transparent"
+                      isLoading={archiveLoading}
+                      onClick={() => {
+                        if (window.confirm("Are you sure?")) {
+                          archive({
+                            variables: {
+                              id: employee._id,
+                            },
+                          }).then(() => {
+                            router.back();
+                          });
+                        }
+                      }}
+                    />
+                  </Tooltip>
+                  {!!employee.user && (
+                    <Tooltip label="Remove User">
+                      <IconButton
+                        icon={<FiTrash />}
+                        aria-label="remove"
+                        backgroundColor="transparent"
+                        isLoading={userDeleteLoading}
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              "Are you sure? This cannot be reversed."
+                            )
+                          ) {
+                            if (employee.user)
+                              deleteUser({
+                                variables: {
+                                  userId: employee.user._id,
+                                },
+                              });
+                          }
+                        }}
+                      />
+                    </Tooltip>
+                  )}
+                </Permission>
+              </div>
             </Flex>
             {userContent}
           </Card>

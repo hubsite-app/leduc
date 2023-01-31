@@ -101,4 +101,10 @@ export default class UserResolver {
   ) {
     return mutations.passwordReset(password, token);
   }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => String)
+  async userDelete(@Arg("userId") userId: string) {
+    return mutations.deleteUser(userId);
+  }
 }
