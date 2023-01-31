@@ -665,6 +665,7 @@ export type Mutation = {
   systemUpdateLaborTypes: SystemClass;
   systemUpdateMaterialShipmentVehicleTypeDefaults: SystemClass;
   systemUpdateUnitDefaults: SystemClass;
+  userDelete: Scalars['String'];
   userPasswordReset: Scalars['Boolean'];
   userPasswordResetRequest: Scalars['Boolean'];
   userUpdateHomeView: UserClass;
@@ -1031,6 +1032,11 @@ export type MutationSystemUpdateMaterialShipmentVehicleTypeDefaultsArgs = {
 
 export type MutationSystemUpdateUnitDefaultsArgs = {
   data: Array<Scalars['String']>;
+};
+
+
+export type MutationUserDeleteArgs = {
+  userId: Scalars['String'];
 };
 
 
@@ -2285,6 +2291,13 @@ export type SystemUpdateUnitDefaultsMutationVariables = Exact<{
 
 
 export type SystemUpdateUnitDefaultsMutation = { __typename?: 'Mutation', systemUpdateUnitDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+
+export type UserDeleteMutationVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type UserDeleteMutation = { __typename?: 'Mutation', userDelete: string };
 
 export type UserPasswordResetMutationVariables = Exact<{
   password: Scalars['String'];
@@ -5911,6 +5924,37 @@ export function useSystemUpdateUnitDefaultsMutation(baseOptions?: Apollo.Mutatio
 export type SystemUpdateUnitDefaultsMutationHookResult = ReturnType<typeof useSystemUpdateUnitDefaultsMutation>;
 export type SystemUpdateUnitDefaultsMutationResult = Apollo.MutationResult<SystemUpdateUnitDefaultsMutation>;
 export type SystemUpdateUnitDefaultsMutationOptions = Apollo.BaseMutationOptions<SystemUpdateUnitDefaultsMutation, SystemUpdateUnitDefaultsMutationVariables>;
+export const UserDeleteDocument = gql`
+    mutation UserDelete($userId: String!) {
+  userDelete(userId: $userId)
+}
+    `;
+export type UserDeleteMutationFn = Apollo.MutationFunction<UserDeleteMutation, UserDeleteMutationVariables>;
+
+/**
+ * __useUserDeleteMutation__
+ *
+ * To run a mutation, you first call `useUserDeleteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUserDeleteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [userDeleteMutation, { data, loading, error }] = useUserDeleteMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUserDeleteMutation(baseOptions?: Apollo.MutationHookOptions<UserDeleteMutation, UserDeleteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UserDeleteMutation, UserDeleteMutationVariables>(UserDeleteDocument, options);
+      }
+export type UserDeleteMutationHookResult = ReturnType<typeof useUserDeleteMutation>;
+export type UserDeleteMutationResult = Apollo.MutationResult<UserDeleteMutation>;
+export type UserDeleteMutationOptions = Apollo.BaseMutationOptions<UserDeleteMutation, UserDeleteMutationVariables>;
 export const UserPasswordResetDocument = gql`
     mutation UserPasswordReset($password: String!, $token: String!) {
   userPasswordReset(password: $password, token: $token)

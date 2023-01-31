@@ -114,6 +114,15 @@ const updateHomeView = async (
   return context.user;
 };
 
+const deleteUser = async (userId: Id) => {
+  const user = await User.getById(userId);
+  if (!user) throw new Error("Unable to find user with that Id");
+
+  await user.delete();
+
+  return userId;
+};
+
 export default {
   login,
   signup,
@@ -121,4 +130,5 @@ export default {
   passwordResetRequest,
   passwordReset,
   updateHomeView,
+  deleteUser,
 };

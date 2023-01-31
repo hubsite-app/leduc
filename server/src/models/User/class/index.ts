@@ -10,6 +10,7 @@ import { IUserCreate, UserHomeViewSettings, UserRoles } from "@typescript/user";
 import create from "./create";
 import update from "./update";
 import { IEmailData } from "@utils/sendEmail";
+import remove from "./remove";
 
 @ObjectType()
 export class UserClass extends UserSchema {
@@ -98,5 +99,13 @@ export class UserClass extends UserSchema {
     homeView: UserHomeViewSettings
   ) {
     return update.homeView(this, homeView);
+  }
+
+  /**
+   * ----- Remove -----
+   */
+
+  public async delete(this: UserDocument) {
+    return remove.fullDelete(this);
   }
 }
