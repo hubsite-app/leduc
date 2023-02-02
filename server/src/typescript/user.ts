@@ -7,9 +7,14 @@ export interface IUserCreate {
 }
 
 export enum UserRoles {
-  User = 1,
-  ProjectManager = 2,
-  Admin = 3,
+  User = 1, // Lowerest power in UserType
+  ProjectManager = 2, // Highest power in UserType
+  Admin = 3, // Type Independent, full power
+}
+
+export enum UserTypes {
+  Operations = "Operations",
+  VehicleMaintenance = "VehicleMaintenance",
 }
 
 // Trying to find a better way to manage roles
