@@ -1,7 +1,7 @@
 import SchemaVersions from "@constants/SchemaVersions";
 import { EmployeeClass } from "@models";
 import { prop, Ref } from "@typegoose/typegoose";
-import { UserRoles } from "@typescript/user";
+import { UserRoles, UserTypes } from "@typescript/user";
 import isEmail from "@validation/isEmail";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
@@ -48,6 +48,12 @@ export class UserSchema {
   @Field(() => UserRoles, { nullable: false })
   @prop({ required: true, enum: UserRoles, default: UserRoles.User })
   public role!: UserRoles;
+
+  @Field(() => UserTypes, {
+    defaultValue: UserTypes.Operations,
+  })
+  @prop({ required: true, enum: UserTypes, default: UserTypes.Operations })
+  public type!: UserTypes;
 
   @Field(() => EmployeeClass, { nullable: false })
   @prop({ ref: () => EmployeeClass, required: true })
