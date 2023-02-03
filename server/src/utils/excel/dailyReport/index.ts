@@ -1,5 +1,5 @@
 import ExcelJS from "exceljs";
-import { DailyReportDocument } from "@models";
+import { DailyReportDocument, System } from "@models";
 import dayjs from "dayjs";
 
 export const generateForDailyReport = async (
@@ -66,6 +66,8 @@ export const generateForDailyReport = async (
       });
     }
 
+    const system = await System.getSystem();
+
     worksheet.getRow(FIRST_TABLE_ROW - 1).getCell(1).value = "Employee Hours";
     worksheet.getRow(FIRST_TABLE_ROW - 1).getCell(1).font = {
       bold: true,
@@ -86,8 +88,8 @@ export const generateForDailyReport = async (
           return [
             work.name,
             work.job,
-            dayjs(work.startTime).format("h:mm a"),
-            dayjs(work.endTime).format("h:mm a"),
+            dayjs(work.startTime).tz(system.timezone).format("h:mm a"),
+            dayjs(work.endTime).tz(system.timezone).format("h:mm a"),
             work.totalHours,
           ];
         }),

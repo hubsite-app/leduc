@@ -20,9 +20,8 @@ router.get("/daily-report/:dailyReportId", async (req, res) => {
   res.setHeader("Content-Type", SupportedMimeTypes.XLSX);
   res.setHeader(
     "Content-Disposition",
-    `attachment; filename=${jobsite.jobcode}-${crew.name}-${dayjs(
-      dailyReport.date
-    ).format("YYYY-MM-DD")}.xlsx`
+    `attachment; filename=${dayjs(dailyReport.date).format("YYYY-MM-DD")}-(${jobsite.jobcode
+    })-${crew.name}.xlsx`
   );
 
   return res.send(await getWorkbookBuffer(workbook));
