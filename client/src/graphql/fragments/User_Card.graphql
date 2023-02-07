@@ -3,7 +3,6 @@ fragment UserCardSnippet on UserClass {
   name
   email
   role
-  type
   admin
   projectManager
 }
