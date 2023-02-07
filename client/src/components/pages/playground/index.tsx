@@ -1,4 +1,4 @@
-import { Box, Heading, Stack } from "@chakra-ui/react";
+import { Box, Heading, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import { useOperatorDailyReportForm } from "../../../forms/operatorDailyReport";
 import Container from "../../Common/Container";
@@ -60,6 +60,10 @@ interface VehicleIssue {
   // vehicleId: Vehicle;
 }
 
+const Section = ({ children }: { children: React.ReactNode }) => {
+  return <Stack my={5}>{children}</Stack>;
+};
+
 const PlaygroundClientOnly = () => {
   /**
    * ----- Hook Initialization -----
@@ -74,33 +78,56 @@ const PlaygroundClientOnly = () => {
 
   return (
     <Container>
-      client stuff
       <Box>
-        <Heading>Operator Daily Report</Heading>
-        <FormComponents.Form submitHandler={() => { }}>
+        <Heading>Operator Daily Report Demo</Heading>
+        <Text as="p" fontStyle="italic">
+          A demo of the Operator Daily Report. Assume this is already assigned
+          to a particular vehicle.
+        </Text>
+        <Text as="p" fontStyle="italic">
+          This demo is to finalize what we want in the Daily Report and how we
+          want it presented to employees. Design will be cleaned up in final
+          version.
+        </Text>
+        <FormComponents.Form submitHandler={() => {}}>
           <FormComponents.Odometer isLoading={isLoading} />
           <FormComponents.StartTime isLoading={isLoading} />
           <Box>
-            <Heading size="md">Checklist</Heading>
-            <Stack>
+            <Section>
+              <Heading size="md">General</Heading>
               <FormComponents.Checklist.WalkAround isLoading={isLoading} />
               <FormComponents.Checklist.VisualInspection
                 isLoading={isLoading}
               />
-              <FormComponents.Checklist.Oil isLoading={isLoading} />
-              <FormComponents.Checklist.Coolant isLoading={isLoading} />
-              <FormComponents.Checklist.Fluids isLoading={isLoading} />
-            </Stack>
-            <Stack>
-              <Heading size="md">Findings</Heading>
-              <i>Will only show up once checklist is complete</i>
               <FormComponents.ProperFunction isLoading={isLoading} />
               <FormComponents.WasDamageObserved isLoading={isLoading} />
               {wasDamageObserved && (
                 <FormComponents.DamageObserved isLoading={isLoading} />
               )}
-              <FormComponents.WereLeaksObserved isLoading={isLoading} />
-            </Stack>
+              <FormComponents.FunctionChecks.BackupAlarm
+                isLoading={isLoading}
+              />
+              <FormComponents.FunctionChecks.Lights isLoading={isLoading} />
+              <FormComponents.FunctionChecks.LicensePlate
+                isLoading={isLoading}
+              />
+              <FormComponents.FunctionChecks.FireExtinguisher
+                isLoading={isLoading}
+              />
+            </Section>
+            <Section>
+              <Heading size="md">Oil & Coolants</Heading>
+              <FormComponents.Checklist.Oil isLoading={isLoading} />
+              <FormComponents.OilAdded isLoading={isLoading} />
+              <FormComponents.Checklist.Coolant isLoading={isLoading} />
+              <FormComponents.CoolantAdded isLoading={isLoading} />
+            </Section>
+            <Section>
+              <Heading size="md">Fluids</Heading>
+              <FormComponents.Checklist.Fluids isLoading={isLoading} />
+              <FormComponents.LeaksFound isLoading={isLoading} />
+              <FormComponents.FluidsAdded isLoading={isLoading} />
+            </Section>
           </Box>
         </FormComponents.Form>
       </Box>

@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Controller,
   SubmitHandler,
+  useFieldArray,
   useForm,
   UseFormProps,
 } from "react-hook-form";
@@ -11,11 +12,13 @@ import * as z from "zod";
 
 import { IFormProps } from "../typescript/forms";
 import TextField, { ITextField } from "../components/Common/forms/TextField";
-import CompanySearch from "../components/Search/CompanySearch";
 import NumberForm, { INumber } from "../components/Common/forms/Number";
 import TextArea, { ITextArea } from "../components/Common/forms/TextArea";
 import Checkbox, { ICheckbox } from "../components/Common/forms/Checkbox";
 import { OperatorDailyReportData } from "../components/pages/playground";
+import { Box, Button, Flex, Icon, IconButton } from "@chakra-ui/react";
+import Card from "../components/Common/Card";
+import { FiPlus, FiX } from "react-icons/fi";
 
 const OperatorDailyReportSchema = z.object({
   vehicleId: z.string().min(1, { message: "Must provide a vehicle id" }),
@@ -23,7 +26,9 @@ const OperatorDailyReportSchema = z.object({
     .string({ required_error: "Must provide a start time" })
     .datetime()
     .default(new Date().toISOString()),
-  odometer: z.number({ required_error: "Must provide an odometer reading" }),
+  odometer: z
+    .number({ required_error: "Must provide an odometer reading" })
+    .min(0, { message: "Must be greater than 0" }),
   checklist: z
     .object({
       walkAroundComplete: z.boolean().default(false),
@@ -33,10 +38,11 @@ const OperatorDailyReportSchema = z.object({
       fluidsChecked: z.boolean().default(false),
     })
     .required(),
+  oilAdded: z.number(),
+  coolantAdded: z.number(),
   properFunction: z.boolean().default(false),
   wasDamageObserved: z.boolean().default(false),
   damageObserved: z.string().optional(),
-  wereLeaksFound: z.boolean().default(false),
   leaksFound: z.array(
     z.object({
       type: z.string({ required_error: "Must provide the type of fluid" }),
@@ -50,34 +56,91 @@ const OperatorDailyReportSchema = z.object({
       type: z.string({
         required_error: "Must provide the type of fluid added",
       }),
-      litres: z.number({
+      amount: z.number({
         required_error: "Must provide the number of litres added",
       }),
     })
   ),
   functionChecks: z.object({
-    backupAlarmFunctional: z.boolean().default(false),
-    lightsFunctional: z.boolean().default(false),
-    fireExtinguisherFunctional: z.boolean().default(false),
-    licensePlateFunctional: z.boolean().default(false),
+    backupAlarm: z.boolean().default(false),
+    lights: z.boolean().default(false),
+    fireExtinguisher: z.boolean().default(false),
+    licensePlate: z.boolean().default(false),
   }),
   notes: z.string().optional(),
 });
 
 export const useOperatorDailyReportForm = (options?: UseFormProps) => {
+  /**
+   * ----- Hook Initialization -----
+   */
+
   const form = useForm({
     resolver: zodResolver(OperatorDailyReportSchema),
     defaultValues: {
-      odometer: 0,
+      odometer: "",
       startTime: new Date(),
+      leaksFound: [],
+      fluidsAdded: [],
+      oilAdded: 0,
+      coolantAdded: 0,
       ...options?.defaultValues,
     },
     ...options,
   });
 
+  /**
+   * ----- Variables -----
+   */
+
   const { handleSubmit, control, watch } = form;
 
+  const {
+    fields: leaksFoundFields,
+    append: appendLeakFound,
+    remove: removeLeakFound,
+  } = useFieldArray({
+    control,
+    name: "leaksFound",
+  });
+
+  const {
+    fields: fluidAddedFields,
+    append: appendFluidAdded,
+    remove: removeFluidAdded,
+  } = useFieldArray({
+    control,
+    name: "fluidsAdded",
+  });
+
   const wasDamageObserved = watch("wasDamageObserved");
+  const oilChecked = watch("checklist.oilChecked");
+  const coolantChecked = watch("checklist.coolantChecked");
+
+  /**
+   * ----- Functions -----
+   */
+
+  // const addLeakFound = React.useCallback(() => {
+  //   setValue("leaksFound", [...leaksFound, { type: "", location: "" }]);
+  // }, [leaksFound, setValue]);
+  //
+  // const removeLeakFound = React.useCallback(
+  //   (index: number) => {
+  //     const leaksFoundCopy = JSON.parse(JSON.stringify(leaksFound));
+  //     leaksFoundCopy.splice(index, 1);
+  //     setValue("leaksFound", leaksFoundCopy);
+  //   },
+  //   [leaksFound, setValue]
+  // );
+
+  /**
+   * ----- Lifecycle -----
+   */
+
+  /*
+   * ----- Components -----
+   */
 
   const FormComponents = {
     Form: ({
@@ -87,20 +150,20 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
       children: React.ReactNode;
       submitHandler: SubmitHandler<OperatorDailyReportData>;
     }) => <form onSubmit={handleSubmit(submitHandler)}>{children}</form>,
-    Odometer: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+    Odometer: ({ isLoading, ...props }: IFormProps<INumber>) =>
       React.useMemo(
         () => (
           <Controller
             control={control}
             name="odometer"
             render={({ field, fieldState }) => (
-              <TextField
+              <NumberForm
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}
                 label="Odometer Reading"
                 isDisabled={isLoading}
-                type="number"
+                inputRightAddon="km"
               />
             )}
           />
@@ -229,6 +292,54 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
           [isLoading, props]
         ),
     },
+    OilAdded: ({ isLoading, ...props }: IFormProps<INumber>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="oilAdded"
+            render={({ field, fieldState }) => {
+              if (oilChecked) {
+                return (
+                  <NumberForm
+                    {...props}
+                    {...field}
+                    errorMessage={fieldState.error?.message}
+                    label="Oil Added"
+                    inputRightAddon="L"
+                    isDisabled={isLoading}
+                  />
+                );
+              } else return <Box display="none" />;
+            }}
+          />
+        ),
+        [isLoading, props]
+      ),
+    CoolantAdded: ({ isLoading, ...props }: IFormProps<INumber>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="coolantAdded"
+            render={({ field, fieldState }) => {
+              if (coolantChecked) {
+                return (
+                  <NumberForm
+                    {...props}
+                    {...field}
+                    errorMessage={fieldState.error?.message}
+                    label="Coolant Added"
+                    inputRightAddon="L"
+                    isDisabled={isLoading}
+                  />
+                );
+              } else return <Box display="none" />;
+            }}
+          />
+        ),
+        [isLoading, props]
+      ),
     ProperFunction: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
       React.useMemo(
         () => (
@@ -242,7 +353,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 isDisabled={isLoading}
                 isChecked={field.value}
               >
-                Is the machine functioning properly?
+                Machine functioning properly?
               </Checkbox>
             )}
           />
@@ -288,26 +399,198 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
         ),
         [isLoading, props]
       ),
-    WereLeaksObserved: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
-      React.useMemo(
-        () => (
-          <Controller
-            control={control}
-            name="wereLeaksFound"
-            render={({ field }) => (
-              <Checkbox
-                {...props}
-                {...field}
-                isDisabled={isLoading}
-                isChecked={field.value}
-              >
-                Fluid leaks found?
-              </Checkbox>
-            )}
-          />
+    LeaksFound: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+      React.useMemo(() => {
+        return (
+          <Box>
+            {leaksFoundFields.map((_, index) => (
+              <Card key={index}>
+                <Flex flexDir="row" w="100%">
+                  <Box w="100%">
+                    <Controller
+                      control={control}
+                      name={`leaksFound.${index}.type`}
+                      render={({ field, fieldState }) => (
+                        <TextField
+                          {...props}
+                          {...field}
+                          errorMessage={fieldState.error?.message}
+                          label="Fluid Type"
+                          isDisabled={isLoading}
+                        />
+                      )}
+                    />
+                    <Controller
+                      control={control}
+                      name={`leaksFound.${index}.location`}
+                      render={({ field, fieldState }) => (
+                        <TextField
+                          {...props}
+                          {...field}
+                          errorMessage={fieldState.error?.message}
+                          label="Leak Location"
+                          isDisabled={isLoading}
+                        />
+                      )}
+                    />
+                  </Box>
+                  <IconButton
+                    onClick={() => removeLeakFound(index)}
+                    aria-label="remove-leak"
+                    icon={<FiX />}
+                    backgroundColor="transparent"
+                  />
+                </Flex>
+              </Card>
+            ))}
+            <Button
+              onClick={() => appendLeakFound({ type: "", location: "" })}
+              w="100%"
+              backgroundColor="white"
+            >
+              Fluid Leak
+              <Icon as={FiPlus} />
+            </Button>
+          </Box>
+        );
+      }, [isLoading, props]),
+    FluidsAdded: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+      React.useMemo(() => {
+        return (
+          <Box>
+            {fluidAddedFields.map((_, index) => (
+              <Card key={index}>
+                <Flex flexDir="row" w="100%">
+                  <Box w="100%">
+                    <Controller
+                      control={control}
+                      name={`fluidsAdded.${index}.type`}
+                      render={({ field, fieldState }) => (
+                        <TextField
+                          {...props}
+                          {...field}
+                          errorMessage={fieldState.error?.message}
+                          label="Fluid type"
+                          isDisabled={isLoading}
+                        />
+                      )}
+                    />
+                    <Controller
+                      control={control}
+                      name={`fluidsAdded.${index}.amount`}
+                      render={({ field, fieldState }) => (
+                        <NumberForm
+                          {...field}
+                          errorMessage={fieldState.error?.message}
+                          label="Amount added"
+                          isDisabled={isLoading}
+                          inputRightAddon="L"
+                        />
+                      )}
+                    />
+                  </Box>
+                  <IconButton
+                    onClick={() => removeFluidAdded(index)}
+                    aria-label="remove-fluid"
+                    icon={<FiX />}
+                    backgroundColor="transparent"
+                  />
+                </Flex>
+              </Card>
+            ))}
+            <Button
+              onClick={() => appendFluidAdded({ type: "", amount: "" })}
+              w="100%"
+              backgroundColor="white"
+            >
+              Fluid Added
+              <Icon as={FiPlus} />
+            </Button>
+          </Box>
+        );
+      }, [isLoading, props]),
+    FunctionChecks: {
+      BackupAlarm: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
+        React.useMemo(
+          () => (
+            <Controller
+              control={control}
+              name="functionChecks.backupAlarm"
+              render={({ field }) => (
+                <Checkbox
+                  {...props}
+                  {...field}
+                  isDisabled={isLoading}
+                  isChecked={field.value}
+                >
+                  Backup alarm functioning properly?
+                </Checkbox>
+              )}
+            />
+          ),
+          [isLoading, props]
         ),
-        [isLoading, props]
-      ),
+      Lights: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
+        React.useMemo(
+          () => (
+            <Controller
+              control={control}
+              name="functionChecks.lights"
+              render={({ field }) => (
+                <Checkbox
+                  {...props}
+                  {...field}
+                  isDisabled={isLoading}
+                  isChecked={field.value}
+                >
+                  All lights functioning properly?
+                </Checkbox>
+              )}
+            />
+          ),
+          [isLoading, props]
+        ),
+      FireExtinguisher: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
+        React.useMemo(
+          () => (
+            <Controller
+              control={control}
+              name="functionChecks.fireExtinguisher"
+              render={({ field }) => (
+                <Checkbox
+                  {...props}
+                  {...field}
+                  isDisabled={isLoading}
+                  isChecked={field.value}
+                >
+                  Fire Extinguisher functional?
+                </Checkbox>
+              )}
+            />
+          ),
+          [isLoading, props]
+        ),
+      LicensePlate: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
+        React.useMemo(
+          () => (
+            <Controller
+              control={control}
+              name="functionChecks.licensePlate"
+              render={({ field }) => (
+                <Checkbox
+                  {...props}
+                  {...field}
+                  isDisabled={isLoading}
+                  isChecked={field.value}
+                >
+                  License plate valid?
+                </Checkbox>
+              )}
+            />
+          ),
+          [isLoading, props]
+        ),
+    },
   };
 
   return { ...form, wasDamageObserved, FormComponents };
