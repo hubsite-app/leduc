@@ -1,11 +1,14 @@
-import { Box, Center, Flex } from "@chakra-ui/react";
+import { Box, Center, Flex, Icon } from "@chakra-ui/react";
 import React from "react";
+import { FiDownload } from "react-icons/fi";
 import Breadcrumbs from "../components/Common/Breadcrumbs";
 import Container from "../components/Common/Container";
 import InfiniteScroll from "../components/Common/InfiniteScroll";
 import Loading from "../components/Common/Loading";
+import TextLink from "../components/Common/TextLink";
 import VehicleCard from "../components/Common/Vehicle/Card";
 import { useVehiclesQuery } from "../generated/graphql";
+import createLink from "../utils/createLink";
 
 const Vehicles = () => {
   /**
@@ -44,14 +47,23 @@ const Vehicles = () => {
     if (data?.vehicles) {
       return (
         <Box>
-          <Breadcrumbs
-            crumbs={[
-              {
-                title: "Vehicles",
-                isCurrentPage: true,
-              },
-            ]}
-          />
+          <Flex w="100%" flexDir="row" justifyContent="space-between">
+            <Breadcrumbs
+              crumbs={[
+                {
+                  title: "Vehicles",
+                  isCurrentPage: true,
+                },
+              ]}
+            />
+            <TextLink link={createLink.server_vehiclesExcelDownload()} newTab>
+              <Icon
+                cursor="pointer"
+                as={FiDownload}
+                backgroundColor="transparent"
+              />
+            </TextLink>
+          </Flex>
           <Flex flexDir="column" alignContent="center" id="pages-flex">
             {data.vehicles.map((vehicle) => (
               <VehicleCard vehicle={vehicle} key={vehicle._id} />

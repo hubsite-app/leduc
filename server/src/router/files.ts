@@ -4,6 +4,7 @@ import { generateForDailyReport, getWorkbookBuffer } from "@utils/excel";
 import dayjs from "dayjs";
 import { Router } from "express";
 import archiver from "archiver";
+import { generateForVehicles } from "@utils/excel/vehicles";
 
 const router = Router();
 
@@ -64,6 +65,18 @@ router.get("/crew/:crewId", async (req, res) => {
   }
 
   archive.finalize();
+});
+
+router.get("/vehicles", async (_req, res) => {
+  const workbook = await generateForVehicles();
+
+  res.setHeader("Content-Type", SupportedMimeTypes.XLSX);
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=Vehicle-List.xlsx"
+  );
+
+  return res.send(await getWorkbookBuffer(workbook));
 });
 
 export default router;

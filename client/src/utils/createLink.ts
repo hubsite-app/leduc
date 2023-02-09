@@ -78,6 +78,13 @@ const server_crewDailyReportMonthExcelDownload = (
   )}/file/crew/${crewId}?start_of_month=${dateString}`;
 };
 
+const server_vehiclesExcelDownload = () => {
+  return `${(process.env.NEXT_PUBLIC_API_URL as string).replace(
+    "/graphql",
+    ""
+  )}/file/vehicles`;
+};
+
 const createLink = {
   employee,
   vehicle,
@@ -92,6 +99,7 @@ const createLink = {
   dailyReportPDF,
   server_dailyReportExcelDownload,
   server_crewDailyReportMonthExcelDownload,
+  server_vehiclesExcelDownload,
 };
 
 export default createLink;
