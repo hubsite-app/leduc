@@ -6,7 +6,12 @@ import interact from "./interact";
 import { GetByIDOptions, IListOptions } from "@typescript/models";
 import get from "./get";
 import { ObjectType } from "type-graphql";
-import { IUserCreate, UserHomeViewSettings, UserRoles } from "@typescript/user";
+import {
+  IUserCreate,
+  UserHomeViewSettings,
+  UserRoles,
+  UserTypes,
+} from "@typescript/user";
 import create from "./create";
 import update from "./update";
 import { IEmailData } from "@utils/sendEmail";
@@ -84,6 +89,10 @@ export class UserClass extends UserSchema {
 
   public async updateRole(this: UserDocument, role: UserRoles) {
     return update.role(this, role);
+  }
+
+  public async updateType(this: UserDocument, type: UserTypes) {
+    return update.type(this, type);
   }
 
   public async updatePassword(this: UserDocument, password: string) {

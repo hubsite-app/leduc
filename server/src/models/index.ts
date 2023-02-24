@@ -13,12 +13,14 @@ export * from "./JobsiteYearMasterReport";
 export * from "./JobsiteYearReport";
 export * from "./Material";
 export * from "./MaterialShipment";
+export * from "./OperatorDailyReport";
 export * from "./Production";
 export * from "./ReportNote";
 export * from "./Signup";
 export * from "./System";
 export * from "./User";
 export * from "./Vehicle";
+export * from "./VehicleIssue";
 export * from "./VehicleWork";
 
 import {
@@ -252,6 +254,23 @@ export const MaterialShipment = getModelForClass(MaterialShipmentClass, {
 });
 
 /**
+ * ----- Operator Daily Report -----
+ */
+
+import { OperatorDailyReportClass } from "./OperatorDailyReport/class";
+
+export type OperatorDailyReportDocument =
+  DocumentType<OperatorDailyReportClass>;
+
+export type OperatorDailyReportModel = ReturnModelType<
+  typeof OperatorDailyReportClass
+>;
+
+export const OperatorDailyReport = getModelForClass(OperatorDailyReportClass, {
+  schemaOptions: { collection: "operatordailyreports" },
+});
+
+/**
  * ----- Production -----
  */
 
@@ -333,6 +352,20 @@ export type VehicleModel = ReturnModelType<typeof VehicleClass>;
 
 export const Vehicle = getModelForClass(VehicleClass, {
   schemaOptions: { collection: "vehicles" },
+});
+
+/**
+ * ----- Vehicle Issue -----
+ */
+
+import { VehicleIssueClass } from "./VehicleIssue/class";
+
+export type VehicleIssueDocument = DocumentType<VehicleIssueClass>;
+
+export type VehicleIssueModel = ReturnModelType<typeof VehicleIssueClass>;
+
+export const VehicleIssue = getModelForClass(VehicleIssueClass, {
+  schemaOptions: { collection: "vehicleissues" },
 });
 
 /**
