@@ -113,7 +113,7 @@ const list = async (
 
   if (options?.query) options.query.archivedAt = null;
 
-  const employees = await Vehicle.find(
+  const vehicles = await Vehicle.find(
     options?.query || { archivedAt: null },
     undefined,
     {
@@ -125,7 +125,7 @@ const list = async (
     }
   );
 
-  return employees;
+  return vehicles;
 };
 
 /**

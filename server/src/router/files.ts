@@ -58,9 +58,8 @@ router.get("/crew/:crewId", async (req, res) => {
     const buffer = await getWorkbookBuffer(workbook);
 
     archive.append(buffer, {
-      name: `${jobsite.jobcode}-${crew.name}-${dayjs(
-        dailyReports[i].date
-      ).format("YYYY-MM-DD")}.xlsx`,
+      name: `${dayjs(dailyReports[i].date).format("YYYY-MM-DD")}-${crew.name}-${jobsite.jobcode
+        }.xlsx`,
     });
   }
 
