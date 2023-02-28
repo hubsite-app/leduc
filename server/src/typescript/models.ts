@@ -10,6 +10,7 @@ export interface IListOptions<Document> {
   offset?: number;
   pageLimit?: number;
   query?: FilterQuery<Document>;
+  showArchived?: boolean;
 }
 
 export interface ISearchOptions {

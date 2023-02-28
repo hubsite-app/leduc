@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { Router } from "express";
 import archiver from "archiver";
 import { generateForVehicles } from "@utils/excel/vehicles";
+import { generateForEmployees } from "@utils/excel/employees";
 
 const router = Router();
 
@@ -73,6 +74,18 @@ router.get("/vehicles", async (_req, res) => {
   res.setHeader(
     "Content-Disposition",
     "attachment; filename=Vehicle-List.xlsx"
+  );
+
+  return res.send(await getWorkbookBuffer(workbook));
+});
+
+router.get("/employees", async (_req, res) => {
+  const workbook = await generateForEmployees();
+
+  res.setHeader("Content-Type", SupportedMimeTypes.XLSX);
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=Employee-List.xlsx"
   );
 
   return res.send(await getWorkbookBuffer(workbook));

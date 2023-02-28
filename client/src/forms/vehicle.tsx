@@ -112,6 +112,7 @@ const VehicleUpdateSchema = yup
   .shape({
     name: yup.string().required("please provide a name"),
     vehicleType: yup.string().required("please provide a vehicle type"),
+    vehicleCode: yup.string().required("please provide a vehicle code"),
   })
   .required();
 
@@ -163,6 +164,25 @@ export const useVehicleUpdateForm = (options?: UseFormProps) => {
                 {...field}
                 errorMessage={fieldState.error?.message}
                 label="Vehicle Type"
+                isDisabled={isLoading}
+              />
+            )}
+          />
+        ),
+        [isLoading, props]
+      ),
+    Code: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="vehicleCode"
+            render={({ field, fieldState }) => (
+              <TextField
+                {...props}
+                {...field}
+                errorMessage={fieldState.error?.message}
+                label="Code"
                 isDisabled={isLoading}
               />
             )}

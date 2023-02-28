@@ -16,7 +16,6 @@ import createApp from "./app";
 import elasticsearch from "./elasticsearch";
 import errorHandler from "@utils/errorHandler";
 import { bindEventEmitters } from "@events";
-import saveAll from "@testing/saveAll";
 
 // import saveAll from "@testing/saveAll";
 
@@ -71,7 +70,7 @@ const main = async () => {
         if (production) {
           // await saveAll();
         } else {
-          await saveAll([], "es");
+          // await saveAll([], "es");
         }
 
         // Temp: Find and remove all vehicles who's code starts with "ren"
@@ -83,7 +82,8 @@ const main = async () => {
           await rentalVehicles[i].archive();
           await rentalVehicles[i].save();
         }
-        console.log(rentalVehicles.length);
+        if (rentalVehicles.length > 0)
+          console.log(`${rentalVehicles.length} rental vehicles archived`);
       }
 
       await updateDocuments();

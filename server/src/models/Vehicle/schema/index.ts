@@ -52,9 +52,9 @@ export class VehicleSchema {
   @prop({ required: true, default: SchemaVersions.Vehicle })
   public schemaVersion!: number;
 
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
   @prop({ required: false })
-  public archivedAt!: Date;
+  public archivedAt?: Date;
 
   /**
    * @deprecated don't need bidirection link, crew already holds vehicle link

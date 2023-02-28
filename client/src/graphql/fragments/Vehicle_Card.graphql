@@ -6,4 +6,5 @@ fragment VehicleCardSnippet on VehicleClass {
   rates {
     ...RateSnippet
   }
+  archivedAt
 }

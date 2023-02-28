@@ -1,8 +1,10 @@
 import React from "react";
 import { Text, Flex, IconButton, Tooltip } from "@chakra-ui/react";
 import {
+  ArchivedVehiclesDocument,
   UserRoles,
   useVehicleArchiveMutation,
+  useVehicleUnarchiveMutation,
   VehicleCardSnippetFragment,
   VehiclesDocument,
 } from "../../../generated/graphql";
@@ -11,7 +13,7 @@ import Card from "../Card";
 import TextGrid from "../TextGrid";
 import TextLink from "../TextLink";
 import Permission from "../Permission";
-import { FiArchive } from "react-icons/fi";
+import { FiArchive, FiUnlock } from "react-icons/fi";
 
 interface IVehicleCard {
   vehicle: VehicleCardSnippetFragment;
@@ -24,7 +26,12 @@ const VehicleCard = ({ vehicle }: IVehicleCard) => {
 
   const [archive, { loading: archiveLoading, data }] =
     useVehicleArchiveMutation({
-      refetchQueries: [VehiclesDocument],
+      refetchQueries: [VehiclesDocument, ArchivedVehiclesDocument],
+    });
+
+  const [unarchive, { loading: unarchiveLoading, data: unarchiveData }] =
+    useVehicleUnarchiveMutation({
+      refetchQueries: [VehiclesDocument, ArchivedVehiclesDocument],
     });
 
   /**
@@ -33,7 +40,11 @@ const VehicleCard = ({ vehicle }: IVehicleCard) => {
 
   return (
     <Card
-      filter={data?.vehicleArchive._id ? "blur(3px)" : ""}
+      filter={
+        data?.vehicleArchive._id || unarchiveData?.vehicleUnarchive._id
+          ? "blur(3px)"
+          : ""
+      }
       heading={
         <Flex flexDir="row" justifyContent="space-between">
           <TextLink
@@ -46,22 +57,41 @@ const VehicleCard = ({ vehicle }: IVehicleCard) => {
           </TextLink>
           <Permission minRole={UserRoles.Admin}>
             <Flex flexDir="row">
-              <Tooltip label="Archive">
-                <IconButton
-                  aria-label="archive"
-                  backgroundColor="transparent"
-                  icon={<FiArchive />}
-                  isLoading={archiveLoading}
-                  onClick={() => {
-                    if (window.confirm("Are you sure?"))
-                      archive({
-                        variables: {
-                          id: vehicle._id,
-                        },
-                      });
-                  }}
-                />
-              </Tooltip>
+              {!vehicle.archivedAt ? (
+                <Tooltip label="Archive">
+                  <IconButton
+                    aria-label="archive"
+                    backgroundColor="transparent"
+                    icon={<FiArchive />}
+                    isLoading={archiveLoading}
+                    onClick={() => {
+                      if (window.confirm("Are you sure?"))
+                        archive({
+                          variables: {
+                            id: vehicle._id,
+                          },
+                        });
+                    }}
+                  />
+                </Tooltip>
+              ) : (
+                <Tooltip label="Unarchive">
+                  <IconButton
+                    aria-label="unarchive"
+                    backgroundColor="transparent"
+                    icon={<FiUnlock />}
+                    isLoading={unarchiveLoading}
+                    onClick={() => {
+                      if (window.confirm("Are you sure?"))
+                        unarchive({
+                          variables: {
+                            id: vehicle._id,
+                          },
+                        });
+                    }}
+                  />
+                </Tooltip>
+              )}
             </Flex>
           </Permission>
         </Flex>
