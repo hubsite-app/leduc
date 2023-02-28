@@ -53,6 +53,20 @@ export default class VehicleResolver {
   }
 
   @Query(() => [VehicleClass])
+  async archivedVehicles(
+    @Arg("options", () => ListOptionData, { nullable: true })
+    options?: ListOptionData
+  ) {
+    return Vehicle.getList({
+      ...options,
+      query: {
+        archivedAt: { $exists: true, $ne: null },
+      },
+      showArchived: true,
+    });
+  }
+
+  @Query(() => [VehicleClass])
   async vehicleSearch(
     @Arg("searchString") searchString: string,
     @Arg("options", () => SearchOptions, { nullable: true })
@@ -98,5 +112,11 @@ export default class VehicleResolver {
   @Mutation(() => VehicleClass)
   async vehicleArchive(@Arg("id", () => ID) id: Id) {
     return mutations.archive(id);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => VehicleClass)
+  async vehicleUnarchive(@Arg("id", () => ID) id: Id) {
+    return mutations.unarchive(id);
   }
 }

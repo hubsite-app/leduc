@@ -24,6 +24,7 @@ const VehicleUpdateForm = ({ vehicle, onSuccess }: IVehicleUpdateForm) => {
     defaultValues: {
       name: vehicle.name,
       vehicleType: vehicle.vehicleType,
+      vehicleCode: vehicle.vehicleCode,
     },
   });
 
@@ -70,6 +71,7 @@ const VehicleUpdateForm = ({ vehicle, onSuccess }: IVehicleUpdateForm) => {
     <FormComponents.Form submitHandler={submitHandler}>
       <FormComponents.Name isLoading={loading} />
       <FormComponents.VehicleType isLoading={loading} />
+      <FormComponents.Code isLoading={loading} />
       <SubmitButton isLoading={loading} />
     </FormComponents.Form>
   );

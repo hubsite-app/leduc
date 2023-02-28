@@ -13,13 +13,19 @@ import {
 } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { FiArchive, FiEdit } from "react-icons/fi";
+import { FiArchive, FiEdit, FiUnlock } from "react-icons/fi";
 import ClientOnly from "../../components/Common/ClientOnly";
 import Container from "../../components/Common/Container";
 import Permission from "../../components/Common/Permission";
 import VehicleUpdateForm from "../../components/Forms/Vehicle/Update";
 import VehicleClientContent from "../../components/pages/vehicle/ClientContent";
-import { UserRoles, useVehicleArchiveMutation } from "../../generated/graphql";
+import {
+  ArchivedVehiclesDocument,
+  UserRoles,
+  useVehicleArchiveMutation,
+  useVehicleUnarchiveMutation,
+  VehiclesDocument,
+} from "../../generated/graphql";
 import { PageVehicleSsrComp, ssrVehicleSsr } from "../../generated/page";
 import Breadcrumbs from "../../components/Common/Breadcrumbs";
 
@@ -35,6 +41,11 @@ const Vehicle: PageVehicleSsrComp = ({ data }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [archive, { loading: archiveLoading }] = useVehicleArchiveMutation();
+
+  const [unarchive, { loading: unarchiveLoading }] =
+    useVehicleUnarchiveMutation({
+      refetchQueries: [VehiclesDocument, ArchivedVehiclesDocument],
+    });
 
   /**
    * ----- Rendering -----
@@ -61,23 +72,41 @@ const Vehicle: PageVehicleSsrComp = ({ data }) => {
         </Heading>
         <Permission minRole={UserRoles.Admin}>
           <Flex flexDir="row">
-            <Tooltip label="Archive">
-              <IconButton
-                aria-label="archive"
-                backgroundColor="transparent"
-                icon={<FiArchive />}
-                isLoading={archiveLoading}
-                onClick={() => {
-                  archive({
-                    variables: {
-                      id: vehicle._id,
-                    },
-                  }).then(() => {
-                    router.back();
-                  });
-                }}
-              />
-            </Tooltip>
+            {!vehicle.archivedAt ? (
+              <Tooltip label="Archive">
+                <IconButton
+                  aria-label="archive"
+                  backgroundColor="transparent"
+                  icon={<FiArchive />}
+                  isLoading={archiveLoading}
+                  onClick={() => {
+                    if (window.confirm("Are you sure?"))
+                      archive({
+                        variables: {
+                          id: vehicle._id,
+                        },
+                      });
+                  }}
+                />
+              </Tooltip>
+            ) : (
+              <Tooltip label="Unarchive">
+                <IconButton
+                  aria-label="unarchive"
+                  backgroundColor="transparent"
+                  icon={<FiUnlock />}
+                  isLoading={unarchiveLoading}
+                  onClick={() => {
+                    if (window.confirm("Are you sure?"))
+                      unarchive({
+                        variables: {
+                          id: vehicle._id,
+                        },
+                      });
+                  }}
+                />
+              </Tooltip>
+            )}
             <IconButton
               aria-label="edit"
               backgroundColor="transparent"

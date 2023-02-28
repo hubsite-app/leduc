@@ -85,6 +85,13 @@ const server_vehiclesExcelDownload = () => {
   )}/file/vehicles`;
 };
 
+const server_employeesExcelDownload = () => {
+  return `${(process.env.NEXT_PUBLIC_API_URL as string).replace(
+    "/graphql",
+    ""
+  )}/file/employees`;
+};
+
 const createLink = {
   employee,
   vehicle,
@@ -100,6 +107,7 @@ const createLink = {
   server_dailyReportExcelDownload,
   server_crewDailyReportMonthExcelDownload,
   server_vehiclesExcelDownload,
+  server_employeesExcelDownload,
 };
 
 export default createLink;

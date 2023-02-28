@@ -82,6 +82,42 @@ import { getApolloClient , ApolloClientContext} from '../withApollo';
 
 
 
+
+export async function getServerPageArchivedVehicles
+    (options: Omit<Apollo.QueryOptions<Types.ArchivedVehiclesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.ArchivedVehiclesQuery>({ ...options, query: Operations.ArchivedVehiclesDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useArchivedVehicles = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.ArchivedVehiclesQuery, Types.ArchivedVehiclesQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.ArchivedVehiclesDocument, options);
+};
+export type PageArchivedVehiclesComp = React.FC<{data?: Types.ArchivedVehiclesQuery, error?: Apollo.ApolloError}>;
+export const withPageArchivedVehicles = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.ArchivedVehiclesQuery, Types.ArchivedVehiclesQueryVariables>) => (WrappedComponent:PageArchivedVehiclesComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.ArchivedVehiclesDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrArchivedVehicles = {
+      getServerPage: getServerPageArchivedVehicles,
+      withPage: withPageArchivedVehicles,
+      usePage: useArchivedVehicles,
+    }
 export async function getServerPageCompanies
     (options: Omit<Apollo.QueryOptions<Types.CompaniesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);

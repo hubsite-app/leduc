@@ -11,6 +11,7 @@ export interface IVehicleCreate {
 export interface IVehicleUpdate {
   name: string;
   vehicleType: string;
+  vehicleCode: string;
 }
 
 export interface IVehicleSearchObject {

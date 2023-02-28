@@ -80,6 +80,10 @@ export class VehicleClass extends VehicleSchema {
     return update.archive(this);
   }
 
+  public async unarchive(this: VehicleDocument) {
+    return update.unarchive(this);
+  }
+
   /**
    * ----- Reports -----
    */

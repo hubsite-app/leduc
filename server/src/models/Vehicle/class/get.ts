@@ -95,7 +95,7 @@ const byCode = async (
   code: string
 ): Promise<VehicleDocument | null> => {
   const vehicle = await Vehicle.findOne({
-    vehicleCode: { $regex: new RegExp(code, "i") },
+    vehicleCode: { $regex: new RegExp(`^${code}$`, "i") },
   });
 
   return vehicle;
@@ -111,9 +111,9 @@ const list = async (
 ): Promise<VehicleDocument[]> => {
   options = populateOptions(options, listDefaultOptions);
 
-  if (options?.query) options.query.archivedAt = null;
+  if (options?.query && !options.showArchived) options.query.archivedAt = null;
 
-  const employees = await Vehicle.find(
+  const vehicles = await Vehicle.find(
     options?.query || { archivedAt: null },
     undefined,
     {
@@ -125,7 +125,7 @@ const list = async (
     }
   );
 
-  return employees;
+  return vehicles;
 };
 
 /**

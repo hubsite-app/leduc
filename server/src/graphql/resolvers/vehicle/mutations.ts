@@ -28,6 +28,9 @@ export class VehicleUpdateData {
 
   @Field({ nullable: false })
   public vehicleType!: string;
+
+  @Field({ nullable: false })
+  public vehicleCode!: string;
 }
 
 const create = async (
@@ -95,9 +98,20 @@ const archive = async (id: Id) => {
   return vehicle;
 };
 
+const unarchive = async (id: Id) => {
+  const vehicle = await Vehicle.getById(id);
+  if (!vehicle) throw new Error("Unable to find vehicle");
+
+  await vehicle.unarchive();
+  await vehicle.save();
+
+  return vehicle;
+};
+
 export default {
   create,
   update,
   updateRates,
   archive,
+  unarchive,
 };

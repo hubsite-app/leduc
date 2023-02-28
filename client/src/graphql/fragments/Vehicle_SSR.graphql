@@ -3,4 +3,5 @@ fragment VehicleSSRSnippet on VehicleClass {
   name
   vehicleCode
   vehicleType
+  archivedAt
 }

@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
   dotenv.config({ path: path.join(__dirname, "..", ".env.development") });
 }
 
-import { Company, System } from "@models";
+import { Company, System, Vehicle } from "@models";
 import updateDocuments from "@utils/updateDocuments";
 import workers from "@workers";
 import mongoose from "mongoose";
@@ -72,6 +72,18 @@ const main = async () => {
         } else {
           // await saveAll([], "es");
         }
+
+        // Temp: Find and remove all vehicles who's code starts with "ren"
+        const rentalVehicles = await Vehicle.find({
+          vehicleCode: { $regex: /^ren/i },
+          archivedAt: null,
+        });
+        for (let i = 0; i < rentalVehicles.length; i++) {
+          await rentalVehicles[i].archive();
+          await rentalVehicles[i].save();
+        }
+        if (rentalVehicles.length > 0)
+          console.log(`${rentalVehicles.length} rental vehicles archived`);
       }
 
       await updateDocuments();

@@ -1,0 +1,5 @@
+mutation VehicleUnarchive($id: ID!) {
+  vehicleUnarchive(id: $id) {
+    _id
+  }
+}

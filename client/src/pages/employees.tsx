@@ -1,11 +1,14 @@
-import { Box, Center, Flex } from "@chakra-ui/react";
+import { Box, Center, Flex, Icon } from "@chakra-ui/react";
 import React from "react";
+import { FiDownload } from "react-icons/fi";
 import Breadcrumbs from "../components/Common/Breadcrumbs";
 import Container from "../components/Common/Container";
 import EmployeeCard from "../components/Common/Employee/Card";
 import InfiniteScroll from "../components/Common/InfiniteScroll";
 import Loading from "../components/Common/Loading";
+import TextLink from "../components/Common/TextLink";
 import { useEmployeesQuery } from "../generated/graphql";
+import createLink from "../utils/createLink";
 
 const Employees = () => {
   /**
@@ -44,14 +47,23 @@ const Employees = () => {
     if (data?.employees) {
       return (
         <Box>
-          <Breadcrumbs
-            crumbs={[
-              {
-                title: "Employees",
-                isCurrentPage: true,
-              },
-            ]}
-          />
+          <Flex w="100%" flexDir="row" justifyContent="space-between">
+            <Breadcrumbs
+              crumbs={[
+                {
+                  title: "Employees",
+                  isCurrentPage: true,
+                },
+              ]}
+            />
+            <TextLink link={createLink.server_employeesExcelDownload()} newTab>
+              <Icon
+                cursor="pointer"
+                as={FiDownload}
+                backgroundColor="transparent"
+              />
+            </TextLink>
+          </Flex>
           <Flex flexDir="column" alignContent="center" id="pages-flex">
             {data.employees.map((employee) => (
               <EmployeeCard employee={employee} key={employee._id} />
