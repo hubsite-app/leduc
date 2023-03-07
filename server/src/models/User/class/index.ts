@@ -91,8 +91,8 @@ export class UserClass extends UserSchema {
     return update.role(this, role);
   }
 
-  public async updateType(this: UserDocument, type: UserTypes) {
-    return update.type(this, type);
+  public async updateTypes(this: UserDocument, types: UserTypes[]) {
+    return update.types(this, types);
   }
 
   public async updatePassword(this: UserDocument, password: string) {

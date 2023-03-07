@@ -25,10 +25,11 @@ import DailyReportCreateForm from "../../Forms/DailyReport/DailyReportCreate";
 import EmployeeCreateForm from "../../Forms/Employee/EmployeeCreate";
 import JobsiteCreateForm from "../../Forms/Jobsite/JobsiteCreate";
 import MaterialCreateForm from "../../Forms/Material/MaterialCreate";
+import OperatorDailyReportVehicleSelectForm from "../../Forms/OperatorDailyReport/VehicleSelect";
 
 const NavbarCreate = () => {
   /**
-   * ----- Hook Initialization
+   * --- Hook Initialization ---
    */
 
   const {
@@ -38,7 +39,13 @@ const NavbarCreate = () => {
   const router = useRouter();
 
   const [form, setForm] = React.useState<
-    "dailyReport" | "jobsite" | "crew" | "material" | "company" | "employee"
+    | "dailyReport"
+    | "jobsite"
+    | "crew"
+    | "material"
+    | "company"
+    | "employee"
+    | "operatorDailyReport"
   >();
 
   /**
@@ -69,6 +76,9 @@ const NavbarCreate = () => {
               <MenuItem onClick={() => setForm("dailyReport")}>
                 Daily Report
               </MenuItem>
+              <MenuItem onClick={() => setForm("operatorDailyReport")}>
+                Operator Daily Report
+              </MenuItem>
               <Permission minRole={UserRoles.ProjectManager}>
                 <MenuItem onClick={() => setForm("jobsite")}>Jobsite</MenuItem>
               </Permission>
@@ -98,6 +108,27 @@ const NavbarCreate = () => {
                   onSuccess={(dailyReport) => {
                     setForm(undefined);
                     router.push(createLink.dailyReport(dailyReport._id));
+                  }}
+                />
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+          {/* OPERATOR DAILY REPORT */}
+          <Modal
+            isOpen={form === "operatorDailyReport"}
+            onClose={() => setForm(undefined)}
+          >
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Operator Daily Report</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <OperatorDailyReportVehicleSelectForm
+                  onSubmit={(vehicleId) => {
+                    setForm(undefined);
+                    router.push(
+                      createLink.vehicleOperatorDailyReportCreate(vehicleId)
+                    );
                   }}
                 />
               </ModalBody>

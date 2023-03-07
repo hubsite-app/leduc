@@ -3,7 +3,7 @@ import { Field, InputType } from "type-graphql";
 import { Signup, User, UserDocument } from "@models";
 import { decode, JwtPayload } from "jsonwebtoken";
 import { Id } from "@typescript/models";
-import { UserHomeViewSettings, UserRoles } from "@typescript/user";
+import { UserHomeViewSettings, UserRoles, UserTypes } from "@typescript/user";
 import { IContext } from "@typescript/graphql";
 
 @InputType()
@@ -98,6 +98,17 @@ const role = async (id: Id, role: UserRoles): Promise<UserDocument> => {
   return user;
 };
 
+const types = async (id: Id, types: UserTypes[]): Promise<UserDocument> => {
+  const user = await User.getById(id, { throwError: true });
+  if (!user) throw new Error("Unable to find user");
+
+  await user.updateTypes(types);
+
+  await user.save();
+
+  return user;
+};
+
 const updateHomeView = async (
   context: IContext,
   homeView: UserHomeViewSettings
@@ -127,6 +138,7 @@ export default {
   login,
   signup,
   role,
+  types,
   passwordResetRequest,
   passwordReset,
   updateHomeView,

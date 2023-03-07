@@ -39,11 +39,11 @@ export class OperatorDailyReportSchema {
 
   @Field(() => EquipmentFunctionCheckSchema)
   @prop({ type: () => EquipmentFunctionCheckSchema, required: true })
-  public functionCheck!: EquipmentFunctionCheckSchema;
+  public functionChecks!: EquipmentFunctionCheckSchema;
 
   @Field()
   @prop({ required: true })
-  public improperFunction!: boolean;
+  public malfunction!: boolean;
 
   @Field()
   @prop({ required: true })

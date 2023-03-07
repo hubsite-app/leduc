@@ -1,0 +1,5 @@
+query OperatorDailyReportCard($id: ID!) {
+  operatorDailyReport(id: $id) {
+    ...OperatorDailyReportCardSnippet
+  }
+}

@@ -250,7 +250,8 @@ const VehicleWorkCreateForm = ({
           key={dataIndex}
           backgroundColor="gray.200"
           borderRadius={4}
-          p={2}
+          pr={2}
+          py={2}
           m={2}
         >
           {formData.length > 1 && (

@@ -9,8 +9,8 @@ const role = async (user: UserDocument, role: UserRoles) => {
   return;
 };
 
-const type = async (user: UserDocument, type: UserTypes) => {
-  user.type = type;
+const types = async (user: UserDocument, types: UserTypes[]) => {
+  user.types = types;
 };
 
 const resetPasswordToken = async (user: UserDocument): Promise<string> => {
@@ -40,7 +40,7 @@ const homeView = async (user: UserDocument, homeView: UserHomeViewSettings) => {
 
 export default {
   role,
-  type,
+  types,
   resetPasswordToken,
   password,
   homeView,

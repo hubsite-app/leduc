@@ -14,7 +14,7 @@ export class EquipmentUsageSchema {
 
   @Field(() => EquipmentUsageUnits, { nullable: false })
   @prop({ required: true, enum: EquipmentUsageUnits })
-  public role!: EquipmentUsageUnits;
+  public unit!: EquipmentUsageUnits;
 }
 
 @ObjectType()
@@ -24,7 +24,7 @@ export class OperatorChecklistSchema {
 
   @Field()
   @prop({ required: true })
-  public walkAroundComplete!: boolean;
+  public walkaroundComplete!: boolean;
 
   @Field()
   @prop({ required: true })

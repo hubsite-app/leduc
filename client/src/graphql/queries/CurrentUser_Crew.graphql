@@ -1,0 +1,5 @@
+query CurrentUserCrew {
+  currentUser {
+    ...UserCrewSnippet
+  }
+}

@@ -8,6 +8,10 @@ const vehicle = (vehicleId: string) => {
   return `/vehicle/${vehicleId}`;
 };
 
+const vehicleOperatorDailyReportCreate = (vehicleId: string) => {
+  return vehicle(vehicleId) + "/report";
+};
+
 const crew = (crewId: string) => {
   return `/crew/${crewId}`;
 };
@@ -61,6 +65,10 @@ const company = (companyId: string) => {
   return `/company/${companyId}`;
 };
 
+const operatorDailyReport = (operatorDailyReportId: string) => {
+  return `/operator-daily-report/${operatorDailyReportId}`;
+};
+
 const server_dailyReportExcelDownload = (dailyReportId: string) => {
   return `${(process.env.NEXT_PUBLIC_API_URL as string).replace(
     "/graphql",
@@ -95,6 +103,7 @@ const server_employeesExcelDownload = () => {
 const createLink = {
   employee,
   vehicle,
+  vehicleOperatorDailyReportCreate,
   crew,
   company,
   jobsite,
@@ -104,6 +113,7 @@ const createLink = {
   jobsiteYearMasterReport,
   dailyReport,
   dailyReportPDF,
+  operatorDailyReport,
   server_dailyReportExcelDownload,
   server_crewDailyReportMonthExcelDownload,
   server_vehiclesExcelDownload,
