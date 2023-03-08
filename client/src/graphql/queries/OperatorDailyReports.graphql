@@ -1,0 +1,5 @@
+query OperatorDailyReports($options: ListOptionData) {
+  operatorDailyReports(options: $options) {
+    ...OperatorDailyReportCardSnippet
+  }
+}

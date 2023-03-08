@@ -1,15 +1,16 @@
 import React from "react";
 import { Box, Checkbox, Heading, SimpleGrid, Text } from "@chakra-ui/react";
 import {
-  useCurrentUserCrewQuery,
+  useUserCrewQuery,
   VehicleCardSnippetFragment,
 } from "../../../generated/graphql";
 import Loading from "../../Common/Loading";
 import VehicleSearch from "../../Search/VehicleSearch";
 import SubmitButton from "../../Common/forms/SubmitButton";
+import { useAuth } from "../../../contexts/Auth";
 
 interface IOperatorDailyReportVehicleSelectForm {
-  onSubmit?: (vehicleId: string) => void;
+  onSubmit: (vehicleId: string) => void;
 }
 
 const OperatorDailyReportVehicleSelectForm = ({
@@ -19,7 +20,16 @@ const OperatorDailyReportVehicleSelectForm = ({
    * --- Hook Initialization ---
    */
 
-  const { data, loading } = useCurrentUserCrewQuery();
+  const { state } = useAuth();
+
+  const { data, loading } = useUserCrewQuery({
+    variables: {
+      query: {
+        id: state.user?._id,
+      },
+    },
+    fetchPolicy: "no-cache",
+  });
 
   const [selectedVehicle, setSelectedVehicle] = React.useState<string>();
 
@@ -28,12 +38,12 @@ const OperatorDailyReportVehicleSelectForm = ({
    */
 
   const crewVehicles = React.useMemo(() => {
-    if (data?.currentUser && !loading) {
+    if (data?.user && !loading) {
       // Collect all unique vehicles from user crews
       const uniqueVehicles = new Map<string, VehicleCardSnippetFragment>();
 
-      for (let i = 0; i < data.currentUser.employee.crews.length; i++) {
-        const crew = data.currentUser.employee.crews[i];
+      for (let i = 0; i < data.user.employee.crews.length; i++) {
+        const crew = data.user.employee.crews[i];
 
         for (let vehicle of crew.vehicles) {
           uniqueVehicles.set(vehicle._id, vehicle);
@@ -67,10 +77,15 @@ const OperatorDailyReportVehicleSelectForm = ({
         </Box>
       );
     } else return <Loading />;
-  }, [data?.currentUser, loading, selectedVehicle]);
+  }, [data?.user, loading, selectedVehicle]);
 
   return (
-    <form>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        selectedVehicle && onSubmit(selectedVehicle);
+      }}
+    >
       <Heading size="sm">Vehicle Selection</Heading>
       {crewVehicles}
       <VehicleSearch

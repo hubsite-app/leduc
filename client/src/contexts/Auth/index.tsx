@@ -31,17 +31,17 @@ interface IAuthContext {
 
 type IAuthAction =
   | {
-      type: "deauthorize-session";
-    }
+    type: "deauthorize-session";
+  }
   | {
-      type: "authorize-session";
-      payload: {
-        user: FullUserSnippetFragment;
-      };
-    }
-  | {
-      type: "session-loading";
+    type: "authorize-session";
+    payload: {
+      user: FullUserSnippetFragment;
     };
+  }
+  | {
+    type: "session-loading";
+  };
 
 /**
  * ----- Initialize Variables -----
@@ -153,7 +153,7 @@ const AuthProvider = ({ children }: IAuthProvider) => {
       try {
         const res = await currentUserRefetch();
         if (res.data.currentUser) authorizeSession(res.data.currentUser);
-      } catch {}
+      } catch { }
     } else {
       currentUser();
     }

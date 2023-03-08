@@ -727,6 +727,7 @@ export type Mutation = {
   signup: Scalars['String'];
   signupCreate: SignupClass;
   systemUpdateCompanyVehicleTypeDefaults: SystemClass;
+  systemUpdateFluidTypes: SystemClass;
   systemUpdateInternalExpenseOverheadRate: SystemClass;
   systemUpdateLaborTypes: SystemClass;
   systemUpdateMaterialShipmentVehicleTypeDefaults: SystemClass;
@@ -1089,6 +1090,11 @@ export type MutationSystemUpdateCompanyVehicleTypeDefaultsArgs = {
 };
 
 
+export type MutationSystemUpdateFluidTypesArgs = {
+  data: Array<Scalars['String']>;
+};
+
+
 export type MutationSystemUpdateInternalExpenseOverheadRateArgs = {
   data: Array<RatesData>;
 };
@@ -1315,6 +1321,7 @@ export type Query = {
   materials: Array<MaterialClass>;
   materialSearch: Array<MaterialClass>;
   operatorDailyReport: OperatorDailyReportClass;
+  operatorDailyReports: Array<OperatorDailyReportClass>;
   search: Array<SearchClass>;
   signup: SignupClass;
   system: SystemClass;
@@ -1478,6 +1485,11 @@ export type QueryOperatorDailyReportArgs = {
 };
 
 
+export type QueryOperatorDailyReportsArgs = {
+  options?: InputMaybe<ListOptionData>;
+};
+
+
 export type QuerySearchArgs = {
   searchString: Scalars['String'];
 };
@@ -1621,6 +1633,7 @@ export type SystemClass = {
   _id: Scalars['ID'];
   companyVehicleTypeDefaults: Array<DefaultRateClass>;
   createdAt: Scalars['DateTime'];
+  fluidTypes: Array<Scalars['String']>;
   /** Percent overhead to be added to internal expenses when calculating total expenses */
   internalExpenseOverheadRate: Array<RateClass>;
   laborTypes: Array<Scalars['String']>;
@@ -1921,9 +1934,9 @@ export type MaterialFullSnippetFragment = { __typename?: 'MaterialClass', canRem
 
 export type OnSiteSummaryReportSnippetFragment = { __typename?: 'OnSiteSummaryReportClass', employeeHours: number, employeeCost: number, vehicleHours: number, vehicleCost: number, materialQuantity: number, materialCost: number, nonCostedMaterialQuantity: number, truckingQuantity: number, truckingHours: number, truckingCost: number, crewTypeSummaries: Array<{ __typename?: 'CrewTypeOnSiteSummaryClass', crewType: CrewTypes, employeeHours: number, employeeCost: number, vehicleHours: number, vehicleCost: number, materialQuantity: number, materialCost: number, nonCostedMaterialQuantity: number, truckingQuantity: number, truckingHours: number, truckingCost: number }> };
 
-export type OperatorDailyReportCardSnippetFragment = { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> };
+export type OperatorDailyReportCardSnippetFragment = { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> };
 
-export type OperatorDailyReportFullSnippetFragment = { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> };
+export type OperatorDailyReportFullSnippetFragment = { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> };
 
 export type ProductionCardSnippetFragment = { __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description?: string | null };
 
@@ -1937,7 +1950,7 @@ export type SearchSnippetFragment = { __typename?: 'SearchClass', score: number,
 
 export type SignupFullSnippetFragment = { __typename?: 'SignupClass', _id: string, employee: { __typename?: 'EmployeeClass', _id: string, name: string } };
 
-export type SystemSnippetFragment = { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> };
+export type SystemSnippetFragment = { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> };
 
 export type TruckingRateSnippetFragment = { __typename?: 'TruckingRateClass', rate: number, date: any, type: TruckingRateTypes };
 
@@ -2418,35 +2431,42 @@ export type SystemUpdateCompanyVehicleTypeDefaultsMutationVariables = Exact<{
 }>;
 
 
-export type SystemUpdateCompanyVehicleTypeDefaultsMutation = { __typename?: 'Mutation', systemUpdateCompanyVehicleTypeDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type SystemUpdateCompanyVehicleTypeDefaultsMutation = { __typename?: 'Mutation', systemUpdateCompanyVehicleTypeDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+
+export type SystemUpdateFluidTypesMutationVariables = Exact<{
+  data: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type SystemUpdateFluidTypesMutation = { __typename?: 'Mutation', systemUpdateFluidTypes: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type SystemUpdateInternalExpenseOverheadRateMutationVariables = Exact<{
   data: Array<RatesData> | RatesData;
 }>;
 
 
-export type SystemUpdateInternalExpenseOverheadRateMutation = { __typename?: 'Mutation', systemUpdateInternalExpenseOverheadRate: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type SystemUpdateInternalExpenseOverheadRateMutation = { __typename?: 'Mutation', systemUpdateInternalExpenseOverheadRate: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type SystemUpdateLaborTypesMutationVariables = Exact<{
   data: Array<Scalars['String']> | Scalars['String'];
 }>;
 
 
-export type SystemUpdateLaborTypesMutation = { __typename?: 'Mutation', systemUpdateLaborTypes: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type SystemUpdateLaborTypesMutation = { __typename?: 'Mutation', systemUpdateLaborTypes: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type SystemUpdateMaterialShipmentVehicleTypeDefaultsMutationVariables = Exact<{
   data: Array<DefaultRateData> | DefaultRateData;
 }>;
 
 
-export type SystemUpdateMaterialShipmentVehicleTypeDefaultsMutation = { __typename?: 'Mutation', systemUpdateMaterialShipmentVehicleTypeDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type SystemUpdateMaterialShipmentVehicleTypeDefaultsMutation = { __typename?: 'Mutation', systemUpdateMaterialShipmentVehicleTypeDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type SystemUpdateUnitDefaultsMutationVariables = Exact<{
   data: Array<Scalars['String']> | Scalars['String'];
 }>;
 
 
-export type SystemUpdateUnitDefaultsMutation = { __typename?: 'Mutation', systemUpdateUnitDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type SystemUpdateUnitDefaultsMutation = { __typename?: 'Mutation', systemUpdateUnitDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type UserDeleteMutationVariables = Exact<{
   userId: Scalars['String'];
@@ -2639,11 +2659,6 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CurrentUserQuery = { __typename?: 'Query', currentUser: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }> }, settings: { __typename?: 'UserSettings', homeView: UserHomeViewSettings } } };
-
-export type CurrentUserCrewQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CurrentUserCrewQuery = { __typename?: 'Query', currentUser: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', crews: Array<{ __typename?: 'CrewClass', vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> }> } } };
 
 export type DailyReportCardQueryVariables = Exact<{
   id: Scalars['String'];
@@ -2919,7 +2934,14 @@ export type OperatorDailyReportCardQueryVariables = Exact<{
 }>;
 
 
-export type OperatorDailyReportCardQuery = { __typename?: 'Query', operatorDailyReport: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } };
+export type OperatorDailyReportCardQuery = { __typename?: 'Query', operatorDailyReport: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } };
+
+export type OperatorDailyReportsQueryVariables = Exact<{
+  options?: InputMaybe<ListOptionData>;
+}>;
+
+
+export type OperatorDailyReportsQuery = { __typename?: 'Query', operatorDailyReports: Array<{ __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> }> };
 
 export type SearchQueryVariables = Exact<{
   searchString: Scalars['String'];
@@ -2938,7 +2960,14 @@ export type SignupSsrQuery = { __typename?: 'Query', signup: { __typename?: 'Sig
 export type SystemQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SystemQuery = { __typename?: 'Query', system: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type SystemQuery = { __typename?: 'Query', system: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+
+export type UserCrewQueryVariables = Exact<{
+  query: UserQuery;
+}>;
+
+
+export type UserCrewQuery = { __typename?: 'Query', user?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', crews: Array<{ __typename?: 'CrewClass', vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> }> } } | null };
 
 export type UserForPasswordResetQueryVariables = Exact<{
   query: UserQuery;
@@ -3905,6 +3934,9 @@ export const OperatorDailyReportCardSnippetFragmentDoc = gql`
   }
   author {
     ...UserCardSnippet
+    employee {
+      _id
+    }
   }
   equipmentUsage {
     usage
@@ -3996,6 +4028,7 @@ export const SystemSnippetFragmentDoc = gql`
     fragment SystemSnippet on SystemClass {
   unitDefaults
   laborTypes
+  fluidTypes
   companyVehicleTypeDefaults {
     ...DefaultRateSnippet
   }
@@ -6077,6 +6110,39 @@ export function useSystemUpdateCompanyVehicleTypeDefaultsMutation(baseOptions?: 
 export type SystemUpdateCompanyVehicleTypeDefaultsMutationHookResult = ReturnType<typeof useSystemUpdateCompanyVehicleTypeDefaultsMutation>;
 export type SystemUpdateCompanyVehicleTypeDefaultsMutationResult = Apollo.MutationResult<SystemUpdateCompanyVehicleTypeDefaultsMutation>;
 export type SystemUpdateCompanyVehicleTypeDefaultsMutationOptions = Apollo.BaseMutationOptions<SystemUpdateCompanyVehicleTypeDefaultsMutation, SystemUpdateCompanyVehicleTypeDefaultsMutationVariables>;
+export const SystemUpdateFluidTypesDocument = gql`
+    mutation SystemUpdateFluidTypes($data: [String!]!) {
+  systemUpdateFluidTypes(data: $data) {
+    ...SystemSnippet
+  }
+}
+    ${SystemSnippetFragmentDoc}`;
+export type SystemUpdateFluidTypesMutationFn = Apollo.MutationFunction<SystemUpdateFluidTypesMutation, SystemUpdateFluidTypesMutationVariables>;
+
+/**
+ * __useSystemUpdateFluidTypesMutation__
+ *
+ * To run a mutation, you first call `useSystemUpdateFluidTypesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSystemUpdateFluidTypesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [systemUpdateFluidTypesMutation, { data, loading, error }] = useSystemUpdateFluidTypesMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSystemUpdateFluidTypesMutation(baseOptions?: Apollo.MutationHookOptions<SystemUpdateFluidTypesMutation, SystemUpdateFluidTypesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SystemUpdateFluidTypesMutation, SystemUpdateFluidTypesMutationVariables>(SystemUpdateFluidTypesDocument, options);
+      }
+export type SystemUpdateFluidTypesMutationHookResult = ReturnType<typeof useSystemUpdateFluidTypesMutation>;
+export type SystemUpdateFluidTypesMutationResult = Apollo.MutationResult<SystemUpdateFluidTypesMutation>;
+export type SystemUpdateFluidTypesMutationOptions = Apollo.BaseMutationOptions<SystemUpdateFluidTypesMutation, SystemUpdateFluidTypesMutationVariables>;
 export const SystemUpdateInternalExpenseOverheadRateDocument = gql`
     mutation SystemUpdateInternalExpenseOverheadRate($data: [RatesData!]!) {
   systemUpdateInternalExpenseOverheadRate(data: $data) {
@@ -7092,40 +7158,6 @@ export function useCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
 export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
 export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
-export const CurrentUserCrewDocument = gql`
-    query CurrentUserCrew {
-  currentUser {
-    ...UserCrewSnippet
-  }
-}
-    ${UserCrewSnippetFragmentDoc}`;
-
-/**
- * __useCurrentUserCrewQuery__
- *
- * To run a query within a React component, call `useCurrentUserCrewQuery` and pass it any options that fit your needs.
- * When your component renders, `useCurrentUserCrewQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCurrentUserCrewQuery({
- *   variables: {
- *   },
- * });
- */
-export function useCurrentUserCrewQuery(baseOptions?: Apollo.QueryHookOptions<CurrentUserCrewQuery, CurrentUserCrewQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CurrentUserCrewQuery, CurrentUserCrewQueryVariables>(CurrentUserCrewDocument, options);
-      }
-export function useCurrentUserCrewLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CurrentUserCrewQuery, CurrentUserCrewQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CurrentUserCrewQuery, CurrentUserCrewQueryVariables>(CurrentUserCrewDocument, options);
-        }
-export type CurrentUserCrewQueryHookResult = ReturnType<typeof useCurrentUserCrewQuery>;
-export type CurrentUserCrewLazyQueryHookResult = ReturnType<typeof useCurrentUserCrewLazyQuery>;
-export type CurrentUserCrewQueryResult = Apollo.QueryResult<CurrentUserCrewQuery, CurrentUserCrewQueryVariables>;
 export const DailyReportCardDocument = gql`
     query DailyReportCard($id: String!) {
   dailyReport(id: $id) {
@@ -8497,6 +8529,41 @@ export function useOperatorDailyReportCardLazyQuery(baseOptions?: Apollo.LazyQue
 export type OperatorDailyReportCardQueryHookResult = ReturnType<typeof useOperatorDailyReportCardQuery>;
 export type OperatorDailyReportCardLazyQueryHookResult = ReturnType<typeof useOperatorDailyReportCardLazyQuery>;
 export type OperatorDailyReportCardQueryResult = Apollo.QueryResult<OperatorDailyReportCardQuery, OperatorDailyReportCardQueryVariables>;
+export const OperatorDailyReportsDocument = gql`
+    query OperatorDailyReports($options: ListOptionData) {
+  operatorDailyReports(options: $options) {
+    ...OperatorDailyReportCardSnippet
+  }
+}
+    ${OperatorDailyReportCardSnippetFragmentDoc}`;
+
+/**
+ * __useOperatorDailyReportsQuery__
+ *
+ * To run a query within a React component, call `useOperatorDailyReportsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorDailyReportsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorDailyReportsQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useOperatorDailyReportsQuery(baseOptions?: Apollo.QueryHookOptions<OperatorDailyReportsQuery, OperatorDailyReportsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorDailyReportsQuery, OperatorDailyReportsQueryVariables>(OperatorDailyReportsDocument, options);
+      }
+export function useOperatorDailyReportsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorDailyReportsQuery, OperatorDailyReportsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorDailyReportsQuery, OperatorDailyReportsQueryVariables>(OperatorDailyReportsDocument, options);
+        }
+export type OperatorDailyReportsQueryHookResult = ReturnType<typeof useOperatorDailyReportsQuery>;
+export type OperatorDailyReportsLazyQueryHookResult = ReturnType<typeof useOperatorDailyReportsLazyQuery>;
+export type OperatorDailyReportsQueryResult = Apollo.QueryResult<OperatorDailyReportsQuery, OperatorDailyReportsQueryVariables>;
 export const SearchDocument = gql`
     query Search($searchString: String!) {
   search(searchString: $searchString) {
@@ -8601,6 +8668,41 @@ export function useSystemLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Sys
 export type SystemQueryHookResult = ReturnType<typeof useSystemQuery>;
 export type SystemLazyQueryHookResult = ReturnType<typeof useSystemLazyQuery>;
 export type SystemQueryResult = Apollo.QueryResult<SystemQuery, SystemQueryVariables>;
+export const UserCrewDocument = gql`
+    query UserCrew($query: UserQuery!) {
+  user(query: $query) {
+    ...UserCrewSnippet
+  }
+}
+    ${UserCrewSnippetFragmentDoc}`;
+
+/**
+ * __useUserCrewQuery__
+ *
+ * To run a query within a React component, call `useUserCrewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserCrewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserCrewQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useUserCrewQuery(baseOptions: Apollo.QueryHookOptions<UserCrewQuery, UserCrewQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserCrewQuery, UserCrewQueryVariables>(UserCrewDocument, options);
+      }
+export function useUserCrewLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserCrewQuery, UserCrewQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserCrewQuery, UserCrewQueryVariables>(UserCrewDocument, options);
+        }
+export type UserCrewQueryHookResult = ReturnType<typeof useUserCrewQuery>;
+export type UserCrewLazyQueryHookResult = ReturnType<typeof useUserCrewLazyQuery>;
+export type UserCrewQueryResult = Apollo.QueryResult<UserCrewQuery, UserCrewQueryVariables>;
 export const UserForPasswordResetDocument = gql`
     query UserForPasswordReset($query: UserQuery!) {
   user(query: $query) {

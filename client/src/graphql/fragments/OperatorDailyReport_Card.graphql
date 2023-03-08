@@ -5,6 +5,9 @@ fragment OperatorDailyReportCardSnippet on OperatorDailyReportClass {
   }
   author {
     ...UserCardSnippet
+    employee {
+      _id
+    }
   }
   equipmentUsage {
     usage

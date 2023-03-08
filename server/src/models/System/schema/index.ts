@@ -17,6 +17,10 @@ export class SystemSchema {
   @prop({ type: () => [String], required: true, default: [] })
   public laborTypes!: string[];
 
+  @Field(() => [String], { nullable: false })
+  @prop({ type: () => [String], required: true, default: [] })
+  public fluidTypes!: string[];
+
   @Field(() => [DefaultRateClass], { nullable: false })
   @prop({ type: () => [DefaultRateClass], required: true, default: [] })
   public companyVehicleTypeDefaults!: DefaultRateClass[];

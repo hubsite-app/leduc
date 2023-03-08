@@ -17,6 +17,12 @@ const laborTypes = async (system: SystemDocument, types: string[]) => {
   return;
 };
 
+const fluidTypes = async (system: SystemDocument, types: string[]) => {
+  system.fluidTypes = types;
+
+  return;
+};
+
 const companyVehicleTypeDefaults = async (
   system: SystemDocument,
   data: IDefaultRateData[]
@@ -47,6 +53,7 @@ const internalExpenseOverheadRate = async (
 export default {
   unitDefaults,
   laborTypes,
+  fluidTypes,
   companyVehicleTypeDefaults,
   materialShipmentVehicleTypeDefaults,
   internalExpenseOverheadRate,

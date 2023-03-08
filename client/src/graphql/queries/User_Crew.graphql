@@ -1,0 +1,5 @@
+query UserCrew($query: UserQuery!) {
+  user(query: $query) {
+    ...UserCrewSnippet
+  }
+}

@@ -21,8 +21,9 @@ import {
   EquipmentUsageUnits,
   OperatorDailyReportCreateData,
 } from "../generated/graphql";
+import FluidTypeSelect from "../components/Common/forms/FluidSelect";
 
-const YupOperatorDailyReportSchema = yup.object().shape({
+const OperatorDailyReportSchema = yup.object().shape({
   startTime: yup.string().required("Please provide a start time"),
   equipmentUsage: yup.object().shape({
     usage: yup.number().required("Please provide vehicle usage"),
@@ -68,7 +69,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
    */
 
   const form = useForm({
-    resolver: yupResolver(YupOperatorDailyReportSchema),
+    resolver: yupResolver(OperatorDailyReportSchema),
     defaultValues: {
       equipmentUsage: {
         unit: EquipmentUsageUnits.Km,
@@ -171,14 +172,16 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 {...field}
                 errorMessage={fieldState.error?.message}
                 label="Usage"
-                isDisabled={isLoading}
                 onChange={(_, num) => field.onChange(num)}
+                isDisabled={isLoading || props.isDisabled}
                 inputRightElement={
                   <Button
                     onClick={() => toggleEquipmentUsageUnit()}
                     px={6}
                     mr={4}
                     size="sm"
+                    isLoading={isLoading}
+                    isDisabled={props.isDisabled}
                   >
                     {equipmentUsageUnitLabel}
                   </Button>
@@ -203,7 +206,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 type="time"
                 errorMessage={fieldState.error?.message}
                 label="Start Time"
-                isDisabled={isLoading}
+                isDisabled={isLoading || props.isDisabled}
                 onChange={(e) => {
                   if (e.target.value)
                     field.onChange(
@@ -227,8 +230,8 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
                   isChecked={field.value}
+                  isDisabled={isLoading || props.isDisabled}
                 >
                   Walk-around Complete
                 </Checkbox>
@@ -247,7 +250,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   Visual Inspection Complete
@@ -267,7 +270,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   Oil Checked
@@ -287,7 +290,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   Coolant Checked
@@ -307,7 +310,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   Fluids Checked
@@ -328,7 +331,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
               <Checkbox
                 {...props}
                 {...field}
-                isDisabled={isLoading}
+                isDisabled={isLoading || props.isDisabled}
                 isChecked={field.value}
               >
                 Machine Malfunction
@@ -348,7 +351,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
               <Checkbox
                 {...props}
                 {...field}
-                isDisabled={isLoading}
+                isDisabled={isLoading || props.isDisabled}
                 isChecked={field.value}
               >
                 Damage observed?
@@ -381,7 +384,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                           {...field}
                           errorMessage={fieldState.error?.message}
                           label="Fluid Type"
-                          isDisabled={isLoading}
+                          isDisabled={isLoading || props.isDisabled}
                         />
                       )}
                     />
@@ -394,7 +397,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                           {...field}
                           errorMessage={fieldState.error?.message}
                           label="Leak Location"
-                          isDisabled={isLoading}
+                          isDisabled={isLoading || props.isDisabled}
                         />
                       )}
                     />
@@ -404,6 +407,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                     aria-label="remove-leak"
                     icon={<FiX />}
                     backgroundColor="transparent"
+                    isDisabled={isLoading || props.isDisabled}
                   />
                 </Flex>
               </Box>
@@ -412,6 +416,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
               onClick={() => appendLeakFound({ type: "", location: "" })}
               w="100%"
               backgroundColor="white"
+              isDisabled={isLoading || props.isDisabled}
               _hover={{ backgroundColor: "gray.300" }}
             >
               Leak Found
@@ -439,12 +444,11 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                       name={`fluidsAdded.${index}.type`}
                       rules={{ required: "Must provide fluid type" }}
                       render={({ field, fieldState }) => (
-                        <TextField
-                          {...props}
+                        <FluidTypeSelect
                           {...field}
                           errorMessage={fieldState.error?.message}
                           label="Fluid type"
-                          isDisabled={isLoading}
+                          isDisabled={isLoading || props.isDisabled}
                         />
                       )}
                     />
@@ -456,7 +460,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                           {...field}
                           errorMessage={fieldState.error?.message}
                           label="Amount added"
-                          isDisabled={isLoading}
+                          isDisabled={isLoading || props.isDisabled}
                           inputRightAddon="L"
                           onChange={(_, num) => field.onChange(num)}
                         />
@@ -468,6 +472,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                     aria-label="remove-fluid"
                     icon={<FiX />}
                     backgroundColor="transparent"
+                    isDisabled={isLoading || props.isDisabled}
                   />
                 </Flex>
               </Box>
@@ -476,6 +481,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
               onClick={() => appendFluidAdded({ type: "", amount: null })}
               w="100%"
               backgroundColor="white"
+              isDisabled={isLoading || props.isDisabled}
               _hover={{ backgroundColor: "gray.300" }}
             >
               Add Fluid
@@ -495,7 +501,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   Backup alarm functioning properly?
@@ -515,7 +521,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   All lights functioning properly?
@@ -535,7 +541,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   Fire Extinguisher functional?
@@ -555,7 +561,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   License plate valid?

@@ -5,7 +5,7 @@ import {
   UserClass,
   VehicleClass,
 } from "@models";
-import { IContext } from "@typescript/graphql";
+import { IContext, ListOptionData } from "@typescript/graphql";
 import { Id } from "@typescript/models";
 import {
   Arg,
@@ -43,6 +43,16 @@ export default class OperatorDailyReportResolver {
   @Query(() => OperatorDailyReportClass)
   async operatorDailyReport(@Arg("id", () => ID) id: Id) {
     return OperatorDailyReport.getById(id);
+  }
+
+  @Query(() => [OperatorDailyReportClass])
+  async operatorDailyReports(
+    @Arg("options", () => ListOptionData, { nullable: true })
+    options?: ListOptionData
+  ) {
+    return OperatorDailyReport.getList({
+      ...options,
+    });
   }
 
   /**

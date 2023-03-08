@@ -126,6 +126,9 @@ const NavbarCreate = () => {
                 <OperatorDailyReportVehicleSelectForm
                   onSubmit={(vehicleId) => {
                     setForm(undefined);
+                    console.log(
+                      createLink.vehicleOperatorDailyReportCreate(vehicleId)
+                    );
                     router.push(
                       createLink.vehicleOperatorDailyReportCreate(vehicleId)
                     );
