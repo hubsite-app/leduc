@@ -144,10 +144,6 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
     return newDate;
   }, []);
 
-  /**
-   * ----- Lifecycle -----
-   */
-
   /*
    * ----- Components -----
    */

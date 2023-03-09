@@ -4,7 +4,13 @@ import { OperatorDailyReportCardSnippetFragment } from "../generated/graphql";
 
 const Tag = ({ children, ...props }: TagProps) => {
   return (
-    <T size="md" variant="solid" m={1} {...props}>
+    <T
+      size="md"
+      variant="solid"
+      m={1}
+      key={Math.random().toString()}
+      {...props}
+    >
       {children}
     </T>
   );

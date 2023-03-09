@@ -8,7 +8,7 @@ import {
 import Container from "../../components/Common/Container";
 import Breadcrumbs from "../../components/Common/Breadcrumbs";
 import operatorDailyReportName from "../../utils/operatorDailyReportName";
-import { Box, Heading, HStack, SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, SimpleGrid, Text } from "@chakra-ui/react";
 import Card from "../../components/Common/Card";
 import TextGrid from "../../components/Common/TextGrid";
 import dayjs from "dayjs";
@@ -16,6 +16,8 @@ import createLink from "../../utils/createLink";
 import TextLink from "../../components/Common/TextLink";
 import { useOperatorDailyReportForm } from "../../forms/operatorDailyReport";
 import operatorDailyReportTags from "../../utils/operatorDailyReportTags";
+import { FiAlertTriangle } from "react-icons/fi";
+import VehicleIssueCreateForm from "../../components/Forms/VehicleIssue/Create";
 
 const OperatorDailyReport: PageOperatorDailyReportCardComp = ({ data }) => {
   const operatorDailyReport = data?.operatorDailyReport!;
@@ -23,6 +25,8 @@ const OperatorDailyReport: PageOperatorDailyReportCardComp = ({ data }) => {
   /**
    * --- Hook Initialization ---
    */
+
+  const [issueForm, setIssueForm] = React.useState(false);
 
   const { FormComponents } = useOperatorDailyReportForm({
     defaultValues: {
@@ -113,8 +117,40 @@ const OperatorDailyReport: PageOperatorDailyReportCardComp = ({ data }) => {
             ]}
           />
         </Box>
-        <HStack spacing={2}>{tags}</HStack>
+        <Flex w="100%" justifyContent="space-between">
+          <Box>{tags}</Box>
+          {/* REPORT ISSUE */}
+          <Button
+            mx={2}
+            variant="outline"
+            colorScheme="red"
+            leftIcon={<FiAlertTriangle />}
+            onClick={() => setIssueForm(!issueForm)}
+          >
+            Report
+          </Button>
+        </Flex>
       </Card>
+
+      {/* VEHICLE ISSUE FORM */}
+      {issueForm ? (
+        <Box
+          backgroundColor="grey.300"
+          borderRadius={4}
+          p={2}
+          m={2}
+          my={4}
+          border="2px solid"
+          borderColor="red.200"
+        >
+          <Heading size="md" mb={2}>
+            Report a vehicle issue
+          </Heading>
+          <VehicleIssueCreateForm vehicle={operatorDailyReport.vehicle} />
+        </Box>
+      ) : null}
+
+      {/* OPERATOR REPORT */}
       <Box>
         <Box backgroundColor="gray.200" borderRadius={4} p={2} m={2}>
           <Heading size="md">General</Heading>

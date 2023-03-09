@@ -86,6 +86,7 @@ import { getApolloClient , ApolloClientContext} from '../withApollo';
 
 
 
+
 export async function getServerPageArchivedVehicles
     (options: Omit<Apollo.QueryOptions<Types.ArchivedVehiclesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -2115,6 +2116,76 @@ export const ssrUsers = {
       getServerPage: getServerPageUsers,
       withPage: withPageUsers,
       usePage: useUsers,
+    }
+export async function getServerPageVehicleIssueCard
+    (options: Omit<Apollo.QueryOptions<Types.VehicleIssueCardQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.VehicleIssueCardQuery>({ ...options, query: Operations.VehicleIssueCardDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useVehicleIssueCard = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.VehicleIssueCardQuery, Types.VehicleIssueCardQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.VehicleIssueCardDocument, options);
+};
+export type PageVehicleIssueCardComp = React.FC<{data?: Types.VehicleIssueCardQuery, error?: Apollo.ApolloError}>;
+export const withPageVehicleIssueCard = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.VehicleIssueCardQuery, Types.VehicleIssueCardQueryVariables>) => (WrappedComponent:PageVehicleIssueCardComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.VehicleIssueCardDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrVehicleIssueCard = {
+      getServerPage: getServerPageVehicleIssueCard,
+      withPage: withPageVehicleIssueCard,
+      usePage: useVehicleIssueCard,
+    }
+export async function getServerPageVehicleIssues
+    (options: Omit<Apollo.QueryOptions<Types.VehicleIssuesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.VehicleIssuesQuery>({ ...options, query: Operations.VehicleIssuesDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useVehicleIssues = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.VehicleIssuesQuery, Types.VehicleIssuesQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.VehicleIssuesDocument, options);
+};
+export type PageVehicleIssuesComp = React.FC<{data?: Types.VehicleIssuesQuery, error?: Apollo.ApolloError}>;
+export const withPageVehicleIssues = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.VehicleIssuesQuery, Types.VehicleIssuesQueryVariables>) => (WrappedComponent:PageVehicleIssuesComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.VehicleIssuesDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrVehicleIssues = {
+      getServerPage: getServerPageVehicleIssues,
+      withPage: withPageVehicleIssues,
+      usePage: useVehicleIssues,
     }
 export async function getServerPageVehicleSearch
     (options: Omit<Apollo.QueryOptions<Types.VehicleSearchQueryVariables>, 'query'>, ctx: ApolloClientContext ){

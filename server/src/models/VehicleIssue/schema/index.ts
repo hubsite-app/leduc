@@ -2,6 +2,7 @@ import SchemaVersions from "@constants/SchemaVersions";
 import { UserClass } from "@models";
 import { prop, Ref } from "@typegoose/typegoose";
 import { VehicleIssuePriority } from "@typescript/vehicleIssue";
+import { OperatorDailyReportClass } from "models/OperatorDailyReport";
 import { VehicleClass } from "models/Vehicle/class";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
@@ -38,6 +39,10 @@ export class VehicleIssueSchema {
   @Field()
   @prop({ required: true, default: false })
   public closed!: boolean;
+
+  @Field(() => OperatorDailyReportClass, { nullable: true })
+  @prop({ ref: () => OperatorDailyReportClass })
+  public operatorDailyReport?: Ref<OperatorDailyReportClass>;
 
   @Field()
   @prop({ required: true, default: SchemaVersions.VehicleIssue })

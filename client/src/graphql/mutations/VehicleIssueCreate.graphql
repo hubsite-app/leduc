@@ -1,0 +1,5 @@
+mutation VehicleIssueCreate($vehicleId: ID!, $data: VehicleIssueCreateData!) {
+  vehicleIssueCreate(vehicleId: $vehicleId, data: $data) {
+    _id
+  }
+}
