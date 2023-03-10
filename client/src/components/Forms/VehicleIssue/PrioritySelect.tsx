@@ -1,5 +1,6 @@
 import React from "react";
 import { VehicleIssuePriority } from "../../../generated/graphql";
+import vehicleIssuePriorityString from "../../../utils/vehicleIssuePriorityString";
 
 import Select, { ISelect } from "../../Common/forms/Select";
 
@@ -17,16 +18,10 @@ const VehicleIssuePrioritySelect = ({
     const options: ISelect["options"] = [];
 
     for (let priority in VehicleIssuePriority) {
-      switch (priority) {
-        case VehicleIssuePriority.P0:
-          options.push({ title: "PO - Vehicle Down", value: priority });
-          break;
-        case VehicleIssuePriority.P1:
-          options.push({ title: "P1 - Service Required", value: priority });
-          break;
-        case VehicleIssuePriority.P2:
-          options.push({ title: "P2 - Minor Issue", value: priority });
-      }
+      options.push({
+        title: vehicleIssuePriorityString(priority as VehicleIssuePriority),
+        value: priority,
+      });
     }
 
     return options;

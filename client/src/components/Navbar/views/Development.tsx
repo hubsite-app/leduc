@@ -1,4 +1,4 @@
-import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { Menu, MenuButton, MenuList } from "@chakra-ui/react";
 import React from "react";
 import { useAuth } from "../../../contexts/Auth";
 import { CurrentUserDocument } from "../../../generated/graphql";

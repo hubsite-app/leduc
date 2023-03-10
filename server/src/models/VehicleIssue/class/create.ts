@@ -28,7 +28,7 @@ const document = async (
   // Validate assign to
   if (data.assignedTo) {
     const assignedTo = await User.getById(data.assignedTo);
-    if (assignedTo) throw new Error("Unable to find user to assign to");
+    if (!assignedTo) throw new Error("Unable to find user to assign to");
   }
 
   const vehicleIssue = new VehicleIssue({

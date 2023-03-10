@@ -32,6 +32,10 @@ export class VehicleIssueClass extends VehicleIssueSchema {
     return get.list(this, options);
   }
 
+  public static async getByVehicle(this: VehicleIssueModel, vehicleId: Id) {
+    return get.byVehicle(this, vehicleId);
+  }
+
   public async getVehicle(this: VehicleIssueDocument) {
     return get.vehicle(this);
   }

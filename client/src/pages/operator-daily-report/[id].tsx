@@ -2,13 +2,26 @@ import React from "react";
 
 import { GetServerSideProps } from "next";
 import {
-  PageOperatorDailyReportCardComp,
-  ssrOperatorDailyReportCard,
+  PageOperatorDailyReportFullComp,
+  ssrOperatorDailyReportFull,
 } from "../../generated/page";
 import Container from "../../components/Common/Container";
 import Breadcrumbs from "../../components/Common/Breadcrumbs";
 import operatorDailyReportName from "../../utils/operatorDailyReportName";
-import { Box, Button, Flex, Heading, SimpleGrid, Text } from "@chakra-ui/react";
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Button,
+  Flex,
+  Heading,
+  IconButton,
+  SimpleGrid,
+  Text,
+} from "@chakra-ui/react";
 import Card from "../../components/Common/Card";
 import TextGrid from "../../components/Common/TextGrid";
 import dayjs from "dayjs";
@@ -16,15 +29,20 @@ import createLink from "../../utils/createLink";
 import TextLink from "../../components/Common/TextLink";
 import { useOperatorDailyReportForm } from "../../forms/operatorDailyReport";
 import operatorDailyReportTags from "../../utils/operatorDailyReportTags";
-import { FiAlertTriangle } from "react-icons/fi";
+import { FiAlertTriangle, FiX } from "react-icons/fi";
 import VehicleIssueCreateForm from "../../components/Forms/VehicleIssue/Create";
+import VehicleIssueCard from "../../components/Common/VehicleIssue/Card";
+import { OperatorDailyReportFullDocument } from "../../generated/graphql";
+import { useRouter } from "next/router";
 
-const OperatorDailyReport: PageOperatorDailyReportCardComp = ({ data }) => {
+const OperatorDailyReport: PageOperatorDailyReportFullComp = ({ data }) => {
   const operatorDailyReport = data?.operatorDailyReport!;
 
   /**
    * --- Hook Initialization ---
    */
+
+  const router = useRouter();
 
   const [issueForm, setIssueForm] = React.useState(false);
 
@@ -141,17 +159,57 @@ const OperatorDailyReport: PageOperatorDailyReportCardComp = ({ data }) => {
           m={2}
           my={4}
           border="2px solid"
-          borderColor="red.200"
+          borderColor="orange.200"
         >
-          <Heading size="md" mb={2}>
-            Report a vehicle issue
-          </Heading>
-          <VehicleIssueCreateForm vehicle={operatorDailyReport.vehicle} />
+          <Flex flexDir="row" justifyContent="space-between">
+            <Heading size="md" mb={2}>
+              Report a vehicle issue
+            </Heading>
+            <IconButton
+              onClick={() => setIssueForm(false)}
+              aria-label="close-form"
+              icon={<FiX />}
+              backgroundColor="transparent"
+            />
+          </Flex>
+          <VehicleIssueCreateForm
+            vehicle={operatorDailyReport.vehicle}
+            operatorDailyReport={operatorDailyReport}
+            onSubmit={() => {
+              setIssueForm(false);
+              router.reload();
+            }}
+            mutationOptions={{
+              refetchQueries: [OperatorDailyReportFullDocument],
+            }}
+          />
         </Box>
       ) : null}
 
+      {/* EXISTING VEHICLE ISSUES */}
+      <Accordion allowToggle m={2}>
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box as="span" flex="1" textAlign="left">
+                Existing Vehicle Issues
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel>
+            {operatorDailyReport.vehicleIssues.map((vehicleIssue) => (
+              <VehicleIssueCard
+                vehicleIssue={vehicleIssue}
+                key={vehicleIssue._id}
+              />
+            ))}
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
+
       {/* OPERATOR REPORT */}
-      <Box>
+      <Card heading={<Heading size="md">Report</Heading>}>
         <Box backgroundColor="gray.200" borderRadius={4} p={2} m={2}>
           <Heading size="md">General</Heading>
           <FormComponents.EquipmentUsage isDisabled={isDisabled} />
@@ -199,7 +257,7 @@ const OperatorDailyReport: PageOperatorDailyReportCardComp = ({ data }) => {
           <Heading size="md">Fluids Added</Heading>
           <FormComponents.FluidsAdded isDisabled={isDisabled} m={2} />
         </Box>
-      </Box>
+      </Card>
     </Container>
   );
 };
@@ -208,7 +266,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...ctx
 }) => {
-  const res = await ssrOperatorDailyReportCard.getServerPage(
+  const res = await ssrOperatorDailyReportFull.getServerPage(
     { variables: { id: params?.id as string } },
     ctx
   );

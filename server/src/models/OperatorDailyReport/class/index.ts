@@ -42,6 +42,10 @@ export class OperatorDailyReportClass extends OperatorDailyReportSchema {
     return get.author(this);
   }
 
+  public async getVehicleIssues(this: OperatorDailyReportDocument) {
+    return get.vehicleIssues(this);
+  }
+
   /**
    * ----- Create -----
    */

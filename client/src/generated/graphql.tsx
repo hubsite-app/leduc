@@ -1250,6 +1250,7 @@ export type OperatorDailyReportClass = {
   schemaVersion: Scalars['Float'];
   startTime: Scalars['DateTime'];
   vehicle: VehicleClass;
+  vehicleIssues: Array<VehicleIssueClass>;
 };
 
 export type OperatorDailyReportCreateData = {
@@ -1327,6 +1328,7 @@ export type Query = {
   material: MaterialClass;
   materials: Array<MaterialClass>;
   materialSearch: Array<MaterialClass>;
+  mechanics: Array<UserClass>;
   operatorDailyReport: OperatorDailyReportClass;
   operatorDailyReports: Array<OperatorDailyReportClass>;
   search: Array<SearchClass>;
@@ -1984,7 +1986,7 @@ export type OnSiteSummaryReportSnippetFragment = { __typename?: 'OnSiteSummaryRe
 
 export type OperatorDailyReportCardSnippetFragment = { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> };
 
-export type OperatorDailyReportFullSnippetFragment = { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> };
+export type OperatorDailyReportFullSnippetFragment = { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicleIssues: Array<{ __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null }>, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> };
 
 export type ProductionCardSnippetFragment = { __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description?: string | null };
 
@@ -2987,12 +2989,24 @@ export type MaterialsFullQueryVariables = Exact<{
 
 export type MaterialsFullQuery = { __typename?: 'Query', materials: Array<{ __typename?: 'MaterialClass', canRemove: boolean, _id: string, name: string }> };
 
+export type MechanicsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MechanicsQuery = { __typename?: 'Query', mechanics: Array<{ __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }> };
+
 export type OperatorDailyReportCardQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
 export type OperatorDailyReportCardQuery = { __typename?: 'Query', operatorDailyReport: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } };
+
+export type OperatorDailyReportFullQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type OperatorDailyReportFullQuery = { __typename?: 'Query', operatorDailyReport: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicleIssues: Array<{ __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null }>, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } };
 
 export type OperatorDailyReportsQueryVariables = Exact<{
   options?: InputMaybe<ListOptionData>;
@@ -4041,11 +4055,39 @@ export const OperatorDailyReportCardSnippetFragmentDoc = gql`
 }
     ${VehicleCardSnippetFragmentDoc}
 ${UserCardSnippetFragmentDoc}`;
+export const VehicleIssueCardSnippetFragmentDoc = gql`
+    fragment VehicleIssueCardSnippet on VehicleIssueClass {
+  _id
+  title
+  description
+  priority
+  closed
+  createdAt
+  vehicle {
+    ...VehicleCardSnippet
+  }
+  author {
+    ...UserCardSnippet
+  }
+  assignedTo {
+    ...UserCardSnippet
+  }
+  operatorDailyReport {
+    ...OperatorDailyReportCardSnippet
+  }
+}
+    ${VehicleCardSnippetFragmentDoc}
+${UserCardSnippetFragmentDoc}
+${OperatorDailyReportCardSnippetFragmentDoc}`;
 export const OperatorDailyReportFullSnippetFragmentDoc = gql`
     fragment OperatorDailyReportFullSnippet on OperatorDailyReportClass {
   ...OperatorDailyReportCardSnippet
+  vehicleIssues {
+    ...VehicleIssueCardSnippet
+  }
 }
-    ${OperatorDailyReportCardSnippetFragmentDoc}`;
+    ${OperatorDailyReportCardSnippetFragmentDoc}
+${VehicleIssueCardSnippetFragmentDoc}`;
 export const SearchSnippetFragmentDoc = gql`
     fragment SearchSnippet on SearchClass {
   score
@@ -4143,30 +4185,6 @@ export const FullUserSnippetFragmentDoc = gql`
 }
     ${UserCardSnippetFragmentDoc}
 ${CrewCardSnippetFragmentDoc}`;
-export const VehicleIssueCardSnippetFragmentDoc = gql`
-    fragment VehicleIssueCardSnippet on VehicleIssueClass {
-  _id
-  title
-  description
-  priority
-  closed
-  createdAt
-  vehicle {
-    ...VehicleCardSnippet
-  }
-  author {
-    ...UserCardSnippet
-  }
-  assignedTo {
-    ...UserCardSnippet
-  }
-  operatorDailyReport {
-    ...OperatorDailyReportCardSnippet
-  }
-}
-    ${VehicleCardSnippetFragmentDoc}
-${UserCardSnippetFragmentDoc}
-${OperatorDailyReportCardSnippetFragmentDoc}`;
 export const VehicleFullSnippetFragmentDoc = gql`
     fragment VehicleFullSnippet on VehicleClass {
   ...VehicleCardSnippet
@@ -8624,6 +8642,40 @@ export function useMaterialsFullLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type MaterialsFullQueryHookResult = ReturnType<typeof useMaterialsFullQuery>;
 export type MaterialsFullLazyQueryHookResult = ReturnType<typeof useMaterialsFullLazyQuery>;
 export type MaterialsFullQueryResult = Apollo.QueryResult<MaterialsFullQuery, MaterialsFullQueryVariables>;
+export const MechanicsDocument = gql`
+    query Mechanics {
+  mechanics {
+    ...UserCardSnippet
+  }
+}
+    ${UserCardSnippetFragmentDoc}`;
+
+/**
+ * __useMechanicsQuery__
+ *
+ * To run a query within a React component, call `useMechanicsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMechanicsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMechanicsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMechanicsQuery(baseOptions?: Apollo.QueryHookOptions<MechanicsQuery, MechanicsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MechanicsQuery, MechanicsQueryVariables>(MechanicsDocument, options);
+      }
+export function useMechanicsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MechanicsQuery, MechanicsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MechanicsQuery, MechanicsQueryVariables>(MechanicsDocument, options);
+        }
+export type MechanicsQueryHookResult = ReturnType<typeof useMechanicsQuery>;
+export type MechanicsLazyQueryHookResult = ReturnType<typeof useMechanicsLazyQuery>;
+export type MechanicsQueryResult = Apollo.QueryResult<MechanicsQuery, MechanicsQueryVariables>;
 export const OperatorDailyReportCardDocument = gql`
     query OperatorDailyReportCard($id: ID!) {
   operatorDailyReport(id: $id) {
@@ -8659,6 +8711,41 @@ export function useOperatorDailyReportCardLazyQuery(baseOptions?: Apollo.LazyQue
 export type OperatorDailyReportCardQueryHookResult = ReturnType<typeof useOperatorDailyReportCardQuery>;
 export type OperatorDailyReportCardLazyQueryHookResult = ReturnType<typeof useOperatorDailyReportCardLazyQuery>;
 export type OperatorDailyReportCardQueryResult = Apollo.QueryResult<OperatorDailyReportCardQuery, OperatorDailyReportCardQueryVariables>;
+export const OperatorDailyReportFullDocument = gql`
+    query OperatorDailyReportFull($id: ID!) {
+  operatorDailyReport(id: $id) {
+    ...OperatorDailyReportFullSnippet
+  }
+}
+    ${OperatorDailyReportFullSnippetFragmentDoc}`;
+
+/**
+ * __useOperatorDailyReportFullQuery__
+ *
+ * To run a query within a React component, call `useOperatorDailyReportFullQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorDailyReportFullQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorDailyReportFullQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOperatorDailyReportFullQuery(baseOptions: Apollo.QueryHookOptions<OperatorDailyReportFullQuery, OperatorDailyReportFullQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorDailyReportFullQuery, OperatorDailyReportFullQueryVariables>(OperatorDailyReportFullDocument, options);
+      }
+export function useOperatorDailyReportFullLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorDailyReportFullQuery, OperatorDailyReportFullQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorDailyReportFullQuery, OperatorDailyReportFullQueryVariables>(OperatorDailyReportFullDocument, options);
+        }
+export type OperatorDailyReportFullQueryHookResult = ReturnType<typeof useOperatorDailyReportFullQuery>;
+export type OperatorDailyReportFullLazyQueryHookResult = ReturnType<typeof useOperatorDailyReportFullLazyQuery>;
+export type OperatorDailyReportFullQueryResult = Apollo.QueryResult<OperatorDailyReportFullQuery, OperatorDailyReportFullQueryVariables>;
 export const OperatorDailyReportsDocument = gql`
     query OperatorDailyReports($options: ListOptionData) {
   operatorDailyReports(options: $options) {

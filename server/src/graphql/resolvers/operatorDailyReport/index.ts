@@ -4,6 +4,7 @@ import {
   OperatorDailyReportDocument,
   UserClass,
   VehicleClass,
+  VehicleIssueClass,
 } from "@models";
 import { IContext, ListOptionData } from "@typescript/graphql";
 import { Id } from "@typescript/models";
@@ -34,6 +35,13 @@ export default class OperatorDailyReportResolver {
   @FieldResolver(() => UserClass)
   async author(@Root() operatorDailyReport: OperatorDailyReportDocument) {
     return operatorDailyReport.getAuthor();
+  }
+
+  @FieldResolver(() => [VehicleIssueClass])
+  async vehicleIssues(
+    @Root() operatorDailyReport: OperatorDailyReportDocument
+  ) {
+    return operatorDailyReport.getVehicleIssues();
   }
 
   /**

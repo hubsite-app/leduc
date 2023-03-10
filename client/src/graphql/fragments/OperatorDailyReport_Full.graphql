@@ -1,3 +1,6 @@
 fragment OperatorDailyReportFullSnippet on OperatorDailyReportClass {
   ...OperatorDailyReportCardSnippet
+  vehicleIssues {
+    ...VehicleIssueCardSnippet
+  }
 }

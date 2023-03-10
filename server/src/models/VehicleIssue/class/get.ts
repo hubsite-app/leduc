@@ -54,6 +54,13 @@ const list = async (
   return vehicleIssues;
 };
 
+const byVehicle = async (VehicleIssue: VehicleIssueModel, vehicleId: Id) => {
+  return await VehicleIssue.find({
+    closed: false,
+    vehicle: vehicleId,
+  });
+};
+
 /**
  * --- Methods ---
  */
@@ -99,6 +106,7 @@ const assignedTo = async (vehicleIssue: VehicleIssueDocument) => {
 export default {
   byId,
   list,
+  byVehicle,
   vehicle,
   author,
   operatorDailyReport,

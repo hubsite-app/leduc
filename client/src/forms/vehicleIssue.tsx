@@ -9,26 +9,23 @@ import {
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import {
-  VehicleIssueCreateData,
-  VehicleIssuePriority,
-} from "../generated/graphql";
+import { VehicleIssueCreateData } from "../generated/graphql";
 import TextField, { ITextField } from "../components/Common/forms/TextField";
 import { IFormProps } from "../typescript/forms";
 import TextArea, { ITextArea } from "../components/Common/forms/TextArea";
 import VehicleIssuePrioritySelect, {
   IVehicleIssuePrioritySelect,
 } from "../components/Forms/VehicleIssue/PrioritySelect";
+import VehicleIssueAssignedToSelect, {
+  IVehicleIssueAssignedToSelect,
+} from "../components/Forms/VehicleIssue/AssignedToSelect";
 
 const VehicleIssueSchema = yup.object().shape({
   title: yup.string().required("Please provide a title"),
   description: yup
     .string()
     .required("Please provide a description of the issue"),
-  priority: yup
-    .string()
-    .required("Please provide a priority")
-    .default(VehicleIssuePriority.P2),
+  priority: yup.string().required("Please provide a priority"),
   assignedTo: yup.string(),
 });
 
@@ -118,6 +115,28 @@ export const useVehicleIssueForm = (options?: UseFormProps) => {
                 errorMessage={fieldState.error?.message}
                 isDisabled={isLoading}
                 label="Priority"
+              />
+            )}
+          />
+        ),
+        [isLoading, props]
+      ),
+    AssignedTo: ({
+      isLoading,
+      ...props
+    }: IFormProps<IVehicleIssueAssignedToSelect>) =>
+      React.useMemo(
+        () => (
+          <Controller
+            control={control}
+            name="assignedTo"
+            render={({ field, fieldState }) => (
+              <VehicleIssueAssignedToSelect
+                {...props}
+                {...field}
+                errorMessage={fieldState.error?.message}
+                isDisabled={isLoading}
+                label="Assigned to"
               />
             )}
           />

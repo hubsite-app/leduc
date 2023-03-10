@@ -2,7 +2,6 @@ import React from "react";
 
 import {
   Menu,
-  MenuButton,
   MenuDivider,
   MenuGroup,
   MenuItem,
@@ -13,6 +12,7 @@ import { useAuth } from "../../../contexts/Auth";
 import Loading from "../../Common/Loading";
 import Permission from "../../Common/Permission";
 import { UserRoles } from "../../../generated/graphql";
+import UserIcon from "../../Common/User/Icon";
 
 const NavbarAccount = () => {
   const {
@@ -26,17 +26,7 @@ const NavbarAccount = () => {
     if (user) {
       return (
         <Menu>
-          <MenuButton
-            backgroundColor="gray.700"
-            fontWeight="bold"
-            borderRadius="50%"
-            width="40px"
-            height="40px"
-            color="white"
-            _hover={{ backgroundColor: "gray.800" }}
-          >
-            {user.name.charAt(0)}
-          </MenuButton>
+          <UserIcon user={user} menuButton />
           <MenuList>
             <MenuGroup>
               <Permission minRole={UserRoles.ProjectManager}>

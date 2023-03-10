@@ -3,6 +3,7 @@ import {
   OperatorDailyReportModel,
   User,
   Vehicle,
+  VehicleIssue,
 } from "@models";
 import { GetByIDOptions, IListOptions } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
@@ -79,9 +80,20 @@ const author = async (operatorDailyReport: OperatorDailyReportDocument) => {
   return author;
 };
 
+const vehicleIssues = async (
+  operatorDailyReport: OperatorDailyReportDocument
+) => {
+  const vehicleIssues = await VehicleIssue.getByVehicle(
+    operatorDailyReport.vehicle?.toString() || ""
+  );
+
+  return vehicleIssues;
+};
+
 export default {
   byId,
   list,
   vehicle,
   author,
+  vehicleIssues,
 };

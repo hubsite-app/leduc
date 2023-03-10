@@ -1,0 +1,5 @@
+query Mechanics {
+  mechanics {
+    ...UserCardSnippet
+  }
+}

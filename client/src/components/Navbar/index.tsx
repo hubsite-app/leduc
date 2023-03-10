@@ -11,8 +11,6 @@ import NavbarAccount from "./views/Account";
 import NavbarSearch from "./views/Search";
 import NavbarCreate from "./views/Create";
 import Development from "./views/Development";
-import { useAuth } from "../../contexts/Auth";
-import { UserHomeViewSettings } from "../../generated/graphql";
 
 const Navbar = () => {
   /**
@@ -22,27 +20,9 @@ const Navbar = () => {
   const { hasMounted } = useMounted();
   const [isLargerThan480] = useMediaQuery("(min-width: 580px)");
 
-  const {
-    state: { user },
-  } = useAuth();
-
   /**
    * ----- Variables -----
    */
-
-  const headerLink = React.useMemo(() => {
-    if (user) {
-      switch (user.settings.homeView) {
-        case UserHomeViewSettings.DailyReports: {
-          return "/daily-reports";
-        }
-        case UserHomeViewSettings.GeneralReports: {
-          return "/current-master";
-        }
-      }
-    }
-    return "/";
-  }, [user]);
 
   const isLarger = hasMounted ? isLargerThan480 : true;
 
@@ -65,7 +45,7 @@ const Navbar = () => {
       >
         <TextLink
           color="black"
-          link={headerLink}
+          link={"/"}
           marginY="auto"
           height="100%"
           pt={1}

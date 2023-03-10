@@ -54,6 +54,16 @@ export default class UserResolver {
     return User.getList(options);
   }
 
+  @Query(() => [UserClass])
+  async mechanics() {
+    return User.getList({
+      query: {
+        role: UserRoles.ProjectManager,
+        types: [UserTypes.VehicleMaintenance],
+      },
+    });
+  }
+
   /**
    * ----- Mutations -----
    */

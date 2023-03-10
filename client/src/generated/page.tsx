@@ -1837,6 +1837,41 @@ export const ssrMaterialsFull = {
       withPage: withPageMaterialsFull,
       usePage: useMaterialsFull,
     }
+export async function getServerPageMechanics
+    (options: Omit<Apollo.QueryOptions<Types.MechanicsQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.MechanicsQuery>({ ...options, query: Operations.MechanicsDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useMechanics = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MechanicsQuery, Types.MechanicsQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.MechanicsDocument, options);
+};
+export type PageMechanicsComp = React.FC<{data?: Types.MechanicsQuery, error?: Apollo.ApolloError}>;
+export const withPageMechanics = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.MechanicsQuery, Types.MechanicsQueryVariables>) => (WrappedComponent:PageMechanicsComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.MechanicsDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrMechanics = {
+      getServerPage: getServerPageMechanics,
+      withPage: withPageMechanics,
+      usePage: useMechanics,
+    }
 export async function getServerPageOperatorDailyReportCard
     (options: Omit<Apollo.QueryOptions<Types.OperatorDailyReportCardQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
@@ -1871,6 +1906,41 @@ export const ssrOperatorDailyReportCard = {
       getServerPage: getServerPageOperatorDailyReportCard,
       withPage: withPageOperatorDailyReportCard,
       usePage: useOperatorDailyReportCard,
+    }
+export async function getServerPageOperatorDailyReportFull
+    (options: Omit<Apollo.QueryOptions<Types.OperatorDailyReportFullQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.OperatorDailyReportFullQuery>({ ...options, query: Operations.OperatorDailyReportFullDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useOperatorDailyReportFull = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.OperatorDailyReportFullQuery, Types.OperatorDailyReportFullQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.OperatorDailyReportFullDocument, options);
+};
+export type PageOperatorDailyReportFullComp = React.FC<{data?: Types.OperatorDailyReportFullQuery, error?: Apollo.ApolloError}>;
+export const withPageOperatorDailyReportFull = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.OperatorDailyReportFullQuery, Types.OperatorDailyReportFullQueryVariables>) => (WrappedComponent:PageOperatorDailyReportFullComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.OperatorDailyReportFullDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrOperatorDailyReportFull = {
+      getServerPage: getServerPageOperatorDailyReportFull,
+      withPage: withPageOperatorDailyReportFull,
+      usePage: useOperatorDailyReportFull,
     }
 export async function getServerPageOperatorDailyReports
     (options: Omit<Apollo.QueryOptions<Types.OperatorDailyReportsQueryVariables>, 'query'>, ctx: ApolloClientContext ){
