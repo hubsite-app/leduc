@@ -42,6 +42,7 @@ const VehicleIssueAssignedToSelect = ({
 
   return (
     <Select
+      variant="flushed"
       placeholder={placeholder}
       options={options}
       {...props}

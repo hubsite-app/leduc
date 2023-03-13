@@ -80,4 +80,19 @@ export default class VehicleIssueResolver {
     if (!context.user) throw new Error("Must be logged in to do this");
     return mutations.create(vehicleId, context.user, data);
   }
+
+  @Authorized(["PM"])
+  @Mutation(() => VehicleIssueClass)
+  async vehicleIssueAssignedToUpdate(
+    @Arg("id", () => ID) id: Id,
+    @Arg("assignedTo", () => ID, { nullable: true }) assignedTo?: Id
+  ) {
+    return mutations.assignedToUpdate(id, assignedTo);
+  }
+
+  @Authorized(["PM"])
+  @Mutation(() => VehicleIssueClass)
+  async vehicleIssueClose(@Arg("id", () => ID) id: Id) {
+    return mutations.close(id);
+  }
 }

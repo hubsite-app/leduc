@@ -10,6 +10,7 @@ import { ObjectType } from "type-graphql";
 import { VehicleIssueSchema } from "../schema";
 import create from "./create";
 import get from "./get";
+import update from "./update";
 
 @ObjectType()
 export class VehicleIssueClass extends VehicleIssueSchema {
@@ -63,5 +64,20 @@ export class VehicleIssueClass extends VehicleIssueSchema {
     data: IVehicleIssueCreate
   ) {
     return create.document(this, vehicle, author, data);
+  }
+
+  /**
+   * --- Update ---
+   */
+
+  public async updateAssignedTo(
+    this: VehicleIssueDocument,
+    assignedTo?: UserDocument
+  ) {
+    return update.assignedTo(this, assignedTo);
+  }
+
+  public async close(this: VehicleIssueDocument) {
+    return update.close(this);
   }
 }

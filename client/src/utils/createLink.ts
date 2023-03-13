@@ -69,6 +69,10 @@ const operatorDailyReport = (operatorDailyReportId: string) => {
   return `/operator-daily-report/${operatorDailyReportId}`;
 };
 
+const vehicleIssue = (vehicleIssueId: string) => {
+  return `/vehicle-issue/${vehicleIssueId}`;
+};
+
 const server_dailyReportExcelDownload = (dailyReportId: string) => {
   return `${(process.env.NEXT_PUBLIC_API_URL as string).replace(
     "/graphql",
@@ -114,6 +118,7 @@ const createLink = {
   dailyReport,
   dailyReportPDF,
   operatorDailyReport,
+  vehicleIssue,
   server_dailyReportExcelDownload,
   server_crewDailyReportMonthExcelDownload,
   server_vehiclesExcelDownload,

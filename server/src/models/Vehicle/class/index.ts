@@ -56,6 +56,14 @@ export class VehicleClass extends VehicleSchema {
     return get.rateForTime(this, date);
   }
 
+  public async getOperatorDailyReports(this: VehicleDocument) {
+    return get.operatorDailyReports(this);
+  }
+
+  public async getVehicleIssues(this: VehicleDocument) {
+    return get.vehicleIssues(this);
+  }
+
   /**
    * ----- Create -----
    */

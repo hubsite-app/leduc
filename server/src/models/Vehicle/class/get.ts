@@ -6,6 +6,8 @@ import {
   VehicleDocument,
   VehicleModel,
   System,
+  OperatorDailyReport,
+  VehicleIssue,
 } from "@models";
 import {
   GetByIDOptions,
@@ -158,6 +160,27 @@ const rateForTime = async (
   }
 };
 
+const operatorDailyReports = async (vehicle: VehicleDocument) => {
+  const operatorDailyReports = await OperatorDailyReport.find({
+    vehicle: vehicle._id,
+  })
+    .sort({ startTime: "desc" })
+    .limit(50);
+
+  return operatorDailyReports;
+};
+
+const vehicleIssues = async (vehicle: VehicleDocument) => {
+  const vehicleIssues = await VehicleIssue.find({
+    vehicle: vehicle._id,
+    closed: false,
+  })
+    .sort({ createdAt: "desc" })
+    .limit(50);
+
+  return vehicleIssues;
+};
+
 export default {
   byId,
   search,
@@ -165,4 +188,6 @@ export default {
   list,
   crews,
   rateForTime,
+  operatorDailyReports,
+  vehicleIssues,
 };

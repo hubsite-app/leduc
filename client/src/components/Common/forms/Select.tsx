@@ -23,6 +23,7 @@ export interface ISelect extends SelectProps {
 
 const Select = React.forwardRef<HTMLSelectElement, ISelect>(
   ({ options, errorMessage, helperText, label, error, ...rest }, ref) => {
+    console.log("options", options);
     return (
       <FormControl
         id={rest.name}

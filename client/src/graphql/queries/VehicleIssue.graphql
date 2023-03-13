@@ -1,0 +1,5 @@
+query VehicleIssue($id: ID!) {
+  vehicleIssue(id: $id) {
+    ...VehicleIssueFullSnippet
+  }
+}

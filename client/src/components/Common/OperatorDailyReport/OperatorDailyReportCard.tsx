@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex, HStack } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { OperatorDailyReportCardSnippetFragment } from "../../../generated/graphql";
 import operatorDailyReportName from "../../../utils/operatorDailyReportName";
 import Card from "../Card";
@@ -29,7 +29,11 @@ const OperatorDailyReportCard = ({
         </Box>
       }
     >
-      <div>{operatorDailyReportTags(operatorDailyReport)}</div>
+      <div>
+        {operatorDailyReportTags(operatorDailyReport).length > 0
+          ? operatorDailyReportTags(operatorDailyReport)
+          : "No issues detected"}
+      </div>
     </Card>
   );
 };

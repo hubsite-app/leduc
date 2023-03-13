@@ -10,7 +10,14 @@ import {
   Root,
 } from "type-graphql";
 
-import { CrewClass, Vehicle, VehicleClass, VehicleDocument } from "@models";
+import {
+  CrewClass,
+  OperatorDailyReportClass,
+  Vehicle,
+  VehicleClass,
+  VehicleDocument,
+  VehicleIssueClass,
+} from "@models";
 import mutations, { VehicleCreateData, VehicleUpdateData } from "./mutations";
 import { SearchOptions } from "@graphql/types/query";
 import { RatesData } from "@graphql/types/mutation";
@@ -31,6 +38,16 @@ export default class VehicleResolver {
   @FieldResolver(() => Float)
   async currentRate(@Root() vehicle: VehicleDocument) {
     return await vehicle.getRateForTime(new Date());
+  }
+
+  @FieldResolver(() => [OperatorDailyReportClass])
+  async operatorDailyReports(@Root() vehicle: VehicleDocument) {
+    return await vehicle.getOperatorDailyReports();
+  }
+
+  @FieldResolver(() => [VehicleIssueClass])
+  async vehicleIssues(@Root() vehicle: VehicleDocument) {
+    return await vehicle.getVehicleIssues();
   }
 
   /**

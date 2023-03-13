@@ -1,27 +1,28 @@
 import { Box, Heading, MenuButton, Tooltip } from "@chakra-ui/react";
 import React from "react";
 import { UserCardSnippetFragment } from "../../../generated/graphql";
+import getRandomColor from "../../../utils/getRandomColor";
 
 interface IUserIcon {
   user: UserCardSnippetFragment;
   menuButton?: boolean;
   onClick?: () => void;
+  hideTooltip?: boolean;
 }
 
-const UserIcon = ({ user, menuButton, onClick }: IUserIcon) => {
+const UserIcon = ({ user, menuButton, onClick, hideTooltip }: IUserIcon) => {
   const props = React.useMemo(() => {
     return {
-      backgroundColor: "gray.700",
+      backgroundColor: getRandomColor(user.name),
       fontWeight: "bold",
       borderRadius: "50%",
       width: "40px",
       height: "40px",
       color: "white",
-      _hover: { backgroundColor: "gray.800" },
       cursor: "pointer",
       p: "auto",
     };
-  }, []);
+  }, [user.name]);
 
   const content = React.useMemo(() => {
     if (menuButton) {
@@ -37,7 +38,13 @@ const UserIcon = ({ user, menuButton, onClick }: IUserIcon) => {
     }
   }, [menuButton, props, user.name, onClick]);
 
-  return <Tooltip label={user.name}>{content}</Tooltip>;
+  return React.useMemo(() => {
+    if (!hideTooltip) {
+      return <Tooltip label={user.name}>{content}</Tooltip>;
+    } else {
+      return content;
+    }
+  }, [content, hideTooltip, user.name]);
 };
 
 export default UserIcon;
