@@ -193,7 +193,7 @@ const crewLocations = async (
         // Existing unique date
         const locationDay =
           crewLocations[crewLocations.length - 1].days[
-            uniqueDays.indexOf(startOfDay.toISOString())
+          uniqueDays.indexOf(startOfDay.toISOString())
           ];
 
         let jobsiteName = "";
@@ -266,9 +266,9 @@ const dailyReportsByMonth = async (crew: CrewDocument, startOfMonth: Date) => {
     archived: { $ne: true },
     date: {
       $gte: await timezoneStartOfDayinUTC(
-        dayjs(startOfMonth).startOf("month").toDate()
+        dayjs(startOfMonth).startOf("month").add(1, "day").toDate()
       ),
-      $lt: await timezoneEndOfDayinUTC(
+      $lte: await timezoneEndOfDayinUTC(
         dayjs(startOfMonth).endOf("month").toDate()
       ),
     },
