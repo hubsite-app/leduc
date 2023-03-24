@@ -2,6 +2,7 @@ import { UserDocument } from "@models";
 import createJWT from "@utils/createJWT";
 import hashPassword from "@utils/hashPassword";
 import { UserHomeViewSettings, UserRoles, UserTypes } from "@typescript/user";
+import { VehicleIssuePriority } from "@typescript/vehicleIssue";
 
 const role = async (user: UserDocument, role: UserRoles) => {
   user.role = role;
@@ -38,10 +39,20 @@ const homeView = async (user: UserDocument, homeView: UserHomeViewSettings) => {
   return;
 };
 
+const subscribedPriorities = async (
+  user: UserDocument,
+  priorities: VehicleIssuePriority[]
+) => {
+  user.settings.subscribedVehicleIssuePriorities = priorities;
+
+  return;
+};
+
 export default {
   role,
   types,
   resetPasswordToken,
   password,
   homeView,
+  subscribedPriorities,
 };

@@ -10,6 +10,7 @@ import { ObjectType } from "type-graphql";
 import { VehicleIssueSchema } from "../schema";
 import create from "./create";
 import get from "./get";
+import interact from "./interact";
 import update from "./update";
 
 @ObjectType()
@@ -53,6 +54,10 @@ export class VehicleIssueClass extends VehicleIssueSchema {
     return get.assignedTo(this);
   }
 
+  public async getLink(this: VehicleIssueDocument) {
+    return get.link(this);
+  }
+
   /**
    * --- Create ---
    */
@@ -79,5 +84,21 @@ export class VehicleIssueClass extends VehicleIssueSchema {
 
   public async close(this: VehicleIssueDocument) {
     return update.close(this);
+  }
+
+  /**
+   * --- Interact ---
+   */
+
+  public async sendNotifications(this: VehicleIssueDocument) {
+    return interact.sendNotifications(this);
+  }
+
+  public async sendAssignedToNotification(this: VehicleIssueDocument) {
+    return interact.sendAssignedToNotifiation(this);
+  }
+
+  public async sendSubscribedNotifications(this: VehicleIssueDocument) {
+    return interact.sendSubscribedNotifications(this);
   }
 }

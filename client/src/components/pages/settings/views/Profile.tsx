@@ -2,11 +2,14 @@ import React from "react";
 import {
   Box,
   BoxProps,
+  Button,
+  Checkbox,
   Flex,
   Heading,
   Radio,
   RadioGroup,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { useAuth } from "../../../../contexts/Auth";
 import Card from "../../../Common/Card";
@@ -18,9 +21,13 @@ import {
   FullUserSnippetFragment,
   UserHomeViewSettings,
   UserRoles,
+  UserTypes,
   useUserUpdateHomeViewMutation,
+  useUserUpdateSubscribedPrioritiesMutation,
+  VehicleIssuePriority,
 } from "../../../../generated/graphql";
 import Permission from "../../../Common/Permission";
+import vehicleIssuePriorityString from "../../../../utils/vehicleIssuePriorityString";
 
 const HomeViewBox = ({
   user,
@@ -82,9 +89,81 @@ const ProfileSettings = () => {
     state: { user },
   } = useAuth();
 
+  const toast = useToast();
+
   const [updateHomeView, { loading }] = useUserUpdateHomeViewMutation({
     refetchQueries: [CurrentUserDocument],
   });
+
+  const [updateSubscribedPriorities, { loading: prioritiesLoading }] =
+    useUserUpdateSubscribedPrioritiesMutation();
+
+  const [subscribedPriorities, setSubscribedPriorities] = React.useState<
+    VehicleIssuePriority[]
+  >(user?.settings.subscribedVehicleIssuePriorities || []);
+
+  /**
+   * --- Functions ---
+   */
+
+  const toggleEmployee = React.useCallback(
+    (priority: VehicleIssuePriority) => {
+      const copy: VehicleIssuePriority[] = JSON.parse(
+        JSON.stringify(subscribedPriorities)
+      );
+
+      const existingIndex = copy.findIndex((item) => item === priority);
+
+      if (existingIndex === -1) copy.push(priority);
+      else copy.splice(existingIndex, 1);
+
+      setSubscribedPriorities(copy);
+    },
+    [subscribedPriorities]
+  );
+
+  const handlePrioritiesUpdate = React.useCallback(async () => {
+    try {
+      const result = await updateSubscribedPriorities({
+        variables: {
+          priorities: subscribedPriorities,
+        },
+      });
+
+      if (result.data?.userUpdateSubscribedPriorities) {
+        toast({
+          title: "Success",
+          description: "Subscribed priorities has been updated",
+          isClosable: true,
+          status: "success",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Something went wrong, please try again",
+          isClosable: true,
+          status: "error",
+        });
+      }
+    } catch (e: any) {
+      toast({
+        title: "Error",
+        description: e.message,
+        isClosable: true,
+        status: "error",
+      });
+    }
+  }, [subscribedPriorities, toast, updateSubscribedPriorities]);
+
+  /**
+   * --- Lifecycle ---
+   */
+
+  React.useEffect(() => {
+    if (user)
+      setSubscribedPriorities(user.settings.subscribedVehicleIssuePriorities);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   /**
    * ----- Rendering -----
@@ -140,13 +219,61 @@ const ProfileSettings = () => {
                 </HomeViewBox>
               </Permission>
             </Flex>
+
+            <Permission
+              minRole={UserRoles.ProjectManager}
+              type={UserTypes.VehicleMaintenance}
+            >
+              <Heading mt={2} size="sm">
+                Issue Priority Subscription
+              </Heading>
+              <Box p={2} backgroundColor="gray.100" borderRadius={6} my={2}>
+                <Flex flexDir="column">
+                  {(
+                    Object.keys(VehicleIssuePriority) as Array<
+                      keyof typeof VehicleIssuePriority
+                    >
+                  ).map((key) => (
+                    <Checkbox
+                      isChecked={subscribedPriorities.includes(
+                        key as VehicleIssuePriority
+                      )}
+                      onChange={() =>
+                        toggleEmployee(key as VehicleIssuePriority)
+                      }
+                      key={key}
+                      isDisabled={prioritiesLoading}
+                    >
+                      {vehicleIssuePriorityString(key as VehicleIssuePriority)}
+                    </Checkbox>
+                  ))}
+                  <Button
+                    m="auto"
+                    ml={0}
+                    my={1}
+                    backgroundColor="grey.300"
+                    onClick={() => handlePrioritiesUpdate()}
+                  >
+                    Save
+                  </Button>
+                </Flex>
+              </Box>
+            </Permission>
           </Card>
         </Box>
       );
     } else {
       return <Loading />;
     }
-  }, [loading, updateHomeView, user]);
+  }, [
+    handlePrioritiesUpdate,
+    loading,
+    prioritiesLoading,
+    subscribedPriorities,
+    toggleEmployee,
+    updateHomeView,
+    user,
+  ]);
 };
 
 export default ProfileSettings;

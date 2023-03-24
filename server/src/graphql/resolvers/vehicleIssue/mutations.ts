@@ -32,12 +32,16 @@ const create = async (
   const vehicleIssue = await VehicleIssue.createDocument(vehicle, author, data);
   await vehicleIssue.save();
 
+  await vehicleIssue.sendNotifications();
+
   return vehicleIssue;
 };
 
 const assignedToUpdate = async (id: Id, assignedTo?: Id) => {
   const vehicleIssue = await VehicleIssue.getById(id);
   if (!vehicleIssue) throw new Error("Unable to find vehicle issue");
+
+  const previousAssignedTo = vehicleIssue.assignedTo;
 
   let assignTo;
   if (assignedTo) {
@@ -47,6 +51,9 @@ const assignedToUpdate = async (id: Id, assignedTo?: Id) => {
 
   await vehicleIssue.updateAssignedTo(assignTo);
   await vehicleIssue.save();
+
+  if (assignedTo && previousAssignedTo !== assignedTo)
+    await vehicleIssue.sendAssignedToNotification();
 
   return vehicleIssue;
 };

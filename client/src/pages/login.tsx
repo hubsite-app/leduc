@@ -83,10 +83,11 @@ const Login = () => {
           toast({
             title: "Success",
             description:
-              "Please contact Devin to get the link for your password reset",
+              "Please follow the instructions in the email you've received to reset your password",
             isClosable: true,
             status: "success",
           });
+          onClose();
         } else {
           toast({
             title: "Error",
@@ -104,7 +105,7 @@ const Login = () => {
         });
       }
     },
-    [forgotPassword, toast]
+    [forgotPassword, toast, onClose]
   );
 
   /**

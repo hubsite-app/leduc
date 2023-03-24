@@ -2,6 +2,7 @@ import { UserQuery } from "@graphql/types/query";
 import { EmployeeClass, User, UserClass, UserDocument } from "@models";
 import { IContext, ListOptionData } from "@typescript/graphql";
 import { UserHomeViewSettings, UserRoles, UserTypes } from "@typescript/user";
+import { VehicleIssuePriority } from "@typescript/vehicleIssue";
 import {
   Arg,
   Authorized,
@@ -106,6 +107,16 @@ export default class UserResolver {
     @Arg("homeView", () => UserHomeViewSettings) homeView: UserHomeViewSettings
   ) {
     return mutations.updateHomeView(context, homeView);
+  }
+
+  @Authorized()
+  @Mutation(() => UserClass)
+  async userUpdateSubscribedPriorities(
+    @Ctx() context: IContext,
+    @Arg("priorities", () => [VehicleIssuePriority])
+    priorities: VehicleIssuePriority[]
+  ) {
+    return mutations.subscribedPriorities(context, priorities);
   }
 
   @Mutation(() => Boolean)

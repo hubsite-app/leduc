@@ -18,7 +18,7 @@ data:
       data: true
       ingest: false
     # disable security in development
-    # xpack.security.enabled: true
+    xpack.security.enabled: true
 ---
 apiVersion: v1
 kind: Service

@@ -73,3 +73,23 @@ spec:
                 secretKeyRef:
                   key: elasticsearchUrl
                   name: server-secrets
+            - name: EMAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: server-secrets
+                  key: emailUsername
+            - name: EMAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: server-secrets
+                  key: emailPassword
+            - name: EMAIL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: server-secrets
+                  key: emailHost
+            - name: EMAIL_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: server-secrets
+                  key: emailPort

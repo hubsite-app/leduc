@@ -6,6 +6,7 @@ import {
   VehicleIssueModel,
 } from "@models";
 import { GetByIDOptions, Id, IListOptions } from "@typescript/models";
+import getClientUrl from "@utils/getClientUrl";
 import populateOptions from "@utils/populateOptions";
 
 const byIdDefaultOptions: GetByIDOptions = {
@@ -103,6 +104,10 @@ const assignedTo = async (vehicleIssue: VehicleIssueDocument) => {
   return assignedTo;
 };
 
+const link = (vehicleIssue: VehicleIssueDocument) => {
+  return `${getClientUrl()}/vehicle-issue/${vehicleIssue._id}`;
+};
+
 export default {
   byId,
   list,
@@ -111,4 +116,5 @@ export default {
   author,
   operatorDailyReport,
   assignedTo,
+  link,
 };

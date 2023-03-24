@@ -89,6 +89,7 @@ import { getApolloClient , ApolloClientContext} from '../withApollo';
 
 
 
+
 export async function getServerPageArchivedVehicles
     (options: Omit<Apollo.QueryOptions<Types.ArchivedVehiclesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);

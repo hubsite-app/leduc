@@ -5,6 +5,8 @@ import { decode, JwtPayload } from "jsonwebtoken";
 import { Id } from "@typescript/models";
 import { UserHomeViewSettings, UserRoles, UserTypes } from "@typescript/user";
 import { IContext } from "@typescript/graphql";
+import getClientUrl from "@utils/getClientUrl";
+import { VehicleIssuePriority } from "@typescript/vehicleIssue";
 
 @InputType()
 export class LoginData {
@@ -59,8 +61,7 @@ const passwordResetRequest = async (email: string): Promise<boolean> => {
 
   await user.sendEmail({
     subject: "Bow Mark - Password Reset",
-    html: `Follow link to reset password: ${token}`,
-    plainText: `Follow link to reset password: ${token}`,
+    htmlContent: `Follow link to reset password: ${getClientUrl()}/password-reset/${token}`,
   });
 
   return true;
@@ -116,9 +117,29 @@ const updateHomeView = async (
   if (!context.user) throw new Error("cannot find user");
 
   if (parseInt(context.user.role.toString()) < 2 && homeView === 2)
-    throw new Error("User does not have permission for this home view");
+    throw new Error("You do not have permission for this home view");
 
   await context.user.updateHomeView(homeView);
+
+  await context.user.save();
+
+  return context.user;
+};
+
+const subscribedPriorities = async (
+  context: IContext,
+  priorities: VehicleIssuePriority[]
+): Promise<UserDocument> => {
+  if (!context.user) throw new Error("cannot find user");
+
+  if (
+    parseInt(context.user.role.toString()) < 2 &&
+    (context.user.types.includes(UserTypes.VehicleMaintenance) ||
+      context.user.role === UserRoles.Admin)
+  )
+    throw new Error("You do not have permission to subscribe");
+
+  await context.user.updateSubscribedPriorities(priorities);
 
   await context.user.save();
 
@@ -142,5 +163,6 @@ export default {
   passwordResetRequest,
   passwordReset,
   updateHomeView,
+  subscribedPriorities,
   deleteUser,
 };

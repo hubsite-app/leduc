@@ -737,6 +737,7 @@ export type Mutation = {
   userPasswordResetRequest: Scalars['Boolean'];
   userUpdateHomeView: UserClass;
   userUpdateRole: UserClass;
+  userUpdateSubscribedPriorities: UserClass;
   userUpdateTypes: UserClass;
   vehicleArchive: VehicleClass;
   vehicleCreate: VehicleClass;
@@ -1142,6 +1143,11 @@ export type MutationUserUpdateHomeViewArgs = {
 export type MutationUserUpdateRoleArgs = {
   id: Scalars['String'];
   role: UserRoles;
+};
+
+
+export type MutationUserUpdateSubscribedPrioritiesArgs = {
+  priorities: Array<VehicleIssuePriority>;
 };
 
 
@@ -1771,6 +1777,7 @@ export enum UserRoles {
 export type UserSettings = {
   __typename?: 'UserSettings';
   homeView: UserHomeViewSettings;
+  subscribedVehicleIssuePriorities: Array<VehicleIssuePriority>;
 };
 
 export enum UserTypes {
@@ -2027,7 +2034,7 @@ export type UserCardSnippetFragment = { __typename?: 'UserClass', _id: string, n
 
 export type UserCrewSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', crews: Array<{ __typename?: 'CrewClass', vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> }> } };
 
-export type FullUserSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }> }, settings: { __typename?: 'UserSettings', homeView: UserHomeViewSettings } };
+export type FullUserSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }> }, settings: { __typename?: 'UserSettings', homeView: UserHomeViewSettings, subscribedVehicleIssuePriorities: Array<VehicleIssuePriority> } };
 
 export type VehicleIssueCardSnippetFragment = { __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null };
 
@@ -2574,6 +2581,13 @@ export type UserUpdateRoleMutationVariables = Exact<{
 
 export type UserUpdateRoleMutation = { __typename?: 'Mutation', userUpdateRole: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } };
 
+export type UserUpdateSubscribedPrioritiesMutationVariables = Exact<{
+  priorities: Array<VehicleIssuePriority> | VehicleIssuePriority;
+}>;
+
+
+export type UserUpdateSubscribedPrioritiesMutation = { __typename?: 'Mutation', userUpdateSubscribedPriorities: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } };
+
 export type UserUpdateTypesMutationVariables = Exact<{
   id: Scalars['String'];
   types: Array<UserTypes> | UserTypes;
@@ -2750,7 +2764,7 @@ export type CrewSsrQuery = { __typename?: 'Query', crew: { __typename?: 'CrewCla
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserQuery = { __typename?: 'Query', currentUser: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }> }, settings: { __typename?: 'UserSettings', homeView: UserHomeViewSettings } } };
+export type CurrentUserQuery = { __typename?: 'Query', currentUser: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }> }, settings: { __typename?: 'UserSettings', homeView: UserHomeViewSettings, subscribedVehicleIssuePriorities: Array<VehicleIssuePriority> } } };
 
 export type DailyReportCardQueryVariables = Exact<{
   id: Scalars['String'];
@@ -4220,6 +4234,7 @@ export const FullUserSnippetFragmentDoc = gql`
   }
   settings {
     homeView
+    subscribedVehicleIssuePriorities
   }
 }
     ${UserCardSnippetFragmentDoc}
@@ -6602,6 +6617,39 @@ export function useUserUpdateRoleMutation(baseOptions?: Apollo.MutationHookOptio
 export type UserUpdateRoleMutationHookResult = ReturnType<typeof useUserUpdateRoleMutation>;
 export type UserUpdateRoleMutationResult = Apollo.MutationResult<UserUpdateRoleMutation>;
 export type UserUpdateRoleMutationOptions = Apollo.BaseMutationOptions<UserUpdateRoleMutation, UserUpdateRoleMutationVariables>;
+export const UserUpdateSubscribedPrioritiesDocument = gql`
+    mutation UserUpdateSubscribedPriorities($priorities: [VehicleIssuePriority!]!) {
+  userUpdateSubscribedPriorities(priorities: $priorities) {
+    ...UserCardSnippet
+  }
+}
+    ${UserCardSnippetFragmentDoc}`;
+export type UserUpdateSubscribedPrioritiesMutationFn = Apollo.MutationFunction<UserUpdateSubscribedPrioritiesMutation, UserUpdateSubscribedPrioritiesMutationVariables>;
+
+/**
+ * __useUserUpdateSubscribedPrioritiesMutation__
+ *
+ * To run a mutation, you first call `useUserUpdateSubscribedPrioritiesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUserUpdateSubscribedPrioritiesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [userUpdateSubscribedPrioritiesMutation, { data, loading, error }] = useUserUpdateSubscribedPrioritiesMutation({
+ *   variables: {
+ *      priorities: // value for 'priorities'
+ *   },
+ * });
+ */
+export function useUserUpdateSubscribedPrioritiesMutation(baseOptions?: Apollo.MutationHookOptions<UserUpdateSubscribedPrioritiesMutation, UserUpdateSubscribedPrioritiesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UserUpdateSubscribedPrioritiesMutation, UserUpdateSubscribedPrioritiesMutationVariables>(UserUpdateSubscribedPrioritiesDocument, options);
+      }
+export type UserUpdateSubscribedPrioritiesMutationHookResult = ReturnType<typeof useUserUpdateSubscribedPrioritiesMutation>;
+export type UserUpdateSubscribedPrioritiesMutationResult = Apollo.MutationResult<UserUpdateSubscribedPrioritiesMutation>;
+export type UserUpdateSubscribedPrioritiesMutationOptions = Apollo.BaseMutationOptions<UserUpdateSubscribedPrioritiesMutation, UserUpdateSubscribedPrioritiesMutationVariables>;
 export const UserUpdateTypesDocument = gql`
     mutation UserUpdateTypes($id: String!, $types: [UserTypes!]!) {
   userUpdateTypes(id: $id, types: $types) {

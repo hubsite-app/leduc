@@ -1,0 +1,5 @@
+mutation UserUpdateSubscribedPriorities($priorities: [VehicleIssuePriority!]!) {
+  userUpdateSubscribedPriorities(priorities: $priorities) {
+    ...UserCardSnippet
+  }
+}
