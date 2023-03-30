@@ -1,9 +1,19 @@
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
 import Container from "../components/Common/Container";
+import DailyReportFullPageList from "../components/Common/DailyReport/ListFullPage";
+import CurrentJobsiteYearMasterReport from "../components/Common/JobsiteYearMasterReport/Current";
 import Loading from "../components/Common/Loading";
+import OperatorDailyReportFullPageList from "../components/Common/OperatorDailyReport/ListFullPage";
+import VehicleIssueFullPageList from "../components/Common/VehicleIssue/ListFullPage";
 import { useAuth } from "../contexts/Auth";
-import { UserHomeViewSettings } from "../generated/graphql";
+import { UserRoles, UserTypes } from "../generated/graphql";
+
+interface ITabCatalogItem {
+  tab: React.ReactChild;
+  panel: React.ReactChild;
+}
 
 const Home = () => {
   /**
@@ -17,31 +27,102 @@ const Home = () => {
   const router = useRouter();
 
   /**
-   * ----- Use-effects and other logic -----
+   * --- Variables ---
    */
 
-  React.useEffect(() => {
+  const tabCatalog = React.useMemo(() => {
+    return {
+      DailyReports: {
+        tab: (
+          <Tab onDoubleClick={() => router.push("/daily-reports")}>
+            Daily Reports
+          </Tab>
+        ),
+        panel: <DailyReportFullPageList hideBreadcrumbs />,
+      },
+      CurrentMasterReport: {
+        tab: (
+          <Tab onDoubleClick={() => router.push("/current-master")}>
+            Master Report
+          </Tab>
+        ),
+        panel: <CurrentJobsiteYearMasterReport />,
+      },
+      OperatorDailyReports: {
+        tab: (
+          <Tab onDoubleClick={() => router.push("/operator-daily-reports")}>
+            Operator Daily Reports
+          </Tab>
+        ),
+        panel: <OperatorDailyReportFullPageList hideBreadcrumbs />,
+      },
+      VehicleIssues: {
+        tab: (
+          <Tab onDoubleClick={() => router.push("/vehicle-issues")}>
+            Vehicle Issues
+          </Tab>
+        ),
+        panel: <VehicleIssueFullPageList hideBreadcrumbs />,
+      },
+    };
+  }, [router]);
+
+  /**
+   * --- Rendering ---
+   */
+
+  const tabs = React.useMemo(() => {
+    const userTabs: ITabCatalogItem[] = [];
+
     if (user) {
-      switch (user.settings.homeView) {
-        case UserHomeViewSettings.DailyReports: {
-          router.push("/daily-reports");
-          break;
+      if (user.role === UserRoles.Admin) {
+        // Admin
+        userTabs.push(...Object.values(tabCatalog));
+      } else if (user.role === UserRoles.ProjectManager) {
+        // Project Manager
+        if (user.types?.includes(UserTypes.Operations)) {
+          userTabs.push(tabCatalog.DailyReports);
+          userTabs.push(tabCatalog.CurrentMasterReport);
         }
-        case UserHomeViewSettings.GeneralReports: {
-          router.push("/current-master");
-          break;
+
+        if (user.types?.includes(UserTypes.VehicleMaintenance)) {
+          userTabs.push(tabCatalog.OperatorDailyReports);
+          userTabs.push(tabCatalog.VehicleIssues);
         }
-        default: {
-          router.push("/daily-reports");
-          break;
+
+        if (!user.types) userTabs.push(tabCatalog.DailyReports);
+      } else if (user.role === UserRoles.User) {
+        // User
+        if (user.types?.includes(UserTypes.Operations)) {
+          userTabs.push(tabCatalog.DailyReports);
         }
+
+        if (user.types?.includes(UserTypes.VehicleMaintenance)) {
+          userTabs.push(tabCatalog.OperatorDailyReports);
+        }
+
+        if (!user.types) userTabs.push(tabCatalog.DailyReports);
       }
     }
-  }, [router, user]);
+
+    return userTabs;
+  }, [tabCatalog, user]);
 
   return (
     <Container>
-      <Loading />
+      {tabs.length > 0 ? (
+        <Tabs>
+          <TabList>{tabs.map((tab) => tab.tab)}</TabList>
+
+          <TabPanels>
+            {tabs.map((tab, index) => (
+              <TabPanel key={index}>{tab.panel}</TabPanel>
+            ))}
+          </TabPanels>
+        </Tabs>
+      ) : (
+        <Loading />
+      )}
     </Container>
   );
 };

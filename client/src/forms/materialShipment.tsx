@@ -10,7 +10,6 @@ import {
 import * as yup from "yup";
 import {
   JobsiteMaterialCardSnippetFragment,
-  JobsiteMaterialCostType,
   MaterialShipmentUpdateData,
 } from "../generated/graphql";
 

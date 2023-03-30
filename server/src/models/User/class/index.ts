@@ -2,15 +2,20 @@ import { Types } from "mongoose";
 
 import { SignupDocument, UserDocument, UserModel } from "@models";
 import { UserSchema } from "..";
-import interact from "./interact";
+import interact, { IEmailData } from "./interact";
 import { GetByIDOptions, IListOptions } from "@typescript/models";
 import get from "./get";
 import { ObjectType } from "type-graphql";
-import { IUserCreate, UserHomeViewSettings, UserRoles } from "@typescript/user";
+import {
+  IUserCreate,
+  UserHomeViewSettings,
+  UserRoles,
+  UserTypes,
+} from "@typescript/user";
 import create from "./create";
 import update from "./update";
-import { IEmailData } from "@utils/sendEmail";
 import remove from "./remove";
+import { VehicleIssuePriority } from "@typescript/vehicleIssue";
 
 @ObjectType()
 export class UserClass extends UserSchema {
@@ -39,6 +44,13 @@ export class UserClass extends UserSchema {
 
   public static async getByEmail(this: UserModel, email: string) {
     return get.byEmail(this, email);
+  }
+
+  public static async getBySubscribedPriority(
+    this: UserModel,
+    priority: VehicleIssuePriority
+  ) {
+    return get.bySubscribedPriority(this, priority);
   }
 
   public async getEmployee(this: UserDocument) {
@@ -86,6 +98,10 @@ export class UserClass extends UserSchema {
     return update.role(this, role);
   }
 
+  public async updateTypes(this: UserDocument, types: UserTypes[]) {
+    return update.types(this, types);
+  }
+
   public async updatePassword(this: UserDocument, password: string) {
     return update.password(this, password);
   }
@@ -99,6 +115,13 @@ export class UserClass extends UserSchema {
     homeView: UserHomeViewSettings
   ) {
     return update.homeView(this, homeView);
+  }
+
+  public async updateSubscribedPriorities(
+    this: UserDocument,
+    priorities: VehicleIssuePriority[]
+  ) {
+    return update.subscribedPriorities(this, priorities);
   }
 
   /**

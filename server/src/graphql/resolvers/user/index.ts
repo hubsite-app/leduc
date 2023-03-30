@@ -1,7 +1,8 @@
 import { UserQuery } from "@graphql/types/query";
 import { EmployeeClass, User, UserClass, UserDocument } from "@models";
 import { IContext, ListOptionData } from "@typescript/graphql";
-import { UserHomeViewSettings, UserRoles } from "@typescript/user";
+import { UserHomeViewSettings, UserRoles, UserTypes } from "@typescript/user";
+import { VehicleIssuePriority } from "@typescript/vehicleIssue";
 import {
   Arg,
   Authorized,
@@ -54,6 +55,16 @@ export default class UserResolver {
     return User.getList(options);
   }
 
+  @Query(() => [UserClass])
+  async mechanics() {
+    return User.getList({
+      query: {
+        role: UserRoles.ProjectManager,
+        types: [UserTypes.VehicleMaintenance],
+      },
+    });
+  }
+
   /**
    * ----- Mutations -----
    */
@@ -80,6 +91,15 @@ export default class UserResolver {
     return mutations.role(id, role);
   }
 
+  @Authorized(["ADMIN", "DEV"])
+  @Mutation(() => UserClass)
+  async userUpdateTypes(
+    @Arg("id") id: string,
+    @Arg("types", () => [UserTypes]) types: UserTypes[]
+  ) {
+    return mutations.types(id, types);
+  }
+
   @Authorized()
   @Mutation(() => UserClass)
   async userUpdateHomeView(
@@ -87,6 +107,16 @@ export default class UserResolver {
     @Arg("homeView", () => UserHomeViewSettings) homeView: UserHomeViewSettings
   ) {
     return mutations.updateHomeView(context, homeView);
+  }
+
+  @Authorized()
+  @Mutation(() => UserClass)
+  async userUpdateSubscribedPriorities(
+    @Ctx() context: IContext,
+    @Arg("priorities", () => [VehicleIssuePriority])
+    priorities: VehicleIssuePriority[]
+  ) {
+    return mutations.subscribedPriorities(context, priorities);
   }
 
   @Mutation(() => Boolean)

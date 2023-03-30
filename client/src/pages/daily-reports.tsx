@@ -14,6 +14,7 @@ import { FiCheck } from "react-icons/fi";
 import Breadcrumbs from "../components/Common/Breadcrumbs";
 import Container from "../components/Common/Container";
 import DailyReportCard from "../components/Common/DailyReport/DailyReportCard";
+import DailyReportFullPageList from "../components/Common/DailyReport/ListFullPage";
 import InfiniteScroll from "../components/Common/InfiniteScroll";
 import Loading from "../components/Common/Loading";
 import { useAuth } from "../contexts/Auth";
@@ -198,12 +199,7 @@ const DailyReports = () => {
 
   return (
     <Container>
-      <InfiniteScroll
-        enabled={!!data?.dailyReports && data.dailyReports.length > 0}
-        loading={networkStatus !== 7}
-        content={content}
-        nextPage={() => nextPage()}
-      />
+      <DailyReportFullPageList />
     </Container>
   );
 };

@@ -1,0 +1,20 @@
+fragment VehicleIssueCardSnippet on VehicleIssueClass {
+  _id
+  title
+  description
+  priority
+  closed
+  createdAt
+  vehicle {
+    ...VehicleCardSnippet
+  }
+  author {
+    ...UserCardSnippet
+  }
+  assignedTo {
+    ...UserCardSnippet
+  }
+  operatorDailyReport {
+    ...OperatorDailyReportCardSnippet
+  }
+}

@@ -1,6 +1,7 @@
 fragment SystemSnippet on SystemClass {
   unitDefaults
   laborTypes
+  fluidTypes
   companyVehicleTypeDefaults {
     ...DefaultRateSnippet
   }

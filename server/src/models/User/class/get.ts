@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 import { Employee, EmployeeDocument, UserDocument, UserModel } from "@models";
 import { GetByIDOptions, IListOptions } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
+import { VehicleIssuePriority } from "@typescript/vehicleIssue";
 
 /**
  * ----- Static Methods -----
@@ -63,6 +64,15 @@ const byResetPasswordToken = async (
   return user;
 };
 
+const bySubscribedPriority = async (
+  User: UserModel,
+  priority: VehicleIssuePriority
+) => {
+  return await User.find({
+    "settings.subscribedVehicleIssuePriorities": priority,
+  });
+};
+
 /**
  * ----- Methods -----
  */
@@ -92,5 +102,6 @@ export default {
   byEmail,
   list,
   byResetPasswordToken,
+  bySubscribedPriority,
   employee,
 };

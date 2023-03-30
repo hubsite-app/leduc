@@ -32,6 +32,12 @@ export default class SystemResolver {
 
   @Authorized(["ADMIN"])
   @Mutation(() => SystemClass)
+  async systemUpdateFluidTypes(@Arg("data", () => [String]) data: string[]) {
+    return mutations.fluidTypes(data);
+  }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => SystemClass)
   async systemUpdateCompanyVehicleTypeDefaults(
     @Arg("data", () => [DefaultRateData]) data: DefaultRateData[]
   ) {

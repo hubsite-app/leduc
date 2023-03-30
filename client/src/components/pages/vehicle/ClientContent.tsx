@@ -1,12 +1,15 @@
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, Heading, Text } from "@chakra-ui/react";
 import React from "react";
 import { useVehicleFullQuery } from "../../../generated/graphql";
 import createLink from "../../../utils/createLink";
 import formatNumber from "../../../utils/formatNumber";
 import Card from "../../Common/Card";
 import Loading from "../../Common/Loading";
+import OperatorDailyReportCard from "../../Common/OperatorDailyReport/OperatorDailyReportCard";
 import Permission from "../../Common/Permission";
+import ShowMore from "../../Common/ShowMore";
 import TextLink from "../../Common/TextLink";
+import VehicleIssueCard from "../../Common/VehicleIssue/Card";
 import VehicleRates from "./views/Rates";
 
 interface IVehicleClientContent {
@@ -60,6 +63,48 @@ const VehicleClientContent = ({ id }: IVehicleClientContent) => {
                 </TextLink>
               </Box>
             ))}
+          </Card>
+
+          <Card>
+            <Heading ml={2} w="100%" my="auto" size="md">
+              Operator Daily Reports
+            </Heading>
+            <Flex flexDir="column" w="100%" px={4} py={2}>
+              {vehicle.operatorDailyReports.length > 0 ? (
+                <ShowMore
+                  list={vehicle.operatorDailyReports.map(
+                    (operatorDailyReport) => (
+                      <OperatorDailyReportCard
+                        operatorDailyReport={operatorDailyReport}
+                        key={operatorDailyReport._id}
+                      />
+                    )
+                  )}
+                />
+              ) : (
+                <Center>No Operator Daily Reports</Center>
+              )}
+            </Flex>
+          </Card>
+
+          <Card>
+            <Heading ml={2} w="100%" my="auto" size="md">
+              Vehicle Issues
+            </Heading>
+            <Flex flexDir="column" w="100%" px={4} py={2}>
+              {vehicle.vehicleIssues.length > 0 ? (
+                <ShowMore
+                  list={vehicle.vehicleIssues.map((vehicleIssue) => (
+                    <VehicleIssueCard
+                      vehicleIssue={vehicleIssue}
+                      key={vehicleIssue._id}
+                    />
+                  ))}
+                />
+              ) : (
+                <Center>No Operator Daily Reports</Center>
+              )}
+            </Flex>
           </Card>
         </Box>
       );

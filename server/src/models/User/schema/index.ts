@@ -49,11 +49,16 @@ export class UserSchema {
   @prop({ required: true, enum: UserRoles, default: UserRoles.User })
   public role!: UserRoles;
 
-  // @Field(() => UserTypes, {
-  //   defaultValue: UserTypes.Operations,
-  // })
-  // @prop({ required: true, enum: UserTypes, default: UserTypes.Operations })
-  // public type!: UserTypes;
+  @Field(() => [UserTypes], {
+    defaultValue: [UserTypes.Operations],
+  })
+  @prop({
+    type: () => [String],
+    required: true,
+    enum: UserTypes,
+    default: [UserTypes.Operations],
+  })
+  public types!: UserTypes[];
 
   @Field(() => EmployeeClass, { nullable: false })
   @prop({ ref: () => EmployeeClass, required: true })

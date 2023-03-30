@@ -16,7 +16,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { FiPlus } from "react-icons/fi";
 import { useAuth } from "../../../contexts/Auth";
-import { UserRoles } from "../../../generated/graphql";
+import { UserRoles, UserTypes } from "../../../generated/graphql";
 import createLink from "../../../utils/createLink";
 import Permission from "../../Common/Permission";
 import CompanyCreateForm from "../../Forms/Company/CompanyCreate";
@@ -25,10 +25,11 @@ import DailyReportCreateForm from "../../Forms/DailyReport/DailyReportCreate";
 import EmployeeCreateForm from "../../Forms/Employee/EmployeeCreate";
 import JobsiteCreateForm from "../../Forms/Jobsite/JobsiteCreate";
 import MaterialCreateForm from "../../Forms/Material/MaterialCreate";
+import OperatorDailyReportVehicleSelectForm from "../../Forms/OperatorDailyReport/VehicleSelect";
 
 const NavbarCreate = () => {
   /**
-   * ----- Hook Initialization
+   * --- Hook Initialization ---
    */
 
   const {
@@ -38,7 +39,13 @@ const NavbarCreate = () => {
   const router = useRouter();
 
   const [form, setForm] = React.useState<
-    "dailyReport" | "jobsite" | "crew" | "material" | "company" | "employee"
+    | "dailyReport"
+    | "jobsite"
+    | "crew"
+    | "material"
+    | "company"
+    | "employee"
+    | "operatorDailyReport"
   >();
 
   /**
@@ -50,10 +57,9 @@ const NavbarCreate = () => {
       return (
         <Box height="100%" pt={1}>
           <Menu>
-            {/* @ts-expect-error */}
             <MenuButton
               as={IconButton}
-              icon={<FiPlus />}
+              icon={React.createElement(FiPlus) as React.ReactElement<any, any>}
               my="auto"
               size="sm"
               backgroundColor="transparent"
@@ -66,9 +72,19 @@ const NavbarCreate = () => {
               _active={{ backgroundColor: "rgba(113,128,150,0.1)" }}
             />
             <MenuList>
-              <MenuItem onClick={() => setForm("dailyReport")}>
-                Daily Report
-              </MenuItem>
+              <Permission minRole={UserRoles.User} type={UserTypes.Operations}>
+                <MenuItem onClick={() => setForm("dailyReport")}>
+                  Daily Report
+                </MenuItem>
+              </Permission>
+              <Permission
+                minRole={UserRoles.User}
+                type={UserTypes.VehicleMaintenance}
+              >
+                <MenuItem onClick={() => setForm("operatorDailyReport")}>
+                  Operator Daily Report
+                </MenuItem>
+              </Permission>
               <Permission minRole={UserRoles.ProjectManager}>
                 <MenuItem onClick={() => setForm("jobsite")}>Jobsite</MenuItem>
               </Permission>
@@ -98,6 +114,27 @@ const NavbarCreate = () => {
                   onSuccess={(dailyReport) => {
                     setForm(undefined);
                     router.push(createLink.dailyReport(dailyReport._id));
+                  }}
+                />
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+          {/* OPERATOR DAILY REPORT */}
+          <Modal
+            isOpen={form === "operatorDailyReport"}
+            onClose={() => setForm(undefined)}
+          >
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Operator Daily Report</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <OperatorDailyReportVehicleSelectForm
+                  onSubmit={(vehicleId) => {
+                    setForm(undefined);
+                    router.push(
+                      createLink.vehicleOperatorDailyReportCreate(vehicleId)
+                    );
                   }}
                 />
               </ModalBody>

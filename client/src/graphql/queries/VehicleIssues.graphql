@@ -1,0 +1,5 @@
+query VehicleIssues($options: ListOptionData) {
+  vehicleIssues(options: $options) {
+    ...VehicleIssueCardSnippet
+  }
+}

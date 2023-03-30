@@ -17,6 +17,14 @@ export type Scalars = {
   Upload: any;
 };
 
+export type Checklist = {
+  coolantChecked: Scalars['Boolean'];
+  fluidsChecked: Scalars['Boolean'];
+  oilChecked: Scalars['Boolean'];
+  visualInspectionComplete: Scalars['Boolean'];
+  walkaroundComplete: Scalars['Boolean'];
+};
+
 export type CompanyClass = {
   __typename?: 'CompanyClass';
   _id: Scalars['ID'];
@@ -250,6 +258,46 @@ export type EmployeeWorkUpdateData = {
   startTime: Scalars['DateTime'];
 };
 
+export type EquipmentFluidAddedSchema = {
+  __typename?: 'EquipmentFluidAddedSchema';
+  _id: Scalars['ID'];
+  amount: Scalars['Float'];
+  type: Scalars['String'];
+};
+
+export type EquipmentFunctionCheckSchema = {
+  __typename?: 'EquipmentFunctionCheckSchema';
+  _id: Scalars['ID'];
+  backupAlarm: Scalars['Boolean'];
+  fireExtinguisher: Scalars['Boolean'];
+  licensePlate: Scalars['Boolean'];
+  lights: Scalars['Boolean'];
+};
+
+export type EquipmentLeaksSchema = {
+  __typename?: 'EquipmentLeaksSchema';
+  _id: Scalars['ID'];
+  location: Scalars['String'];
+  type: Scalars['String'];
+};
+
+export type EquipmentUsage = {
+  unit: EquipmentUsageUnits;
+  usage: Scalars['Float'];
+};
+
+export type EquipmentUsageSchema = {
+  __typename?: 'EquipmentUsageSchema';
+  _id: Scalars['ID'];
+  unit: EquipmentUsageUnits;
+  usage: Scalars['Float'];
+};
+
+export enum EquipmentUsageUnits {
+  Hours = 'hours',
+  Km = 'km'
+}
+
 export type FileClass = {
   __typename?: 'FileClass';
   _id: Scalars['ID'];
@@ -264,6 +312,18 @@ export type FileClass = {
 export type FileCreateData = {
   description?: InputMaybe<Scalars['String']>;
   file: Scalars['Upload'];
+};
+
+export type FluidAdded = {
+  amount: Scalars['Float'];
+  type: Scalars['String'];
+};
+
+export type FunctionChecks = {
+  backupAlarm: Scalars['Boolean'];
+  fireExtinguisher: Scalars['Boolean'];
+  licensePlate: Scalars['Boolean'];
+  lights: Scalars['Boolean'];
 };
 
 export type InvoiceClass = {
@@ -504,6 +564,11 @@ export type JobsiteYearReportClass = {
   update: UpdateClass;
 };
 
+export type Leak = {
+  location: Scalars['String'];
+  type: Scalars['String'];
+};
+
 export type ListOptionData = {
   offset?: InputMaybe<Scalars['Float']>;
   pageLimit?: InputMaybe<Scalars['Float']>;
@@ -654,6 +719,7 @@ export type Mutation = {
   materialShipmentDelete: Scalars['String'];
   materialShipmentUpdate: MaterialShipmentClass;
   materialUpdate: MaterialClass;
+  operatorDailyReportCreate: OperatorDailyReportClass;
   productionCreate: ProductionClass;
   productionDelete: Scalars['String'];
   productionUpdate: ProductionClass;
@@ -661,6 +727,7 @@ export type Mutation = {
   signup: Scalars['String'];
   signupCreate: SignupClass;
   systemUpdateCompanyVehicleTypeDefaults: SystemClass;
+  systemUpdateFluidTypes: SystemClass;
   systemUpdateInternalExpenseOverheadRate: SystemClass;
   systemUpdateLaborTypes: SystemClass;
   systemUpdateMaterialShipmentVehicleTypeDefaults: SystemClass;
@@ -670,8 +737,13 @@ export type Mutation = {
   userPasswordResetRequest: Scalars['Boolean'];
   userUpdateHomeView: UserClass;
   userUpdateRole: UserClass;
+  userUpdateSubscribedPriorities: UserClass;
+  userUpdateTypes: UserClass;
   vehicleArchive: VehicleClass;
   vehicleCreate: VehicleClass;
+  vehicleIssueAssignedToUpdate: VehicleIssueClass;
+  vehicleIssueClose: VehicleIssueClass;
+  vehicleIssueCreate: VehicleIssueClass;
   vehicleUnarchive: VehicleClass;
   vehicleUpdate: VehicleClass;
   vehicleUpdateRates: VehicleClass;
@@ -977,6 +1049,12 @@ export type MutationMaterialUpdateArgs = {
 };
 
 
+export type MutationOperatorDailyReportCreateArgs = {
+  data: OperatorDailyReportCreateData;
+  vehicleId: Scalars['ID'];
+};
+
+
 export type MutationProductionCreateArgs = {
   dailyReportId: Scalars['String'];
   data: ProductionCreateData;
@@ -1013,6 +1091,11 @@ export type MutationSignupCreateArgs = {
 
 export type MutationSystemUpdateCompanyVehicleTypeDefaultsArgs = {
   data: Array<DefaultRateData>;
+};
+
+
+export type MutationSystemUpdateFluidTypesArgs = {
+  data: Array<Scalars['String']>;
 };
 
 
@@ -1063,6 +1146,17 @@ export type MutationUserUpdateRoleArgs = {
 };
 
 
+export type MutationUserUpdateSubscribedPrioritiesArgs = {
+  priorities: Array<VehicleIssuePriority>;
+};
+
+
+export type MutationUserUpdateTypesArgs = {
+  id: Scalars['String'];
+  types: Array<UserTypes>;
+};
+
+
 export type MutationVehicleArchiveArgs = {
   id: Scalars['ID'];
 };
@@ -1071,6 +1165,23 @@ export type MutationVehicleArchiveArgs = {
 export type MutationVehicleCreateArgs = {
   crewId?: InputMaybe<Scalars['String']>;
   data: VehicleCreateData;
+};
+
+
+export type MutationVehicleIssueAssignedToUpdateArgs = {
+  assignedTo?: InputMaybe<Scalars['ID']>;
+  id: Scalars['ID'];
+};
+
+
+export type MutationVehicleIssueCloseArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationVehicleIssueCreateArgs = {
+  data: VehicleIssueCreateData;
+  vehicleId: Scalars['ID'];
 };
 
 
@@ -1131,6 +1242,45 @@ export type OnSiteSummaryReportClass = {
   truckingQuantity: Scalars['Float'];
   vehicleCost: Scalars['Float'];
   vehicleHours: Scalars['Float'];
+};
+
+export type OperatorChecklistSchema = {
+  __typename?: 'OperatorChecklistSchema';
+  _id: Scalars['ID'];
+  coolantChecked: Scalars['Boolean'];
+  fluidsChecked: Scalars['Boolean'];
+  oilChecked: Scalars['Boolean'];
+  visualInspectionComplete: Scalars['Boolean'];
+  walkaroundComplete: Scalars['Boolean'];
+};
+
+export type OperatorDailyReportClass = {
+  __typename?: 'OperatorDailyReportClass';
+  _id: Scalars['ID'];
+  author: UserClass;
+  checklist: OperatorChecklistSchema;
+  createdAt: Scalars['DateTime'];
+  damageObserved: Scalars['Boolean'];
+  equipmentUsage: EquipmentUsageSchema;
+  fluidsAdded: Array<EquipmentFluidAddedSchema>;
+  functionChecks: EquipmentFunctionCheckSchema;
+  leaks: Array<EquipmentLeaksSchema>;
+  malfunction: Scalars['Boolean'];
+  schemaVersion: Scalars['Float'];
+  startTime: Scalars['DateTime'];
+  vehicle: VehicleClass;
+  vehicleIssues: Array<VehicleIssueClass>;
+};
+
+export type OperatorDailyReportCreateData = {
+  checklist: Checklist;
+  damageObserved: Scalars['Boolean'];
+  equipmentUsage: EquipmentUsage;
+  fluidsAdded: Array<FluidAdded>;
+  functionChecks: FunctionChecks;
+  leaks: Array<Leak>;
+  malfunction: Scalars['Boolean'];
+  startTime: Scalars['DateTime'];
 };
 
 export type ProductionClass = {
@@ -1197,12 +1347,17 @@ export type Query = {
   material: MaterialClass;
   materials: Array<MaterialClass>;
   materialSearch: Array<MaterialClass>;
+  mechanics: Array<UserClass>;
+  operatorDailyReport: OperatorDailyReportClass;
+  operatorDailyReports: Array<OperatorDailyReportClass>;
   search: Array<SearchClass>;
   signup: SignupClass;
   system: SystemClass;
   user?: Maybe<UserClass>;
   users: Array<UserClass>;
   vehicle: VehicleClass;
+  vehicleIssue: VehicleIssueClass;
+  vehicleIssues: Array<VehicleIssueClass>;
   vehicles: Array<VehicleClass>;
   vehicleSearch: Array<VehicleClass>;
 };
@@ -1355,6 +1510,16 @@ export type QueryMaterialSearchArgs = {
 };
 
 
+export type QueryOperatorDailyReportArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryOperatorDailyReportsArgs = {
+  options?: InputMaybe<ListOptionData>;
+};
+
+
 export type QuerySearchArgs = {
   searchString: Scalars['String'];
 };
@@ -1377,6 +1542,16 @@ export type QueryUsersArgs = {
 
 export type QueryVehicleArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryVehicleIssueArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryVehicleIssuesArgs = {
+  options?: InputMaybe<ListOptionData>;
 };
 
 
@@ -1498,6 +1673,7 @@ export type SystemClass = {
   _id: Scalars['ID'];
   companyVehicleTypeDefaults: Array<DefaultRateClass>;
   createdAt: Scalars['DateTime'];
+  fluidTypes: Array<Scalars['String']>;
   /** Percent overhead to be added to internal expenses when calculating total expenses */
   internalExpenseOverheadRate: Array<RateClass>;
   laborTypes: Array<Scalars['String']>;
@@ -1579,6 +1755,7 @@ export type UserClass = {
   role: UserRoles;
   schemaVersion: Scalars['Float'];
   settings: UserSettings;
+  types?: Maybe<Array<UserTypes>>;
 };
 
 export enum UserHomeViewSettings {
@@ -1600,7 +1777,13 @@ export enum UserRoles {
 export type UserSettings = {
   __typename?: 'UserSettings';
   homeView: UserHomeViewSettings;
+  subscribedVehicleIssuePriorities: Array<VehicleIssuePriority>;
 };
+
+export enum UserTypes {
+  Operations = 'Operations',
+  VehicleMaintenance = 'VehicleMaintenance'
+}
 
 export type VehicleClass = {
   __typename?: 'VehicleClass';
@@ -1609,11 +1792,13 @@ export type VehicleClass = {
   crews: Array<CrewClass>;
   currentRate: Scalars['Float'];
   name: Scalars['String'];
+  operatorDailyReports: Array<OperatorDailyReportClass>;
   rates: Array<RateClass>;
   rental: Scalars['Boolean'];
   schemaVersion: Scalars['Float'];
   sourceCompany: Scalars['String'];
   vehicleCode: Scalars['String'];
+  vehicleIssues: Array<VehicleIssueClass>;
   vehicleType: Scalars['String'];
 };
 
@@ -1624,6 +1809,35 @@ export type VehicleCreateData = {
   vehicleCode: Scalars['String'];
   vehicleType: Scalars['String'];
 };
+
+export type VehicleIssueClass = {
+  __typename?: 'VehicleIssueClass';
+  _id: Scalars['ID'];
+  assignedTo?: Maybe<UserClass>;
+  author: UserClass;
+  closed: Scalars['Boolean'];
+  createdAt: Scalars['DateTime'];
+  description: Scalars['String'];
+  operatorDailyReport?: Maybe<OperatorDailyReportClass>;
+  priority: VehicleIssuePriority;
+  schemaVersion: Scalars['Float'];
+  title: Scalars['String'];
+  vehicle: VehicleClass;
+};
+
+export type VehicleIssueCreateData = {
+  assignedTo?: InputMaybe<Scalars['ID']>;
+  description: Scalars['String'];
+  operatorDailyReport?: InputMaybe<Scalars['ID']>;
+  priority: VehicleIssuePriority;
+  title: Scalars['String'];
+};
+
+export enum VehicleIssuePriority {
+  P0 = 'P0',
+  P1 = 'P1',
+  P2 = 'P2'
+}
 
 export type VehicleObjectClass = {
   __typename?: 'VehicleObjectClass';
@@ -1646,6 +1860,7 @@ export type VehicleReportClass = {
 
 export type VehicleUpdateData = {
   name: Scalars['String'];
+  vehicleCode: Scalars['String'];
   vehicleType: Scalars['String'];
 };
 
@@ -1709,7 +1924,7 @@ export type EmployeeWorkCardSnippetFragment = { __typename?: 'EmployeeWorkClass'
 
 export type EmployeeCardSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> };
 
-export type EmployeeFullSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, user?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean } | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, signup?: { __typename?: 'SignupClass', _id: string } | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> };
+export type EmployeeFullSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, user?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, signup?: { __typename?: 'SignupClass', _id: string } | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> };
 
 export type EmployeeSsrSnippetFragment = { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null };
 
@@ -1791,6 +2006,10 @@ export type MaterialFullSnippetFragment = { __typename?: 'MaterialClass', canRem
 
 export type OnSiteSummaryReportSnippetFragment = { __typename?: 'OnSiteSummaryReportClass', employeeHours: number, employeeCost: number, vehicleHours: number, vehicleCost: number, materialQuantity: number, materialCost: number, nonCostedMaterialQuantity: number, truckingQuantity: number, truckingHours: number, truckingCost: number, crewTypeSummaries: Array<{ __typename?: 'CrewTypeOnSiteSummaryClass', crewType: CrewTypes, employeeHours: number, employeeCost: number, vehicleHours: number, vehicleCost: number, materialQuantity: number, materialCost: number, nonCostedMaterialQuantity: number, truckingQuantity: number, truckingHours: number, truckingCost: number }> };
 
+export type OperatorDailyReportCardSnippetFragment = { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> };
+
+export type OperatorDailyReportFullSnippetFragment = { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicleIssues: Array<{ __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null }>, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> };
+
 export type ProductionCardSnippetFragment = { __typename?: 'ProductionClass', _id: string, jobTitle: string, quantity: number, unit: string, startTime: any, endTime: any, description?: string | null };
 
 export type RateSnippetFragment = { __typename?: 'RateClass', date: any, rate: number };
@@ -1803,7 +2022,7 @@ export type SearchSnippetFragment = { __typename?: 'SearchClass', score: number,
 
 export type SignupFullSnippetFragment = { __typename?: 'SignupClass', _id: string, employee: { __typename?: 'EmployeeClass', _id: string, name: string } };
 
-export type SystemSnippetFragment = { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> };
+export type SystemSnippetFragment = { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> };
 
 export type TruckingRateSnippetFragment = { __typename?: 'TruckingRateClass', rate: number, date: any, type: TruckingRateTypes };
 
@@ -1811,15 +2030,21 @@ export type TruckingTypeRateSnippetFragment = { __typename?: 'TruckingTypeRateCl
 
 export type UpdateSnippetFragment = { __typename?: 'UpdateClass', status: UpdateStatus, lastUpdatedAt?: any | null };
 
-export type UserCardSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean };
+export type UserCardSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean };
 
-export type FullUserSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }> }, settings: { __typename?: 'UserSettings', homeView: UserHomeViewSettings } };
+export type UserCrewSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', crews: Array<{ __typename?: 'CrewClass', vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> }> } };
+
+export type FullUserSnippetFragment = { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }> }, settings: { __typename?: 'UserSettings', homeView: UserHomeViewSettings, subscribedVehicleIssuePriorities: Array<VehicleIssuePriority> } };
+
+export type VehicleIssueCardSnippetFragment = { __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null };
+
+export type VehicleIssueFullSnippetFragment = { __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null };
 
 export type VehicleWorkCardSnippetFragment = { __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle?: string | null, vehicle?: { __typename?: 'VehicleClass', _id: string, name: string } | null };
 
 export type VehicleCardSnippetFragment = { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> };
 
-export type VehicleFullSnippetFragment = { __typename?: 'VehicleClass', currentRate: number, _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> };
+export type VehicleFullSnippetFragment = { __typename?: 'VehicleClass', currentRate: number, _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, operatorDailyReports: Array<{ __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> }>, vehicleIssues: Array<{ __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null }>, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> };
 
 export type VehicleSsrSnippetFragment = { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null };
 
@@ -1984,7 +2209,7 @@ export type EmployeeUpdateMutationVariables = Exact<{
 }>;
 
 
-export type EmployeeUpdateMutation = { __typename?: 'Mutation', employeeUpdate: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, user?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean } | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, signup?: { __typename?: 'SignupClass', _id: string } | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type EmployeeUpdateMutation = { __typename?: 'Mutation', employeeUpdate: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, user?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, signup?: { __typename?: 'SignupClass', _id: string } | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type EmployeeUpdateRatesMutationVariables = Exact<{
   id: Scalars['String'];
@@ -2223,6 +2448,14 @@ export type MaterialUpdateMutationVariables = Exact<{
 
 export type MaterialUpdateMutation = { __typename?: 'Mutation', materialUpdate: { __typename?: 'MaterialClass', canRemove: boolean, _id: string, name: string } };
 
+export type OperatorDailyReportCreateMutationVariables = Exact<{
+  vehicleId: Scalars['ID'];
+  data: OperatorDailyReportCreateData;
+}>;
+
+
+export type OperatorDailyReportCreateMutation = { __typename?: 'Mutation', operatorDailyReportCreate: { __typename?: 'OperatorDailyReportClass', _id: string } };
+
 export type ProductionCreateMutationVariables = Exact<{
   dailyReportId: Scalars['String'];
   data: ProductionCreateData;
@@ -2274,35 +2507,42 @@ export type SystemUpdateCompanyVehicleTypeDefaultsMutationVariables = Exact<{
 }>;
 
 
-export type SystemUpdateCompanyVehicleTypeDefaultsMutation = { __typename?: 'Mutation', systemUpdateCompanyVehicleTypeDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type SystemUpdateCompanyVehicleTypeDefaultsMutation = { __typename?: 'Mutation', systemUpdateCompanyVehicleTypeDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+
+export type SystemUpdateFluidTypesMutationVariables = Exact<{
+  data: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type SystemUpdateFluidTypesMutation = { __typename?: 'Mutation', systemUpdateFluidTypes: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type SystemUpdateInternalExpenseOverheadRateMutationVariables = Exact<{
   data: Array<RatesData> | RatesData;
 }>;
 
 
-export type SystemUpdateInternalExpenseOverheadRateMutation = { __typename?: 'Mutation', systemUpdateInternalExpenseOverheadRate: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type SystemUpdateInternalExpenseOverheadRateMutation = { __typename?: 'Mutation', systemUpdateInternalExpenseOverheadRate: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type SystemUpdateLaborTypesMutationVariables = Exact<{
   data: Array<Scalars['String']> | Scalars['String'];
 }>;
 
 
-export type SystemUpdateLaborTypesMutation = { __typename?: 'Mutation', systemUpdateLaborTypes: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type SystemUpdateLaborTypesMutation = { __typename?: 'Mutation', systemUpdateLaborTypes: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type SystemUpdateMaterialShipmentVehicleTypeDefaultsMutationVariables = Exact<{
   data: Array<DefaultRateData> | DefaultRateData;
 }>;
 
 
-export type SystemUpdateMaterialShipmentVehicleTypeDefaultsMutation = { __typename?: 'Mutation', systemUpdateMaterialShipmentVehicleTypeDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type SystemUpdateMaterialShipmentVehicleTypeDefaultsMutation = { __typename?: 'Mutation', systemUpdateMaterialShipmentVehicleTypeDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type SystemUpdateUnitDefaultsMutationVariables = Exact<{
   data: Array<Scalars['String']> | Scalars['String'];
 }>;
 
 
-export type SystemUpdateUnitDefaultsMutation = { __typename?: 'Mutation', systemUpdateUnitDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type SystemUpdateUnitDefaultsMutation = { __typename?: 'Mutation', systemUpdateUnitDefaults: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type UserDeleteMutationVariables = Exact<{
   userId: Scalars['String'];
@@ -2339,7 +2579,22 @@ export type UserUpdateRoleMutationVariables = Exact<{
 }>;
 
 
-export type UserUpdateRoleMutation = { __typename?: 'Mutation', userUpdateRole: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean } };
+export type UserUpdateRoleMutation = { __typename?: 'Mutation', userUpdateRole: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } };
+
+export type UserUpdateSubscribedPrioritiesMutationVariables = Exact<{
+  priorities: Array<VehicleIssuePriority> | VehicleIssuePriority;
+}>;
+
+
+export type UserUpdateSubscribedPrioritiesMutation = { __typename?: 'Mutation', userUpdateSubscribedPriorities: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } };
+
+export type UserUpdateTypesMutationVariables = Exact<{
+  id: Scalars['String'];
+  types: Array<UserTypes> | UserTypes;
+}>;
+
+
+export type UserUpdateTypesMutation = { __typename?: 'Mutation', userUpdateTypes: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } };
 
 export type VehicleArchiveMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -2356,6 +2611,29 @@ export type VehicleCreateMutationVariables = Exact<{
 
 export type VehicleCreateMutation = { __typename?: 'Mutation', vehicleCreate: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
+export type VehicleIssueAssignedToUpdateMutationVariables = Exact<{
+  id: Scalars['ID'];
+  assignedTo?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type VehicleIssueAssignedToUpdateMutation = { __typename?: 'Mutation', vehicleIssueAssignedToUpdate: { __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null } };
+
+export type VehicleIssueCloseMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type VehicleIssueCloseMutation = { __typename?: 'Mutation', vehicleIssueClose: { __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null } };
+
+export type VehicleIssueCreateMutationVariables = Exact<{
+  vehicleId: Scalars['ID'];
+  data: VehicleIssueCreateData;
+}>;
+
+
+export type VehicleIssueCreateMutation = { __typename?: 'Mutation', vehicleIssueCreate: { __typename?: 'VehicleIssueClass', _id: string } };
+
 export type VehicleUnarchiveMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -2369,7 +2647,7 @@ export type VehicleUpdateMutationVariables = Exact<{
 }>;
 
 
-export type VehicleUpdateMutation = { __typename?: 'Mutation', vehicleUpdate: { __typename?: 'VehicleClass', currentRate: number, _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type VehicleUpdateMutation = { __typename?: 'Mutation', vehicleUpdate: { __typename?: 'VehicleClass', currentRate: number, _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, operatorDailyReports: Array<{ __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> }>, vehicleIssues: Array<{ __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null }>, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type VehicleUpdateRatesMutationVariables = Exact<{
   id: Scalars['String'];
@@ -2486,7 +2764,7 @@ export type CrewSsrQuery = { __typename?: 'Query', crew: { __typename?: 'CrewCla
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserQuery = { __typename?: 'Query', currentUser: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }> }, settings: { __typename?: 'UserSettings', homeView: UserHomeViewSettings } } };
+export type CurrentUserQuery = { __typename?: 'Query', currentUser: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }> }, settings: { __typename?: 'UserSettings', homeView: UserHomeViewSettings, subscribedVehicleIssuePriorities: Array<VehicleIssuePriority> } } };
 
 export type DailyReportCardQueryVariables = Exact<{
   id: Scalars['String'];
@@ -2553,7 +2831,7 @@ export type EmployeeFullQueryVariables = Exact<{
 }>;
 
 
-export type EmployeeFullQuery = { __typename?: 'Query', employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, user?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean } | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, signup?: { __typename?: 'SignupClass', _id: string } | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type EmployeeFullQuery = { __typename?: 'Query', employee: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, user?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, signup?: { __typename?: 'SignupClass', _id: string } | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type EmployeeSsrQueryVariables = Exact<{
   id: Scalars['String'];
@@ -2757,6 +3035,32 @@ export type MaterialsFullQueryVariables = Exact<{
 
 export type MaterialsFullQuery = { __typename?: 'Query', materials: Array<{ __typename?: 'MaterialClass', canRemove: boolean, _id: string, name: string }> };
 
+export type MechanicsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MechanicsQuery = { __typename?: 'Query', mechanics: Array<{ __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }> };
+
+export type OperatorDailyReportCardQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type OperatorDailyReportCardQuery = { __typename?: 'Query', operatorDailyReport: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } };
+
+export type OperatorDailyReportFullQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type OperatorDailyReportFullQuery = { __typename?: 'Query', operatorDailyReport: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicleIssues: Array<{ __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null }>, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } };
+
+export type OperatorDailyReportsQueryVariables = Exact<{
+  options?: InputMaybe<ListOptionData>;
+}>;
+
+
+export type OperatorDailyReportsQuery = { __typename?: 'Query', operatorDailyReports: Array<{ __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> }> };
+
 export type SearchQueryVariables = Exact<{
   searchString: Scalars['String'];
 }>;
@@ -2774,7 +3078,14 @@ export type SignupSsrQuery = { __typename?: 'Query', signup: { __typename?: 'Sig
 export type SystemQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SystemQuery = { __typename?: 'Query', system: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type SystemQuery = { __typename?: 'Query', system: { __typename?: 'SystemClass', unitDefaults: Array<string>, laborTypes: Array<string>, fluidTypes: Array<string>, companyVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, materialShipmentVehicleTypeDefaults: Array<{ __typename?: 'DefaultRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'RateClass', rate: number, date: any }> }>, internalExpenseOverheadRate: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+
+export type UserCrewQueryVariables = Exact<{
+  query: UserQuery;
+}>;
+
+
+export type UserCrewQuery = { __typename?: 'Query', user?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', crews: Array<{ __typename?: 'CrewClass', vehicles: Array<{ __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> }> } } | null };
 
 export type UserForPasswordResetQueryVariables = Exact<{
   query: UserQuery;
@@ -2788,7 +3099,28 @@ export type UsersQueryVariables = Exact<{
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, admin: boolean, projectManager: boolean }> };
+export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }> };
+
+export type VehicleIssueQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type VehicleIssueQuery = { __typename?: 'Query', vehicleIssue: { __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null } };
+
+export type VehicleIssueCardQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type VehicleIssueCardQuery = { __typename?: 'Query', vehicleIssue: { __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null } };
+
+export type VehicleIssuesQueryVariables = Exact<{
+  options?: InputMaybe<ListOptionData>;
+}>;
+
+
+export type VehicleIssuesQuery = { __typename?: 'Query', vehicleIssues: Array<{ __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null }> };
 
 export type VehicleSearchQueryVariables = Exact<{
   searchString: Scalars['String'];
@@ -2803,7 +3135,7 @@ export type VehicleFullQueryVariables = Exact<{
 }>;
 
 
-export type VehicleFullQuery = { __typename?: 'Query', vehicle: { __typename?: 'VehicleClass', currentRate: number, _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
+export type VehicleFullQuery = { __typename?: 'Query', vehicle: { __typename?: 'VehicleClass', currentRate: number, _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, crews: Array<{ __typename?: 'CrewClass', _id: string, name: string }>, operatorDailyReports: Array<{ __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> }>, vehicleIssues: Array<{ __typename?: 'VehicleIssueClass', _id: string, title: string, description: string, priority: VehicleIssuePriority, closed: boolean, createdAt: any, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean }, assignedTo?: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean } | null, operatorDailyReport?: { __typename?: 'OperatorDailyReportClass', _id: string, startTime: any, malfunction: boolean, damageObserved: boolean, vehicle: { __typename?: 'VehicleClass', _id: string, name: string, vehicleCode: string, vehicleType: string, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }, author: { __typename?: 'UserClass', _id: string, name: string, email: string, role: UserRoles, types?: Array<UserTypes> | null, admin: boolean, projectManager: boolean, employee: { __typename?: 'EmployeeClass', _id: string } }, equipmentUsage: { __typename?: 'EquipmentUsageSchema', usage: number, unit: EquipmentUsageUnits }, checklist: { __typename?: 'OperatorChecklistSchema', walkaroundComplete: boolean, visualInspectionComplete: boolean, oilChecked: boolean, coolantChecked: boolean, fluidsChecked: boolean }, functionChecks: { __typename?: 'EquipmentFunctionCheckSchema', backupAlarm: boolean, lights: boolean, fireExtinguisher: boolean, licensePlate: boolean }, leaks: Array<{ __typename?: 'EquipmentLeaksSchema', type: string, location: string }>, fluidsAdded: Array<{ __typename?: 'EquipmentFluidAddedSchema', type: string, amount: number }> } | null }>, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } };
 
 export type VehicleSsrQueryVariables = Exact<{
   id: Scalars['String'];
@@ -3218,6 +3550,7 @@ export const UserCardSnippetFragmentDoc = gql`
   name
   email
   role
+  types
   admin
   projectManager
 }
@@ -3732,6 +4065,82 @@ export const MaterialFullSnippetFragmentDoc = gql`
   canRemove
 }
     ${MaterialCardSnippetFragmentDoc}`;
+export const OperatorDailyReportCardSnippetFragmentDoc = gql`
+    fragment OperatorDailyReportCardSnippet on OperatorDailyReportClass {
+  _id
+  vehicle {
+    ...VehicleCardSnippet
+  }
+  author {
+    ...UserCardSnippet
+    employee {
+      _id
+    }
+  }
+  equipmentUsage {
+    usage
+    unit
+  }
+  startTime
+  checklist {
+    walkaroundComplete
+    visualInspectionComplete
+    oilChecked
+    coolantChecked
+    fluidsChecked
+  }
+  functionChecks {
+    backupAlarm
+    lights
+    fireExtinguisher
+    licensePlate
+  }
+  malfunction
+  damageObserved
+  leaks {
+    type
+    location
+  }
+  fluidsAdded {
+    type
+    amount
+  }
+}
+    ${VehicleCardSnippetFragmentDoc}
+${UserCardSnippetFragmentDoc}`;
+export const VehicleIssueCardSnippetFragmentDoc = gql`
+    fragment VehicleIssueCardSnippet on VehicleIssueClass {
+  _id
+  title
+  description
+  priority
+  closed
+  createdAt
+  vehicle {
+    ...VehicleCardSnippet
+  }
+  author {
+    ...UserCardSnippet
+  }
+  assignedTo {
+    ...UserCardSnippet
+  }
+  operatorDailyReport {
+    ...OperatorDailyReportCardSnippet
+  }
+}
+    ${VehicleCardSnippetFragmentDoc}
+${UserCardSnippetFragmentDoc}
+${OperatorDailyReportCardSnippetFragmentDoc}`;
+export const OperatorDailyReportFullSnippetFragmentDoc = gql`
+    fragment OperatorDailyReportFullSnippet on OperatorDailyReportClass {
+  ...OperatorDailyReportCardSnippet
+  vehicleIssues {
+    ...VehicleIssueCardSnippet
+  }
+}
+    ${OperatorDailyReportCardSnippetFragmentDoc}
+${VehicleIssueCardSnippetFragmentDoc}`;
 export const SearchSnippetFragmentDoc = gql`
     fragment SearchSnippet on SearchClass {
   score
@@ -3786,6 +4195,7 @@ export const SystemSnippetFragmentDoc = gql`
     fragment SystemSnippet on SystemClass {
   unitDefaults
   laborTypes
+  fluidTypes
   companyVehicleTypeDefaults {
     ...DefaultRateSnippet
   }
@@ -3798,6 +4208,19 @@ export const SystemSnippetFragmentDoc = gql`
 }
     ${DefaultRateSnippetFragmentDoc}
 ${RateSnippetFragmentDoc}`;
+export const UserCrewSnippetFragmentDoc = gql`
+    fragment UserCrewSnippet on UserClass {
+  ...UserCardSnippet
+  employee {
+    crews {
+      vehicles {
+        ...VehicleCardSnippet
+      }
+    }
+  }
+}
+    ${UserCardSnippetFragmentDoc}
+${VehicleCardSnippetFragmentDoc}`;
 export const FullUserSnippetFragmentDoc = gql`
     fragment FullUserSnippet on UserClass {
   ...UserCardSnippet
@@ -3811,10 +4234,16 @@ export const FullUserSnippetFragmentDoc = gql`
   }
   settings {
     homeView
+    subscribedVehicleIssuePriorities
   }
 }
     ${UserCardSnippetFragmentDoc}
 ${CrewCardSnippetFragmentDoc}`;
+export const VehicleIssueFullSnippetFragmentDoc = gql`
+    fragment VehicleIssueFullSnippet on VehicleIssueClass {
+  ...VehicleIssueCardSnippet
+}
+    ${VehicleIssueCardSnippetFragmentDoc}`;
 export const VehicleFullSnippetFragmentDoc = gql`
     fragment VehicleFullSnippet on VehicleClass {
   ...VehicleCardSnippet
@@ -3822,9 +4251,17 @@ export const VehicleFullSnippetFragmentDoc = gql`
   crews {
     ...CrewCardSnippet
   }
+  operatorDailyReports {
+    ...OperatorDailyReportCardSnippet
+  }
+  vehicleIssues {
+    ...VehicleIssueCardSnippet
+  }
 }
     ${VehicleCardSnippetFragmentDoc}
-${CrewCardSnippetFragmentDoc}`;
+${CrewCardSnippetFragmentDoc}
+${OperatorDailyReportCardSnippetFragmentDoc}
+${VehicleIssueCardSnippetFragmentDoc}`;
 export const VehicleSsrSnippetFragmentDoc = gql`
     fragment VehicleSSRSnippet on VehicleClass {
   _id
@@ -5589,6 +6026,40 @@ export function useMaterialUpdateMutation(baseOptions?: Apollo.MutationHookOptio
 export type MaterialUpdateMutationHookResult = ReturnType<typeof useMaterialUpdateMutation>;
 export type MaterialUpdateMutationResult = Apollo.MutationResult<MaterialUpdateMutation>;
 export type MaterialUpdateMutationOptions = Apollo.BaseMutationOptions<MaterialUpdateMutation, MaterialUpdateMutationVariables>;
+export const OperatorDailyReportCreateDocument = gql`
+    mutation OperatorDailyReportCreate($vehicleId: ID!, $data: OperatorDailyReportCreateData!) {
+  operatorDailyReportCreate(vehicleId: $vehicleId, data: $data) {
+    _id
+  }
+}
+    `;
+export type OperatorDailyReportCreateMutationFn = Apollo.MutationFunction<OperatorDailyReportCreateMutation, OperatorDailyReportCreateMutationVariables>;
+
+/**
+ * __useOperatorDailyReportCreateMutation__
+ *
+ * To run a mutation, you first call `useOperatorDailyReportCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useOperatorDailyReportCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [operatorDailyReportCreateMutation, { data, loading, error }] = useOperatorDailyReportCreateMutation({
+ *   variables: {
+ *      vehicleId: // value for 'vehicleId'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useOperatorDailyReportCreateMutation(baseOptions?: Apollo.MutationHookOptions<OperatorDailyReportCreateMutation, OperatorDailyReportCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<OperatorDailyReportCreateMutation, OperatorDailyReportCreateMutationVariables>(OperatorDailyReportCreateDocument, options);
+      }
+export type OperatorDailyReportCreateMutationHookResult = ReturnType<typeof useOperatorDailyReportCreateMutation>;
+export type OperatorDailyReportCreateMutationResult = Apollo.MutationResult<OperatorDailyReportCreateMutation>;
+export type OperatorDailyReportCreateMutationOptions = Apollo.BaseMutationOptions<OperatorDailyReportCreateMutation, OperatorDailyReportCreateMutationVariables>;
 export const ProductionCreateDocument = gql`
     mutation ProductionCreate($dailyReportId: String!, $data: ProductionCreateData!) {
   productionCreate(dailyReportId: $dailyReportId, data: $data) {
@@ -5820,6 +6291,39 @@ export function useSystemUpdateCompanyVehicleTypeDefaultsMutation(baseOptions?: 
 export type SystemUpdateCompanyVehicleTypeDefaultsMutationHookResult = ReturnType<typeof useSystemUpdateCompanyVehicleTypeDefaultsMutation>;
 export type SystemUpdateCompanyVehicleTypeDefaultsMutationResult = Apollo.MutationResult<SystemUpdateCompanyVehicleTypeDefaultsMutation>;
 export type SystemUpdateCompanyVehicleTypeDefaultsMutationOptions = Apollo.BaseMutationOptions<SystemUpdateCompanyVehicleTypeDefaultsMutation, SystemUpdateCompanyVehicleTypeDefaultsMutationVariables>;
+export const SystemUpdateFluidTypesDocument = gql`
+    mutation SystemUpdateFluidTypes($data: [String!]!) {
+  systemUpdateFluidTypes(data: $data) {
+    ...SystemSnippet
+  }
+}
+    ${SystemSnippetFragmentDoc}`;
+export type SystemUpdateFluidTypesMutationFn = Apollo.MutationFunction<SystemUpdateFluidTypesMutation, SystemUpdateFluidTypesMutationVariables>;
+
+/**
+ * __useSystemUpdateFluidTypesMutation__
+ *
+ * To run a mutation, you first call `useSystemUpdateFluidTypesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSystemUpdateFluidTypesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [systemUpdateFluidTypesMutation, { data, loading, error }] = useSystemUpdateFluidTypesMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSystemUpdateFluidTypesMutation(baseOptions?: Apollo.MutationHookOptions<SystemUpdateFluidTypesMutation, SystemUpdateFluidTypesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SystemUpdateFluidTypesMutation, SystemUpdateFluidTypesMutationVariables>(SystemUpdateFluidTypesDocument, options);
+      }
+export type SystemUpdateFluidTypesMutationHookResult = ReturnType<typeof useSystemUpdateFluidTypesMutation>;
+export type SystemUpdateFluidTypesMutationResult = Apollo.MutationResult<SystemUpdateFluidTypesMutation>;
+export type SystemUpdateFluidTypesMutationOptions = Apollo.BaseMutationOptions<SystemUpdateFluidTypesMutation, SystemUpdateFluidTypesMutationVariables>;
 export const SystemUpdateInternalExpenseOverheadRateDocument = gql`
     mutation SystemUpdateInternalExpenseOverheadRate($data: [RatesData!]!) {
   systemUpdateInternalExpenseOverheadRate(data: $data) {
@@ -6113,6 +6617,73 @@ export function useUserUpdateRoleMutation(baseOptions?: Apollo.MutationHookOptio
 export type UserUpdateRoleMutationHookResult = ReturnType<typeof useUserUpdateRoleMutation>;
 export type UserUpdateRoleMutationResult = Apollo.MutationResult<UserUpdateRoleMutation>;
 export type UserUpdateRoleMutationOptions = Apollo.BaseMutationOptions<UserUpdateRoleMutation, UserUpdateRoleMutationVariables>;
+export const UserUpdateSubscribedPrioritiesDocument = gql`
+    mutation UserUpdateSubscribedPriorities($priorities: [VehicleIssuePriority!]!) {
+  userUpdateSubscribedPriorities(priorities: $priorities) {
+    ...UserCardSnippet
+  }
+}
+    ${UserCardSnippetFragmentDoc}`;
+export type UserUpdateSubscribedPrioritiesMutationFn = Apollo.MutationFunction<UserUpdateSubscribedPrioritiesMutation, UserUpdateSubscribedPrioritiesMutationVariables>;
+
+/**
+ * __useUserUpdateSubscribedPrioritiesMutation__
+ *
+ * To run a mutation, you first call `useUserUpdateSubscribedPrioritiesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUserUpdateSubscribedPrioritiesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [userUpdateSubscribedPrioritiesMutation, { data, loading, error }] = useUserUpdateSubscribedPrioritiesMutation({
+ *   variables: {
+ *      priorities: // value for 'priorities'
+ *   },
+ * });
+ */
+export function useUserUpdateSubscribedPrioritiesMutation(baseOptions?: Apollo.MutationHookOptions<UserUpdateSubscribedPrioritiesMutation, UserUpdateSubscribedPrioritiesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UserUpdateSubscribedPrioritiesMutation, UserUpdateSubscribedPrioritiesMutationVariables>(UserUpdateSubscribedPrioritiesDocument, options);
+      }
+export type UserUpdateSubscribedPrioritiesMutationHookResult = ReturnType<typeof useUserUpdateSubscribedPrioritiesMutation>;
+export type UserUpdateSubscribedPrioritiesMutationResult = Apollo.MutationResult<UserUpdateSubscribedPrioritiesMutation>;
+export type UserUpdateSubscribedPrioritiesMutationOptions = Apollo.BaseMutationOptions<UserUpdateSubscribedPrioritiesMutation, UserUpdateSubscribedPrioritiesMutationVariables>;
+export const UserUpdateTypesDocument = gql`
+    mutation UserUpdateTypes($id: String!, $types: [UserTypes!]!) {
+  userUpdateTypes(id: $id, types: $types) {
+    ...UserCardSnippet
+  }
+}
+    ${UserCardSnippetFragmentDoc}`;
+export type UserUpdateTypesMutationFn = Apollo.MutationFunction<UserUpdateTypesMutation, UserUpdateTypesMutationVariables>;
+
+/**
+ * __useUserUpdateTypesMutation__
+ *
+ * To run a mutation, you first call `useUserUpdateTypesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUserUpdateTypesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [userUpdateTypesMutation, { data, loading, error }] = useUserUpdateTypesMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      types: // value for 'types'
+ *   },
+ * });
+ */
+export function useUserUpdateTypesMutation(baseOptions?: Apollo.MutationHookOptions<UserUpdateTypesMutation, UserUpdateTypesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UserUpdateTypesMutation, UserUpdateTypesMutationVariables>(UserUpdateTypesDocument, options);
+      }
+export type UserUpdateTypesMutationHookResult = ReturnType<typeof useUserUpdateTypesMutation>;
+export type UserUpdateTypesMutationResult = Apollo.MutationResult<UserUpdateTypesMutation>;
+export type UserUpdateTypesMutationOptions = Apollo.BaseMutationOptions<UserUpdateTypesMutation, UserUpdateTypesMutationVariables>;
 export const VehicleArchiveDocument = gql`
     mutation VehicleArchive($id: ID!) {
   vehicleArchive(id: $id) {
@@ -6180,6 +6751,107 @@ export function useVehicleCreateMutation(baseOptions?: Apollo.MutationHookOption
 export type VehicleCreateMutationHookResult = ReturnType<typeof useVehicleCreateMutation>;
 export type VehicleCreateMutationResult = Apollo.MutationResult<VehicleCreateMutation>;
 export type VehicleCreateMutationOptions = Apollo.BaseMutationOptions<VehicleCreateMutation, VehicleCreateMutationVariables>;
+export const VehicleIssueAssignedToUpdateDocument = gql`
+    mutation VehicleIssueAssignedToUpdate($id: ID!, $assignedTo: ID) {
+  vehicleIssueAssignedToUpdate(id: $id, assignedTo: $assignedTo) {
+    ...VehicleIssueFullSnippet
+  }
+}
+    ${VehicleIssueFullSnippetFragmentDoc}`;
+export type VehicleIssueAssignedToUpdateMutationFn = Apollo.MutationFunction<VehicleIssueAssignedToUpdateMutation, VehicleIssueAssignedToUpdateMutationVariables>;
+
+/**
+ * __useVehicleIssueAssignedToUpdateMutation__
+ *
+ * To run a mutation, you first call `useVehicleIssueAssignedToUpdateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVehicleIssueAssignedToUpdateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [vehicleIssueAssignedToUpdateMutation, { data, loading, error }] = useVehicleIssueAssignedToUpdateMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      assignedTo: // value for 'assignedTo'
+ *   },
+ * });
+ */
+export function useVehicleIssueAssignedToUpdateMutation(baseOptions?: Apollo.MutationHookOptions<VehicleIssueAssignedToUpdateMutation, VehicleIssueAssignedToUpdateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<VehicleIssueAssignedToUpdateMutation, VehicleIssueAssignedToUpdateMutationVariables>(VehicleIssueAssignedToUpdateDocument, options);
+      }
+export type VehicleIssueAssignedToUpdateMutationHookResult = ReturnType<typeof useVehicleIssueAssignedToUpdateMutation>;
+export type VehicleIssueAssignedToUpdateMutationResult = Apollo.MutationResult<VehicleIssueAssignedToUpdateMutation>;
+export type VehicleIssueAssignedToUpdateMutationOptions = Apollo.BaseMutationOptions<VehicleIssueAssignedToUpdateMutation, VehicleIssueAssignedToUpdateMutationVariables>;
+export const VehicleIssueCloseDocument = gql`
+    mutation VehicleIssueClose($id: ID!) {
+  vehicleIssueClose(id: $id) {
+    ...VehicleIssueFullSnippet
+  }
+}
+    ${VehicleIssueFullSnippetFragmentDoc}`;
+export type VehicleIssueCloseMutationFn = Apollo.MutationFunction<VehicleIssueCloseMutation, VehicleIssueCloseMutationVariables>;
+
+/**
+ * __useVehicleIssueCloseMutation__
+ *
+ * To run a mutation, you first call `useVehicleIssueCloseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVehicleIssueCloseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [vehicleIssueCloseMutation, { data, loading, error }] = useVehicleIssueCloseMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVehicleIssueCloseMutation(baseOptions?: Apollo.MutationHookOptions<VehicleIssueCloseMutation, VehicleIssueCloseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<VehicleIssueCloseMutation, VehicleIssueCloseMutationVariables>(VehicleIssueCloseDocument, options);
+      }
+export type VehicleIssueCloseMutationHookResult = ReturnType<typeof useVehicleIssueCloseMutation>;
+export type VehicleIssueCloseMutationResult = Apollo.MutationResult<VehicleIssueCloseMutation>;
+export type VehicleIssueCloseMutationOptions = Apollo.BaseMutationOptions<VehicleIssueCloseMutation, VehicleIssueCloseMutationVariables>;
+export const VehicleIssueCreateDocument = gql`
+    mutation VehicleIssueCreate($vehicleId: ID!, $data: VehicleIssueCreateData!) {
+  vehicleIssueCreate(vehicleId: $vehicleId, data: $data) {
+    _id
+  }
+}
+    `;
+export type VehicleIssueCreateMutationFn = Apollo.MutationFunction<VehicleIssueCreateMutation, VehicleIssueCreateMutationVariables>;
+
+/**
+ * __useVehicleIssueCreateMutation__
+ *
+ * To run a mutation, you first call `useVehicleIssueCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVehicleIssueCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [vehicleIssueCreateMutation, { data, loading, error }] = useVehicleIssueCreateMutation({
+ *   variables: {
+ *      vehicleId: // value for 'vehicleId'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useVehicleIssueCreateMutation(baseOptions?: Apollo.MutationHookOptions<VehicleIssueCreateMutation, VehicleIssueCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<VehicleIssueCreateMutation, VehicleIssueCreateMutationVariables>(VehicleIssueCreateDocument, options);
+      }
+export type VehicleIssueCreateMutationHookResult = ReturnType<typeof useVehicleIssueCreateMutation>;
+export type VehicleIssueCreateMutationResult = Apollo.MutationResult<VehicleIssueCreateMutation>;
+export type VehicleIssueCreateMutationOptions = Apollo.BaseMutationOptions<VehicleIssueCreateMutation, VehicleIssueCreateMutationVariables>;
 export const VehicleUnarchiveDocument = gql`
     mutation VehicleUnarchive($id: ID!) {
   vehicleUnarchive(id: $id) {
@@ -8137,6 +8809,145 @@ export function useMaterialsFullLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type MaterialsFullQueryHookResult = ReturnType<typeof useMaterialsFullQuery>;
 export type MaterialsFullLazyQueryHookResult = ReturnType<typeof useMaterialsFullLazyQuery>;
 export type MaterialsFullQueryResult = Apollo.QueryResult<MaterialsFullQuery, MaterialsFullQueryVariables>;
+export const MechanicsDocument = gql`
+    query Mechanics {
+  mechanics {
+    ...UserCardSnippet
+  }
+}
+    ${UserCardSnippetFragmentDoc}`;
+
+/**
+ * __useMechanicsQuery__
+ *
+ * To run a query within a React component, call `useMechanicsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMechanicsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMechanicsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMechanicsQuery(baseOptions?: Apollo.QueryHookOptions<MechanicsQuery, MechanicsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MechanicsQuery, MechanicsQueryVariables>(MechanicsDocument, options);
+      }
+export function useMechanicsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MechanicsQuery, MechanicsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MechanicsQuery, MechanicsQueryVariables>(MechanicsDocument, options);
+        }
+export type MechanicsQueryHookResult = ReturnType<typeof useMechanicsQuery>;
+export type MechanicsLazyQueryHookResult = ReturnType<typeof useMechanicsLazyQuery>;
+export type MechanicsQueryResult = Apollo.QueryResult<MechanicsQuery, MechanicsQueryVariables>;
+export const OperatorDailyReportCardDocument = gql`
+    query OperatorDailyReportCard($id: ID!) {
+  operatorDailyReport(id: $id) {
+    ...OperatorDailyReportCardSnippet
+  }
+}
+    ${OperatorDailyReportCardSnippetFragmentDoc}`;
+
+/**
+ * __useOperatorDailyReportCardQuery__
+ *
+ * To run a query within a React component, call `useOperatorDailyReportCardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorDailyReportCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorDailyReportCardQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOperatorDailyReportCardQuery(baseOptions: Apollo.QueryHookOptions<OperatorDailyReportCardQuery, OperatorDailyReportCardQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorDailyReportCardQuery, OperatorDailyReportCardQueryVariables>(OperatorDailyReportCardDocument, options);
+      }
+export function useOperatorDailyReportCardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorDailyReportCardQuery, OperatorDailyReportCardQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorDailyReportCardQuery, OperatorDailyReportCardQueryVariables>(OperatorDailyReportCardDocument, options);
+        }
+export type OperatorDailyReportCardQueryHookResult = ReturnType<typeof useOperatorDailyReportCardQuery>;
+export type OperatorDailyReportCardLazyQueryHookResult = ReturnType<typeof useOperatorDailyReportCardLazyQuery>;
+export type OperatorDailyReportCardQueryResult = Apollo.QueryResult<OperatorDailyReportCardQuery, OperatorDailyReportCardQueryVariables>;
+export const OperatorDailyReportFullDocument = gql`
+    query OperatorDailyReportFull($id: ID!) {
+  operatorDailyReport(id: $id) {
+    ...OperatorDailyReportFullSnippet
+  }
+}
+    ${OperatorDailyReportFullSnippetFragmentDoc}`;
+
+/**
+ * __useOperatorDailyReportFullQuery__
+ *
+ * To run a query within a React component, call `useOperatorDailyReportFullQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorDailyReportFullQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorDailyReportFullQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOperatorDailyReportFullQuery(baseOptions: Apollo.QueryHookOptions<OperatorDailyReportFullQuery, OperatorDailyReportFullQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorDailyReportFullQuery, OperatorDailyReportFullQueryVariables>(OperatorDailyReportFullDocument, options);
+      }
+export function useOperatorDailyReportFullLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorDailyReportFullQuery, OperatorDailyReportFullQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorDailyReportFullQuery, OperatorDailyReportFullQueryVariables>(OperatorDailyReportFullDocument, options);
+        }
+export type OperatorDailyReportFullQueryHookResult = ReturnType<typeof useOperatorDailyReportFullQuery>;
+export type OperatorDailyReportFullLazyQueryHookResult = ReturnType<typeof useOperatorDailyReportFullLazyQuery>;
+export type OperatorDailyReportFullQueryResult = Apollo.QueryResult<OperatorDailyReportFullQuery, OperatorDailyReportFullQueryVariables>;
+export const OperatorDailyReportsDocument = gql`
+    query OperatorDailyReports($options: ListOptionData) {
+  operatorDailyReports(options: $options) {
+    ...OperatorDailyReportCardSnippet
+  }
+}
+    ${OperatorDailyReportCardSnippetFragmentDoc}`;
+
+/**
+ * __useOperatorDailyReportsQuery__
+ *
+ * To run a query within a React component, call `useOperatorDailyReportsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOperatorDailyReportsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOperatorDailyReportsQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useOperatorDailyReportsQuery(baseOptions?: Apollo.QueryHookOptions<OperatorDailyReportsQuery, OperatorDailyReportsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OperatorDailyReportsQuery, OperatorDailyReportsQueryVariables>(OperatorDailyReportsDocument, options);
+      }
+export function useOperatorDailyReportsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OperatorDailyReportsQuery, OperatorDailyReportsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OperatorDailyReportsQuery, OperatorDailyReportsQueryVariables>(OperatorDailyReportsDocument, options);
+        }
+export type OperatorDailyReportsQueryHookResult = ReturnType<typeof useOperatorDailyReportsQuery>;
+export type OperatorDailyReportsLazyQueryHookResult = ReturnType<typeof useOperatorDailyReportsLazyQuery>;
+export type OperatorDailyReportsQueryResult = Apollo.QueryResult<OperatorDailyReportsQuery, OperatorDailyReportsQueryVariables>;
 export const SearchDocument = gql`
     query Search($searchString: String!) {
   search(searchString: $searchString) {
@@ -8241,6 +9052,41 @@ export function useSystemLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Sys
 export type SystemQueryHookResult = ReturnType<typeof useSystemQuery>;
 export type SystemLazyQueryHookResult = ReturnType<typeof useSystemLazyQuery>;
 export type SystemQueryResult = Apollo.QueryResult<SystemQuery, SystemQueryVariables>;
+export const UserCrewDocument = gql`
+    query UserCrew($query: UserQuery!) {
+  user(query: $query) {
+    ...UserCrewSnippet
+  }
+}
+    ${UserCrewSnippetFragmentDoc}`;
+
+/**
+ * __useUserCrewQuery__
+ *
+ * To run a query within a React component, call `useUserCrewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserCrewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserCrewQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useUserCrewQuery(baseOptions: Apollo.QueryHookOptions<UserCrewQuery, UserCrewQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserCrewQuery, UserCrewQueryVariables>(UserCrewDocument, options);
+      }
+export function useUserCrewLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserCrewQuery, UserCrewQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserCrewQuery, UserCrewQueryVariables>(UserCrewDocument, options);
+        }
+export type UserCrewQueryHookResult = ReturnType<typeof useUserCrewQuery>;
+export type UserCrewLazyQueryHookResult = ReturnType<typeof useUserCrewLazyQuery>;
+export type UserCrewQueryResult = Apollo.QueryResult<UserCrewQuery, UserCrewQueryVariables>;
 export const UserForPasswordResetDocument = gql`
     query UserForPasswordReset($query: UserQuery!) {
   user(query: $query) {
@@ -8312,6 +9158,111 @@ export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<User
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
+export const VehicleIssueDocument = gql`
+    query VehicleIssue($id: ID!) {
+  vehicleIssue(id: $id) {
+    ...VehicleIssueFullSnippet
+  }
+}
+    ${VehicleIssueFullSnippetFragmentDoc}`;
+
+/**
+ * __useVehicleIssueQuery__
+ *
+ * To run a query within a React component, call `useVehicleIssueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVehicleIssueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVehicleIssueQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVehicleIssueQuery(baseOptions: Apollo.QueryHookOptions<VehicleIssueQuery, VehicleIssueQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<VehicleIssueQuery, VehicleIssueQueryVariables>(VehicleIssueDocument, options);
+      }
+export function useVehicleIssueLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<VehicleIssueQuery, VehicleIssueQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<VehicleIssueQuery, VehicleIssueQueryVariables>(VehicleIssueDocument, options);
+        }
+export type VehicleIssueQueryHookResult = ReturnType<typeof useVehicleIssueQuery>;
+export type VehicleIssueLazyQueryHookResult = ReturnType<typeof useVehicleIssueLazyQuery>;
+export type VehicleIssueQueryResult = Apollo.QueryResult<VehicleIssueQuery, VehicleIssueQueryVariables>;
+export const VehicleIssueCardDocument = gql`
+    query VehicleIssueCard($id: ID!) {
+  vehicleIssue(id: $id) {
+    ...VehicleIssueCardSnippet
+  }
+}
+    ${VehicleIssueCardSnippetFragmentDoc}`;
+
+/**
+ * __useVehicleIssueCardQuery__
+ *
+ * To run a query within a React component, call `useVehicleIssueCardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVehicleIssueCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVehicleIssueCardQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVehicleIssueCardQuery(baseOptions: Apollo.QueryHookOptions<VehicleIssueCardQuery, VehicleIssueCardQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<VehicleIssueCardQuery, VehicleIssueCardQueryVariables>(VehicleIssueCardDocument, options);
+      }
+export function useVehicleIssueCardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<VehicleIssueCardQuery, VehicleIssueCardQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<VehicleIssueCardQuery, VehicleIssueCardQueryVariables>(VehicleIssueCardDocument, options);
+        }
+export type VehicleIssueCardQueryHookResult = ReturnType<typeof useVehicleIssueCardQuery>;
+export type VehicleIssueCardLazyQueryHookResult = ReturnType<typeof useVehicleIssueCardLazyQuery>;
+export type VehicleIssueCardQueryResult = Apollo.QueryResult<VehicleIssueCardQuery, VehicleIssueCardQueryVariables>;
+export const VehicleIssuesDocument = gql`
+    query VehicleIssues($options: ListOptionData) {
+  vehicleIssues(options: $options) {
+    ...VehicleIssueCardSnippet
+  }
+}
+    ${VehicleIssueCardSnippetFragmentDoc}`;
+
+/**
+ * __useVehicleIssuesQuery__
+ *
+ * To run a query within a React component, call `useVehicleIssuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVehicleIssuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVehicleIssuesQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useVehicleIssuesQuery(baseOptions?: Apollo.QueryHookOptions<VehicleIssuesQuery, VehicleIssuesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<VehicleIssuesQuery, VehicleIssuesQueryVariables>(VehicleIssuesDocument, options);
+      }
+export function useVehicleIssuesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<VehicleIssuesQuery, VehicleIssuesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<VehicleIssuesQuery, VehicleIssuesQueryVariables>(VehicleIssuesDocument, options);
+        }
+export type VehicleIssuesQueryHookResult = ReturnType<typeof useVehicleIssuesQuery>;
+export type VehicleIssuesLazyQueryHookResult = ReturnType<typeof useVehicleIssuesLazyQuery>;
+export type VehicleIssuesQueryResult = Apollo.QueryResult<VehicleIssuesQuery, VehicleIssuesQueryVariables>;
 export const VehicleSearchDocument = gql`
     query VehicleSearch($searchString: String!, $options: SearchOptions) {
   vehicleSearch(searchString: $searchString, options: $options) {

@@ -1,0 +1,3 @@
+fragment VehicleIssueFullSnippet on VehicleIssueClass {
+  ...VehicleIssueCardSnippet
+}

@@ -37,6 +37,10 @@ export class SystemClass extends SystemSchema {
     return update.laborTypes(this, types);
   }
 
+  public async updateFluidTypes(this: SystemDocument, types: string[]) {
+    return update.fluidTypes(this, types);
+  }
+
   public async updateCompanyVehicleTypeDefaults(
     this: SystemDocument,
     data: IDefaultRateData[]

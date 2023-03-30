@@ -27,6 +27,7 @@ import UserUpdateRole from "../../Forms/User/Role";
 import { FiArchive, FiTrash } from "react-icons/fi";
 import { useRouter } from "next/router";
 import IndividualEmployeeHours from "../../Common/Employee/IndividualHours";
+import UserUpdateTypes from "../../Forms/User/Types";
 
 interface IEmployeeClientContent {
   id: string;
@@ -102,7 +103,11 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
               {employee.user.email}
             </Text>
             <Permission>
-              <UserUpdateRole user={employee.user} />
+              <Box backgroundColor="gray.200" borderRadius={6} m={1} p={2}>
+                <Text as="b">Permissions</Text>
+                <UserUpdateRole user={employee.user} />
+                <UserUpdateTypes user={employee.user} />
+              </Box>
             </Permission>
           </Box>
         );
@@ -113,6 +118,7 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
           <Card>
             <Flex flexDir="row" justifyContent="space-between">
               <Heading size="md">User Info</Heading>
+
               <div>
                 <Permission>
                   <Tooltip label="Archive">

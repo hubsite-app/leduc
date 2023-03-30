@@ -1,0 +1,5 @@
+mutation UserUpdateTypes($id: String!, $types: [UserTypes!]!) {
+  userUpdateTypes(id: $id, types: $types) {
+    ...UserCardSnippet
+  }
+}

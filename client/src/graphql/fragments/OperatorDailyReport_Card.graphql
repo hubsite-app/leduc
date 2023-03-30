@@ -1,0 +1,40 @@
+fragment OperatorDailyReportCardSnippet on OperatorDailyReportClass {
+  _id
+  vehicle {
+    ...VehicleCardSnippet
+  }
+  author {
+    ...UserCardSnippet
+    employee {
+      _id
+    }
+  }
+  equipmentUsage {
+    usage
+    unit
+  }
+  startTime
+  checklist {
+    walkaroundComplete
+    visualInspectionComplete
+    oilChecked
+    coolantChecked
+    fluidsChecked
+  }
+  functionChecks {
+    backupAlarm
+    lights
+    fireExtinguisher
+    licensePlate
+  }
+  malfunction
+  damageObserved
+  leaks {
+    type
+    location
+  }
+  fluidsAdded {
+    type
+    amount
+  }
+}

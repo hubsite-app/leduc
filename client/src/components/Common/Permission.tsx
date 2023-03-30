@@ -6,27 +6,31 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { useAuth } from "../../contexts/Auth";
-import { UserRoles } from "../../generated/graphql";
+import { UserRoles, UserTypes } from "../../generated/graphql";
 
 interface IPermission {
   minRole?: UserRoles;
+  type?: UserTypes | null;
   otherCriteria?: boolean;
   showError?: boolean;
+  alternativeDisplay?: React.ReactChild | null;
 }
 
 const Permission: React.FC<IPermission> = ({
   minRole = UserRoles.Admin,
+  type = UserTypes.Operations,
   otherCriteria = false,
   showError = false,
+  alternativeDisplay = null,
   children,
 }) => {
   const {
     state: { user },
   } = useAuth();
 
-  let alternativeDisplay = null;
+  let altDisplay = alternativeDisplay;
   if (showError === true)
-    alternativeDisplay = (
+    altDisplay = (
       <Alert status="error">
         <AlertIcon />
         <AlertTitle>Error</AlertTitle>
@@ -41,17 +45,22 @@ const Permission: React.FC<IPermission> = ({
   // Project Manager
   if (user?.role === UserRoles.ProjectManager) {
     if (
-      minRole === UserRoles.ProjectManager ||
-      minRole === UserRoles.User ||
-      otherCriteria
+      (minRole === UserRoles.ProjectManager ||
+        minRole === UserRoles.User ||
+        otherCriteria) &&
+      (!type || user.types?.includes(type))
     )
       return <>{children}</>;
-    else return alternativeDisplay;
+    else return <>{altDisplay || null}</>;
     // User
   } else if (user?.role === UserRoles.User) {
-    if (minRole === UserRoles.User || otherCriteria) return <>{children}</>;
-    else return alternativeDisplay;
-  } else return alternativeDisplay;
+    if (
+      (minRole === UserRoles.User || otherCriteria) &&
+      (!type || user.types?.includes(type))
+    )
+      return <>{children}</>;
+    else return <>{altDisplay || null}</>;
+  } else return <>{altDisplay || null}</>;
 };
 
 export default Permission;

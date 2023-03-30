@@ -1,0 +1,5 @@
+mutation SystemUpdateFluidTypes($data: [String!]!) {
+  systemUpdateFluidTypes(data: $data) {
+    ...SystemSnippet
+  }
+}

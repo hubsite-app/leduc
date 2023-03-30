@@ -1,0 +1,8 @@
+mutation OperatorDailyReportCreate(
+  $vehicleId: ID!
+  $data: OperatorDailyReportCreateData!
+) {
+  operatorDailyReportCreate(vehicleId: $vehicleId, data: $data) {
+    _id
+  }
+}

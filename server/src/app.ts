@@ -40,6 +40,7 @@ import JobsiteYearReportResolver from "@graphql/resolvers/jobsiteYearReport";
 import MaterialResolver from "@graphql/resolvers/material";
 import MaterialReportResolver from "@graphql/resolvers/materialReport";
 import MaterialShipmentResolver from "@graphql/resolvers/materialShipment";
+import OperatorDailyReportResolver from "@graphql/resolvers/operatorDailyReport";
 import NonCostedMaterialReportResolver from "@graphql/resolvers/nonCostedMaterialReport";
 import OnSiteSummaryReportResolver from "@graphql/resolvers/onSiteSummaryReport";
 import ProductionResolver from "@graphql/resolvers/production";
@@ -51,6 +52,7 @@ import SystemResolver from "@graphql/resolvers/system";
 import TruckingReportResolver from "@graphql/resolvers/truckingReport";
 import UserResolver from "@graphql/resolvers/user";
 import VehicleResolver from "@graphql/resolvers/vehicle";
+import VehicleIssueResolver from "@graphql/resolvers/vehicleIssue";
 import VehicleReportResolver from "@graphql/resolvers/vehicleReport";
 import VehicleWorkResolver from "@graphql/resolvers/vehicleWork";
 
@@ -95,6 +97,7 @@ const createApp = async () => {
       MaterialResolver,
       MaterialReportResolver,
       MaterialShipmentResolver,
+      OperatorDailyReportResolver,
       NonCostedMaterialReportResolver,
       OnSiteSummaryReportResolver,
       ProductionResolver,
@@ -107,6 +110,7 @@ const createApp = async () => {
       TruckingReportResolver,
       UserResolver,
       VehicleResolver,
+      VehicleIssueResolver,
       VehicleReportResolver,
       VehicleWorkResolver,
     ],

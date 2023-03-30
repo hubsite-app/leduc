@@ -1,0 +1,10 @@
+fragment UserCrewSnippet on UserClass {
+  ...UserCardSnippet
+  employee {
+    crews {
+      vehicles {
+        ...VehicleCardSnippet
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+mutation VehicleIssueAssignedToUpdate($id: ID!, $assignedTo: ID) {
+  vehicleIssueAssignedToUpdate(id: $id, assignedTo: $assignedTo) {
+    ...VehicleIssueFullSnippet
+  }
+}

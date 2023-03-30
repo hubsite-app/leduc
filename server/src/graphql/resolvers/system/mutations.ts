@@ -21,6 +21,16 @@ const laborTypes = async (data: string[]): Promise<SystemDocument> => {
   return system;
 };
 
+const fluidTypes = async (data: string[]): Promise<SystemDocument> => {
+  const system = await System.getSystem();
+
+  await system.updateFluidTypes(data);
+
+  await system.save();
+
+  return system;
+};
+
 const companyVehicleTypeDefaults = async (
   data: DefaultRateData[]
 ): Promise<SystemDocument> => {
@@ -60,6 +70,7 @@ const internalExpenseOverheadRate = async (
 export default {
   unitDefaults,
   laborTypes,
+  fluidTypes,
   companyVehicleTypeDefaults,
   materialShipmentVehicleTypeDefaults,
   internalExpenseOverheadRate,

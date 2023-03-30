@@ -1,6 +1,5 @@
 import React from "react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Controller,
   SubmitHandler,
@@ -8,66 +7,60 @@ import {
   useForm,
   UseFormProps,
 } from "react-hook-form";
-import * as z from "zod";
+
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import { IFormProps } from "../typescript/forms";
 import TextField, { ITextField } from "../components/Common/forms/TextField";
 import NumberForm, { INumber } from "../components/Common/forms/Number";
-import TextArea, { ITextArea } from "../components/Common/forms/TextArea";
 import Checkbox, { ICheckbox } from "../components/Common/forms/Checkbox";
-import { OperatorDailyReportData } from "../components/pages/playground";
 import { Box, Button, Flex, Icon, IconButton } from "@chakra-ui/react";
-import Card from "../components/Common/Card";
 import { FiPlus, FiX } from "react-icons/fi";
+import {
+  EquipmentUsageUnits,
+  OperatorDailyReportCreateData,
+} from "../generated/graphql";
+import FluidTypeSelect from "../components/Common/forms/FluidSelect";
 
-const OperatorDailyReportSchema = z.object({
-  vehicleId: z.string().min(1, { message: "Must provide a vehicle id" }),
-  startTime: z
-    .string({ required_error: "Must provide a start time" })
-    .datetime()
-    .default(new Date().toISOString()),
-  odometer: z
-    .number({ required_error: "Must provide an odometer reading" })
-    .min(0, { message: "Must be greater than 0" }),
-  checklist: z
-    .object({
-      walkAroundComplete: z.boolean().default(false),
-      visualInspectionComplete: z.boolean().default(false),
-      oilChecked: z.boolean().default(false),
-      coolantChecked: z.boolean().default(false),
-      fluidsChecked: z.boolean().default(false),
-    })
-    .required(),
-  oilAdded: z.number(),
-  coolantAdded: z.number(),
-  properFunction: z.boolean().default(false),
-  wasDamageObserved: z.boolean().default(false),
-  damageObserved: z.string().optional(),
-  leaksFound: z.array(
-    z.object({
-      type: z.string({ required_error: "Must provide the type of fluid" }),
-      location: z.string({
-        required_error: "Must provide the location of the leak",
-      }),
-    })
-  ),
-  fluidsAdded: z.array(
-    z.object({
-      type: z.string({
-        required_error: "Must provide the type of fluid added",
-      }),
-      amount: z.number({
-        required_error: "Must provide the number of litres added",
-      }),
-    })
-  ),
-  functionChecks: z.object({
-    backupAlarm: z.boolean().default(false),
-    lights: z.boolean().default(false),
-    fireExtinguisher: z.boolean().default(false),
-    licensePlate: z.boolean().default(false),
+const OperatorDailyReportSchema = yup.object().shape({
+  startTime: yup.string().required("Please provide a start time"),
+  equipmentUsage: yup.object().shape({
+    usage: yup.number().required("Please provide vehicle usage"),
+    unit: yup.string().required("Please provide usage units"),
   }),
-  notes: z.string().optional(),
+  checklist: yup.object().shape({
+    walkaroundComplete: yup.boolean().default(false).required(),
+    visualInspectionComplete: yup.boolean().default(false).required(),
+    oilChecked: yup.boolean().default(false).required(),
+    coolantChecked: yup.boolean().default(false).required(),
+    fluidsChecked: yup.boolean().default(false).required(),
+  }),
+  functionChecks: yup.object().shape({
+    backupAlarm: yup.boolean().default(false).required(),
+    lights: yup.boolean().default(false).required(),
+    fireExtinguisher: yup.boolean().default(false).required(),
+    licensePlate: yup.boolean().default(false).required(),
+  }),
+  malfunction: yup.boolean().default(false),
+  damageObserved: yup.boolean().default(false),
+  leaks: yup.array().of(
+    yup.object().shape({
+      type: yup.string().required("Please provide the type of leak"),
+      location: yup
+        .string()
+        .required("Please provide the location of the leak"),
+    })
+  ),
+  fluidsAdded: yup.array().of(
+    yup.object().shape({
+      type: yup.string().required("Please provide the type of fluid added"),
+      amount: yup
+        .number()
+        .typeError("Please provide the amount of fluid added")
+        .required("Please provide the amount of fluid added"),
+    })
+  ),
 });
 
 export const useOperatorDailyReportForm = (options?: UseFormProps) => {
@@ -76,14 +69,14 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
    */
 
   const form = useForm({
-    resolver: zodResolver(OperatorDailyReportSchema),
+    resolver: yupResolver(OperatorDailyReportSchema),
     defaultValues: {
-      odometer: "",
-      startTime: new Date(),
-      leaksFound: [],
+      equipmentUsage: {
+        unit: EquipmentUsageUnits.Km,
+      },
+      startTime: new Date().toISOString(),
+      leaks: [],
       fluidsAdded: [],
-      oilAdded: 0,
-      coolantAdded: 0,
       ...options?.defaultValues,
     },
     ...options,
@@ -93,7 +86,9 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
    * ----- Variables -----
    */
 
-  const { handleSubmit, control, watch } = form;
+  const { handleSubmit, control, watch, setValue } = form;
+
+  const equipmentUsageUnit = watch("equipmentUsage.unit");
 
   const {
     fields: leaksFoundFields,
@@ -101,7 +96,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
     remove: removeLeakFound,
   } = useFieldArray({
     control,
-    name: "leaksFound",
+    name: "leaks",
   });
 
   const {
@@ -113,30 +108,41 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
     name: "fluidsAdded",
   });
 
-  const wasDamageObserved = watch("wasDamageObserved");
-  const oilChecked = watch("checklist.oilChecked");
-  const coolantChecked = watch("checklist.coolantChecked");
+  const equipmentUsageUnitLabel = React.useMemo(() => {
+    switch (equipmentUsageUnit) {
+      case EquipmentUsageUnits.Km:
+        return "KM";
+      case EquipmentUsageUnits.Hours:
+        return "HOURS";
+      default:
+        return "ERROR";
+    }
+  }, [equipmentUsageUnit]);
 
   /**
    * ----- Functions -----
    */
 
-  // const addLeakFound = React.useCallback(() => {
-  //   setValue("leaksFound", [...leaksFound, { type: "", location: "" }]);
-  // }, [leaksFound, setValue]);
-  //
-  // const removeLeakFound = React.useCallback(
-  //   (index: number) => {
-  //     const leaksFoundCopy = JSON.parse(JSON.stringify(leaksFound));
-  //     leaksFoundCopy.splice(index, 1);
-  //     setValue("leaksFound", leaksFoundCopy);
-  //   },
-  //   [leaksFound, setValue]
-  // );
+  const toggleEquipmentUsageUnit = React.useCallback(() => {
+    switch (equipmentUsageUnit) {
+      case EquipmentUsageUnits.Km:
+        setValue("equipmentUsage.unit", EquipmentUsageUnits.Hours);
+        break;
+      case EquipmentUsageUnits.Hours:
+        setValue("equipmentUsage.unit", EquipmentUsageUnits.Km);
+        break;
+      default:
+        break;
+    }
+  }, [equipmentUsageUnit, setValue]);
 
-  /**
-   * ----- Lifecycle -----
-   */
+  const getDateForTime = React.useCallback((timeString: string) => {
+    const [hours, minutes] = timeString.split(":");
+    const newDate = new Date();
+    newDate.setHours(Number(hours));
+    newDate.setMinutes(Number(minutes));
+    return newDate;
+  }, []);
 
   /*
    * ----- Components -----
@@ -148,22 +154,35 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
       submitHandler,
     }: {
       children: React.ReactNode;
-      submitHandler: SubmitHandler<OperatorDailyReportData>;
+      submitHandler: SubmitHandler<OperatorDailyReportCreateData>;
     }) => <form onSubmit={handleSubmit(submitHandler)}>{children}</form>,
-    Odometer: ({ isLoading, ...props }: IFormProps<INumber>) =>
+    EquipmentUsage: ({ isLoading, ...props }: IFormProps<INumber>) =>
       React.useMemo(
         () => (
           <Controller
             control={control}
-            name="odometer"
+            name="equipmentUsage.usage"
             render={({ field, fieldState }) => (
               <NumberForm
                 {...props}
                 {...field}
                 errorMessage={fieldState.error?.message}
-                label="Odometer Reading"
-                isDisabled={isLoading}
-                inputRightAddon="km"
+                label="Usage"
+                onChange={(_, num) => field.onChange(num)}
+                isDisabled={isLoading || props.isDisabled}
+                inputRightElement={
+                  <Button
+                    onClick={() => toggleEquipmentUsageUnit()}
+                    px={6}
+                    mr={4}
+                    size="sm"
+                    isLoading={isLoading}
+                    isDisabled={props.isDisabled}
+                  >
+                    {equipmentUsageUnitLabel}
+                  </Button>
+                }
+                inputRightElementProps={{ w: "7.5rem" }}
               />
             )}
           />
@@ -183,7 +202,13 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 type="time"
                 errorMessage={fieldState.error?.message}
                 label="Start Time"
-                isDisabled={isLoading}
+                isDisabled={isLoading || props.isDisabled}
+                onChange={(e) => {
+                  if (e.target.value)
+                    field.onChange(
+                      getDateForTime(e.target.value).toISOString()
+                    );
+                }}
               />
             )}
           />
@@ -191,20 +216,20 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
         [isLoading, props]
       ),
     Checklist: {
-      WalkAround: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
+      Walkaround: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
         React.useMemo(
           () => (
             <Controller
               control={control}
-              name="checklist.walkAroundComplete"
+              name="checklist.walkaroundComplete"
               render={({ field }) => (
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
                   isChecked={field.value}
+                  isDisabled={isLoading || props.isDisabled}
                 >
-                  Walk Around Complete
+                  Walk-around Complete
                 </Checkbox>
               )}
             />
@@ -221,7 +246,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   Visual Inspection Complete
@@ -241,7 +266,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   Oil Checked
@@ -261,7 +286,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   Coolant Checked
@@ -281,7 +306,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   Fluids Checked
@@ -292,144 +317,83 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
           [isLoading, props]
         ),
     },
-    OilAdded: ({ isLoading, ...props }: IFormProps<INumber>) =>
+    Malfunction: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
       React.useMemo(
         () => (
           <Controller
             control={control}
-            name="oilAdded"
-            render={({ field, fieldState }) => {
-              if (oilChecked) {
-                return (
-                  <NumberForm
-                    {...props}
-                    {...field}
-                    errorMessage={fieldState.error?.message}
-                    label="Oil Added"
-                    inputRightAddon="L"
-                    isDisabled={isLoading}
-                  />
-                );
-              } else return <Box display="none" />;
-            }}
-          />
-        ),
-        [isLoading, props]
-      ),
-    CoolantAdded: ({ isLoading, ...props }: IFormProps<INumber>) =>
-      React.useMemo(
-        () => (
-          <Controller
-            control={control}
-            name="coolantAdded"
-            render={({ field, fieldState }) => {
-              if (coolantChecked) {
-                return (
-                  <NumberForm
-                    {...props}
-                    {...field}
-                    errorMessage={fieldState.error?.message}
-                    label="Coolant Added"
-                    inputRightAddon="L"
-                    isDisabled={isLoading}
-                  />
-                );
-              } else return <Box display="none" />;
-            }}
-          />
-        ),
-        [isLoading, props]
-      ),
-    ProperFunction: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
-      React.useMemo(
-        () => (
-          <Controller
-            control={control}
-            name="properFunction"
+            name="malfunction"
             render={({ field }) => (
               <Checkbox
                 {...props}
                 {...field}
-                isDisabled={isLoading}
+                isDisabled={isLoading || props.isDisabled}
                 isChecked={field.value}
               >
-                Machine functioning properly?
+                Machine Malfunction
               </Checkbox>
             )}
           />
         ),
         [isLoading, props]
       ),
-    WasDamageObserved: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
-      React.useMemo(
-        () => (
-          <Controller
-            control={control}
-            name="wasDamageObserved"
-            render={({ field }) => (
-              <Checkbox
-                {...props}
-                {...field}
-                isDisabled={isLoading}
-                isChecked={field.value}
-              >
-                Was damage observed?
-              </Checkbox>
-            )}
-          />
-        ),
-        [isLoading, props]
-      ),
-    DamageObserved: ({ isLoading, ...props }: IFormProps<ITextArea>) =>
+    DamageObserved: ({ isLoading, ...props }: IFormProps<ICheckbox>) =>
       React.useMemo(
         () => (
           <Controller
             control={control}
             name="damageObserved"
-            render={({ field, fieldState }) => (
-              <TextArea
+            render={({ field }) => (
+              <Checkbox
                 {...props}
                 {...field}
-                errorMessage={fieldState.error?.message}
-                label="What damage was observed?"
-                isDisabled={isLoading}
-              />
+                isDisabled={isLoading || props.isDisabled}
+                isChecked={field.value}
+              >
+                Damage observed?
+              </Checkbox>
             )}
           />
         ),
         [isLoading, props]
       ),
-    LeaksFound: ({ isLoading, ...props }: IFormProps<ITextField>) =>
+    Leaks: ({ isLoading, ...props }: IFormProps<ITextField>) =>
       React.useMemo(() => {
         return (
-          <Box>
+          <Box m={2}>
             {leaksFoundFields.map((_, index) => (
-              <Card key={index}>
+              <Box
+                key={index}
+                backgroundColor="gray.300"
+                m={2}
+                borderRadius={4}
+                p={2}
+              >
                 <Flex flexDir="row" w="100%">
                   <Box w="100%">
                     <Controller
                       control={control}
-                      name={`leaksFound.${index}.type`}
+                      name={`leaks.${index}.type`}
                       render={({ field, fieldState }) => (
                         <TextField
                           {...props}
                           {...field}
                           errorMessage={fieldState.error?.message}
                           label="Fluid Type"
-                          isDisabled={isLoading}
+                          isDisabled={isLoading || props.isDisabled}
                         />
                       )}
                     />
                     <Controller
                       control={control}
-                      name={`leaksFound.${index}.location`}
+                      name={`leaks.${index}.location`}
                       render={({ field, fieldState }) => (
                         <TextField
                           {...props}
                           {...field}
                           errorMessage={fieldState.error?.message}
                           label="Leak Location"
-                          isDisabled={isLoading}
+                          isDisabled={isLoading || props.isDisabled}
                         />
                       )}
                     />
@@ -439,16 +403,19 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                     aria-label="remove-leak"
                     icon={<FiX />}
                     backgroundColor="transparent"
+                    isDisabled={isLoading || props.isDisabled}
                   />
                 </Flex>
-              </Card>
+              </Box>
             ))}
             <Button
               onClick={() => appendLeakFound({ type: "", location: "" })}
               w="100%"
               backgroundColor="white"
+              isDisabled={isLoading || props.isDisabled}
+              _hover={{ backgroundColor: "gray.300" }}
             >
-              Fluid Leak
+              Leak Found
               <Icon as={FiPlus} />
             </Button>
           </Box>
@@ -457,21 +424,27 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
     FluidsAdded: ({ isLoading, ...props }: IFormProps<ITextField>) =>
       React.useMemo(() => {
         return (
-          <Box>
+          <Box m={2}>
             {fluidAddedFields.map((_, index) => (
-              <Card key={index}>
+              <Box
+                key={index}
+                backgroundColor="gray.300"
+                m={2}
+                borderRadius={4}
+                p={2}
+              >
                 <Flex flexDir="row" w="100%">
                   <Box w="100%">
                     <Controller
                       control={control}
                       name={`fluidsAdded.${index}.type`}
+                      rules={{ required: "Must provide fluid type" }}
                       render={({ field, fieldState }) => (
-                        <TextField
-                          {...props}
+                        <FluidTypeSelect
                           {...field}
                           errorMessage={fieldState.error?.message}
                           label="Fluid type"
-                          isDisabled={isLoading}
+                          isDisabled={isLoading || props.isDisabled}
                         />
                       )}
                     />
@@ -483,8 +456,9 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                           {...field}
                           errorMessage={fieldState.error?.message}
                           label="Amount added"
-                          isDisabled={isLoading}
+                          isDisabled={isLoading || props.isDisabled}
                           inputRightAddon="L"
+                          onChange={(_, num) => field.onChange(num)}
                         />
                       )}
                     />
@@ -494,16 +468,19 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                     aria-label="remove-fluid"
                     icon={<FiX />}
                     backgroundColor="transparent"
+                    isDisabled={isLoading || props.isDisabled}
                   />
                 </Flex>
-              </Card>
+              </Box>
             ))}
             <Button
-              onClick={() => appendFluidAdded({ type: "", amount: "" })}
+              onClick={() => appendFluidAdded({ type: "", amount: null })}
               w="100%"
               backgroundColor="white"
+              isDisabled={isLoading || props.isDisabled}
+              _hover={{ backgroundColor: "gray.300" }}
             >
-              Fluid Added
+              Add Fluid
               <Icon as={FiPlus} />
             </Button>
           </Box>
@@ -520,7 +497,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   Backup alarm functioning properly?
@@ -540,7 +517,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   All lights functioning properly?
@@ -560,7 +537,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   Fire Extinguisher functional?
@@ -580,7 +557,7 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
                 <Checkbox
                   {...props}
                   {...field}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || props.isDisabled}
                   isChecked={field.value}
                 >
                   License plate valid?
@@ -593,5 +570,5 @@ export const useOperatorDailyReportForm = (options?: UseFormProps) => {
     },
   };
 
-  return { ...form, wasDamageObserved, FormComponents };
+  return { ...form, FormComponents };
 };

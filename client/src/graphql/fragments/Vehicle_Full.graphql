@@ -4,4 +4,10 @@ fragment VehicleFullSnippet on VehicleClass {
   crews {
     ...CrewCardSnippet
   }
+  operatorDailyReports {
+    ...OperatorDailyReportCardSnippet
+  }
+  vehicleIssues {
+    ...VehicleIssueCardSnippet
+  }
 }

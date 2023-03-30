@@ -1,0 +1,5 @@
+mutation VehicleIssueClose($id: ID!) {
+  vehicleIssueClose(id: $id) {
+    ...VehicleIssueFullSnippet
+  }
+}

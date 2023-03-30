@@ -73,3 +73,23 @@ spec:
                 secretKeyRef:
                   name: server-concrete-secrets
                   key: elasticsearchUrl
+            - name: EMAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: server-concrete-secrets
+                  key: emailUsername
+            - name: EMAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: server-concrete-secrets
+                  key: emailPassword
+            - name: EMAIL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: server-conrete-secrets
+                  key: emailHost
+            - name: EMAIL_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: server-conrete-secrets
+                  key: emailPort
