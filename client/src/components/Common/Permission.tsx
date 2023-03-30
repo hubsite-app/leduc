@@ -51,7 +51,7 @@ const Permission: React.FC<IPermission> = ({
       (!type || user.types?.includes(type))
     )
       return <>{children}</>;
-    else return alternativeDisplay;
+    else return <>{altDisplay || null}</>;
     // User
   } else if (user?.role === UserRoles.User) {
     if (
@@ -59,8 +59,8 @@ const Permission: React.FC<IPermission> = ({
       (!type || user.types?.includes(type))
     )
       return <>{children}</>;
-    else return alternativeDisplay;
-  } else return alternativeDisplay;
+    else return <>{altDisplay || null}</>;
+  } else return <>{altDisplay || null}</>;
 };
 
 export default Permission;

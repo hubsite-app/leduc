@@ -145,7 +145,6 @@ const DailyReportFullPageList = ({
               )}
             </Box>
             <Menu>
-              {/* @ts-expect-error */}
               <MenuButton
                 disabled={loading}
                 as={Button}
@@ -205,7 +204,13 @@ const DailyReportFullPageList = ({
     } else {
       return <Loading />;
     }
-  }, [data?.dailyReports, filters, handleFilterChange, loading]);
+  }, [
+    data?.dailyReports,
+    filters,
+    handleFilterChange,
+    hideBreadcrumbs,
+    loading,
+  ]);
 
   return (
     <InfiniteScroll

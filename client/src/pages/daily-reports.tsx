@@ -136,7 +136,6 @@ const DailyReports = () => {
               ]}
             />
             <Menu>
-              {/* @ts-expect-error */}
               <MenuButton
                 disabled={loading}
                 as={Button}
