@@ -16,7 +16,6 @@ import createApp from "./app";
 import elasticsearch from "./elasticsearch";
 import errorHandler from "@utils/errorHandler";
 import { bindEventEmitters } from "@events";
-import email from "@utils/email";
 // import saveAll from "@testing/saveAll";
 
 let workerEnabled = true,

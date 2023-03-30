@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import React from "react";
 
 import { createUploadLink } from "apollo-upload-client";
 import {
@@ -23,7 +24,7 @@ export type ApolloClientContext = {
 export const withApollo = (Comp: NextPage) => (props: any) => {
   return (
     <ApolloProvider client={getApolloClient(undefined, props.apolloState)}>
-      <Comp />
+      {React.createElement(Comp, {})}
     </ApolloProvider>
   );
 };
