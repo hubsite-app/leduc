@@ -1,4 +1,4 @@
-import { ReadStream } from "fs";
+import { ReadStream } from "fs-capacitor";
 
 export default (stream: ReadStream) => {
   const chunks: Buffer[] = [];
