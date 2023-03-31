@@ -1,6 +1,7 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
 import { UserCardSnippetFragment, UserRoles } from "../../../generated/graphql";
 import UserUpdateRole from "../../Forms/User/Role";
+import UserUpdateTypes from "../../Forms/User/Types";
 import Card from "../Card";
 import TextGrid from "../TextGrid";
 
@@ -18,6 +19,11 @@ const UserCard = ({ user }: IUserCard) => {
             {
               title: <Text fontWeight="bold">Role: </Text>,
               text: <UserUpdateRole user={user} />,
+              permission: UserRoles.Admin,
+            },
+            {
+              title: <Text fontWeight="bold">Type: </Text>,
+              text: <UserUpdateTypes user={user} />,
               permission: UserRoles.Admin,
             },
           ]}

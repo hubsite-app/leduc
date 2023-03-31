@@ -37,4 +37,5 @@ fragment OperatorDailyReportCardSnippet on OperatorDailyReportClass {
     type
     amount
   }
+  createdAt
 }

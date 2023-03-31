@@ -7,7 +7,8 @@ import {
   VehicleIssueClass,
 } from "@models";
 import { IContext, ListOptionData } from "@typescript/graphql";
-import { Id } from "@typescript/models";
+import { Id, IListOptions } from "@typescript/models";
+import { UserRoles, UserTypes } from "@typescript/user";
 import {
   Arg,
   Authorized,
@@ -53,13 +54,26 @@ export default class OperatorDailyReportResolver {
     return OperatorDailyReport.getById(id);
   }
 
+  @Authorized()
   @Query(() => [OperatorDailyReportClass])
   async operatorDailyReports(
+    @Ctx() context: IContext,
     @Arg("options", () => ListOptionData, { nullable: true })
     options?: ListOptionData
   ) {
+    const query: IListOptions<OperatorDailyReportDocument>["query"] = {};
+
+    if (
+      context.user &&
+      context.user.role === UserRoles.User &&
+      context.user.types.includes(UserTypes.VehicleMaintenance)
+    ) {
+      query.author = context.user._id;
+    }
+
     return OperatorDailyReport.getList({
       ...options,
+      query,
     });
   }
 
