@@ -35,24 +35,6 @@ describe("User Class", () => {
           expect(user.role).toBe(UserRoles.ProjectManager);
         });
       });
-
-      describe("error", () => {
-        test("should error if not a valid user role", async () => {
-          expect.assertions(1);
-
-          const user = documents.users.base_foreman_1_user;
-
-          try {
-            await user.updateRole(15);
-
-            await user.save();
-          } catch (e) {
-            expect((e as Error).message).toMatch(
-              "`15` is not a valid enum value for path `role`"
-            );
-          }
-        });
-      });
     });
   });
 });

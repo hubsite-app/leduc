@@ -6,6 +6,7 @@ import {
   CompanyModel,
   JobsiteDayReport,
   JobsiteMaterial,
+  MaterialReportClass,
 } from "@models";
 import {
   CompanyMaterialReport,
@@ -18,7 +19,6 @@ import {
 } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 import { IHit } from "@typescript/elasticsearch";
-import { MaterialReportClass } from "models/JobsiteDayReport";
 import { timezoneStartOfDayinUTC } from "@utils/time";
 
 /**
@@ -205,7 +205,7 @@ const materialReports = async (
           mat.material.jobsiteMaterial &&
           jobsiteMaterialCatalog[mat.material.jobsiteMaterial.toString()] &&
           materialReport.material ===
-            jobsiteMaterialCatalog[mat.material.jobsiteMaterial.toString()]
+          jobsiteMaterialCatalog[mat.material.jobsiteMaterial.toString()]
         )
           return true;
         else return false;

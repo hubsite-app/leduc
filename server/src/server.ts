@@ -8,9 +8,9 @@ if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
   dotenv.config({ path: path.join(__dirname, "..", ".env.development") });
 }
 
-import { Company, System, Vehicle } from "@models";
 import updateDocuments from "@utils/updateDocuments";
 import workers from "@workers";
+import { Company, System, Vehicle } from "@models";
 import mongoose from "mongoose";
 import createApp from "./app";
 import elasticsearch from "./elasticsearch";

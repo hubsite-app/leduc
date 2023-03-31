@@ -1,7 +1,6 @@
 import SchemaVersions from "@constants/SchemaVersions";
+import { UserClass, VehicleClass } from "@models";
 import { prop, Ref } from "@typegoose/typegoose";
-import { UserClass } from "models/User";
-import { VehicleClass } from "models/Vehicle";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 import {
