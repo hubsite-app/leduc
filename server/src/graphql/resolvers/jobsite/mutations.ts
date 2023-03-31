@@ -7,6 +7,7 @@ import {
   JobsiteMaterial,
   Material,
 } from "@models";
+import { Readable } from "stream";
 import { TruckingRateTypes } from "@typescript/jobsite";
 import { Id } from "@typescript/models";
 import { UserRoles } from "@typescript/user";
@@ -236,13 +237,13 @@ const addFileObject = async (id: Id, data: JobsiteFileObjectData) => {
   const jobsite = await Jobsite.getById(id);
   if (!jobsite) throw new Error("Unable to find jobsite");
 
-  const filestream = await data.file.file;
+  const { createReadStream, mimetype } = data.file.file;
 
   await jobsite.addFileObject({
     file: {
-      mimetype: filestream.mimetype,
+      mimetype,
       description: data.file.description,
-      stream: filestream.createReadStream(),
+      stream: createReadStream(),
     },
     minRole: UserRoles.User,
   });

@@ -1,5 +1,5 @@
-import { ReadStream } from "fs-capacitor";
 import { Types } from "mongoose";
+import { Readable } from "stream";
 
 export enum SupportedMimeTypes {
   PNG = "image/png",
@@ -11,7 +11,7 @@ export enum SupportedMimeTypes {
 
 export interface IFileCreate {
   _id?: Types.ObjectId;
-  stream: ReadStream;
+  stream: Readable;
   mimetype: string;
   description?: string;
 }
