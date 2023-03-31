@@ -1,4 +1,4 @@
-import { ReadStream } from "fs";
+import { ReadStream } from "fs-capacitor";
 import { Types } from "mongoose";
 
 export enum SupportedMimeTypes {

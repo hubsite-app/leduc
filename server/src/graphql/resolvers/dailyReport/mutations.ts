@@ -11,6 +11,7 @@ import {
 import { Id } from "@typescript/models";
 import { Field, ID, InputType } from "type-graphql";
 import { FileCreateData } from "../file/mutations";
+import { FileUpload } from "graphql-upload";
 
 @InputType()
 export class DailyReportUpdateData {
