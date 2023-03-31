@@ -86,10 +86,10 @@ spec:
             - name: EMAIL_HOST
               valueFrom:
                 secretKeyRef:
-                  name: server-conrete-secrets
+                  name: server-concrete-secrets
                   key: emailHost
             - name: EMAIL_PORT
               valueFrom:
                 secretKeyRef:
-                  name: server-conrete-secrets
+                  name: server-concrete-secrets
                   key: emailPort
