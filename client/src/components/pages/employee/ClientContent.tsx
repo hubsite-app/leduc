@@ -198,9 +198,11 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
     archiveLoading,
     createSignup,
     data?.employee,
+    deleteUser,
     id,
     router,
     signupLoading,
+    userDeleteLoading,
   ]);
 };
 

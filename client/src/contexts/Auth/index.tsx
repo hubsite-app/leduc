@@ -59,7 +59,7 @@ const AuthContext = React.createContext<IAuthContext | undefined>(undefined);
  * ----- Reducer -----
  */
 
-const AuthReducer = (draft: IAuthState, action: IAuthAction): IAuthState => {
+const AuthReducer = (_draft: IAuthState, action: IAuthAction): IAuthState => {
   switch (action.type) {
     case "authorize-session": {
       return {

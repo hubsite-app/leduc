@@ -68,14 +68,15 @@ const Vehicles = () => {
       }
     }
   }, [
-    data?.vehicles.length,
-    fetchMore,
+    archived,
     finished,
     networkStatus,
-    archivedData?.archivedVehicles.length,
-    archivedFetchMore,
+    fetchMore,
+    data?.vehicles.length,
     archivedFinished,
     archivedNetworkStatus,
+    archivedFetchMore,
+    archivedData?.archivedVehicles.length,
   ]);
 
   /**
