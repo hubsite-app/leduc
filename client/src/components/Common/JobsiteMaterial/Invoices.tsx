@@ -37,7 +37,7 @@ const JobsiteMaterialInvoices = ({
   const sortedInvoices = React.useMemo(() => {
     let invoices = jobsiteMaterial.invoices;
 
-    if (jobsiteMaterial.invoices && showPreviousYears) {
+    if (jobsiteMaterial.invoices && !showPreviousYears) {
       invoices?.filter((a) => {
         return dayjs(a.date).isSame(dayjs(), "year");
       });
