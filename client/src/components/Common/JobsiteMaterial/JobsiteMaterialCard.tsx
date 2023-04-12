@@ -20,11 +20,13 @@ import ProgressBar from "../ProgressBar";
 interface IJobsiteMaterialCard {
   jobsiteMaterial: JobsiteMaterialCardSnippetFragment;
   selected?: boolean;
+  showPreviousYears?: boolean;
 }
 
 const JobsiteMaterialCard = ({
   jobsiteMaterial,
   selected,
+  showPreviousYears,
 }: IJobsiteMaterialCard) => {
   /**
    * ----- Hook Initialization -----
@@ -111,16 +113,14 @@ const JobsiteMaterialCard = ({
       </Flex>
       <Box>
         <ProgressBar
-          totalLabel={`${formatNumber(jobsiteMaterial.quantity)} ${
-            jobsiteMaterial.unit
-          }`}
-          completedLabel={`${formatNumber(jobsiteMaterial.completedQuantity)} ${
-            jobsiteMaterial.unit
-          }`}
+          totalLabel={`${formatNumber(jobsiteMaterial.quantity)} ${jobsiteMaterial.unit
+            }`}
+          completedLabel={`${formatNumber(jobsiteMaterial.completedQuantity)} ${jobsiteMaterial.unit
+            }`}
           percentComplete={parseInt(
             formatNumber(
               (jobsiteMaterial.completedQuantity / jobsiteMaterial.quantity) *
-                100
+              100
             )
           )}
         />
@@ -131,7 +131,10 @@ const JobsiteMaterialCard = ({
         </FormContainer>
       )}
       {showInvoice && (
-        <JobsiteMaterialInvoices jobsiteMaterial={jobsiteMaterial} />
+        <JobsiteMaterialInvoices
+          jobsiteMaterial={jobsiteMaterial}
+          showPreviousYears={showPreviousYears}
+        />
       )}
     </Box>
   );

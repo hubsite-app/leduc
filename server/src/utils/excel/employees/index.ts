@@ -1,4 +1,5 @@
 import { Employee } from "@models";
+import getRateForTime from "@utils/getRateForTime";
 import ExcelJS from "exceljs";
 
 export const generateForEmployees = async () => {
@@ -22,16 +23,18 @@ export const generateForEmployees = async () => {
     columns: [
       { name: "Name", filterButton: true },
       { name: "Role", filterButton: true },
-      { name: "Link" },
+      { name: "Current Rate", filterButton: true },
       { name: "Archived", filterButton: true },
+      { name: "Link" },
     ],
     rows: [
       ...employees.map((employee) => {
         return [
           employee.name,
           employee.jobTitle,
-          url + `/employee/${employee._id}`,
+          getRateForTime(employee.rates),
           employee.archivedAt ? "true" : "",
+          url + `/employee/${employee._id}`,
         ];
       }),
     ],

@@ -13,13 +13,16 @@ import JobsiteMaterialInvoiceAddForm from "../../Forms/JobsiteMaterial/InvoiceAd
 import FormContainer from "../FormContainer";
 import Permission from "../Permission";
 import InvoiceCardForJobsiteMaterial from "./InvoiceCard";
+import dayjs from "dayjs";
 
 interface IJobsiteMaterialInvoices {
   jobsiteMaterial: JobsiteMaterialCardSnippetFragment;
+  showPreviousYears?: boolean;
 }
 
 const JobsiteMaterialInvoices = ({
   jobsiteMaterial,
+  showPreviousYears,
 }: IJobsiteMaterialInvoices) => {
   /**
    * ----- Hook Initialization -----
@@ -31,9 +34,19 @@ const JobsiteMaterialInvoices = ({
    * ----- Variables -----
    */
 
-  const sortedInvoices = jobsiteMaterial.invoices?.slice().sort((a, b) => {
-    return a.company.name.localeCompare(b.company.name);
-  });
+  const sortedInvoices = React.useMemo(() => {
+    let invoices = jobsiteMaterial.invoices;
+
+    if (jobsiteMaterial.invoices && showPreviousYears) {
+      invoices?.filter((a) => {
+        return dayjs(a.date).isSame(dayjs(), "year");
+      });
+    }
+
+    return jobsiteMaterial.invoices?.slice().sort((a, b) => {
+      return a.company.name.localeCompare(b.company.name);
+    });
+  }, [jobsiteMaterial.invoices, showPreviousYears]);
 
   /**
    * ----- Rendering -----

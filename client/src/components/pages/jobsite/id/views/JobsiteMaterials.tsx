@@ -187,6 +187,7 @@ const JobsiteMaterialsCosting = ({
               jobsiteMaterial={jobsiteMaterial}
               key={jobsiteMaterial._id}
               selected={jobsiteMaterial._id === selectedJobsiteMaterial}
+              showPreviousYears={showPreviousYears}
             />
           ));
         } else {
@@ -197,6 +198,7 @@ const JobsiteMaterialsCosting = ({
                   jobsiteMaterial={jobsiteMaterial}
                   key={jobsiteMaterial._id}
                   selected={jobsiteMaterial._id === selectedJobsiteMaterial}
+                  showPreviousYears={showPreviousYears}
                 />
               ))}
             />
