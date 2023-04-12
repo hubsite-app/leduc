@@ -99,6 +99,10 @@ export class EmployeeClass extends EmployeeSchema {
     return update.archive(this);
   }
 
+  public async unarchive(this: EmployeeDocument) {
+    return update.unarchive(this);
+  }
+
   /**
    * ----- Reports -----
    */

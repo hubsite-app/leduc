@@ -13,6 +13,7 @@ import {
   EmployeeFullDocument,
   useEmployeeArchiveMutation,
   useEmployeeFullQuery,
+  useEmployeeUnarchiveMutation,
   useSignupCreateMutation,
   useUserDeleteMutation,
 } from "../../../generated/graphql";
@@ -24,7 +25,7 @@ import EmployeeRates from "./views/Rates";
 import createLink from "../../../utils/createLink";
 import Permission from "../../Common/Permission";
 import UserUpdateRole from "../../Forms/User/Role";
-import { FiArchive, FiTrash } from "react-icons/fi";
+import { FiArchive, FiTrash, FiUnlock } from "react-icons/fi";
 import { useRouter } from "next/router";
 import IndividualEmployeeHours from "../../Common/Employee/IndividualHours";
 import UserUpdateTypes from "../../Forms/User/Types";
@@ -51,6 +52,9 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
   });
 
   const [archive, { loading: archiveLoading }] = useEmployeeArchiveMutation();
+
+  const [unarchive, { loading: unarchiveLoading }] =
+    useEmployeeUnarchiveMutation();
 
   const [deleteUser, { loading: userDeleteLoading }] = useUserDeleteMutation({
     refetchQueries: [EmployeeFullDocument],
@@ -121,25 +125,45 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
 
               <div>
                 <Permission>
-                  <Tooltip label="Archive">
-                    <IconButton
-                      icon={<FiArchive />}
-                      aria-label="archive"
-                      backgroundColor="transparent"
-                      isLoading={archiveLoading}
-                      onClick={() => {
-                        if (window.confirm("Are you sure?")) {
-                          archive({
-                            variables: {
-                              id: employee._id,
-                            },
-                          }).then(() => {
-                            router.back();
-                          });
-                        }
-                      }}
-                    />
-                  </Tooltip>
+                  {!employee.archivedAt ? (
+                    <Tooltip label="Archive">
+                      <IconButton
+                        icon={<FiArchive />}
+                        aria-label="archive"
+                        backgroundColor="transparent"
+                        isLoading={archiveLoading}
+                        onClick={() => {
+                          if (window.confirm("Are you sure?")) {
+                            archive({
+                              variables: {
+                                id: employee._id,
+                              },
+                            }).then(() => {
+                              router.back();
+                            });
+                          }
+                        }}
+                      />
+                    </Tooltip>
+                  ) : (
+                    <Tooltip label="Unarchive">
+                      <IconButton
+                        icon={<FiUnlock />}
+                        aria-label="unarchive"
+                        backgroundColor="transparent"
+                        isLoading={unarchiveLoading}
+                        onClick={() => {
+                          if (window.confirm("Are you sure?")) {
+                            unarchive({
+                              variables: {
+                                id: employee._id,
+                              },
+                            });
+                          }
+                        }}
+                      />
+                    </Tooltip>
+                  )}
                   {!!employee.user && (
                     <Tooltip label="Remove User">
                       <IconButton

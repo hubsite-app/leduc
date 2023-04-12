@@ -33,8 +33,13 @@ const archive = async (
   return { crews };
 };
 
+const unarchive = async (employee: EmployeeDocument): Promise<void> => {
+  employee.archivedAt = undefined;
+};
+
 export default {
   document,
   rates,
   archive,
+  unarchive,
 };

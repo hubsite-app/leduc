@@ -122,4 +122,10 @@ export default class EmployeeResolver {
   async employeeArchive(@Arg("id", () => ID) id: Id) {
     return mutations.archive(id);
   }
+
+  @Authorized(["ADMIN"])
+  @Mutation(() => EmployeeClass)
+  async employeeUnarchive(@Arg("id", () => ID) id: Id) {
+    return mutations.unarchive(id);
+  }
 }

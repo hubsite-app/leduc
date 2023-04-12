@@ -127,7 +127,7 @@ const DailyReportFullPageList = ({
    * ----- Rendering -----
    */
 
-  const content = React.useMemo(() => {
+  const content = (() => {
     if (data?.dailyReports) {
       return (
         <Box>
@@ -204,13 +204,7 @@ const DailyReportFullPageList = ({
     } else {
       return <Loading />;
     }
-  }, [
-    data?.dailyReports,
-    filters,
-    handleFilterChange,
-    hideBreadcrumbs,
-    loading,
-  ]);
+  })();
 
   return (
     <InfiniteScroll

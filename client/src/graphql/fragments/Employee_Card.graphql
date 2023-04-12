@@ -5,4 +5,5 @@ fragment EmployeeCardSnippet on EmployeeClass {
   rates {
     ...RateSnippet
   }
+  archivedAt
 }

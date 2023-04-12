@@ -86,9 +86,20 @@ const archive = async (id: Id) => {
   return employee;
 };
 
+const unarchive = async (id: Id) => {
+  const employee = await Employee.getById(id);
+  if (!employee) throw new Error("Unable to find vehicle");
+
+  await employee.unarchive();
+  await employee.save();
+
+  return employee;
+};
+
 export default {
   create,
   update,
   updateRates,
   archive,
+  unarchive,
 };

@@ -47,9 +47,9 @@ export class EmployeeSchema {
   @prop({ ref: () => UserClass })
   public user?: Ref<UserClass>;
 
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
   @prop({ required: false })
-  public archivedAt!: Date;
+  public archivedAt?: Date;
 
   /**
    * @deprecated crews hold the link to an employee

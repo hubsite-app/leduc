@@ -1,0 +1,5 @@
+mutation EmployeeUnarchive($id: ID!) {
+  employeeUnarchive(id: $id) {
+    _id
+  }
+}
