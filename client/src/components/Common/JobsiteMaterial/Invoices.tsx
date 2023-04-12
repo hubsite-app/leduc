@@ -38,12 +38,12 @@ const JobsiteMaterialInvoices = ({
     let invoices = jobsiteMaterial.invoices;
 
     if (jobsiteMaterial.invoices && !showPreviousYears) {
-      invoices?.filter((a) => {
+      invoices = invoices?.filter((a) => {
         return dayjs(a.date).isSame(dayjs(), "year");
       });
     }
 
-    return jobsiteMaterial.invoices?.slice().sort((a, b) => {
+    return invoices?.slice().sort((a, b) => {
       return a.company.name.localeCompare(b.company.name);
     });
   }, [jobsiteMaterial.invoices, showPreviousYears]);
