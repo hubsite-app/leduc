@@ -1,0 +1,5 @@
+query ArchivedEmployees($options: ListOptionData) {
+  archivedEmployees(options: $options) {
+    ...EmployeeCardSnippet
+  }
+}

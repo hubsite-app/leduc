@@ -74,6 +74,20 @@ export default class EmployeeResolver {
     );
   }
 
+  @Query(() => [EmployeeClass])
+  async archivedEmployees(
+    @Arg("options", () => ListOptionData, { nullable: true })
+    options?: ListOptionData
+  ) {
+    return Employee.getList({
+      ...options,
+      query: {
+        archivedAt: { $exists: true, $ne: null },
+      },
+      showArchived: true,
+    });
+  }
+
   @Query(() => EmployeeHoursReport)
   async employeeHourReports(
     @Arg("id", () => ID) id: Id,

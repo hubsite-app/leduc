@@ -116,7 +116,7 @@ const list = async (
 ): Promise<EmployeeDocument[]> => {
   options = populateOptions(options, listDefaultOptions);
 
-  if (options?.query) options.query.archivedAt = null;
+  if (options?.query && !options.showArchived) options.query.archivedAt = null;
 
   const employees = await Employee.find(
     options?.query || { archivedAt: null },

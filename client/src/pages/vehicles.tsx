@@ -87,17 +87,13 @@ const Vehicles = () => {
     if (data?.vehicles || archivedData?.archivedVehicles) {
       let content;
       if (!archived && data?.vehicles) {
-        console.log("archived");
         content = data.vehicles.map((vehicle) => (
           <VehicleCard vehicle={vehicle} key={vehicle._id} />
         ));
       } else if (archived && archivedData?.archivedVehicles) {
-        console.log("unarchived");
         content = archivedData.archivedVehicles.map((vehicle) => (
           <VehicleCard vehicle={vehicle} key={vehicle._id} />
         ));
-      } else {
-        console.log("error");
       }
 
       return (

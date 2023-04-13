@@ -1322,6 +1322,7 @@ export type ProductionUpdateData = {
 
 export type Query = {
   __typename?: 'Query';
+  archivedEmployees: Array<EmployeeClass>;
   archivedVehicles: Array<VehicleClass>;
   companies: Array<CompanyClass>;
   company: CompanyClass;
@@ -1366,6 +1367,11 @@ export type Query = {
   vehicleIssues: Array<VehicleIssueClass>;
   vehicles: Array<VehicleClass>;
   vehicleSearch: Array<VehicleClass>;
+};
+
+
+export type QueryArchivedEmployeesArgs = {
+  options?: InputMaybe<ListOptionData>;
 };
 
 
@@ -2692,6 +2698,13 @@ export type VehicleWorkUpdateMutationVariables = Exact<{
 
 
 export type VehicleWorkUpdateMutation = { __typename?: 'Mutation', vehicleWorkUpdate: { __typename?: 'VehicleWorkClass', _id: string, hours: number, jobTitle?: string | null, vehicle?: { __typename?: 'VehicleClass', _id: string, name: string } | null } };
+
+export type ArchivedEmployeesQueryVariables = Exact<{
+  options?: InputMaybe<ListOptionData>;
+}>;
+
+
+export type ArchivedEmployeesQuery = { __typename?: 'Query', archivedEmployees: Array<{ __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> }> };
 
 export type ArchivedVehiclesQueryVariables = Exact<{
   options?: InputMaybe<ListOptionData>;
@@ -7100,6 +7113,41 @@ export function useVehicleWorkUpdateMutation(baseOptions?: Apollo.MutationHookOp
 export type VehicleWorkUpdateMutationHookResult = ReturnType<typeof useVehicleWorkUpdateMutation>;
 export type VehicleWorkUpdateMutationResult = Apollo.MutationResult<VehicleWorkUpdateMutation>;
 export type VehicleWorkUpdateMutationOptions = Apollo.BaseMutationOptions<VehicleWorkUpdateMutation, VehicleWorkUpdateMutationVariables>;
+export const ArchivedEmployeesDocument = gql`
+    query ArchivedEmployees($options: ListOptionData) {
+  archivedEmployees(options: $options) {
+    ...EmployeeCardSnippet
+  }
+}
+    ${EmployeeCardSnippetFragmentDoc}`;
+
+/**
+ * __useArchivedEmployeesQuery__
+ *
+ * To run a query within a React component, call `useArchivedEmployeesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useArchivedEmployeesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useArchivedEmployeesQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useArchivedEmployeesQuery(baseOptions?: Apollo.QueryHookOptions<ArchivedEmployeesQuery, ArchivedEmployeesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ArchivedEmployeesQuery, ArchivedEmployeesQueryVariables>(ArchivedEmployeesDocument, options);
+      }
+export function useArchivedEmployeesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ArchivedEmployeesQuery, ArchivedEmployeesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ArchivedEmployeesQuery, ArchivedEmployeesQueryVariables>(ArchivedEmployeesDocument, options);
+        }
+export type ArchivedEmployeesQueryHookResult = ReturnType<typeof useArchivedEmployeesQuery>;
+export type ArchivedEmployeesLazyQueryHookResult = ReturnType<typeof useArchivedEmployeesLazyQuery>;
+export type ArchivedEmployeesQueryResult = Apollo.QueryResult<ArchivedEmployeesQuery, ArchivedEmployeesQueryVariables>;
 export const ArchivedVehiclesDocument = gql`
     query ArchivedVehicles($options: ListOptionData) {
   archivedVehicles(options: $options) {

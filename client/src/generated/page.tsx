@@ -91,6 +91,41 @@ import { getApolloClient , ApolloClientContext} from '../withApollo';
 
 
 
+export async function getServerPageArchivedEmployees
+    (options: Omit<Apollo.QueryOptions<Types.ArchivedEmployeesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
+        const apolloClient = getApolloClient(ctx);
+        
+        const data = await apolloClient.query<Types.ArchivedEmployeesQuery>({ ...options, query: Operations.ArchivedEmployeesDocument });
+        
+        const apolloState = apolloClient.cache.extract();
+
+        return {
+            props: {
+                apolloState: apolloState,
+                data: data?.data,
+                error: data?.error ?? data?.errors ?? null,
+            },
+        };
+      }
+export const useArchivedEmployees = (
+  optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.ArchivedEmployeesQuery, Types.ArchivedEmployeesQueryVariables>) => {
+  const router = useRouter();
+  const options = optionsFunc ? optionsFunc(router) : {};
+  return useQuery(Operations.ArchivedEmployeesDocument, options);
+};
+export type PageArchivedEmployeesComp = React.FC<{data?: Types.ArchivedEmployeesQuery, error?: Apollo.ApolloError}>;
+export const withPageArchivedEmployees = (optionsFunc?: (router: NextRouter)=> QueryHookOptions<Types.ArchivedEmployeesQuery, Types.ArchivedEmployeesQueryVariables>) => (WrappedComponent:PageArchivedEmployeesComp) : NextPage  => (props) => {
+                const router = useRouter()
+                const options = optionsFunc ? optionsFunc(router) : {};
+                const {data, error } = useQuery(Operations.ArchivedEmployeesDocument, options)    
+                return <WrappedComponent {...props} data={data} error={error} /> ;
+                   
+            }; 
+export const ssrArchivedEmployees = {
+      getServerPage: getServerPageArchivedEmployees,
+      withPage: withPageArchivedEmployees,
+      usePage: useArchivedEmployees,
+    }
 export async function getServerPageArchivedVehicles
     (options: Omit<Apollo.QueryOptions<Types.ArchivedVehiclesQueryVariables>, 'query'>, ctx: ApolloClientContext ){
         const apolloClient = getApolloClient(ctx);
