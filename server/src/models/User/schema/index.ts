@@ -50,13 +50,13 @@ export class UserSchema {
   public role!: UserRoles;
 
   @Field(() => [UserTypes], {
-    defaultValue: [UserTypes.Operations],
+    defaultValue: [UserTypes.VehicleMaintenance],
   })
   @prop({
     type: () => [String],
     required: true,
     enum: UserTypes,
-    default: [UserTypes.Operations],
+    default: [UserTypes.VehicleMaintenance],
   })
   public types!: UserTypes[];
 
