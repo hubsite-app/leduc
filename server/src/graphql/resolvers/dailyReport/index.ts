@@ -1,6 +1,7 @@
 import {
   Arg,
   Authorized,
+  Ctx,
   FieldResolver,
   ID,
   Mutation,
@@ -34,6 +35,9 @@ import { DailyReportListOptionData } from "./queries";
 import { FilterQuery } from "mongoose";
 import { Id } from "@typescript/models";
 import { DailyReportListFilter } from "@typescript/dailyReport";
+import { IContext } from "@typescript/graphql";
+import { UserRoles } from "@typescript/user";
+import { mongoose } from "@typegoose/typegoose";
 
 @Resolver(() => DailyReportClass)
 export default class DailyReportResolver {
@@ -95,8 +99,10 @@ export default class DailyReportResolver {
     return DailyReport.getById(id);
   }
 
+  @Authorized()
   @Query(() => [DailyReportClass])
   async dailyReports(
+    @Ctx() ctx: IContext,
     @Arg("options", () => DailyReportListOptionData, { nullable: true })
     options?: DailyReportListOptionData
   ) {
@@ -104,6 +110,11 @@ export default class DailyReportResolver {
     if (options?.crews && options.crews.length > 0) {
       query = {
         crew: { $in: options.crews },
+      };
+    } else if (ctx.user && ctx.user.role === UserRoles.User) {
+      // If user is just a 'User' and not in a crew, do not return any daily reports
+      query = {
+        _id: mongoose.Types.ObjectId(),
       };
     }
 
