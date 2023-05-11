@@ -22,6 +22,7 @@ import Breadcrumbs from "../Breadcrumbs";
 import InfiniteScroll from "../InfiniteScroll";
 import Loading from "../Loading";
 import DailyReportCard from "./DailyReportCard";
+import { useApolloClient } from "@apollo/client";
 
 interface IDailyReportFullPageList {
   hideBreadcrumbs?: boolean;
@@ -37,6 +38,8 @@ const DailyReportFullPageList = ({
   const {
     state: { user },
   } = useAuth();
+
+  const client = useApolloClient();
 
   const crews = React.useMemo(() => {
     if (user) {
@@ -114,6 +117,8 @@ const DailyReportFullPageList = ({
   }, [crews]);
 
   React.useEffect(() => {
+    client.cache.evict({ fieldName: "dailyReports" });
+    client.cache.gc();
     refetch({
       options: {
         crews,

@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
 
 import updateDocuments from "@utils/updateDocuments";
 import workers from "@workers";
-import { Company, System, Vehicle } from "@models";
+import { Company, System } from "@models";
 import mongoose from "mongoose";
 import createApp from "./app";
 import elasticsearch from "./elasticsearch";

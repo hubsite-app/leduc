@@ -111,7 +111,7 @@ const Home = () => {
   return (
     <Container>
       {tabs.length > 0 ? (
-        <Tabs>
+        <Tabs isFitted>
           <TabList>{tabs.map((tab) => tab.tab)}</TabList>
 
           <TabPanels>
