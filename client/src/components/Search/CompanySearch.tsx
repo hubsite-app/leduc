@@ -115,7 +115,7 @@ const CompanySearch = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fullOptions]);
 
   React.useEffect(() => {
     if (props.value && !isObjectId(props.value.toString())) {

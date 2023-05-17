@@ -19,6 +19,7 @@ import {
 } from "type-graphql";
 import { InvoiceData } from "../invoice/mutations";
 import mutations, { JobsiteMaterialUpdateData } from "./mutations";
+import { YearlyMaterialQuantity } from "@typescript/jobsiteMaterial";
 
 @Resolver(() => JobsiteMaterialClass)
 export default class JobsiteMaterialResolver {
@@ -36,9 +37,14 @@ export default class JobsiteMaterialResolver {
     return jobsiteMaterial.getSupplier();
   }
 
-  @FieldResolver(() => Float, { nullable: false })
+  @FieldResolver(() => [YearlyMaterialQuantity], { nullable: false })
   async completedQuantity(@Root() jobsiteMaterial: JobsiteMaterialDocument) {
-    return jobsiteMaterial.getCompletedQuantity();
+    const quantity = await jobsiteMaterial.getCompletedQuantity();
+
+    return Object.entries(quantity).map(([key, value]) => ({
+      year: Number(key),
+      quantity: Number(value),
+    }));
   }
 
   @FieldResolver(() => JobsiteClass, { nullable: false })

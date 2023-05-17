@@ -13,7 +13,10 @@ import {
   MaterialShipment,
   MaterialShipmentDocument,
 } from "@models";
-import { JobsiteMaterialCostType } from "@typescript/jobsiteMaterial";
+import {
+  JobsiteMaterialCostType,
+  YearlyQuantity,
+} from "@typescript/jobsiteMaterial";
 import { GetByIDOptions, Id } from "@typescript/models";
 import getRateForTime from "@utils/getRateForTime";
 import populateOptions from "@utils/populateOptions";
@@ -122,15 +125,23 @@ const invoices = async (
 
 const completedQuantity = async (
   jobsiteMaterial: JobsiteMaterialDocument
-): Promise<number> => {
+): Promise<YearlyQuantity> => {
   const materialShipments = await jobsiteMaterial.getMaterialShipments();
 
-  let quantity = 0;
+  const quantityPerYear: YearlyQuantity = {};
+
   for (let i = 0; i < materialShipments.length; i++) {
-    quantity += materialShipments[i].quantity;
+    const dailyReport = await materialShipments[i].getDailyReport();
+    if (dailyReport) {
+      const dailyReportYear = new Date(dailyReport.date).getFullYear();
+      if (!quantityPerYear[dailyReportYear])
+        quantityPerYear[dailyReportYear] = 0;
+
+      quantityPerYear[dailyReportYear] += materialShipments[i].quantity;
+    }
   }
 
-  return quantity;
+  return quantityPerYear;
 };
 
 const rateForTime = async (
@@ -165,7 +176,7 @@ const invoiceMonthRate = async (
       if (
         reportShipments[j].noJobsiteMaterial === false &&
         reportShipments[j].jobsiteMaterial?.toString() ===
-          jobsiteMaterial._id.toString()
+        jobsiteMaterial._id.toString()
       ) {
         quantity += reportShipments[j].quantity;
       }

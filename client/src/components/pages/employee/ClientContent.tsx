@@ -218,6 +218,8 @@ const EmployeeClientContent = ({ id }: IEmployeeClientContent) => {
       );
     } else return <Loading />;
   }, [
+    unarchive,
+    unarchiveLoading,
     archive,
     archiveLoading,
     createSignup,

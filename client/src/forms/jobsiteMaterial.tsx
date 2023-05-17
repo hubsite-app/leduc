@@ -282,8 +282,8 @@ export const useJobsiteMaterialCreateForm = (options?: UseFormProps) => {
                 {...props}
                 errors={
                   fieldState.error as
-                    | IJobsiteMaterialDeliveredRateError[]
-                    | undefined
+                  | IJobsiteMaterialDeliveredRateError[]
+                  | undefined
                 }
                 titleName="Trucking Type"
                 deliveredRates={field.value}
@@ -482,8 +482,8 @@ export const useJobsiteMaterialUpdateForm = (options?: UseFormProps) => {
                 {...props}
                 errors={
                   fieldState.error as
-                    | IJobsiteMaterialDeliveredRateError[]
-                    | undefined
+                  | IJobsiteMaterialDeliveredRateError[]
+                  | undefined
                 }
                 titleName="Trucking Type"
                 deliveredRates={field.value}

@@ -61,6 +61,17 @@ export class JobsiteMaterialDeliveredRateClass extends DefaultRateClass {
   public rates!: JobsiteMaterialRateClass[];
 }
 
+export type YearlyQuantity = Record<number, number>;
+
+@ObjectType()
+export class YearlyMaterialQuantity {
+  @Field()
+  year!: number;
+
+  @Field()
+  quantity!: number;
+}
+
 export enum JobsiteMaterialCostType {
   rate = "rate",
   deliveredRate = "deliveredRate",

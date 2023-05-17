@@ -69,6 +69,7 @@ const JobsiteMaterialRatesForm = ({
     ratesCopy.push({
       rate: 0,
       date: new Date(),
+      estimated: false,
     });
     if (onChange) onChange(ratesCopy);
   }, [onChange, ratesCopy]);

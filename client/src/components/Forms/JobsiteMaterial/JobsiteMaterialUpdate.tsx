@@ -1,5 +1,5 @@
 import React from "react";
-import { Center, SimpleGrid, Text, Tooltip, useToast } from "@chakra-ui/react";
+import { Center, SimpleGrid, Text, useToast } from "@chakra-ui/react";
 import { useJobsiteMaterialUpdateForm } from "../../../forms/jobsiteMaterial";
 import {
   JobsiteMaterialCardSnippetFragment,

@@ -55,6 +55,26 @@ const JobsiteMaterialCard = ({
   }, [ref, selected]);
 
   /**
+   * --- Variables ---
+   */
+
+  const completedQuantity = React.useMemo(() => {
+    if (showPreviousYears) {
+      return jobsiteMaterial.completedQuantity.reduce(
+        (total, quantity) => total + quantity.quantity,
+        0
+      );
+    } else {
+      const currentYear = new Date().getFullYear();
+      const currentYearQuantityRecord = jobsiteMaterial.completedQuantity.find(
+        (quantityRecord) => quantityRecord.year === currentYear
+      );
+      if (currentYearQuantityRecord) return currentYearQuantityRecord.quantity;
+      else return 0;
+    }
+  }, [jobsiteMaterial.completedQuantity, showPreviousYears]);
+
+  /**
    * ----- Rendering -----
    */
 
@@ -115,13 +135,10 @@ const JobsiteMaterialCard = ({
         <ProgressBar
           totalLabel={`${formatNumber(jobsiteMaterial.quantity)} ${jobsiteMaterial.unit
             }`}
-          completedLabel={`${formatNumber(jobsiteMaterial.completedQuantity)} ${jobsiteMaterial.unit
+          completedLabel={`${formatNumber(completedQuantity)} ${jobsiteMaterial.unit
             }`}
           percentComplete={parseInt(
-            formatNumber(
-              (jobsiteMaterial.completedQuantity / jobsiteMaterial.quantity) *
-              100
-            )
+            formatNumber((completedQuantity / jobsiteMaterial.quantity) * 100)
           )}
         />
       </Box>
