@@ -1,4 +1,5 @@
 import {
+  EmployeeDocument,
   UserDocument,
   VehicleDocument,
   VehicleIssueDocument,
@@ -65,7 +66,7 @@ export class VehicleIssueClass extends VehicleIssueSchema {
   public static async createDocument(
     this: VehicleIssueModel,
     vehicle: VehicleDocument,
-    author: UserDocument,
+    author: EmployeeDocument,
     data: IVehicleIssueCreate
   ) {
     return create.document(this, vehicle, author, data);
@@ -77,7 +78,7 @@ export class VehicleIssueClass extends VehicleIssueSchema {
 
   public async updateAssignedTo(
     this: VehicleIssueDocument,
-    assignedTo?: UserDocument
+    assignedTo?: EmployeeDocument
   ) {
     return update.assignedTo(this, assignedTo);
   }

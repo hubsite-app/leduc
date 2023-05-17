@@ -278,6 +278,7 @@ const VehicleIssue: PageVehicleIssueComp = ({ data }) => {
             w="100%"
             colorScheme="red"
             variant="outline"
+            isLoading={closeLoading}
             onClick={() => {
               if (window.confirm("Are you sure?")) {
                 handleClose();

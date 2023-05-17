@@ -1,19 +1,18 @@
 import { Box, Heading, MenuButton, Tooltip } from "@chakra-ui/react";
 import React from "react";
-import { UserCardSnippetFragment } from "../../../generated/graphql";
 import getRandomColor from "../../../utils/getRandomColor";
 
 interface IUserIcon {
-  user: UserCardSnippetFragment;
+  name: string;
   menuButton?: boolean;
   onClick?: () => void;
   hideTooltip?: boolean;
 }
 
-const UserIcon = ({ user, menuButton, onClick, hideTooltip }: IUserIcon) => {
+const UserIcon = ({ name, menuButton, onClick, hideTooltip }: IUserIcon) => {
   const props = React.useMemo(() => {
     return {
-      backgroundColor: getRandomColor(user.name),
+      backgroundColor: getRandomColor(name),
       fontWeight: "bold",
       borderRadius: "50%",
       width: "40px",
@@ -22,29 +21,29 @@ const UserIcon = ({ user, menuButton, onClick, hideTooltip }: IUserIcon) => {
       cursor: "pointer",
       p: "auto",
     };
-  }, [user.name]);
+  }, [name]);
 
   const content = React.useMemo(() => {
     if (menuButton) {
-      return <MenuButton {...props}>{user.name.charAt(0)}</MenuButton>;
+      return <MenuButton {...props}>{name.charAt(0)}</MenuButton>;
     } else {
       return (
         <Box {...props} display="flex" alignItems="center" onClick={onClick}>
           <Heading m="auto" my="auto" size="sm" textAlign="center">
-            {user.name.charAt(0)}
+            {name.charAt(0)}
           </Heading>
         </Box>
       );
     }
-  }, [menuButton, props, user.name, onClick]);
+  }, [menuButton, props, name, onClick]);
 
   return React.useMemo(() => {
     if (!hideTooltip) {
-      return <Tooltip label={user.name}>{content}</Tooltip>;
+      return <Tooltip label={name}>{content}</Tooltip>;
     } else {
       return content;
     }
-  }, [content, hideTooltip, user.name]);
+  }, [content, hideTooltip, name]);
 };
 
 export default UserIcon;

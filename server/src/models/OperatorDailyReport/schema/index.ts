@@ -1,5 +1,5 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { UserClass, VehicleClass } from "@models";
+import { EmployeeClass, VehicleClass } from "@models";
 import { prop, Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
@@ -20,9 +20,9 @@ export class OperatorDailyReportSchema {
   @prop({ ref: () => VehicleClass, required: true })
   public vehicle!: Ref<VehicleClass>;
 
-  @Field(() => UserClass, { nullable: false })
-  @prop({ ref: () => UserClass, required: true })
-  public author!: Ref<UserClass>;
+  @Field(() => EmployeeClass, { nullable: false })
+  @prop({ ref: () => EmployeeClass, required: true })
+  public author!: Ref<EmployeeClass>;
 
   @Field(() => EquipmentUsageSchema, { nullable: false })
   @prop({ type: () => EquipmentUsageSchema, required: true })

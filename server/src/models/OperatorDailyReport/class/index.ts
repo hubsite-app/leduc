@@ -1,7 +1,7 @@
 import {
+  EmployeeDocument,
   OperatorDailyReportDocument,
   OperatorDailyReportModel,
-  UserDocument,
   VehicleDocument,
 } from "@models";
 import { GetByIDOptions, IListOptions } from "@typescript/models";
@@ -53,7 +53,7 @@ export class OperatorDailyReportClass extends OperatorDailyReportSchema {
   public static async createDocument(
     this: OperatorDailyReportModel,
     vehicle: VehicleDocument,
-    author: UserDocument,
+    author: EmployeeDocument,
     data: IOperatorDailyReportCreate
   ) {
     return create.document(this, vehicle, author, data);

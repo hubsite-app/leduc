@@ -1,4 +1,5 @@
 import {
+  Employee,
   OperatorDailyReportDocument,
   OperatorDailyReportModel,
   User,
@@ -72,7 +73,7 @@ const vehicle = async (operatorDailyReport: OperatorDailyReportDocument) => {
 };
 
 const author = async (operatorDailyReport: OperatorDailyReportDocument) => {
-  const author = await User.getById(
+  const author = await Employee.getById(
     operatorDailyReport.author?.toString() || ""
   );
   if (!author) throw new Error("Unable to find author of this report");

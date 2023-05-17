@@ -1,7 +1,7 @@
 import {
+  EmployeeDocument,
   OperatorDailyReportDocument,
   OperatorDailyReportModel,
-  UserDocument,
   VehicleDocument,
 } from "@models";
 import { IOperatorDailyReportCreate } from "@typescript/operatorDailyReport";
@@ -9,7 +9,7 @@ import { IOperatorDailyReportCreate } from "@typescript/operatorDailyReport";
 const document = async (
   OperatorDailyReport: OperatorDailyReportModel,
   vehicle: VehicleDocument,
-  author: UserDocument,
+  author: EmployeeDocument,
   data: IOperatorDailyReportCreate
 ): Promise<OperatorDailyReportDocument> => {
   const operatorDailyReport = new OperatorDailyReport({

@@ -36,6 +36,9 @@ const VehicleIssueAssignedToSelect = ({
     return options;
   }, [data?.mechanics]);
 
+  console.log("options", options);
+  console.log("value", props.value);
+
   /**
    * ----- Rendering -----
    */

@@ -26,7 +26,7 @@ const NavbarAccount = () => {
     if (user) {
       return (
         <Menu>
-          <UserIcon user={user} menuButton hideTooltip />
+          <UserIcon name={user.name} menuButton hideTooltip />
           <MenuList>
             <MenuGroup>
               <Permission minRole={UserRoles.ProjectManager}>

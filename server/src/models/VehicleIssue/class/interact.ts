@@ -5,9 +5,13 @@ import email from "@utils/email";
 const sendAssignedToNotifiation = async (
   vehicleIssue: VehicleIssueDocument
 ) => {
-  const assignedTo = await vehicleIssue.getAssignedTo();
-  if (assignedTo) {
-    const content = `
+  const assignedToEmployee = await vehicleIssue.getAssignedTo();
+  if (!assignedToEmployee) return;
+
+  const assignedTo = await assignedToEmployee?.getUser();
+  if (!assignedTo) return;
+
+  const content = `
       <p>A new vehicle issue has been assigned to you</p>
       <h2>${vehicleIssue.title}</h2>
       <p>${vehicleIssue.description}</p>
@@ -15,12 +19,11 @@ const sendAssignedToNotifiation = async (
       <p><b>Link: </b>${await vehicleIssue.getLink()}</p>
     `;
 
-    await email.sendEmail(
-      assignedTo.email,
-      `Vehicle Issue - ${vehicleIssue.title}`,
-      content
-    );
-  }
+  await email.sendEmail(
+    assignedTo.email,
+    `Vehicle Issue - ${vehicleIssue.title}`,
+    content
+  );
 };
 
 const sendSubscribedNotifications = async (

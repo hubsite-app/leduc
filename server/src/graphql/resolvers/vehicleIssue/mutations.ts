@@ -1,4 +1,4 @@
-import { User, UserDocument, Vehicle, VehicleIssue } from "@models";
+import { Employee, EmployeeDocument, Vehicle, VehicleIssue } from "@models";
 import { Id } from "@typescript/models";
 import { VehicleIssuePriority } from "@typescript/vehicleIssue";
 import { Field, ID, InputType } from "type-graphql";
@@ -23,7 +23,7 @@ export class VehicleIssueCreateData {
 
 const create = async (
   vehicleId: Id,
-  author: UserDocument,
+  author: EmployeeDocument,
   data: VehicleIssueCreateData
 ) => {
   const vehicle = await Vehicle.getById(vehicleId);
@@ -45,8 +45,8 @@ const assignedToUpdate = async (id: Id, assignedTo?: Id) => {
 
   let assignTo;
   if (assignedTo) {
-    assignTo = await User.getById(assignedTo);
-    if (!assignTo) throw new Error("Unable to find user to assign to");
+    assignTo = await Employee.getById(assignedTo);
+    if (!assignTo) throw new Error("Unable to find employee to assign to");
   }
 
   await vehicleIssue.updateAssignedTo(assignTo);

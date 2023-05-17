@@ -1,6 +1,6 @@
 import {
+  EmployeeClass,
   OperatorDailyReportClass,
-  UserClass,
   VehicleClass,
   VehicleIssue,
   VehicleIssueClass,
@@ -32,12 +32,12 @@ export default class VehicleIssueResolver {
     return vehicleIssue.getVehicle();
   }
 
-  @FieldResolver(() => UserClass)
+  @FieldResolver(() => EmployeeClass)
   async author(@Root() vehicleIssue: VehicleIssueDocument) {
     return vehicleIssue.getAuthor();
   }
 
-  @FieldResolver(() => UserClass, { nullable: true })
+  @FieldResolver(() => EmployeeClass, { nullable: true })
   async assignedTo(@Root() vehicleIssue: VehicleIssueDocument) {
     return vehicleIssue.getAssignedTo();
   }
@@ -78,7 +78,13 @@ export default class VehicleIssueResolver {
     @Ctx() context: IContext
   ) {
     if (!context.user) throw new Error("Must be logged in to do this");
-    return mutations.create(vehicleId, context.user, data);
+    const employee = await context.user.getEmployee();
+    if (!employee)
+      throw new Error(
+        "You do not have an employee account, please contact support"
+      );
+
+    return mutations.create(vehicleId, employee, data);
   }
 
   @Authorized(["PM"])

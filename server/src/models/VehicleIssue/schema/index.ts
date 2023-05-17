@@ -1,5 +1,5 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { OperatorDailyReportClass, UserClass, VehicleClass } from "@models";
+import { EmployeeClass, OperatorDailyReportClass, VehicleClass } from "@models";
 import { prop, Ref } from "@typegoose/typegoose";
 import { VehicleIssuePriority } from "@typescript/vehicleIssue";
 import { Types } from "mongoose";
@@ -14,13 +14,13 @@ export class VehicleIssueSchema {
   @prop({ ref: () => VehicleClass, required: true })
   public vehicle!: Ref<VehicleClass>;
 
-  @Field(() => UserClass)
-  @prop({ ref: () => UserClass, required: true })
-  public author!: Ref<UserClass>;
+  @Field(() => EmployeeClass)
+  @prop({ ref: () => EmployeeClass, required: true })
+  public author!: Ref<EmployeeClass>;
 
-  @Field(() => UserClass, { nullable: true })
-  @prop({ ref: () => UserClass })
-  public assignedTo?: Ref<UserClass>;
+  @Field(() => EmployeeClass, { nullable: true })
+  @prop({ ref: () => EmployeeClass })
+  public assignedTo?: Ref<EmployeeClass>;
 
   @Field()
   @prop({ required: true })

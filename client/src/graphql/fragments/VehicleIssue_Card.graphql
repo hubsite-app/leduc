@@ -9,10 +9,10 @@ fragment VehicleIssueCardSnippet on VehicleIssueClass {
     ...VehicleCardSnippet
   }
   author {
-    ...UserCardSnippet
+    ...EmployeeCardSnippet
   }
   assignedTo {
-    ...UserCardSnippet
+    ...EmployeeCardSnippet
   }
   operatorDailyReport {
     ...OperatorDailyReportCardSnippet

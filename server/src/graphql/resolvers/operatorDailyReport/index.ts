@@ -1,8 +1,8 @@
 import {
+  EmployeeClass,
   OperatorDailyReport,
   OperatorDailyReportClass,
   OperatorDailyReportDocument,
-  UserClass,
   VehicleClass,
   VehicleIssueClass,
 } from "@models";
@@ -33,7 +33,7 @@ export default class OperatorDailyReportResolver {
     return operatorDailyReport.getVehicle();
   }
 
-  @FieldResolver(() => UserClass)
+  @FieldResolver(() => EmployeeClass)
   async author(@Root() operatorDailyReport: OperatorDailyReportDocument) {
     return operatorDailyReport.getAuthor();
   }
@@ -68,7 +68,8 @@ export default class OperatorDailyReportResolver {
       context.user.role === UserRoles.User &&
       context.user.types.includes(UserTypes.VehicleMaintenance)
     ) {
-      query.author = context.user._id;
+      const employee = await context.user.getEmployee();
+      query.author = employee._id;
     }
 
     return OperatorDailyReport.getList({
@@ -89,6 +90,12 @@ export default class OperatorDailyReportResolver {
     @Ctx() context: IContext
   ) {
     if (!context.user) throw new Error("Must be logged in to do this");
-    return mutations.create(vehicleId, context.user, data);
+    const employee = await context.user.getEmployee();
+    if (!employee)
+      throw new Error(
+        "You do not have an employee account, please contact support"
+      );
+
+    return mutations.create(vehicleId, employee, data);
   }
 }

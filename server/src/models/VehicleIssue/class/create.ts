@@ -1,7 +1,7 @@
 import {
+  Employee,
+  EmployeeDocument,
   OperatorDailyReport,
-  User,
-  UserDocument,
   VehicleDocument,
   VehicleIssueModel,
 } from "@models";
@@ -10,7 +10,7 @@ import { IVehicleIssueCreate } from "@typescript/vehicleIssue";
 const document = async (
   VehicleIssue: VehicleIssueModel,
   vehicle: VehicleDocument,
-  author: UserDocument,
+  author: EmployeeDocument,
   data: IVehicleIssueCreate
 ) => {
   // Validate operator daily report
@@ -27,8 +27,8 @@ const document = async (
 
   // Validate assign to
   if (data.assignedTo) {
-    const assignedTo = await User.getById(data.assignedTo);
-    if (!assignedTo) throw new Error("Unable to find user to assign to");
+    const assignedTo = await Employee.getById(data.assignedTo);
+    if (!assignedTo) throw new Error("Unable to find employee to assign to");
   }
 
   const vehicleIssue = new VehicleIssue({

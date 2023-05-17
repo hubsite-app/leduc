@@ -1,8 +1,8 @@
-import { UserDocument, VehicleIssueDocument } from "@models";
+import { EmployeeDocument, VehicleIssueDocument } from "@models";
 
 const assignedTo = async (
   vehicleIssue: VehicleIssueDocument,
-  assignedTo?: UserDocument
+  assignedTo?: EmployeeDocument
 ) => {
   vehicleIssue.assignedTo = assignedTo?._id;
 };

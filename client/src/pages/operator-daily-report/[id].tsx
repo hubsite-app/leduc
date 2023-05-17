@@ -124,9 +124,7 @@ const OperatorDailyReport: PageOperatorDailyReportFullComp = ({ data }) => {
                 ),
                 text: (
                   <TextLink
-                    link={createLink.employee(
-                      operatorDailyReport.author.employee._id
-                    )}
+                    link={createLink.employee(operatorDailyReport.author._id)}
                   >
                     {operatorDailyReport.author.name}
                   </TextLink>

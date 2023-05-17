@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { VehicleIssueCardSnippetFragment } from "../../../generated/graphql";
 import Card from "../Card";
 import VehicleIssuePriorityTag from "./PriorityTag";
@@ -42,7 +42,7 @@ const VehicleIssueCard = ({ vehicleIssue }: IVehicleIssueCard) => {
         </Box>
         {vehicleIssue.assignedTo ? (
           <Flex flexDir="column" justifyContent="flex-end">
-            <UserIcon user={vehicleIssue.assignedTo} />
+            <UserIcon name={vehicleIssue.assignedTo.name} />
           </Flex>
         ) : null}
       </Flex>

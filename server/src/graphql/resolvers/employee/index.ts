@@ -6,6 +6,7 @@ import {
   EmployeeClass,
   EmployeeDocument,
   SignupClass,
+  User,
   UserClass,
 } from "@models";
 import { EmployeeHoursReport } from "@typescript/employee";
@@ -22,6 +23,7 @@ import {
   Root,
 } from "type-graphql";
 import mutations, { EmployeeCreateData, EmployeeUpdateData } from "./mutations";
+import { UserRoles, UserTypes } from "@typescript/user";
 
 @Resolver(() => EmployeeClass)
 export default class EmployeeResolver {
@@ -98,6 +100,25 @@ export default class EmployeeResolver {
     if (!employee) throw new Error("Could not find employee");
 
     return employee.getHourReports(startTime, endTime);
+  }
+
+  @Query(() => [EmployeeClass])
+  async mechanics() {
+    const users = await User.getList({
+      query: {
+        role: UserRoles.ProjectManager,
+        types: [UserTypes.VehicleMaintenance],
+      },
+    });
+
+    const mechanics: EmployeeDocument[] = [];
+
+    for (let i = 0; i < users.length; i++) {
+      const employee = await users[i].getEmployee();
+      if (employee) mechanics.push(employee);
+    }
+
+    return mechanics;
   }
 
   /**

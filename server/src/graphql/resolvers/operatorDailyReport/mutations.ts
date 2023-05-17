@@ -1,4 +1,4 @@
-import { OperatorDailyReport, UserDocument, Vehicle } from "@models";
+import { EmployeeDocument, OperatorDailyReport, Vehicle } from "@models";
 import { Id } from "@typescript/models";
 import { EquipmentUsageUnits } from "@typescript/operatorDailyReport";
 import { Field, Float, InputType } from "type-graphql";
@@ -92,7 +92,7 @@ export class OperatorDailyReportCreateData {
 
 const create = async (
   vehicleId: Id,
-  author: UserDocument,
+  author: EmployeeDocument,
   data: OperatorDailyReportCreateData
 ) => {
   const vehicle = await Vehicle.getById(vehicleId);

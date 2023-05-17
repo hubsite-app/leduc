@@ -1,6 +1,6 @@
 import {
+  Employee,
   OperatorDailyReport,
-  User,
   Vehicle,
   VehicleIssueDocument,
   VehicleIssueModel,
@@ -74,7 +74,7 @@ const vehicle = async (vehicleIssue: VehicleIssueDocument) => {
 };
 
 const author = async (vehicleIssue: VehicleIssueDocument) => {
-  const author = await User.getById(vehicleIssue.author?.toString() || "");
+  const author = await Employee.getById(vehicleIssue.author?.toString() || "");
   if (!author) throw new Error("Unable to find author of this issue");
 
   return author;
@@ -97,7 +97,7 @@ const operatorDailyReport = async (vehicleIssue: VehicleIssueDocument) => {
 const assignedTo = async (vehicleIssue: VehicleIssueDocument) => {
   if (!vehicleIssue.assignedTo) return;
 
-  const assignedTo = await User.getById(vehicleIssue.assignedTo.toString());
+  const assignedTo = await Employee.getById(vehicleIssue.assignedTo.toString());
   if (!assignedTo)
     throw new Error("Unable to find user this issue was assigned to");
 

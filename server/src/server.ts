@@ -73,13 +73,13 @@ const main = async () => {
         }
       }
 
-      await updateDocuments();
-
       await System.validateSystem();
       await Company.validateCompanies();
 
       // Enable worker
       if (workerEnabled) {
+        await updateDocuments();
+
         workers();
       }
     }
