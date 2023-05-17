@@ -50,6 +50,7 @@ deploy:
       - k8s-dev/es-data.yaml
       - k8s-dev/es-client.yaml
       # - k8s-dev/kibana.yaml
+      - k8s-dev/meilisearch.yaml
       - k8s-dev/worker-deployment.yaml
       - k8s-dev/server-deployment.yaml
       - k8s-dev/client-deployment.yaml

@@ -16,6 +16,7 @@ import createApp from "./app";
 import elasticsearch from "./elasticsearch";
 import errorHandler from "@utils/errorHandler";
 import { bindEventEmitters } from "@events";
+import MeiliSearch from "meilisearch";
 // import saveAll from "@testing/saveAll";
 
 let workerEnabled = true,
@@ -48,9 +49,19 @@ const main = async () => {
 
     // Start API server
     if (apiEnabled) {
-      elasticsearch().catch((err) => {
-        errorHandler(err.message, err);
-      });
+      // elasticsearch().catch((err) => {
+      //   errorHandler(err.message, err);
+      // });
+
+      try {
+        const client = new MeiliSearch({
+          host: "http://meilisearch-service.default.svc:7700",
+        });
+
+        console.log("Health", await client.health());
+      } catch (error) {
+        console.log(error);
+      }
 
       const port = process.env.PORT || 8080;
 
