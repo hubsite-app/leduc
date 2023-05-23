@@ -42,7 +42,8 @@
       "@validation/*": ["validation/*"],
       "@graphql/*": ["graphql/*"],
       "@logger": ["./logger"],
-      "@elasticsearch/*": ["elasticsearch/*"]
+      "@elasticsearch/*": ["elasticsearch/*"],
+      "@search": ["./search"]
     }
   },
   "exclude": ["node_modules"],

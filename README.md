@@ -3,6 +3,10 @@
 Before deploying or running skaffold, be sure to replace all instances of `itsdevin/*`
 Docker Hub references with your own Docker Hub images.
 
+# Todo
+
+- Search of Daily Reports, if I search Creekrise and Todd, I should get daily reports
+
 # Development
 
 ## Docker Compose

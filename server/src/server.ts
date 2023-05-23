@@ -13,11 +13,8 @@ import workers from "@workers";
 import { Company, System } from "@models";
 import mongoose from "mongoose";
 import createApp from "./app";
-import elasticsearch from "./elasticsearch";
-import errorHandler from "@utils/errorHandler";
 import { bindEventEmitters } from "@events";
-import MeiliSearch from "meilisearch";
-// import saveAll from "@testing/saveAll";
+import saveAll from "@testing/saveAll";
 
 let workerEnabled = true,
   apiEnabled = true;
@@ -53,16 +50,6 @@ const main = async () => {
       //   errorHandler(err.message, err);
       // });
 
-      try {
-        const client = new MeiliSearch({
-          host: "http://meilisearch-service.default.svc:7700",
-        });
-
-        console.log("Health", await client.health());
-      } catch (error) {
-        console.log(error);
-      }
-
       const port = process.env.PORT || 8080;
 
       const app = await createApp();
@@ -71,7 +58,7 @@ const main = async () => {
         console.log(`Server running on port: ${port}`)
       );
 
-      // Set timeout to 3 minutes
+      // Set timeout to 5 minutes
       server.setTimeout(5 * 60 * 1000);
     }
 
@@ -80,7 +67,7 @@ const main = async () => {
         if (production) {
           // await saveAll();
         } else {
-          // await saveAll([], "es");
+          await saveAll([], "es");
         }
       }
 

@@ -15,11 +15,9 @@ import {
   ISearchOptions,
 } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
-import ElasticsearchClient from "@elasticsearch/client";
-import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 import { IVehicleSearchObject } from "@typescript/vehicle";
 import getRateForTime from "@utils/getRateForTime";
-import { IHit } from "@typescript/elasticsearch";
+import { searchIndex, VehicleSearchIndex } from "@search";
 
 /**
  * ----- Static Methods -----
@@ -49,28 +47,14 @@ const search = async (
   searchString: string,
   options?: ISearchOptions
 ): Promise<IVehicleSearchObject[]> => {
-  const res = await ElasticsearchClient.search({
-    index: ElasticSearchIndices.Vehicle,
-    body: {
-      query: {
-        multi_match: {
-          query: searchString.toLowerCase(),
-          fuzziness: "AUTO",
-          fields: ["name", "vehicleCode", "vehicleType"],
-        },
-      },
-    },
-    size: options?.limit,
-  });
+  const res = await searchIndex(VehicleSearchIndex, searchString, options);
 
-  let vehicleObjects: { id: string; score: number }[] = res.body.hits.hits.map(
-    (item: IHit) => {
-      return {
-        id: item._id,
-        score: item._score,
-      };
-    }
-  );
+  let vehicleObjects: { id: string; score: number }[] = res.hits.map((item) => {
+    return {
+      id: item.id,
+      score: 0,
+    };
+  });
 
   // Filter out blacklisted ids
   if (options?.blacklistedIds) {

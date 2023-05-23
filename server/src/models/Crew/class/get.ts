@@ -1,7 +1,5 @@
 import { Types } from "mongoose";
 
-import ElasticSearchIndices from "@constants/ElasticSearchIndices";
-import ElasticsearchClient from "@elasticsearch/client";
 import {
   CrewDocument,
   CrewModel,
@@ -20,11 +18,11 @@ import {
   CrewTypes,
   ICrewSearchObject,
 } from "@typescript/crew";
-import { IHit } from "@typescript/elasticsearch";
 import { GetByIDOptions, ISearchOptions } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 import { timezoneEndOfDayinUTC, timezoneStartOfDayinUTC } from "@utils/time";
 import dayjs from "dayjs";
+import { CrewSearchIndex, searchIndex } from "@search";
 
 /**
  * ----- Static Methods -----
@@ -54,28 +52,14 @@ const search = async (
   searchString: string,
   options?: ISearchOptions
 ): Promise<ICrewSearchObject[]> => {
-  const res = await ElasticsearchClient.search({
-    index: ElasticSearchIndices.Crew,
-    body: {
-      query: {
-        multi_match: {
-          query: searchString.toLowerCase(),
-          fuzziness: "AUTO",
-          fields: ["name^2"],
-        },
-      },
-    },
-    size: options?.limit,
-  });
+  const res = await searchIndex(CrewSearchIndex, searchString, options);
 
-  let crewObjects: { id: string; score: number }[] = res.body.hits.hits.map(
-    (item: IHit) => {
-      return {
-        id: item._id,
-        score: item._score,
-      };
-    }
-  );
+  let crewObjects: { id: string; score: number }[] = res.hits.map((item) => {
+    return {
+      id: item.id,
+      score: 0,
+    };
+  });
 
   // Filter out blacklisted ids
   if (options?.blacklistedIds) {

@@ -19,18 +19,16 @@ import {
   ISearchOptions,
 } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
-import ElasticsearchClient from "@elasticsearch/client";
-import ElasticSearchIndices from "@constants/ElasticSearchIndices";
 import {
   EmployeeHoursReport,
   IEmployeeSearchObject,
 } from "@typescript/employee";
 import getRateForTime from "@utils/getRateForTime";
-import { IHit } from "@typescript/elasticsearch";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { EmployeeSearchIndex, searchIndex } from "@search";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -63,25 +61,13 @@ const search = async (
   searchString: string,
   options?: ISearchOptions
 ): Promise<IEmployeeSearchObject[]> => {
-  const res = await ElasticsearchClient.search({
-    index: ElasticSearchIndices.Employee,
-    body: {
-      query: {
-        multi_match: {
-          query: searchString.toLowerCase(),
-          fuzziness: "AUTO",
-          fields: ["name", "jobTitle"],
-        },
-      },
-    },
-    size: options?.limit,
-  });
+  const res = await searchIndex(EmployeeSearchIndex, searchString, options);
 
-  let employeeObjects: { id: string; score: number }[] = res.body.hits.hits.map(
-    (item: IHit) => {
+  let employeeObjects: { id: string; score: number }[] = res.hits.map(
+    (item) => {
       return {
-        id: item._id,
-        score: item._score,
+        id: item.id,
+        score: 0,
       };
     }
   );

@@ -10,6 +10,7 @@ import {
 } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 import { IHit } from "@typescript/elasticsearch";
+import { MaterialSearchIndex, searchIndex } from "@search";
 
 /**
  * ----- Static Methods -----
@@ -51,25 +52,13 @@ const search = async (
   searchString: string,
   options?: ISearchOptions
 ): Promise<IMaterialSearchObject[]> => {
-  const res = await ElasticsearchClient.search({
-    index: ElasticSearchIndices.Material,
-    body: {
-      query: {
-        multi_match: {
-          query: searchString.toLowerCase(),
-          fuzziness: "AUTO",
-          fields: ["name^2"],
-        },
-      },
-    },
-    size: options?.limit,
-  });
+  const res = await searchIndex(MaterialSearchIndex, searchString, options);
 
-  let materialObjects: { id: string; score: number }[] = res.body.hits.hits.map(
-    (item: IHit) => {
+  let materialObjects: { id: string; score: number }[] = res.hits.map(
+    (item) => {
       return {
-        id: item._id,
-        score: item._score,
+        id: item.id,
+        score: 0,
       };
     }
   );
