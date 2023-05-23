@@ -1,4 +1,10 @@
-import { CompanyClass, InvoiceClass, InvoiceDocument } from "@models";
+import {
+  CompanyClass,
+  InvoiceClass,
+  InvoiceDocument,
+  JobsiteClass,
+  JobsiteMaterialClass,
+} from "@models";
 import { Id } from "@typescript/models";
 import {
   Arg,
@@ -20,6 +26,16 @@ export default class InvoiceResolver {
   @FieldResolver(() => CompanyClass)
   async company(@Root() invoice: InvoiceDocument) {
     return invoice.getCompany();
+  }
+
+  @FieldResolver(() => JobsiteMaterialClass, { nullable: true })
+  async jobsiteMaterial(@Root() invoice: InvoiceDocument) {
+    return invoice.getJobsiteMaterial();
+  }
+
+  @FieldResolver(() => JobsiteClass, { nullable: true })
+  async jobsite(@Root() invoice: InvoiceDocument) {
+    return invoice.getJobsite();
   }
 
   /**

@@ -34,6 +34,14 @@ export class InvoiceClass extends InvoiceSchema {
     return get.company(this);
   }
 
+  public async getJobsiteMaterial(this: InvoiceDocument) {
+    return get.jobsiteMaterial(this);
+  }
+
+  public async getJobsite(this: InvoiceDocument) {
+    return get.jobsite(this);
+  }
+
   /**
    * ----- Create -----
    */

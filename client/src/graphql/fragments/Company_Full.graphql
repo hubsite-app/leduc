@@ -3,4 +3,7 @@ fragment CompanyFullSnippet on CompanyClass {
   materialReports {
     ...CompanyMaterialReportSnippet
   }
+  invoices {
+    ...InvoiceFullSnippet
+  }
 }

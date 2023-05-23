@@ -4,6 +4,7 @@ import ElasticsearchClient from "@elasticsearch/client";
 import {
   CompanyDocument,
   CompanyModel,
+  Invoice,
   JobsiteDayReport,
   JobsiteMaterial,
   MaterialReportClass,
@@ -231,10 +232,19 @@ const materialReports = async (
   return materialReports;
 };
 
+const invoices = async (company: CompanyDocument) => {
+  const invoices = await Invoice.find({
+    company: company._id,
+  });
+
+  return invoices;
+};
+
 export default {
   byId,
   byName,
   search,
   list,
   materialReports,
+  invoices,
 };

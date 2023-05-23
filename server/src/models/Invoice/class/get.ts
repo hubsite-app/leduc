@@ -3,6 +3,10 @@ import {
   CompanyDocument,
   InvoiceDocument,
   InvoiceModel,
+  Jobsite,
+  JobsiteDocument,
+  JobsiteMaterial,
+  JobsiteMaterialDocument,
 } from "@models";
 import { GetByIDOptions, Id } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
@@ -59,8 +63,39 @@ const company = async (invoice: InvoiceDocument): Promise<CompanyDocument> => {
   return company;
 };
 
+const jobsiteMaterial = async (
+  invoice: InvoiceDocument
+): Promise<JobsiteMaterialDocument | null> => {
+  const jobsiteMaterial = await JobsiteMaterial.findOne({
+    invoices: [invoice._id],
+  });
+
+  return jobsiteMaterial;
+};
+
+const jobsite = async (
+  invoice: InvoiceDocument
+): Promise<JobsiteDocument | null> => {
+  const jobsiteMaterial = await invoice.getJobsiteMaterial();
+
+  if (jobsiteMaterial) {
+    return jobsiteMaterial.getJobsite();
+  } else {
+    const jobsite = await Jobsite.findOne({
+      $or: [
+        { expenseInvoices: [invoice._id] },
+        { revenueInvoices: [invoice._id] },
+      ],
+    });
+
+    return jobsite;
+  }
+};
+
 export default {
   byId,
   byCompanyAndNumber,
   company,
+  jobsiteMaterial,
+  jobsite,
 };
