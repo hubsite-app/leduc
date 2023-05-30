@@ -9,6 +9,7 @@ const pendingJobsiteDayReportUpdateHelper = async () => {
     try {
       await jobsiteDayReports[i].updateAndSaveDocument();
     } catch (e) {
+      console.error(e);
       errorHandler(
         `Jobsite day report ${jobsiteDayReports[i]._id} pending worker error`,
         e
