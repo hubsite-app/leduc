@@ -181,6 +181,7 @@ const createApp = async () => {
                     variables: context.request.variables,
                     // errors: JSON.stringify(context.errors),
                     operationName: context.operationName,
+                    stack: context.errors[0].stack,
                   },
                 });
             },
