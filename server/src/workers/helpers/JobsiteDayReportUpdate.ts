@@ -19,7 +19,7 @@ const JobsiteDayReportUpdateHelper = async () => {
       await jobsiteDayReports[i].save();
 
       errorHandler(
-        `Jobsite day report ${jobsiteDayReports[i]._id} worker error`,
+        `Jobsite day report ${jobsiteDayReports[i]._id} requested worker error`,
         e
       );
     }

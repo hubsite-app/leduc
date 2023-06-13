@@ -8,7 +8,7 @@ const sendEmail = async (
 ) => {
   try {
     const mailOptions: nodemailer.SendMailOptions = {
-      from: `Bow Mark App <${process.env.EMAIL_USERNAME}>`,
+      from: `Bow Mark App <${process.env.EMAIL}>`,
       to: email,
       subject,
       html: htmlContent,

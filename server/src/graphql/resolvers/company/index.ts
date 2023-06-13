@@ -3,6 +3,7 @@ import {
   Company,
   CompanyClass,
   CompanyDocument,
+  InvoiceClass,
   Jobsite,
   JobsiteClass,
   Material,
@@ -37,6 +38,11 @@ export default class CompanyResolver {
   @FieldResolver(() => [CompanyMaterialReport])
   async materialReports(@Root() company: CompanyDocument) {
     return company.getMaterialReports();
+  }
+
+  @FieldResolver(() => [InvoiceClass])
+  async invoices(@Root() company: CompanyDocument) {
+    return company.getInvoices();
   }
 
   /**

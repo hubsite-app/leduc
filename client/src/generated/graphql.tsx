@@ -30,6 +30,7 @@ export type CompanyClass = {
   _id: Scalars['ID'];
   archivedAt: Scalars['DateTime'];
   createdAt: Scalars['DateTime'];
+  invoices: Array<InvoiceClass>;
   isBowMarkConcrete: Scalars['Boolean'];
   isBowMarkPaving: Scalars['Boolean'];
   materialReports: Array<CompanyMaterialReport>;
@@ -337,6 +338,8 @@ export type InvoiceClass = {
   description?: Maybe<Scalars['String']>;
   internal: Scalars['Boolean'];
   invoiceNumber: Scalars['String'];
+  jobsite?: Maybe<JobsiteClass>;
+  jobsiteMaterial?: Maybe<JobsiteMaterialClass>;
   schemaVersion: Scalars['Float'];
 };
 
@@ -1916,7 +1919,7 @@ export type CompanyMaterialReportJobDaySnippetFragment = { __typename?: 'Company
 
 export type CompanyCardSnippetFragment = { __typename?: 'CompanyClass', _id: string, name: string };
 
-export type CompanyFullSnippetFragment = { __typename?: 'CompanyClass', _id: string, name: string, materialReports: Array<{ __typename?: 'CompanyMaterialReport', material: { __typename?: 'MaterialClass', _id: string, name: string }, jobDays: Array<{ __typename?: 'CompanyMaterialReportJobDay', quantity: number, date: any, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } }> }> };
+export type CompanyFullSnippetFragment = { __typename?: 'CompanyClass', _id: string, name: string, materialReports: Array<{ __typename?: 'CompanyMaterialReport', material: { __typename?: 'MaterialClass', _id: string, name: string }, jobDays: Array<{ __typename?: 'CompanyMaterialReportJobDay', quantity: number, date: any, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } }> }>, invoices: Array<{ __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, jobsite?: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } | null, jobsiteMaterial?: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, unit: string, costType: JobsiteMaterialCostType, delivered?: boolean | null, canRemove: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, completedQuantity: Array<{ __typename?: 'YearlyMaterialQuantity', year: number, quantity: number }>, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }>, deliveredRates: Array<{ __typename?: 'JobsiteMaterialDeliveredRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }> }>, invoices?: Array<{ __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } }> | null } | null, company: { __typename?: 'CompanyClass', _id: string, name: string } }> };
 
 export type CrewLocationSnippetFragment = { __typename?: 'CrewLocationClass', crew: { __typename?: 'CrewClass', _id: string, name: string }, days: Array<{ __typename?: 'CrewLocationDayClass', date: any, items: Array<{ __typename?: 'CrewLocationDayItemClass', jobsiteName: string, dailyReportId: string }> }> };
 
@@ -1953,6 +1956,8 @@ export type FileFullSnippetFragment = { __typename?: 'FileClass', buffer: string
 export type FilePreloadSnippetFragment = { __typename?: 'FileClass', _id: string, mimetype: string, description?: string | null };
 
 export type InvoiceCardSnippetFragment = { __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } };
+
+export type InvoiceFullSnippetFragment = { __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, jobsite?: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } | null, jobsiteMaterial?: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, unit: string, costType: JobsiteMaterialCostType, delivered?: boolean | null, canRemove: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, completedQuantity: Array<{ __typename?: 'YearlyMaterialQuantity', year: number, quantity: number }>, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }>, deliveredRates: Array<{ __typename?: 'JobsiteMaterialDeliveredRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }> }>, invoices?: Array<{ __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } }> | null } | null, company: { __typename?: 'CompanyClass', _id: string, name: string } };
 
 export type JobsiteDayReportEmployeeSnippetFragment = { __typename?: 'EmployeeReportClass', _id: string, rate: number, hours: number, crewType: CrewTypes, employee?: { __typename?: 'EmployeeClass', _id: string, name: string, jobTitle?: string | null, archivedAt?: any | null, rates: Array<{ __typename?: 'RateClass', date: any, rate: number }> } | null, employeeWork: Array<{ __typename?: 'EmployeeWorkClass', jobTitle: string }> };
 
@@ -2746,7 +2751,7 @@ export type CompanyFullQueryVariables = Exact<{
 }>;
 
 
-export type CompanyFullQuery = { __typename?: 'Query', company: { __typename?: 'CompanyClass', _id: string, name: string, materialReports: Array<{ __typename?: 'CompanyMaterialReport', material: { __typename?: 'MaterialClass', _id: string, name: string }, jobDays: Array<{ __typename?: 'CompanyMaterialReportJobDay', quantity: number, date: any, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } }> }> } };
+export type CompanyFullQuery = { __typename?: 'Query', company: { __typename?: 'CompanyClass', _id: string, name: string, materialReports: Array<{ __typename?: 'CompanyMaterialReport', material: { __typename?: 'MaterialClass', _id: string, name: string }, jobDays: Array<{ __typename?: 'CompanyMaterialReportJobDay', quantity: number, date: any, jobsite: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } }> }>, invoices: Array<{ __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, jobsite?: { __typename?: 'JobsiteClass', _id: string, name: string, jobcode?: string | null } | null, jobsiteMaterial?: { __typename?: 'JobsiteMaterialClass', _id: string, quantity: number, unit: string, costType: JobsiteMaterialCostType, delivered?: boolean | null, canRemove: boolean, material: { __typename?: 'MaterialClass', _id: string, name: string }, supplier: { __typename?: 'CompanyClass', _id: string, name: string }, completedQuantity: Array<{ __typename?: 'YearlyMaterialQuantity', year: number, quantity: number }>, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }>, deliveredRates: Array<{ __typename?: 'JobsiteMaterialDeliveredRateClass', _id?: string | null, title: string, rates: Array<{ __typename?: 'JobsiteMaterialRateClass', _id?: string | null, rate: number, date: any, estimated?: boolean | null }> }>, invoices?: Array<{ __typename?: 'InvoiceClass', _id: string, date: any, invoiceNumber: string, cost: number, description?: string | null, internal: boolean, accrual: boolean, company: { __typename?: 'CompanyClass', _id: string, name: string } }> | null } | null, company: { __typename?: 'CompanyClass', _id: string, name: string } }> } };
 
 export type CrewLocationsQueryVariables = Exact<{
   startTime?: InputMaybe<Scalars['DateTime']>;
@@ -3244,30 +3249,20 @@ export const CompanyMaterialReportSnippetFragmentDoc = gql`
   }
 }
     ${CompanyMaterialReportJobDaySnippetFragmentDoc}`;
-export const CompanyFullSnippetFragmentDoc = gql`
-    fragment CompanyFullSnippet on CompanyClass {
-  ...CompanyCardSnippet
-  materialReports {
-    ...CompanyMaterialReportSnippet
+export const InvoiceCardSnippetFragmentDoc = gql`
+    fragment InvoiceCardSnippet on InvoiceClass {
+  _id
+  company {
+    ...CompanyCardSnippet
   }
+  date
+  invoiceNumber
+  cost
+  description
+  internal
+  accrual
 }
-    ${CompanyCardSnippetFragmentDoc}
-${CompanyMaterialReportSnippetFragmentDoc}`;
-export const CrewLocationSnippetFragmentDoc = gql`
-    fragment CrewLocationSnippet on CrewLocationClass {
-  crew {
-    _id
-    name
-  }
-  days {
-    date
-    items {
-      jobsiteName
-      dailyReportId
-    }
-  }
-}
-    `;
+    ${CompanyCardSnippetFragmentDoc}`;
 export const MaterialCardSnippetFragmentDoc = gql`
     fragment MaterialCardSnippet on MaterialClass {
   _id
@@ -3291,20 +3286,6 @@ export const JobsiteMaterialDeliveredRateSnippetFragmentDoc = gql`
   }
 }
     ${JobsiteMaterialRateSnippetFragmentDoc}`;
-export const InvoiceCardSnippetFragmentDoc = gql`
-    fragment InvoiceCardSnippet on InvoiceClass {
-  _id
-  company {
-    ...CompanyCardSnippet
-  }
-  date
-  invoiceNumber
-  cost
-  description
-  internal
-  accrual
-}
-    ${CompanyCardSnippetFragmentDoc}`;
 export const JobsiteMaterialCardSnippetFragmentDoc = gql`
     fragment JobsiteMaterialCardSnippet on JobsiteMaterialClass {
   _id
@@ -3338,6 +3319,47 @@ ${CompanyCardSnippetFragmentDoc}
 ${JobsiteMaterialRateSnippetFragmentDoc}
 ${JobsiteMaterialDeliveredRateSnippetFragmentDoc}
 ${InvoiceCardSnippetFragmentDoc}`;
+export const InvoiceFullSnippetFragmentDoc = gql`
+    fragment InvoiceFullSnippet on InvoiceClass {
+  ...InvoiceCardSnippet
+  jobsite {
+    ...JobsiteCardSnippet
+  }
+  jobsiteMaterial {
+    ...JobsiteMaterialCardSnippet
+  }
+}
+    ${InvoiceCardSnippetFragmentDoc}
+${JobsiteCardSnippetFragmentDoc}
+${JobsiteMaterialCardSnippetFragmentDoc}`;
+export const CompanyFullSnippetFragmentDoc = gql`
+    fragment CompanyFullSnippet on CompanyClass {
+  ...CompanyCardSnippet
+  materialReports {
+    ...CompanyMaterialReportSnippet
+  }
+  invoices {
+    ...InvoiceFullSnippet
+  }
+}
+    ${CompanyCardSnippetFragmentDoc}
+${CompanyMaterialReportSnippetFragmentDoc}
+${InvoiceFullSnippetFragmentDoc}`;
+export const CrewLocationSnippetFragmentDoc = gql`
+    fragment CrewLocationSnippet on CrewLocationClass {
+  crew {
+    _id
+    name
+  }
+  days {
+    date
+    items {
+      jobsiteName
+      dailyReportId
+    }
+  }
+}
+    `;
 export const TruckingRateSnippetFragmentDoc = gql`
     fragment TruckingRateSnippet on TruckingRateClass {
   rate

@@ -71,6 +71,11 @@ spec:
                 secretKeyRef:
                   key: elasticsearchUrl
                   name: server-secrets
+            - name: EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: server-secrets
+                  key: email
             - name: EMAIL_USERNAME
               valueFrom:
                 secretKeyRef:

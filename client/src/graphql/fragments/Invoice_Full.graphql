@@ -1,0 +1,9 @@
+fragment InvoiceFullSnippet on InvoiceClass {
+  ...InvoiceCardSnippet
+  jobsite {
+    ...JobsiteCardSnippet
+  }
+  jobsiteMaterial {
+    ...JobsiteMaterialCardSnippet
+  }
+}
