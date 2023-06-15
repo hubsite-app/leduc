@@ -270,7 +270,9 @@ export const generateForDailyReport = async (
       });
     }
 
-    column.width = dataMax;
+    const MAX_WIDTH = 75;
+
+    column.width = dataMax <= MAX_WIDTH ? dataMax : MAX_WIDTH;
   });
 
   return workbook;
