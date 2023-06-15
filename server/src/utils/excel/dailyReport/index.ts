@@ -103,6 +103,8 @@ export const generateForDailyReport = async (
 
   const vehicleWork = await dailyReport.getVehicleWork();
 
+  const SECOND_COLUMN_CELL = 7;
+
   if (vehicleWork.length > 0) {
     const vehicleWorkCatalog: {
       name: string;
@@ -125,13 +127,15 @@ export const generateForDailyReport = async (
       });
     }
 
-    worksheet.getRow(FIRST_TABLE_ROW - 1).getCell(7).value = "Vehicle Hours";
-    worksheet.getRow(FIRST_TABLE_ROW - 1).getCell(7).font = {
+    worksheet.getRow(FIRST_TABLE_ROW - 1).getCell(SECOND_COLUMN_CELL).value =
+      "Vehicle Hours";
+    worksheet.getRow(FIRST_TABLE_ROW - 1).getCell(SECOND_COLUMN_CELL).font = {
       bold: true,
     };
     worksheet.addTable({
       name: "Vehicle_Hours",
-      ref: worksheet.getRow(FIRST_TABLE_ROW).getCell(7).address,
+      ref: worksheet.getRow(FIRST_TABLE_ROW).getCell(SECOND_COLUMN_CELL)
+        .address,
       totalsRow: true,
       columns: [
         { name: "Vehicle", filterButton: true },
@@ -203,6 +207,42 @@ export const generateForDailyReport = async (
       rows: [
         ...materialShipmentCatalog.map((work) => {
           return [work.shipment, work.quantity, work.vehicle, work.hours];
+        }),
+      ],
+    });
+  }
+
+  /**
+   * PRODUCTION
+   */
+
+  const production = await dailyReport.getProduction();
+
+  if (production.length > 0) {
+    worksheet.getRow(SECOND_TABLE_ROW - 1).getCell(SECOND_COLUMN_CELL).value =
+      "Production";
+    worksheet.getRow(SECOND_TABLE_ROW - 1).getCell(SECOND_COLUMN_CELL).font = {
+      bold: true,
+    };
+    worksheet.addTable({
+      name: "Production",
+      ref: worksheet.getRow(SECOND_TABLE_ROW).getCell(SECOND_COLUMN_CELL)
+        .address,
+      totalsRow: true,
+      columns: [
+        { name: "Work Done", filterButton: true },
+        { name: "Quantity", filterButton: true },
+        { name: "Units", filterButton: true },
+        { name: "Hours", filterButton: true, totalsRowFunction: "sum" },
+      ],
+      rows: [
+        ...production.map((prod) => {
+          return [
+            prod.jobTitle,
+            prod.quantity,
+            prod.unit,
+            Math.abs(dayjs(prod.startTime).diff(prod.endTime, "hours")),
+          ];
         }),
       ],
     });
