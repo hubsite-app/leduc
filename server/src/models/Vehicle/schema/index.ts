@@ -1,6 +1,6 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { ES_updateVehicle } from "@elasticsearch/helpers/vehicle";
 import { CrewClass, VehicleDocument } from "@models";
+import { search_UpdateVehicle } from "@search";
 import { post, prop, Ref } from "@typegoose/typegoose";
 import { RateClass } from "@typescript/models";
 import errorHandler from "@utils/errorHandler";
@@ -15,7 +15,7 @@ import { Field, ID, ObjectType } from "type-graphql";
     errorHandler("Vehicle post save report error", e);
   }
   try {
-    await ES_updateVehicle(vehicle);
+    await search_UpdateVehicle(vehicle);
   } catch (e) {
     errorHandler("Vehicle post save ES error", e);
   }

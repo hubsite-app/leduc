@@ -8,12 +8,12 @@ import {
   VehicleClass,
 } from "@models";
 import SchemaVersions from "@constants/SchemaVersions";
-import { ES_updateCrew } from "@elasticsearch/helpers/crew";
 import { CrewTypes } from "@typescript/crew";
+import { search_UpdateCrew } from "@search";
 
 @ObjectType()
 @post<CrewDocument>("save", async (crew) => {
-  await ES_updateCrew(crew);
+  await search_UpdateCrew(crew);
 })
 export class CrewSchema {
   @Field(() => ID, { nullable: false })

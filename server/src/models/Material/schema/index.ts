@@ -1,13 +1,13 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { ES_updateMaterial } from "@elasticsearch/helpers/material";
 import { MaterialDocument } from "@models";
+import { search_UpdateMaterial } from "@search";
 import { post, prop } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { Field, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
 @post<MaterialDocument>("save", async (material) => {
-  await ES_updateMaterial(material);
+  await search_UpdateMaterial(material);
 })
 export class MaterialSchema {
   @Field(() => ID, { nullable: false })

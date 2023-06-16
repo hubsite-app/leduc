@@ -47,10 +47,6 @@ const main = async () => {
 
     // Start API server
     if (apiEnabled) {
-      // elasticsearch().catch((err) => {
-      //   errorHandler(err.message, err);
-      // });
-
       const port = process.env.PORT || 8080;
 
       const app = await createApp();

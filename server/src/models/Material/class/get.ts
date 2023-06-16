@@ -1,6 +1,4 @@
 import { Types } from "mongoose";
-import ElasticSearchIndices from "@constants/ElasticSearchIndices";
-import ElasticsearchClient from "@elasticsearch/client";
 import { MaterialDocument, MaterialModel } from "@models";
 import { IMaterialSearchObject } from "@typescript/material";
 import {
@@ -9,7 +7,6 @@ import {
   ISearchOptions,
 } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
-import { IHit } from "@typescript/elasticsearch";
 import { MaterialSearchIndex, searchIndex } from "@search";
 
 /**

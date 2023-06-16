@@ -1,5 +1,4 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { ES_updateJobsite } from "@elasticsearch/helpers/jobsite";
 import {
   CrewClass,
   DailyReportClass,
@@ -7,6 +6,7 @@ import {
   InvoiceClass,
   JobsiteMaterialClass,
 } from "@models";
+import { search_UpdateJobsite } from "@search";
 import { post, prop, Ref } from "@typegoose/typegoose";
 import isUrl from "@validation/isUrl";
 import { Types } from "mongoose";
@@ -21,7 +21,7 @@ export * from "./subDocuments";
 
 @ObjectType()
 @post<JobsiteDocument>("save", async (jobsite) => {
-  await ES_updateJobsite(jobsite);
+  await search_UpdateJobsite(jobsite);
 })
 export class JobsiteSchema {
   @Field(() => ID, { nullable: false })
