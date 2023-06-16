@@ -3,10 +3,6 @@
 Before deploying or running skaffold, be sure to replace all instances of `itsdevin/*`
 Docker Hub references with your own Docker Hub images.
 
-# Todo
-
-- Search of Daily Reports, if I search Creekrise and Todd, I should get daily reports
-
 # Development
 
 ## Docker Compose
@@ -18,6 +14,10 @@ Docker Hub references with your own Docker Hub images.
 - `skaffold dev`
   - NOTE - if you have this error: `updates to statefulset spec for fields other than 'replicas', 'template', and 'updateStrategy' are forbidden`
   - run the command again - haven't found a better fix for this
+  - Meilisearch volume is stored at `/tml/data/meilisearch` in the minikube VM
+    - To remove this data:
+      - SSH into the VM `minikube ssh`
+      - Delete the data `rm -rf /tml/data/meilisearch`
 
 # Production
 
@@ -51,29 +51,30 @@ Docker Hub references with your own Docker Hub images.
 
 - Check certificate `kubectl describe certificate <name>-tls`
 
-## Elasticsearch
+- Create secrets:
 
-- `kubectl apply -f ./k8s-es/kube-devops.yaml`
+  - `kubectl create secret generic meilisearch --from-literal=masterKey="<your-key>"`
 
-- Create Password Beforehand: https://github.com/elastic/cloud-on-k8s/issues/967#issuecomment-497636249
+- Required secrets / environment variables:
 
-  - `kubectl create secret generic elasticsearch-es-elastic-user -n kube-devops --from-literal=elastic=<password>`
-
-- `kubectl apply -f ./k8s-es/es-master.yaml -f ./k8s-es/es-client.yaml -f ./k8s-es/es-data.yaml`
-
-- OR create password after
-
-  - Shell into `es-client` deployment and run `bin/elasticsearch-setup-passwords auto -b` and save the output from the command
-
-  - Create a secret containing the password for user `elastic`
-
-    - This password will be used to login to Kibana in production w/ username `elastic`
-
-  - `kubectl create secret generic elasticsearch-secrets -n kube-devops --from-literal=password=<user-elastic-password>`
-
-- `kubectl apply -f ./k8s-es/kibana.yaml`
-
-- `kubectl apply -f ./k8s-es/ingress.yaml`
+  - `NODE_ENV`: Always `production` in the production environment
+  - `NAME`: A unique name for this particular app (i.e., "paving_server", "concrete_server")
+  - `APP_NAME`: A human readable name for this app
+  - `APP_TYPE`: Environment variable that determines behaviour of server ("api" | "worker")
+  - `EMAIL`: Email that will be used as a sender address
+  - `EMAIL_HOST`: Host server for the email service
+  - `EMAIL_PASSWORD`: Password for server authentication
+  - `EMAIL_PORT`: Port for email server
+  - `EMAIL_USERNAME`: Username used for email service authentication
+  - `JWT_SECRET`: String used for encoding Bearer JWT tokens for API authentication
+  - `MONGO_URI`: Mongo DB connection URL
+  - `SPACES_NAME`: The name of the DigitalOcean Space
+  - `SPACES_KEY`: Secret key for connecting to DigitalOcean Space
+  - `SPACES_REGION`: Region of DigitalOcean Space
+  - `SPACES_SECRET`: Secret used for authentication to DO Space
+  - `SEARCH_GROUP`: A unique name used for indexing items for this app in search (relevant if sharing a search environment with another application)
+  - `SEARCH_HOST`: Search server (currently using Meilisearch)
+  - `SEARCH_API_KEY`: Your own unique key used as a password for your search instance
 
 ## App Deployment
 

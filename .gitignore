@@ -31,3 +31,6 @@ yarn-error.log*
 /client/build
 /client/.eslintcache
 /client/.next
+
+# K8s
+/secrets

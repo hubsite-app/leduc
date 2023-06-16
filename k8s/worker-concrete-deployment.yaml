@@ -29,70 +29,70 @@ spec:
               value: Concrete
             - name: APP_TYPE
               value: worker
-            - name: ELASTICSEARCH_GROUP
+            - name: SEARCH_GROUP
               value: bow-mark-concrete
             - name: MONGO_URI
               valueFrom:
                 secretKeyRef:
-                  name: server-concrete-secrets
+                  name: concrete
                   key: mongoURI
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: server-concrete-secrets
+                  name: general
                   key: jwtSecret
             - name: SPACES_NAME
               valueFrom:
                 secretKeyRef:
-                  name: server-concrete-secrets
-                  key: spacesName
+                  name: spaces
+                  key: name
             - name: SPACES_REGION
               valueFrom:
                 secretKeyRef:
-                  name: server-concrete-secrets
-                  key: spacesRegion
+                  name: spaces
+                  key: region
             - name: SPACES_KEY
               valueFrom:
                 secretKeyRef:
-                  name: server-concrete-secrets
-                  key: spacesKey
+                  name: spaces
+                  key: key
             - name: SPACES_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: server-concrete-secrets
-                  key: spacesSecret
-            - name: ELASTICSEARCH_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: server-concrete-secrets
-                  key: elasticsearchPassword
-            - name: ELASTICSEARCH_URL
-              valueFrom:
-                secretKeyRef:
-                  name: server-concrete-secrets
-                  key: elasticsearchUrl
+                  name: spaces
+                  key: secret
             - name: EMAIL
               valueFrom:
                 secretKeyRef:
-                  name: server-concrete-secrets
+                  name: email
                   key: email
             - name: EMAIL_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: server-concrete-secrets
-                  key: emailUsername
+                  name: email
+                  key: username
             - name: EMAIL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: server-concrete-secrets
-                  key: emailPassword
+                  name: email
+                  key: password
             - name: EMAIL_HOST
               valueFrom:
                 secretKeyRef:
-                  name: server-concrete-secrets
-                  key: emailHost
+                  name: email
+                  key: host
             - name: EMAIL_PORT
               valueFrom:
                 secretKeyRef:
-                  name: server-concrete-secrets
-                  key: emailPort
+                  name: email
+                  key: port
+            - name: SEARCH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: search
+                  key: host
+            - name: SEARCH_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: search
+                  key: apiKey
