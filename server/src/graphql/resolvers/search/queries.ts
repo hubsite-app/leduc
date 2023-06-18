@@ -1,8 +1,8 @@
 import SearchIndices from "@constants/SearchIndices";
 import { getUserCrews } from "@graphql/helpers/general";
 import { SearchClass } from "@graphql/types/search";
+import { searchMulti } from "@search";
 import { IContext } from "@typescript/graphql";
-import { searchMulti } from "search";
 
 const search = async (
   searchString: string,
