@@ -30,7 +30,10 @@ export enum SkipSave {
   Company,
 }
 
-const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
+const saveAll = async (
+  skip?: SkipSave[],
+  type: "save" | "search" = "search"
+) => {
   console.log("Saving all documents");
 
   // Employee
@@ -43,7 +46,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
 
         if (type === "save") {
           await employees[i].save();
-        } else if (type === "es") {
+        } else if (type === "search") {
           await search_UpdateEmployee(employees[i]);
         }
       } catch (e) {
@@ -60,7 +63,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
       try {
         if (type === "save") {
           await vehicles[i].save();
-        } else if (type === "es") {
+        } else if (type === "search") {
           await search_UpdateVehicle(vehicles[i]);
         }
       } catch (e) {
@@ -79,7 +82,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
 
         if (type === "save") {
           await jobsites[i].save();
-        } else if (type === "es") {
+        } else if (type === "search") {
           await search_UpdateJobsite(jobsites[i]);
         }
       } catch (e) {
@@ -100,7 +103,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
       try {
         if (type === "save") {
           await dailyReports[i].save();
-        } else if (type === "es") {
+        } else if (type === "search") {
           await search_UpdateDailyReport(dailyReports[i]);
         }
       } catch (e) {
@@ -117,7 +120,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
       try {
         if (type === "save") {
           await crews[i].save();
-        } else if (type === "es") {
+        } else if (type === "search") {
           await search_UpdateCrew(crews[i]);
         }
       } catch (e) {
@@ -134,7 +137,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
       try {
         if (type === "save") {
           await materials[i].save();
-        } else if (type === "es") {
+        } else if (type === "search") {
           await search_UpdateMaterial(materials[i]);
         }
       } catch (e) {
@@ -151,7 +154,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
       try {
         if (type === "save") {
           await companies[i].save();
-        } else if (type === "es") {
+        } else if (type === "search") {
           await search_UpdateCompany(companies[i]);
         }
       } catch (e) {
