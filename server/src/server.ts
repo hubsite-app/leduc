@@ -62,7 +62,7 @@ const main = async () => {
     if (process.env.NODE_ENV !== "test") {
       if (apiEnabled) {
         if (production) {
-          // await saveAll();
+          await saveAll();
         } else {
           await saveAll([], "es");
         }
