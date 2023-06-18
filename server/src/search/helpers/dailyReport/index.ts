@@ -1,5 +1,5 @@
 import { CrewDocument, DailyReportDocument, JobsiteDocument } from "@models";
-import SearchClient from "search/client";
+import SearchClient from "../../client";
 import SearchIndices from "@constants/SearchIndices";
 import { logger } from "@logger";
 

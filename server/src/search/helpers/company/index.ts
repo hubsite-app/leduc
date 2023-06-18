@@ -1,6 +1,6 @@
 import SearchIndices from "@constants/SearchIndices";
 import { CompanyDocument } from "@models";
-import SearchClient from "search/client";
+import SearchClient from "../../client";
 
 export interface CompanySearchDocument {
   id: string;

@@ -1,5 +1,5 @@
 import { JobsiteDocument } from "@models";
-import SearchClient from "search/client";
+import SearchClient from "../../client";
 import SearchIndices from "@constants/SearchIndices";
 
 export interface JobsiteSearchDocument {
