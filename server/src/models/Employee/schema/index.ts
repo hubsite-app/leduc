@@ -1,6 +1,6 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { ES_updateEmployee } from "@elasticsearch/helpers/employee";
 import { CrewClass, EmployeeDocument, UserClass } from "@models";
+import { search_UpdateEmployee } from "@search";
 import { post, prop, Ref } from "@typegoose/typegoose";
 import { RateClass } from "@typescript/models";
 import errorHandler from "@utils/errorHandler";
@@ -10,7 +10,7 @@ import { Field, ID, ObjectType } from "type-graphql";
 @ObjectType()
 @post<EmployeeDocument>("save", async (employee) => {
   try {
-    await ES_updateEmployee(employee);
+    search_UpdateEmployee(employee);
   } catch (e) {
     errorHandler("Employee post save ES error", e);
   }

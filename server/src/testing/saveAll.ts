@@ -1,10 +1,3 @@
-import { ES_updateCompany } from "@elasticsearch/helpers/company";
-import { ES_updateCrew } from "@elasticsearch/helpers/crew";
-import { ES_updateDailyReport } from "@elasticsearch/helpers/dailyReport";
-import { ES_updateEmployee } from "@elasticsearch/helpers/employee";
-import { ES_updateJobsite } from "@elasticsearch/helpers/jobsite";
-import { ES_updateMaterial } from "@elasticsearch/helpers/material";
-import { ES_updateVehicle } from "@elasticsearch/helpers/vehicle";
 import { logger } from "@logger";
 import {
   Company,
@@ -17,6 +10,13 @@ import {
 } from "@models";
 import errorHandler from "@utils/errorHandler";
 import isEmpty from "@utils/isEmpty";
+import { search_UpdateCompany } from "search/helpers/company";
+import { search_UpdateCrew } from "search/helpers/crew";
+import { search_UpdateDailyReport } from "search/helpers/dailyReport";
+import { search_UpdateEmployee } from "search/helpers/employee";
+import { search_UpdateJobsite } from "search/helpers/jobsite";
+import { search_UpdateMaterial } from "search/helpers/material";
+import { search_UpdateVehicle } from "search/helpers/vehicle";
 
 export enum SkipSave {
   Employee,
@@ -42,7 +42,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
         if (type === "save") {
           await employees[i].save();
         } else if (type === "es") {
-          await ES_updateEmployee(employees[i]);
+          await search_UpdateEmployee(employees[i]);
         }
       } catch (e) {
         errorHandler("Employee Save All error", e);
@@ -59,7 +59,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
         if (type === "save") {
           await vehicles[i].save();
         } else if (type === "es") {
-          await ES_updateVehicle(vehicles[i]);
+          await search_UpdateVehicle(vehicles[i]);
         }
       } catch (e) {
         errorHandler("Vehicle Save All error", e);
@@ -78,7 +78,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
         if (type === "save") {
           await jobsites[i].save();
         } else if (type === "es") {
-          await ES_updateJobsite(jobsites[i]);
+          await search_UpdateJobsite(jobsites[i]);
         }
       } catch (e) {
         errorHandler("Jobsite Save All error", e);
@@ -99,7 +99,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
         if (type === "save") {
           await dailyReports[i].save();
         } else if (type === "es") {
-          await ES_updateDailyReport(dailyReports[i]);
+          await search_UpdateDailyReport(dailyReports[i]);
         }
       } catch (e) {
         errorHandler("Daily Report Save All error", e);
@@ -116,7 +116,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
         if (type === "save") {
           await crews[i].save();
         } else if (type === "es") {
-          await ES_updateCrew(crews[i]);
+          await search_UpdateCrew(crews[i]);
         }
       } catch (e) {
         errorHandler("Crew Save All error", e);
@@ -133,7 +133,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
         if (type === "save") {
           await materials[i].save();
         } else if (type === "es") {
-          await ES_updateMaterial(materials[i]);
+          await search_UpdateMaterial(materials[i]);
         }
       } catch (e) {
         errorHandler("Material Save All error", e);
@@ -150,7 +150,7 @@ const saveAll = async (skip?: SkipSave[], type: "save" | "es" = "es") => {
         if (type === "save") {
           await companies[i].save();
         } else if (type === "es") {
-          await ES_updateCompany(companies[i]);
+          await search_UpdateCompany(companies[i]);
         }
       } catch (e) {
         errorHandler("Company Save All error", e);

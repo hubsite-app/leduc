@@ -1,21 +1,4 @@
 import winston from "winston";
-import {
-  ElasticsearchTransport,
-  ElasticsearchTransportOptions,
-} from "winston-elasticsearch";
-
-const esTransportOpts: ElasticsearchTransportOptions = {
-  level: "info",
-  clientOpts: {
-    node:
-      (process.env.ELASTICSEARCH_URL as string) ||
-      "http://elasticsearch-client.kube-devops.svc:9200",
-    auth: {
-      username: "elastic",
-      password: (process.env.ELASTICSEARCH_PASSWORD as string) || "changeme",
-    },
-  },
-};
 
 const consoleTransport = new winston.transports.Console({
   level: "info",
@@ -25,10 +8,8 @@ const consoleTransport = new winston.transports.Console({
   ),
 });
 
-const esTransport = new ElasticsearchTransport(esTransportOpts);
-
 export const logger = winston.createLogger({
-  transports: [esTransport, consoleTransport],
+  transports: [consoleTransport],
 });
 
 /**
@@ -36,8 +17,5 @@ export const logger = winston.createLogger({
  */
 
 logger.on("error", (error) => {
-  console.error("Error in logger caught", error);
-});
-esTransport.on("error", (error) => {
   console.error("Error in logger caught", error);
 });

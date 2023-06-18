@@ -28,10 +28,8 @@ import {
 } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
 import { IJobsiteSearchObject } from "@typescript/jobsite";
-import ElasticsearchClient from "@elasticsearch/client";
-import ElasticSearchIndices from "@constants/ElasticSearchIndices";
-import { IHit } from "@typescript/elasticsearch";
 import dayjs from "dayjs";
+import { JobsiteSearchIndex, searchIndex } from "@search";
 
 /**
  * ----- Static Methods -----
@@ -61,28 +59,14 @@ const search = async (
   searchString: string,
   options?: ISearchOptions
 ): Promise<IJobsiteSearchObject[]> => {
-  const res = await ElasticsearchClient.search({
-    index: ElasticSearchIndices.Jobsite,
-    body: {
-      query: {
-        multi_match: {
-          query: searchString.toLowerCase(),
-          fuzziness: "AUTO",
-          fields: ["name", "jobcode"],
-        },
-      },
-    },
-    size: options?.limit,
-  });
+  const res = await searchIndex(JobsiteSearchIndex, searchString, options);
 
-  let jobsiteObjects: { id: string; score: number }[] = res.body.hits.hits.map(
-    (item: IHit) => {
-      return {
-        id: item._id,
-        score: item._score,
-      };
-    }
-  );
+  let jobsiteObjects: { id: string; score: number }[] = res.hits.map((item) => {
+    return {
+      id: item.id,
+      score: 0,
+    };
+  });
 
   // Filter out blacklisted ids
   if (options?.blacklistedIds) {

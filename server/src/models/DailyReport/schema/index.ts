@@ -1,5 +1,4 @@
 import SchemaVersions from "@constants/SchemaVersions";
-import { ES_updateDailyReport } from "@elasticsearch/helpers/dailyReport";
 import {
   CrewClass,
   DailyReportDocument,
@@ -12,6 +11,7 @@ import {
   EmployeeClass,
   VehicleClass,
 } from "@models";
+import { search_UpdateDailyReport } from "@search";
 import { post, prop, Ref } from "@typegoose/typegoose";
 import errorHandler from "@utils/errorHandler";
 import { Types } from "mongoose";
@@ -19,7 +19,7 @@ import { Field, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
 @post<DailyReportDocument>("save", async (dailyReport) => {
-  await ES_updateDailyReport(dailyReport);
+  await search_UpdateDailyReport(dailyReport);
   try {
     await dailyReport.requestReportUpdate();
   } catch (e) {

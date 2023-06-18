@@ -1,7 +1,5 @@
 import { Types } from "mongoose";
 
-import ElasticSearchIndices from "@constants/ElasticSearchIndices";
-import ElasticsearchClient from "@elasticsearch/client";
 import {
   Crew,
   CrewDocument,
@@ -27,7 +25,6 @@ import {
   VehicleWorkDocument,
 } from "@models";
 import { IDailyReportSearchObject } from "@typescript/dailyReport";
-import { IHit } from "@typescript/elasticsearch";
 import {
   GetByIDOptions,
   Id,
@@ -40,6 +37,7 @@ import { timezoneEndOfDayinUTC, timezoneStartOfDayinUTC } from "@utils/time";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import { DailyReportSearchIndex, searchIndex } from "@search";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -75,32 +73,16 @@ const search = async (
   searchString: string,
   options?: ISearchOptions & IDailyReportSearchOptions
 ): Promise<IDailyReportSearchObject[]> => {
-  const res = await ElasticsearchClient.search({
-    index: ElasticSearchIndices.DailyReport,
-    body: {
-      query: {
-        multi_match: {
-          query: searchString.toLowerCase(),
-          type: "cross_fields",
-          fields: [
-            "jobsiteName",
-            "jobsiteCode",
-            "crewName^2",
-            // "date",
-          ],
-        },
-      },
-    },
-    size: options?.limit,
-  });
+  const res = await searchIndex(DailyReportSearchIndex, searchString, options);
 
-  let dailyReportObjects: { id: string; score: number }[] =
-    res.body.hits.hits.map((item: IHit) => {
+  let dailyReportObjects: { id: string; score: number }[] = res.hits.map(
+    (item) => {
       return {
-        id: item._id,
-        score: item._score,
+        id: item.id,
+        score: 0,
       };
-    });
+    }
+  );
 
   // Filter out blacklisted ids
   if (options?.blacklistedIds) {

@@ -1,6 +1,4 @@
 import { Types } from "mongoose";
-import ElasticSearchIndices from "@constants/ElasticSearchIndices";
-import ElasticsearchClient from "@elasticsearch/client";
 import {
   CompanyDocument,
   CompanyModel,
@@ -19,8 +17,8 @@ import {
   ISearchOptions,
 } from "@typescript/models";
 import populateOptions from "@utils/populateOptions";
-import { IHit } from "@typescript/elasticsearch";
 import { timezoneStartOfDayinUTC } from "@utils/time";
+import { CompanySearchIndex, searchIndex } from "@search";
 
 /**
  * ----- Static Methods -----
@@ -62,28 +60,14 @@ const search = async (
   searchString: string,
   options?: ISearchOptions
 ): Promise<ICompanySearchObject[]> => {
-  const res = await ElasticsearchClient.search({
-    index: ElasticSearchIndices.Company,
-    body: {
-      query: {
-        multi_match: {
-          query: searchString.toLowerCase(),
-          fuzziness: "AUTO",
-          fields: ["name^2"],
-        },
-      },
-    },
-    size: options?.limit,
-  });
+  const res = await searchIndex(CompanySearchIndex, searchString, options);
 
-  let companyObjects: { id: string; score: number }[] = res.body.hits.hits.map(
-    (item: IHit) => {
-      return {
-        id: item._id,
-        score: item._score,
-      };
-    }
-  );
+  let companyObjects: { id: string; score: number }[] = res.hits.map((item) => {
+    return {
+      id: item.id,
+      score: 0,
+    };
+  });
 
   // Filter out blacklisted ids
   if (options?.blacklistedIds) {
