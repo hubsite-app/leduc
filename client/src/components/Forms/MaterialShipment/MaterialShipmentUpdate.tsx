@@ -103,12 +103,12 @@ const MaterialShipmentUpdate = ({
     async (data: MaterialShipmentUpdateData) => {
       try {
         let startTime = data.startTime;
-        if (startTime && !dayjs(startTime).isValid()) {
+        if (startTime) {
           startTime = convertHourToDate(data.startTime, dailyReport.date);
         }
 
         let endTime = data.endTime;
-        if (endTime && !dayjs(endTime).isValid()) {
+        if (endTime) {
           endTime = convertHourToDate(data.endTime, dailyReport.date);
         }
 

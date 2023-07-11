@@ -12,23 +12,24 @@ const document = async (
   if (!employee)
     throw new Error("EmployeeWork.createDocument: unable to find employee");
 
-  if (!isEmpty(data.jobTitle)) {
-    const employeeWork = new EmployeeWork({
-      jobTitle: data.jobTitle,
-      startTime: data.startTime,
-      endTime: data.endTime,
-      employee: data.employeeId,
-    });
-
-    await employeeWork.validateDocument();
-
-    await data.dailyReport.addEmployeeWork(employeeWork);
-
-    return employeeWork;
-  } else
+  if (isEmpty(data.jobTitle)) {
     throw new Error(
       "EmployeeWork.createDocument: must provide a valid job title"
     );
+  }
+
+  const employeeWork = new EmployeeWork({
+    jobTitle: data.jobTitle,
+    startTime: data.startTime,
+    endTime: data.endTime,
+    employee: data.employeeId,
+  });
+
+  await employeeWork.validateDocument();
+
+  await data.dailyReport.addEmployeeWork(employeeWork);
+
+  return employeeWork;
 };
 
 const perEmployee = async (

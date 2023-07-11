@@ -39,15 +39,8 @@ const ProductionCreateForm = ({
 
   const submitCreation = React.useCallback(
     (data: ProductionCreateData) => {
-      let startTime = data.startTime;
-      if (!dayjs(startTime).isValid()) {
-        startTime = convertHourToDate(data.startTime, dailyReport.date);
-      }
-
-      let endTime = data.endTime;
-      if (!dayjs(endTime).isValid()) {
-        endTime = convertHourToDate(data.endTime, dailyReport.date);
-      }
+      let startTime = convertHourToDate(data.startTime, dailyReport.date);
+      let endTime = convertHourToDate(data.endTime, dailyReport.date);
 
       create({
         variables: {

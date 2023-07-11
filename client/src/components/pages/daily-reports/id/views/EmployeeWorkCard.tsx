@@ -67,15 +67,8 @@ const EmployeeWorkCard = ({
 
   const submitUpdate = React.useCallback(
     (data: EmployeeWorkUpdateData) => {
-      let startTime = data.startTime;
-      if (!dayjs(startTime).isValid()) {
-        startTime = convertHourToDate(data.startTime, dailyReportDate);
-      }
-
-      let endTime = data.endTime;
-      if (!dayjs(endTime).isValid()) {
-        endTime = convertHourToDate(data.endTime, dailyReportDate);
-      }
+      let startTime = convertHourToDate(data.startTime, dailyReportDate);
+      let endTime = convertHourToDate(data.endTime, dailyReportDate);
 
       update({
         variables: {
