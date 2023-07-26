@@ -61,7 +61,7 @@ const passwordResetRequest = async (email: string): Promise<boolean> => {
 
   console.log(`Reset link: ${getClientUrl()}/password-reset/${token}`);
   await user.sendEmail({
-    subject: "Bow Mark - Password Reset",
+    subject: "LeDuc Milling - Password Reset",
     htmlContent: `Follow link to reset password: ${getClientUrl()}/password-reset/${token}`,
   });
 

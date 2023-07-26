@@ -12,7 +12,7 @@ const createUsers = async (): Promise<SeededUsers> => {
   const base_foreman_1_user = new User({
     _id: _ids.users.base_foreman_1_user._id,
     name: "Base Foreman 1",
-    email: "baseforeman1@bowmark.ca",
+    email: "baseforeman1@hubsite.app",
     password: await hashPassword("password"),
     employee: _ids.employees.base_foreman_1._id,
   });
@@ -20,7 +20,7 @@ const createUsers = async (): Promise<SeededUsers> => {
   const admin_user = new User({
     _id: _ids.users.admin_user._id,
     name: "Admin User",
-    email: "admin@bowmark.ca",
+    email: "admin@hubsite.app",
     password: await hashPassword("password"),
     employee: _ids.employees.office_admin._id,
     admin: true,

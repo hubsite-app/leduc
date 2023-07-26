@@ -19,12 +19,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - app.bowmark.ca
-        - paving.bowmark.ca
-        - concrete.bowmark.ca
-      secretName: bow-mark-tls
+        - leduc.hubsite.app
+      secretName: leduc-tls
   rules:
-    - host: app.bowmark.ca
+    - host: leduc.hubsite.app
       http:
         paths:
           - path: /?(.*)
@@ -46,53 +44,5 @@ spec:
             backend:
               service:
                 name: server-cluster-ip-service
-                port:
-                  number: 8080
-    - host: paving.bowmark.ca
-      http:
-        paths:
-          - path: /?(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: client-cluster-ip-service
-                port:
-                  number: 3000
-          - path: /graphql/?(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: server-cluster-ip-service
-                port:
-                  number: 8080
-          - path: /file/?(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: server-cluster-ip-service
-                port:
-                  number: 8080
-    - host: concrete.bowmark.ca
-      http:
-        paths:
-          - path: /?(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: client-concrete-cluster-ip-service
-                port:
-                  number: 3001
-          - path: /graphql/?(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: server-concrete-cluster-ip-service
-                port:
-                  number: 8081
-          - path: /file/?(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: server-concrete-cluster-ip-service
                 port:
                   number: 8080

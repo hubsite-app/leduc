@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: server-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       component: server
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: itsdevin/bow-mark-server:$COMMIT_SHA1
+          image: itsdevin/leduc-server:$COMMIT_SHA1
           ports:
             - containerPort: 8080
           resources:
@@ -28,15 +28,15 @@ spec:
             - name: NODE_ENV
               value: production
             - name: APP_NAME
-              value: Paving
+              value: LeDuc
             - name: APP_TYPE
               value: api
             - name: SEARCH_GROUP
-              value: bow-mark-paving
+              value: hubsite-leduc
             - name: MONGO_URI
               valueFrom:
                 secretKeyRef:
-                  name: paving
+                  name: server
                   key: mongoURI
             - name: JWT_SECRET
               valueFrom:

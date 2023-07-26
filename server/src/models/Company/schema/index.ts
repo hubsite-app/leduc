@@ -19,11 +19,7 @@ export class CompanySchema {
 
   @Field({ nullable: false })
   @prop({ required: true, default: false })
-  public isBowMarkPaving!: boolean;
-
-  @Field({ nullable: false })
-  @prop({ required: true, default: false })
-  public isBowMarkConcrete!: boolean;
+  public isCompany!: boolean;
 
   @Field()
   @prop({ required: true, default: SchemaVersions.Company })

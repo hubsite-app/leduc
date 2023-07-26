@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: worker
-          image: itsdevin/bow-mark-server:$COMMIT_SHA1
+          image: itsdevin/leduc-server:$COMMIT_SHA1
           resources:
             requests:
               cpu: "250m"
@@ -26,15 +26,15 @@ spec:
             - name: NODE_ENV
               value: production
             - name: APP_NAME
-              value: Paving
+              value: LeDuc
             - name: APP_TYPE
               value: worker
             - name: SEARCH_GROUP
-              value: bow-mark-paving
+              value: hubsite-leduc
             - name: MONGO_URI
               valueFrom:
                 secretKeyRef:
-                  name: paving
+                  name: server
                   key: mongoURI
             - name: JWT_SECRET
               valueFrom:

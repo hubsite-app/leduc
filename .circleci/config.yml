@@ -5,9 +5,8 @@ jobs:
       - image: circleci/buildpack-deps
     resource_class: large
     environment:
-      SERVER_IMAGE_NAME: itsdevin/bow-mark-server
-      CLIENT_IMAGE_NAME: itsdevin/bow-mark-client
-      CLIENT_CONCRETE_IMAGE_NAME: itsdevin/bow-mark-concrete-client
+      SERVER_IMAGE_NAME: itsdevin/leduc-server
+      CLIENT_IMAGE_NAME: itsdevin/leduc-client
     working_directory: ~/app
     steps:
       - checkout
@@ -19,24 +18,11 @@ jobs:
             docker build -t $SERVER_IMAGE_NAME:latest ./server
 
             touch ./client/.env.local
-            echo "SSR_API_URL=https://paving.bowmark.ca/graphql" | cat >> ./client/.env.local
-            echo "NEXT_PUBLIC_APP_NAME=Paving" | cat >> ./client/.env.local
-            echo "NEXT_PUBLIC_API_URL=https://paving.bowmark.ca/graphql" | cat >> ./client/.env.local
-            echo "NEXT_PUBLIC_WS_API_URL=wss://paving.bowmark.ca/graphql" | cat >> ./client/.env.local
-            echo "NEXT_PUBLIC_ANALYTICS_ID=G-ZJFP23D24Y" | cat >> ./client/.env.local
-            rm ./client/public/manifest.json
-            cp ./client/public/manifest-paving.json ./client/public/manifest.json
+            echo "SSR_API_URL=https://leduc.hubsite.app/graphql" | cat >> ./client/.env.local
+            echo "NEXT_PUBLIC_APP_NAME=LeDuc" | cat >> ./client/.env.local
+            echo "NEXT_PUBLIC_API_URL=https://leduc.hubsite.app/graphql" | cat >> ./client/.env.local
+            echo "NEXT_PUBLIC_WS_API_URL=wss://leduc.hubsite.app/graphql" | cat >> ./client/.env.local
             docker build -t $CLIENT_IMAGE_NAME:latest ./client
-
-            touch ./client/.env.local
-            echo "SSR_API_URL=https://concrete.bowmark.ca/graphql" | cat >> ./client/.env.local
-            echo "NEXT_PUBLIC_APP_NAME=Concrete" | cat >> ./client/.env.local
-            echo "NEXT_PUBLIC_API_URL=https://concrete.bowmark.ca/graphql" | cat >> ./client/.env.local
-            echo "NEXT_PUBLIC_WS_API_URL=wss://concrete.bowmark.ca/graphql" | cat >> ./client/.env.local
-            echo "NEXT_PUBLIC_ANALYTICS_ID=G-8798JH035P" | cat >> ./client/.env.local
-            rm ./client/public/manifest.json
-            cp ./client/public/manifest-concrete.json ./client/public/manifest.json
-            docker build -t $CLIENT_CONCRETE_IMAGE_NAME:latest ./client
       - run:
           name: Push Docker Images
           command: |
@@ -47,9 +33,6 @@ jobs:
             docker tag $CLIENT_IMAGE_NAME:latest $CLIENT_IMAGE_NAME:$CIRCLE_SHA1
             docker push $CLIENT_IMAGE_NAME:latest
             docker push $CLIENT_IMAGE_NAME:$CIRCLE_SHA1
-            docker tag $CLIENT_CONCRETE_IMAGE_NAME:latest $CLIENT_CONCRETE_IMAGE_NAME:$CIRCLE_SHA1
-            docker push $CLIENT_CONCRETE_IMAGE_NAME:latest
-            docker push $CLIENT_CONCRETE_IMAGE_NAME:$CIRCLE_SHA1
       - run:
           name: Install envsubst
           command: |

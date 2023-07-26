@@ -81,7 +81,7 @@ describe("Material Shipment Resolver", () => {
                 },
               ],
               vehicleObject: {
-                source: "Bow Mark",
+                source: "LeDuc Milling",
                 truckingRateId:
                   documents.jobsites.jobsite_2.truckingRates[0]._id?.toString(),
                 vehicleCode: "B-12",

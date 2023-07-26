@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: itsdevin/bow-mark-client:$COMMIT_SHA1
+          image: itsdevin/leduc-client:$COMMIT_SHA1
           resources:
             requests:
               cpu: "250m"
